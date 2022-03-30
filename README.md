@@ -36,7 +36,7 @@ Mikroservis koji pruza slanje email-ova. Mikroservis za slanje email-a ce biti i
 
 ### Mikroservis za proizvode
 
-Mikroservis koji omogucava dodavanje, izmenu, brisanje proizvoda i definisanje koji proizvodi ce se nalaziti u okviru glavne stranice. Mikroservis za proizvode ce biti implementiran koriscenjem Go.
+Mikroservis koji omogucava pretrazivanje, filtriranje, dodavanje, izmena i brisanje proizvoda i definisanje koji proizvodi ce se nalaziti u okviru glavne stranice. Mikroservis za proizvode ce biti implementiran koriscenjem Go.
 
 ### Mikroservis za ocenivanje i komentarisanje
 
