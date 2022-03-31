@@ -18,7 +18,7 @@ Radnik moze da dodaje nove proizvode i da izmeni ili obrise postojece proizvode.
 
 ### Funkcionalnosti adminstratora
 
-Adminstrator moze da dodaje nove radnike i administratore u sistem. Moze da pregleda sve registrovane korisnike u sistemu i njihovu istoriju kupovine. Takodje moze i da formira izvestaje kao sto su: broj prodatih igara na osnovu platforme, broj prodatih igara na osnovu oblika i proizovodi koji ostvaruju najveci profit. 
+Adminstrator moze da dodaje nove radnike i administratore u sistem. Moze da pregleda sve registrovane korisnike u sistemu i njihovu istoriju kupovine. Takodje moze i da formira izvestaje kao sto su: broj prodatih igara na osnovu platforme, broj prodatih igara na osnovu oblika i proizvodi koji ostvaruju najveci profit u okviru poslednjih 30 dana. 
 
 ## Arhitektura sistema
 
