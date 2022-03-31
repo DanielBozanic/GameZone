@@ -46,10 +46,10 @@ Mikroservis koji pruza registrovanim korisnicima mogucnost ocenjivanja i kometar
 
 Mikroservis koji pruza mogucnost da registrovani korisnici se pretplate/odjave od dobijenja vesti na email i radnicima da postavljaju vesti u okviru aplikacije koji registrovani korisnici mogu da pregledaju i da komentarisu na njima. Mikroservis za vesti ce biti implementiran koriscenjem Go.
 
-### Mikroservis za pregled korisnika, istorije kupovine i izvestaje
+### Mikroservis za izvestaje
 
-Mikroservis koji pruza formiranje izvestaja i pregled svih registrovanih korisnika kao i njihovu istoriju kupovina. Mikroservis za pregled korisnika, istorije kupovine i izvestaje ce biti implementiran koriscenjem Pharo.
+Mikroservis koji pruza formiranje izvestaja za administratora. Mikroservis za izvestaje ce biti implementiran koriscenjem Pharo.
 
 ### Klijentska aplikacija
 
-Klijentska aplikacija omogucava nam pristup svim prethodno navedenim funkcionalnostima. Kljentska aplikacija ce biti implementirana koriscenjem React.
+Klijentska aplikacija omogucava nam pristup svim prethodno navedenim funkcionalnostima. Klijentska aplikacija ce biti implementirana koriscenjem React.
