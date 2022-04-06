@@ -3,9 +3,7 @@ package api
 import (
 	"product/dto"
 	"product/mapper"
-	"product/model"
 	"product/service"
-	"time"
 
 	"log"
 	"net/http"
@@ -29,15 +27,23 @@ func (videoGameApi *VideoGameAPI) GetAll(c *gin.Context) {
 }
 
 func (videoGameApi *VideoGameAPI) GetByID(c *gin.Context) {
-	videoGame := videoGameApi.IVideoGameService.GetById(uuid.Must(uuid.Parse(c.Param("id"))))
+	videoGame, err := videoGameApi.IVideoGameService.GetById(uuid.Must(uuid.Parse(c.Param("id"))))
 	
-	c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTO(videoGame)})
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTO(videoGame)})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 }
 
 func (videoGameApi *VideoGameAPI) GetByName(c *gin.Context) {
-	videoGame := videoGameApi.IVideoGameService.GetByName(c.Param("name"))
+	videoGames, err := videoGameApi.IVideoGameService.GetByName(c.Param("name"))
 	
-	c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTO(videoGame)})
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTOs(videoGames)})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 }
 
 func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
@@ -49,9 +55,13 @@ func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
 		return
 	}
 
-	videoGameApi.IVideoGameService.Save(mapper.ToVideoGame(videoGameDTO))
+	error := videoGameApi.IVideoGameService.Create(mapper.ToVideoGame(videoGameDTO))
 
-	c.JSON(http.StatusOK, gin.H{"msg": "Video game stored successfully."})
+	if error == nil {
+		c.JSON(http.StatusOK, gin.H{"msg": "Video game stored successfully."})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+	}
 }
 
 func (videoGameApi *VideoGameAPI) Update(c *gin.Context) {
@@ -63,31 +73,22 @@ func (videoGameApi *VideoGameAPI) Update(c *gin.Context) {
 		return
 	}
 
-	videoGame := videoGameApi.IVideoGameService.GetById(videoGameDTO.Id)
-	if videoGame == (model.VideoGame{}) {
-		c.Status(http.StatusBadRequest)
-		return
-	}
+	error := videoGameApi.IVideoGameService.Update(videoGameDTO)
 
-	releaseDate, error := time.Parse("2006-01-02", videoGameDTO.ReleaseDate)
-	if error != nil {
-		panic(error)
-	}
-	
-	videoGame.Name = videoGameDTO.Name
-	videoGame.Price = videoGameDTO.Price
-	videoGame.Amount = videoGameDTO.Amount
-	videoGame.Genre = videoGameDTO.Genre
-	videoGame.Rating = videoGameDTO.Rating
-	videoGame.ReleaseDate = releaseDate
-	videoGame.Publisher = videoGameDTO.Publisher
-	videoGameApi.IVideoGameService.Update(videoGame)
-
-	c.JSON(http.StatusOK, gin.H{"msg": "Video game updated successfully."})
+	if error == nil {
+		c.JSON(http.StatusOK, gin.H{"msg": "Video game updated successfully."})
+	} else  {
+		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+	} 
 }
 
 func (videoGameApi *VideoGameAPI) Delete(c *gin.Context) {
-	videoGameApi.IVideoGameService.Delete(uuid.Must(uuid.Parse(c.Param("id"))))
-	c.JSON(http.StatusOK, gin.H{"msg": "Video game deleted successfully."})
+	error := videoGameApi.IVideoGameService.Delete(uuid.Must(uuid.Parse(c.Param("id"))))
+
+	if error == nil {
+		c.JSON(http.StatusOK, gin.H{"msg": "Video game deleted successfully."})
+	} else  {
+		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+	}
 }
 
