@@ -20,4 +20,4 @@ type VideoGame struct {
 	Genre string `gorm:"type:varchar(50); not null"`
 	ReleaseDate time.Time `gorm:"not null"`
 	Amount uint
-  }
+}

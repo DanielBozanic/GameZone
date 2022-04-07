@@ -24,11 +24,13 @@ func main() {
 	}
 
 	videoGameAPI := di.InitVideoGameAPI(database)
+	consoleAPI := di.InitConsoleAPI(database)
 
 	r := gin.Default()
 
-	api := r.Group("/api")
+	api := r.Group("/api/products")
 	videoGames := api.Group("/videoGames")
+	consoles := api.Group("/consoles")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -36,6 +38,13 @@ func main() {
 	videoGames.POST("", videoGameAPI.Create)
 	videoGames.PUT("", videoGameAPI.Update)
 	videoGames.DELETE("/:id", videoGameAPI.Delete)
+
+	consoles.GET("", consoleAPI.GetAll)
+	consoles.GET("/:id", consoleAPI.GetByID)
+	consoles.GET("/getByName/:name", consoleAPI.GetByName)
+	consoles.POST("", consoleAPI.Create)
+	consoles.PUT("", consoleAPI.Update)
+	consoles.DELETE("/:id", consoleAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {

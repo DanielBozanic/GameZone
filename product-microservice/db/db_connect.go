@@ -13,7 +13,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 	})
 
-	db.AutoMigrate(&model.VideoGame{})
+	db.AutoMigrate(&model.VideoGame{}, &model.Console{})
 
 	return db, dbErr
 }

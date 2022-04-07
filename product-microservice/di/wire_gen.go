@@ -21,3 +21,10 @@ func InitVideoGameAPI(db *gorm.DB) api.VideoGameAPI {
 	videoGameAPI := api.NewVideoGameAPI(iVideoGameService)
 	return videoGameAPI
 }
+
+func InitConsoleAPI(db *gorm.DB) api.ConsoleAPI {
+	iConsoleRepository := repository.NewConsoleRepository(db)
+	iConsoleService := service.NewConsoleService(iConsoleRepository)
+	consoleAPI := api.NewConsoleAPI(iConsoleService)
+	return consoleAPI
+}

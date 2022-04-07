@@ -14,6 +14,10 @@ import (
 
 func InitVideoGameAPI(db *gorm.DB) api.VideoGameAPI {
 	wire.Build(repository.NewVideoGameRepository, service.NewVideoGameService, api.NewVideoGameAPI)
-
 	return api.VideoGameAPI{}
+}
+
+func InitConsoleAPI(db *gorm.DB) api.ConsoleAPI {
+	wire.Build(repository.NewConsoleRepository, service.NewConsoleService, api.NewConsoleAPI)
+	return api.ConsoleAPI{}
 }

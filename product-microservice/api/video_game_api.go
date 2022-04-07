@@ -5,7 +5,6 @@ import (
 	"product/mapper"
 	"product/service"
 
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -27,7 +26,13 @@ func (videoGameApi *VideoGameAPI) GetAll(c *gin.Context) {
 }
 
 func (videoGameApi *VideoGameAPI) GetByID(c *gin.Context) {
-	videoGame, err := videoGameApi.IVideoGameService.GetById(uuid.Must(uuid.Parse(c.Param("id"))))
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	videoGame, err := videoGameApi.IVideoGameService.GetById(id)
 	
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTO(videoGame)})
@@ -40,7 +45,7 @@ func (videoGameApi *VideoGameAPI) GetByName(c *gin.Context) {
 	videoGames, err := videoGameApi.IVideoGameService.GetByName(c.Param("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"video_game": mapper.ToVideoGameDTOs(videoGames)})
+		c.JSON(http.StatusOK, gin.H{"video_games": mapper.ToVideoGameDTOs(videoGames)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
@@ -50,12 +55,17 @@ func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
 	var videoGameDTO dto.VideoGameDTO
 	err := c.BindJSON(&videoGameDTO)
 	if err != nil {
-		log.Fatalln(err)
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	error := videoGameApi.IVideoGameService.Create(mapper.ToVideoGame(videoGameDTO))
+	videoGame, err := mapper.ToVideoGame(videoGameDTO)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	error := videoGameApi.IVideoGameService.Create(videoGame)
 
 	if error == nil {
 		c.JSON(http.StatusOK, gin.H{"msg": "Video game stored successfully."})
@@ -68,8 +78,7 @@ func (videoGameApi *VideoGameAPI) Update(c *gin.Context) {
 	var videoGameDTO dto.VideoGameDTO
 	err := c.BindJSON(&videoGameDTO)
 	if err != nil {
-		log.Fatalln(err)
-		c.Status(http.StatusBadRequest)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -83,7 +92,13 @@ func (videoGameApi *VideoGameAPI) Update(c *gin.Context) {
 }
 
 func (videoGameApi *VideoGameAPI) Delete(c *gin.Context) {
-	error := videoGameApi.IVideoGameService.Delete(uuid.Must(uuid.Parse(c.Param("id"))))
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	
+	error := videoGameApi.IVideoGameService.Delete(id)
 
 	if error == nil {
 		c.JSON(http.StatusOK, gin.H{"msg": "Video game deleted successfully."})
@@ -91,4 +106,3 @@ func (videoGameApi *VideoGameAPI) Delete(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
 	}
 }
-

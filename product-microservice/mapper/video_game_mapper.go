@@ -8,10 +8,10 @@ import (
 )
 
 
-func ToVideoGame(videoGameDTO dto.VideoGameDTO) model.VideoGame {
+func ToVideoGame(videoGameDTO dto.VideoGameDTO) (model.VideoGame, error) {
 	releaseDate, error := time.Parse("2006-01-02", videoGameDTO.ReleaseDate)
 	if error != nil {
-		panic(error)
+		return model.VideoGame{}, error
 	}
 	
 	return model.VideoGame {
@@ -24,7 +24,7 @@ func ToVideoGame(videoGameDTO dto.VideoGameDTO) model.VideoGame {
 		Genre: videoGameDTO.Genre,
 		ReleaseDate: releaseDate,
 		Amount: videoGameDTO.Amount,
-	}
+	}, error
 }
 
 func ToVideoGameDTO(videoGame model.VideoGame) dto.VideoGameDTO {

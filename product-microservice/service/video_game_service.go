@@ -23,8 +23,8 @@ type IVideoGameService interface {
 	Delete(id uuid.UUID) error
 }
 
-func NewVideoGameService(IVideoGameService repository.IVideoGameRepository) IVideoGameService {
-	return &videoGameService{IVideoGameRepository: IVideoGameService}
+func NewVideoGameService(videoGameRepository repository.IVideoGameRepository) IVideoGameService {
+	return &videoGameService{IVideoGameRepository: videoGameRepository}
 }
 
 func (videoGameService *videoGameService) GetAll() []model.VideoGame {
@@ -54,7 +54,6 @@ func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) 
 	if err != nil {
 		return err
 	}
-
 	videoGame.Name = videoGameDTO.Name
 	videoGame.Price = videoGameDTO.Price
 	videoGame.Amount = videoGameDTO.Amount
@@ -62,6 +61,8 @@ func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) 
 	videoGame.Rating = videoGameDTO.Rating
 	videoGame.ReleaseDate = releaseDate
 	videoGame.Publisher = videoGameDTO.Publisher
+	videoGame.Digital = videoGameDTO.Digital
+	videoGame.Platform = videoGameDTO.Platform
 	return videoGameService.IVideoGameRepository.Update(videoGame)
 }
 
