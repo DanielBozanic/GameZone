@@ -28,3 +28,17 @@ func InitConsoleAPI(db *gorm.DB) api.ConsoleAPI {
 	consoleAPI := api.NewConsoleAPI(iConsoleService)
 	return consoleAPI
 }
+
+func InitGraphicsCardAPI(db *gorm.DB) api.GraphicsCardAPI {
+	iGraphicsCardRepository := repository.NewGraphicsCardRepository(db)
+	iGraphicsCardService := service.NewGraphicsCardService(iGraphicsCardRepository)
+	graphicsCardAPI := api.NewGraphicsCardAPI(iGraphicsCardService)
+	return graphicsCardAPI
+}
+
+func InitProcessorAPI(db *gorm.DB) api.ProcessorAPI {
+	iProcessorRepository := repository.NewProcessorRepository(db)
+	iProcessorService := service.NewProcessorServiceService(iProcessorRepository)
+	processorAPI := api.NewProcessorAPI(iProcessorService)
+	return processorAPI
+}

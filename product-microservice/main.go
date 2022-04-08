@@ -25,12 +25,16 @@ func main() {
 
 	videoGameAPI := di.InitVideoGameAPI(database)
 	consoleAPI := di.InitConsoleAPI(database)
+	graphicsCardAPI := di.InitGraphicsCardAPI(database)
+	processorAPI := di.InitProcessorAPI(database)
 
 	r := gin.Default()
 
 	api := r.Group("/api/products")
 	videoGames := api.Group("/videoGames")
 	consoles := api.Group("/consoles")
+	graphicsCards := api.Group("/graphicsCards")
+	processors := api.Group("/processors")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -45,6 +49,20 @@ func main() {
 	consoles.POST("", consoleAPI.Create)
 	consoles.PUT("", consoleAPI.Update)
 	consoles.DELETE("/:id", consoleAPI.Delete)
+
+	graphicsCards.GET("", graphicsCardAPI.GetAll)
+	graphicsCards.GET("/:id", graphicsCardAPI.GetByID)
+	graphicsCards.GET("/getByName/:name", graphicsCardAPI.GetByName)
+	graphicsCards.POST("", graphicsCardAPI.Create)
+	graphicsCards.PUT("", graphicsCardAPI.Update)
+	graphicsCards.DELETE("/:id", graphicsCardAPI.Delete)
+
+	processors.GET("", processorAPI.GetAll)
+	processors.GET("/:id", processorAPI.GetByID)
+	processors.GET("/getByName/:name", processorAPI.GetByName)
+	processors.POST("", processorAPI.Create)
+	processors.PUT("", processorAPI.Update)
+	processors.DELETE("/:id", processorAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {

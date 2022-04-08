@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/mapper"
 	"product/model"
 	"product/repository"
 
@@ -47,13 +48,9 @@ func (consoleService *consoleService) Update(consoleDTO dto.ConsoleDTO) error {
 	if err != nil {
 		return err
 	}
-	console.Name = consoleDTO.Name
-	console.Price = consoleDTO.Price
-	console.Amount = consoleDTO.Amount
-	console.Manufacturer = consoleDTO.Manufacturer
-	console.Platform = consoleDTO.Platform
-	console.Amount = consoleDTO.Amount
-	return consoleService.IConsoleRepository.Update(console)
+	updatedConsole := mapper.ToConsole(consoleDTO)
+	updatedConsole.Id = console.Id
+	return consoleService.IConsoleRepository.Update(updatedConsole)
 }
 
 func (consoleService *consoleService) Delete(id uuid.UUID) error {

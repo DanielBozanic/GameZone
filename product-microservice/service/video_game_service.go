@@ -2,9 +2,9 @@ package service
 
 import (
 	"product/dto"
+	"product/mapper"
 	"product/model"
 	"product/repository"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -45,25 +45,18 @@ func (videoGameService *videoGameService) Create(game model.VideoGame) error {
 }
 
 func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) error {
-	releaseDate, error := time.Parse("2006-01-02", videoGameDTO.ReleaseDate)
-	if error != nil {
-		return error
-	}
-
 	videoGame, err := videoGameService.GetById(videoGameDTO.Id)
 	if err != nil {
 		return err
 	}
-	videoGame.Name = videoGameDTO.Name
-	videoGame.Price = videoGameDTO.Price
-	videoGame.Amount = videoGameDTO.Amount
-	videoGame.Genre = videoGameDTO.Genre
-	videoGame.Rating = videoGameDTO.Rating
-	videoGame.ReleaseDate = releaseDate
-	videoGame.Publisher = videoGameDTO.Publisher
-	videoGame.Digital = videoGameDTO.Digital
-	videoGame.Platform = videoGameDTO.Platform
-	return videoGameService.IVideoGameRepository.Update(videoGame)
+
+	updatedVideoGame, error := mapper.ToVideoGame(videoGameDTO)
+	if error != nil {
+		return error
+	}
+	
+	updatedVideoGame.Id = videoGame.Id
+	return videoGameService.IVideoGameRepository.Update(updatedVideoGame)
 }
 
 func (videoGameService *videoGameService) Delete(id uuid.UUID) error {

@@ -3,8 +3,6 @@ package dto
 import (
 	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
-
-	"product/model/enums"
 )
 
 type VideoGameDTO struct {
@@ -12,7 +10,7 @@ type VideoGameDTO struct {
 	Name string 
 	Price decimal.Decimal 
 	Digital bool
-	Platform enums.Platform
+	Platform string
 	Publisher string
 	Rating uint 
 	Genre string
