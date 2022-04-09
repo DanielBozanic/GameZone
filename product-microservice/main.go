@@ -27,6 +27,8 @@ func main() {
 	consoleAPI := di.InitConsoleAPI(database)
 	graphicsCardAPI := di.InitGraphicsCardAPI(database)
 	processorAPI := di.InitProcessorAPI(database)
+	motherboardAPI := di.InitMotherboardAPI(database)
+	ramAPI := di.InitRamAPI(database)
 
 	r := gin.Default()
 
@@ -35,6 +37,8 @@ func main() {
 	consoles := api.Group("/consoles")
 	graphicsCards := api.Group("/graphicsCards")
 	processors := api.Group("/processors")
+	motherboards := api.Group("/motherboards")
+	rams := api.Group("/rams")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -63,6 +67,20 @@ func main() {
 	processors.POST("", processorAPI.Create)
 	processors.PUT("", processorAPI.Update)
 	processors.DELETE("/:id", processorAPI.Delete)
+
+	motherboards.GET("", motherboardAPI.GetAll)
+	motherboards.GET("/:id", motherboardAPI.GetByID)
+	motherboards.GET("/getByName/:name", motherboardAPI.GetByName)
+	motherboards.POST("", motherboardAPI.Create)
+	motherboards.PUT("", motherboardAPI.Update)
+	motherboards.DELETE("/:id", motherboardAPI.Delete)
+
+	rams.GET("", ramAPI.GetAll)
+	rams.GET("/:id", ramAPI.GetByID)
+	rams.GET("/getByName/:name", ramAPI.GetByName)
+	rams.POST("", ramAPI.Create)
+	rams.PUT("", ramAPI.Update)
+	rams.DELETE("/:id", ramAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {

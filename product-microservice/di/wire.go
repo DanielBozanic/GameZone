@@ -31,3 +31,13 @@ func InitProcessorAPI(db *gorm.DB) api.ProcessorAPI {
 	wire.Build(repository.NewProcessorRepository, service.NewProcessorServiceService, api.NewProcessorAPI)
 	return api.ProcessorAPI{}
 }
+
+func InitMotherboardAPI(db *gorm.DB) api.MotherboardAPI {
+	wire.Build(repository.NewMotherboardRepository, service.NewMotherboardService, api.NewMotherboardAPI)
+	return api.MotherboardAPI{}
+}
+
+func InitRamAPI(db *gorm.DB) api.RamAPI {
+	wire.Build(repository.NewRamRepository, service.NewRamServiceService, api.NewRamAPI)
+	return api.RamAPI{}
+}

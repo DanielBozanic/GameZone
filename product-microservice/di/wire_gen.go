@@ -42,3 +42,17 @@ func InitProcessorAPI(db *gorm.DB) api.ProcessorAPI {
 	processorAPI := api.NewProcessorAPI(iProcessorService)
 	return processorAPI
 }
+
+func InitMotherboardAPI(db *gorm.DB) api.MotherboardAPI {
+	iMotherboardRepository := repository.NewMotherboardRepository(db)
+	iMotherboardService := service.NewMotherboardService(iMotherboardRepository)
+	motherboardAPI := api.NewMotherboardAPI(iMotherboardService)
+	return motherboardAPI
+}
+
+func InitRamAPI(db *gorm.DB) api.RamAPI {
+	iRamRepository := repository.NewRamRepository(db)
+	iRamService := service.NewRamServiceService(iRamRepository)
+	ramAPI := api.NewRamAPI(iRamService)
+	return ramAPI
+}
