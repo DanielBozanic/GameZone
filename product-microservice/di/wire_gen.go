@@ -56,3 +56,17 @@ func InitRamAPI(db *gorm.DB) api.RamAPI {
 	ramAPI := api.NewRamAPI(iRamService)
 	return ramAPI
 }
+
+func InitSoldiStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
+	iSolidStateDriveRepository := repository.NewSolidStateDriveRepository(db)
+	iSolidStateDriveService := service.NewSolidStateDriveService(iSolidStateDriveRepository)
+	solidStateDriveAPI := api.NewSolidStateDriveAPI(iSolidStateDriveService)
+	return solidStateDriveAPI
+}
+
+func InitHardDiskDriveAPI(db *gorm.DB) api.HardDiskDriveAPI {
+	iHardDiskDriveRepository := repository.NewHardDiskDriveRepository(db)
+	iHardDiskDriveService := service.NewHardDiskDriveService(iHardDiskDriveRepository)
+	hardDiskDriveAPI := api.NewHardDiskDriveAPI(iHardDiskDriveService)
+	return hardDiskDriveAPI
+}

@@ -1,6 +1,6 @@
 # GameZone - Veb aplikacija bazirana na mikroservisnoj arhitekturi
 
-GameZone je veb aplikacija pomoću koje korisnici imaju mogućnost da pretražuju, filtriraju i kupuju proizvode vezane za gejming kao sto su video igre, konzole, dodatna operema i hardverske komponente i da ostavljaju ocene i komentare za proizvode koje su kupili. Korisnici takođe mogu da prate i komentarisu sve vesti koje su objavljene od strane zaposlenih. Uloge koje postoje u sistemu su registrovani korisnici, zaposleni i administratori.
+GameZone je veb aplikacija pomoću koje korisnici imaju mogućnost da pretražuju, filtriraju i kupuju proizvode vezane za gejming kao što su video igre, konzole, dodatna oprema i hardverske komponente i da ostavljaju ocene i komentare za proizvode koje su kupili. Korisnici takođe mogu da prate i komentarišu sve vesti koje su objavljene od strane zaposlenih. Uloge koje postoje u sistemu su registrovani korisnici, zaposleni i administratori.
 
 ## Funkcionalnosti aplikacije
 

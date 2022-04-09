@@ -13,7 +13,7 @@ func ToRam(ramDTO dto.RamDTO) (model.Ram) {
 		Capacity: ramDTO.Capacity,
 		Speed: ramDTO.Speed,
 		Voltage: ramDTO.Voltage,
-		Latency: ramDTO.Voltage,
+		Latency: ramDTO.Latency,
 		Price: ramDTO.Price,
 		Amount: ramDTO.Amount,
 	}
@@ -28,7 +28,7 @@ func ToRamDTO(ram model.Ram) dto.RamDTO {
 		Capacity: ram.Capacity,
 		Speed: ram.Speed,
 		Voltage: ram.Voltage,
-		Latency: ram.Voltage,
+		Latency: ram.Latency,
 		Price: ram.Price,
 		Amount: ram.Amount,
 	}

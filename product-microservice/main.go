@@ -29,6 +29,8 @@ func main() {
 	processorAPI := di.InitProcessorAPI(database)
 	motherboardAPI := di.InitMotherboardAPI(database)
 	ramAPI := di.InitRamAPI(database)
+	solidStateDriveAPI := di.InitSoldiStateDriveAPI(database)
+	hardDiskDriveAPI := di.InitHardDiskDriveAPI(database)
 
 	r := gin.Default()
 
@@ -39,6 +41,8 @@ func main() {
 	processors := api.Group("/processors")
 	motherboards := api.Group("/motherboards")
 	rams := api.Group("/rams")
+	ssds := api.Group("/ssds")
+	hdds := api.Group("/hdds")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -81,6 +85,20 @@ func main() {
 	rams.POST("", ramAPI.Create)
 	rams.PUT("", ramAPI.Update)
 	rams.DELETE("/:id", ramAPI.Delete)
+
+	ssds.GET("", solidStateDriveAPI.GetAll)
+	ssds.GET("/:id", solidStateDriveAPI.GetByID)
+	ssds.GET("/getByName/:name", solidStateDriveAPI.GetByName)
+	ssds.POST("", solidStateDriveAPI.Create)
+	ssds.PUT("", solidStateDriveAPI.Update)
+	ssds.DELETE("/:id", solidStateDriveAPI.Delete)
+
+	hdds.GET("", hardDiskDriveAPI.GetAll)
+	hdds.GET("/:id", hardDiskDriveAPI.GetByID)
+	hdds.GET("/getByName/:name", hardDiskDriveAPI.GetByName)
+	hdds.POST("", hardDiskDriveAPI.Create)
+	hdds.PUT("", hardDiskDriveAPI.Update)
+	hdds.DELETE("/:id", hardDiskDriveAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {
