@@ -29,8 +29,10 @@ func main() {
 	processorAPI := di.InitProcessorAPI(database)
 	motherboardAPI := di.InitMotherboardAPI(database)
 	ramAPI := di.InitRamAPI(database)
-	solidStateDriveAPI := di.InitSoldiStateDriveAPI(database)
+	solidStateDriveAPI := di.InitSolidStateDriveAPI(database)
 	hardDiskDriveAPI := di.InitHardDiskDriveAPI(database)
+	monitorAPI := di.InitMonitorAPI(database)
+	powerSupplyUnitAPI := di.InitPowerSupplyUnitAPI(database)
 
 	r := gin.Default()
 
@@ -43,6 +45,8 @@ func main() {
 	rams := api.Group("/rams")
 	ssds := api.Group("/ssds")
 	hdds := api.Group("/hdds")
+	monitors := api.Group("/monitors")
+	psus := api.Group("/psus")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -99,6 +103,20 @@ func main() {
 	hdds.POST("", hardDiskDriveAPI.Create)
 	hdds.PUT("", hardDiskDriveAPI.Update)
 	hdds.DELETE("/:id", hardDiskDriveAPI.Delete)
+
+	monitors.GET("", monitorAPI.GetAll)
+	monitors.GET("/:id", monitorAPI.GetByID)
+	monitors.GET("/getByName/:name", monitorAPI.GetByName)
+	monitors.POST("", monitorAPI.Create)
+	monitors.PUT("", monitorAPI.Update)
+	monitors.DELETE("/:id", monitorAPI.Delete)
+
+	psus.GET("", powerSupplyUnitAPI.GetAll)
+	psus.GET("/:id", powerSupplyUnitAPI.GetByID)
+	psus.GET("/getByName/:name", powerSupplyUnitAPI.GetByName)
+	psus.POST("", powerSupplyUnitAPI.Create)
+	psus.PUT("", powerSupplyUnitAPI.Update)
+	psus.DELETE("/:id", powerSupplyUnitAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {

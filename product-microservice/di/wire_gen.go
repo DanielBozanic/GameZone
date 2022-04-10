@@ -57,7 +57,7 @@ func InitRamAPI(db *gorm.DB) api.RamAPI {
 	return ramAPI
 }
 
-func InitSoldiStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
+func InitSolidStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
 	iSolidStateDriveRepository := repository.NewSolidStateDriveRepository(db)
 	iSolidStateDriveService := service.NewSolidStateDriveService(iSolidStateDriveRepository)
 	solidStateDriveAPI := api.NewSolidStateDriveAPI(iSolidStateDriveService)
@@ -69,4 +69,18 @@ func InitHardDiskDriveAPI(db *gorm.DB) api.HardDiskDriveAPI {
 	iHardDiskDriveService := service.NewHardDiskDriveService(iHardDiskDriveRepository)
 	hardDiskDriveAPI := api.NewHardDiskDriveAPI(iHardDiskDriveService)
 	return hardDiskDriveAPI
+}
+
+func InitMonitorAPI(db *gorm.DB) api.MonitorAPI {
+	iMonitorRepository := repository.NewMonitorRepository(db)
+	iMonitorService := service.NewMonitorService(iMonitorRepository)
+	monitorAPI := api.NewMonitorAPI(iMonitorService)
+	return monitorAPI
+}
+
+func InitPowerSupplyUnitAPI(db *gorm.DB) api.PowerSupplyUnitAPI {
+	iPowerSupplyUnitRepository := repository.NewPowerSupplyUnitRepository(db)
+	iPowerSupplyUnitService := service.NewPowerSupplyUnitService(iPowerSupplyUnitRepository)
+	powerSupplyUnitAPI := api.NewPowerSupplyUnitAPI(iPowerSupplyUnitService)
+	return powerSupplyUnitAPI
 }

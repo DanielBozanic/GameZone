@@ -22,6 +22,8 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		&model.Ram{},
 		&model.SolidStateDrive{},
 		&model.HardDiskDrive{},
+		&model.Monitor{},
+		&model.PowerSupplyUnit{},
 	)
 
 	return db, dbErr

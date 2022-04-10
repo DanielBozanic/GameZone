@@ -42,7 +42,7 @@ func InitRamAPI(db *gorm.DB) api.RamAPI {
 	return api.RamAPI{}
 }
 
-func InitSoldiStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
+func InitSolidStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
 	wire.Build(repository.NewSolidStateDriveRepository, service.NewSolidStateDriveService, api.NewSolidStateDriveAPI)
 	return api.SolidStateDriveAPI{}
 }
@@ -50,4 +50,14 @@ func InitSoldiStateDriveAPI(db *gorm.DB) api.SolidStateDriveAPI {
 func InitHardDiskDriveAPI(db *gorm.DB) api.HardDiskDriveAPI {
 	wire.Build(repository.NewHardDiskDriveRepository, service.NewHardDiskDriveService, api.NewHardDiskDriveAPI)
 	return api.HardDiskDriveAPI{}
+}
+
+func InitMonitorAPI(db *gorm.DB) api.MonitorAPI {
+	wire.Build(repository.NewMonitorRepository, service.NewMonitorService, api.NewMonitorAPI)
+	return api.MonitorAPI{}
+}
+
+func InitPowerSupplyUnitAPI(db *gorm.DB) api.PowerSupplyUnitAPI {
+	wire.Build(repository.NewPowerSupplyUnitRepository, service.NewPowerSupplyUnitService, api.NewPowerSupplyUnitAPI)
+	return api.PowerSupplyUnitAPI{}
 }
