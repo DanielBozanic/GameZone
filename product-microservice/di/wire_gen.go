@@ -84,3 +84,24 @@ func InitPowerSupplyUnitAPI(db *gorm.DB) api.PowerSupplyUnitAPI {
 	powerSupplyUnitAPI := api.NewPowerSupplyUnitAPI(iPowerSupplyUnitService)
 	return powerSupplyUnitAPI
 }
+
+func InitKeyboardAPI(db *gorm.DB) api.KeyboardAPI {
+	iKeyboardRepository := repository.NewKeyboardRepository(db)
+	iKeyboardService := service.NewKeyboardService(iKeyboardRepository)
+	keyboardAPI := api.NewKeyboardAPI(iKeyboardService)
+	return keyboardAPI
+}
+
+func InitMouseAPI(db *gorm.DB) api.MouseAPI {
+	iMouseRepository := repository.NewMouseRepository(db)
+	iMouseService := service.NewMouseService(iMouseRepository)
+	mouseAPI := api.NewMouseAPI(iMouseService)
+	return mouseAPI
+}
+
+func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
+	iHeadphonesRepository := repository.NewHeadphonesRepository(db)
+	iHeadphonesService := service.NewHeadphonesService(iHeadphonesRepository)
+	headphonesAPI := api.NewHeadphonesAPI(iHeadphonesService)
+	return headphonesAPI
+}

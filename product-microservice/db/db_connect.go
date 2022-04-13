@@ -24,6 +24,9 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 		&model.HardDiskDrive{},
 		&model.Monitor{},
 		&model.PowerSupplyUnit{},
+		&model.Keyboard{},
+		&model.Mouse{},
+		&model.Headphones{},
 	)
 
 	return db, dbErr

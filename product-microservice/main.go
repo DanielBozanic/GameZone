@@ -33,6 +33,9 @@ func main() {
 	hardDiskDriveAPI := di.InitHardDiskDriveAPI(database)
 	monitorAPI := di.InitMonitorAPI(database)
 	powerSupplyUnitAPI := di.InitPowerSupplyUnitAPI(database)
+	keyboardAPI := di.InitKeyboardAPI(database)
+	mouseAPI := di.InitMouseAPI(database)
+	headphonesAPI := di.InitHeadphonesAPI(database)
 
 	r := gin.Default()
 
@@ -47,6 +50,9 @@ func main() {
 	hdds := api.Group("/hdds")
 	monitors := api.Group("/monitors")
 	psus := api.Group("/psus")
+	keyboards := api.Group("/keyboards")
+	mouses := api.Group("/mouses")
+	headphones := api.Group("/headphones")
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -117,6 +123,27 @@ func main() {
 	psus.POST("", powerSupplyUnitAPI.Create)
 	psus.PUT("", powerSupplyUnitAPI.Update)
 	psus.DELETE("/:id", powerSupplyUnitAPI.Delete)
+
+	keyboards.GET("", keyboardAPI.GetAll)
+	keyboards.GET("/:id", keyboardAPI.GetByID)
+	keyboards.GET("/getByName/:name", keyboardAPI.GetByName)
+	keyboards.POST("", keyboardAPI.Create)
+	keyboards.PUT("", keyboardAPI.Update)
+	keyboards.DELETE("/:id", keyboardAPI.Delete)
+
+	mouses.GET("", mouseAPI.GetAll)
+	mouses.GET("/:id", mouseAPI.GetByID)
+	mouses.GET("/getByName/:name", mouseAPI.GetByName)
+	mouses.POST("", mouseAPI.Create)
+	mouses.PUT("", mouseAPI.Update)
+	mouses.DELETE("/:id", mouseAPI.Delete)
+
+	headphones.GET("", headphonesAPI.GetAll)
+	headphones.GET("/:id", headphonesAPI.GetByID)
+	headphones.GET("/getByName/:name", headphonesAPI.GetByName)
+	headphones.POST("", headphonesAPI.Create)
+	headphones.PUT("", headphonesAPI.Update)
+	headphones.DELETE("/:id", headphonesAPI.Delete)
 
 	err := r.Run(":7000")
 	if err != nil {

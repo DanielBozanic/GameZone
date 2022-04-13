@@ -61,3 +61,18 @@ func InitPowerSupplyUnitAPI(db *gorm.DB) api.PowerSupplyUnitAPI {
 	wire.Build(repository.NewPowerSupplyUnitRepository, service.NewPowerSupplyUnitService, api.NewPowerSupplyUnitAPI)
 	return api.PowerSupplyUnitAPI{}
 }
+
+func InitKeyboardAPI(db *gorm.DB) api.KeyboardAPI {
+	wire.Build(repository.NewKeyboardRepository, service.NewKeyboardService, api.NewKeyboardAPI)
+	return api.KeyboardAPI{}
+}
+
+func InitMouseAPI(db *gorm.DB) api.MouseAPI {
+	wire.Build(repository.NewMouseRepository, service.NewMouseService, api.NewMouseAPI)
+	return api.MouseAPI{}
+}
+
+func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
+	wire.Build(repository.NewHeadphonesRepository, service.NewHeadphonesService, api.NewHeadphonesAPI)
+	return api.HeadphonesAPI{}
+}
