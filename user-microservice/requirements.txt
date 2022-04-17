@@ -6,3 +6,5 @@ MarkupSafe==1.1.1
 Werkzeug==1.0.1
 Flask-Migrate
 pymysql
+SQLAlchemy~=1.4.35
+alembic~=1.7.7
