@@ -1,11 +1,12 @@
 from flask import request, jsonify
 import services.user_service
+import utils.token_utils
 
 
-def create():
-    msg = services.user_service.create(request.json)
+def register():
+    msg = services.user_service.register(request.json)
     if msg == "":
-        resp = jsonify(message="User successfully created.")
+        resp = jsonify(message="User successfully registered.")
         resp.status_code = 200
         return resp
     else:
@@ -14,41 +15,12 @@ def create():
         return resp
 
 
-def get_all():
-    users = services.user_service.get_all()
-    resp = jsonify(users=[user.serialize() for user in users])
-    resp.status_code = 200
-    return resp
-
-
-def get_by_id(user_id):
-    user = services.user_service.get_by_id(user_id)
-    if isinstance(user, str):
-        resp = jsonify(user=user)
-        resp.status_code = 400
-        return resp
-    else:
-        resp = jsonify(user=user.serialize())
-        resp.status_code = 200
-        return resp
-
-
-def update():
-    msg = services.user_service.update(request.json)
+@utils.token_utils.authentification_required
+@utils.token_utils.admin_required
+def add_employee_and_admin():
+    msg = services.user_service.add_employee_and_admin(request.json)
     if msg == "":
-        resp = jsonify(message="User successfully updated.")
-        resp.status_code = 200
-        return resp
-    else:
-        resp = jsonify(message=msg)
-        resp.status_code = 400
-        return resp
-
-
-def delete(user_id):
-    msg = services.user_service.delete(user_id)
-    if msg == "":
-        resp = jsonify(message="User successfully deleted.")
+        resp = jsonify(message="Employee successfully added.")
         resp.status_code = 200
         return resp
     else:

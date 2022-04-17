@@ -4,16 +4,42 @@ from models.user import User
 db = SQLAlchemy()
 
 
-def create(data):
+def register(data):
     user = User.query.filter((data['email'] == User.email) |
                              (data['user_name'] == User.user_name)).first()
     if not user:
         try:
             new_user = User(
                 user_name=data['user_name'],
+                password=data["password"],
                 email=data['email'],
                 name=data['name'],
-                surname=data['surname']
+                surname=data['surname'],
+                role="ROLE_USER"
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            return ""
+        except ValueError as err:
+            return str(err)
+    else:
+        return "User with this email/username already exists!"
+
+    # TODO Email service
+
+
+def add_employee_and_admin(data):
+    user = User.query.filter((data['email'] == User.email) |
+                             (data['user_name'] == User.user_name)).first()
+    if not user:
+        try:
+            new_user = User(
+                user_name=data['user_name'],
+                password=data["password"],
+                email=data['email'],
+                name=data['name'],
+                surname=data['surname'],
+                role=data['role']
             )
             db.session.add(new_user)
             db.session.commit()
@@ -49,7 +75,8 @@ def update(data):
         db.session.query(User). \
             filter(User.id == data["id"]). \
             update({'email': data["email"], "user_name": data["user_name"],
-                    "name": data["name"], "surname": data["surname"]})
+                    "password": data["password"], "name": data["name"],
+                    "surname": data["surname"]})
         db.session.commit()
         return ""
     else:
