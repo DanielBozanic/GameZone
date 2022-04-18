@@ -1,7 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
+from db.database import db
 from models.user import User
-
-db = SQLAlchemy()
 
 
 def register(data):
@@ -15,7 +13,8 @@ def register(data):
                 email=data['email'],
                 name=data['name'],
                 surname=data['surname'],
-                role="ROLE_USER"
+                role="ROLE_USER",
+                active=True
             )
             db.session.add(new_user)
             db.session.commit()
@@ -39,7 +38,8 @@ def add_employee_and_admin(data):
                 email=data['email'],
                 name=data['name'],
                 surname=data['surname'],
-                role=data['role']
+                role=data['role'],
+                active=True
             )
             db.session.add(new_user)
             db.session.commit()

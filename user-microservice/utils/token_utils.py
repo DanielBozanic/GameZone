@@ -1,7 +1,7 @@
 from functools import wraps
 from flask import request, jsonify
+from config import SECRET_KEY
 import jwt
-import config
 import datetime
 
 
@@ -17,7 +17,7 @@ def encode_auth_token(user):
         }
         return jwt.encode(
             payload,
-            config.SECRET_KEY,
+            SECRET_KEY,
             algorithm='HS256'
         )
     except Exception as e:
@@ -28,12 +28,12 @@ def authentification_required(f):
     @wraps(f)
     def decorated():
         token = request.headers.get('Authorization')
-        token = token.split(" ")[1]
         if not token:
             return jsonify({'message': "Token is missing!"}), 403
 
+        token = token.split(" ")[1]
         try:
-            token = jwt.decode(token, config.SECRET_KEY)
+            token = jwt.decode(token, SECRET_KEY)
         except:
             return jsonify({"message": "Token is invalid!"}), 403
 
@@ -41,13 +41,13 @@ def authentification_required(f):
     return decorated
 
 
-def admin_required(f):
-    @wraps(f)
-    def decorated(token):
-        print(token)
-        if token['sub']['role'] != "ROLE_ADMIN":
-            return jsonify({"message": "Unauthorized!"}), 401
-        else:
-            return f()
-
-    return decorated
+def roles_required(roles):
+    def decorate(f):
+        @wraps(f)
+        def wrapper(token):
+            if token['sub']['role'] not in roles:
+                return jsonify({"message": "Unauthorized!"}), 401
+            else:
+                return f()
+        return wrapper
+    return decorate

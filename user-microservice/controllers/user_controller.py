@@ -16,7 +16,7 @@ def register():
 
 
 @utils.token_utils.authentification_required
-@utils.token_utils.admin_required
+@utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def add_employee_and_admin():
     msg = services.user_service.add_employee_and_admin(request.json)
     if msg == "":

@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
-from models.user import db
+from db.database import db
 from routes.user_bp import user_bp
 from routes.auth_bp import auth_bp
 

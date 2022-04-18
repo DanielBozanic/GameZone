@@ -1,8 +1,7 @@
-from flask_sqlalchemy import SQLAlchemy
+from db.database import db
 from sqlalchemy.orm import validates
 import re
 
-db = SQLAlchemy()
 email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 
 
@@ -16,6 +15,9 @@ class User(db.Model):
     name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(30), nullable=False)
+    active = db.Column(db.Boolean, nullable=False)
+    registration_code = db.Column(db.String(30))
+    registration_code_expiration_date = db.Column(db.DateTime)
 
     def serialize(self):
         return {
