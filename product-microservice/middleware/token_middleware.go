@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 var SECRET_KEY = "7kRh7cgjun9S83Hu06HhqhB8sGYkZKHrZ7CRkpQJHfOzXTllQPcIWCSn3IcUccq"
@@ -55,13 +55,20 @@ func decodeJwtToken(c *gin.Context) (*jwt.Token) {
 }
 
 func AuthenticationRequired(c *gin.Context) {
-	decodeJwtToken(c)
+	token := decodeJwtToken(c)
+	if token == nil {
+		return
+	}
 	c.Next()
 }
 
 func AuthorizationRequired(roles []string) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
         token := decodeJwtToken(c)
+
+		if token == nil {
+			return
+		}
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
