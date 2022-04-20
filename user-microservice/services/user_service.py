@@ -54,6 +54,11 @@ def get_all():
     return User.query.all()
 
 
+def get_all_registered_users():
+    return User.query \
+        .filter(("ROLE_USER" == User.role)).all()
+
+
 def get_by_id(user_id):
     user = User.query.filter((user_id == User.id)).first()
     if user:
