@@ -22,7 +22,7 @@ type IProcessorService interface {
 	Delete(id uuid.UUID) error
 }
 
-func NewProcessorServiceService(processorRepository repository.IProcessorRepository) IProcessorService {
+func NewProcessorService(processorRepository repository.IProcessorRepository) IProcessorService {
 	return &processorService{IProcessorRepository: processorRepository}
 }
 

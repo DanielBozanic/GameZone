@@ -38,7 +38,7 @@ func InitGraphicsCardAPI(db *gorm.DB) api.GraphicsCardAPI {
 
 func InitProcessorAPI(db *gorm.DB) api.ProcessorAPI {
 	iProcessorRepository := repository.NewProcessorRepository(db)
-	iProcessorService := service.NewProcessorServiceService(iProcessorRepository)
+	iProcessorService := service.NewProcessorService(iProcessorRepository)
 	processorAPI := api.NewProcessorAPI(iProcessorService)
 	return processorAPI
 }
@@ -104,4 +104,24 @@ func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
 	iHeadphonesService := service.NewHeadphonesService(iHeadphonesRepository)
 	headphonesAPI := api.NewHeadphonesAPI(iHeadphonesService)
 	return headphonesAPI
+}
+
+func InitProductAPI(db *gorm.DB) api.ProductAPI {
+	iConsoleRepository := repository.NewConsoleRepository(db)
+	iGraphicsCardRepository := repository.NewGraphicsCardRepository(db)
+	iHardDiskDriveRepository := repository.NewHardDiskDriveRepository(db)
+	iHeadphonesRepository := repository.NewHeadphonesRepository(db)
+	iKeyboardRepository := repository.NewKeyboardRepository(db)
+	iMonitorRepository := repository.NewMonitorRepository(db)
+	iMotherboardRepository := repository.NewMotherboardRepository(db)
+	iMouseRepository := repository.NewMouseRepository(db)
+	iPowerSupplyUnitRepository := repository.NewPowerSupplyUnitRepository(db)
+	iProcessorRepository := repository.NewProcessorRepository(db)
+	iRamRepository := repository.NewRamRepository(db)
+	iSolidStateDriveRepository := repository.NewSolidStateDriveRepository(db)
+	iVideoGameRepository := repository.NewVideoGameRepository(db)
+	iProductRepository := repository.NewProductRepository(db)
+	iProductService := service.NewProductService(iConsoleRepository, iGraphicsCardRepository, iHardDiskDriveRepository, iHeadphonesRepository, iKeyboardRepository, iMonitorRepository, iMotherboardRepository, iMouseRepository, iPowerSupplyUnitRepository, iProcessorRepository, iRamRepository, iSolidStateDriveRepository, iVideoGameRepository, iProductRepository)
+	productAPI := api.NewProductAPI(iProductService)
+	return productAPI
 }

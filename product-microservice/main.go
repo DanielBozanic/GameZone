@@ -24,6 +24,7 @@ func main() {
 		log.Fatal("Error while connecting to database: ", databaseError)
 	}
 
+	productAPI := di.InitProductAPI(database)
 	videoGameAPI := di.InitVideoGameAPI(database)
 	consoleAPI := di.InitConsoleAPI(database)
 	graphicsCardAPI := di.InitGraphicsCardAPI(database)
@@ -55,6 +56,8 @@ func main() {
 	keyboards := api.Group("/keyboards")
 	mouses := api.Group("/mouses")
 	headphones := api.Group("/headphones")
+
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).POST("/addToCart", productAPI.AddProductToCart)
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)

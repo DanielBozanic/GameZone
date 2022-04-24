@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"net/http"
+	"product/dto"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -52,6 +53,16 @@ func decodeJwtToken(c *gin.Context) (*jwt.Token) {
 		return nil
 	}
 	return token
+}
+
+func GetUserData(c *gin.Context) dto.UserData {
+	var userData dto.UserData
+	token := decodeJwtToken(c)
+	claims, _ := token.Claims.(jwt.MapClaims)
+	sub := claims["sub"].(map[string]interface{})
+	userData.Id = sub["user_id"].(int)
+	userData.Role = sub["role"].(string)
+	return userData
 }
 
 func AuthenticationRequired(c *gin.Context) {

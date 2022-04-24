@@ -28,7 +28,7 @@ func InitGraphicsCardAPI(db *gorm.DB) api.GraphicsCardAPI {
 }
 
 func InitProcessorAPI(db *gorm.DB) api.ProcessorAPI {
-	wire.Build(repository.NewProcessorRepository, service.NewProcessorServiceService, api.NewProcessorAPI)
+	wire.Build(repository.NewProcessorRepository, service.NewProcessorService, api.NewProcessorAPI)
 	return api.ProcessorAPI{}
 }
 
@@ -75,4 +75,26 @@ func InitMouseAPI(db *gorm.DB) api.MouseAPI {
 func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
 	wire.Build(repository.NewHeadphonesRepository, service.NewHeadphonesService, api.NewHeadphonesAPI)
 	return api.HeadphonesAPI{}
+}
+
+func InitProductAPI(db *gorm.DB) api.ProductAPI {
+	wire.Build(
+		repository.NewProductRepository, 
+		repository.NewHeadphonesRepository, 
+		repository.NewMouseRepository, 
+		repository.NewKeyboardRepository, 
+		repository.NewPowerSupplyUnitRepository, 
+		repository.NewMonitorRepository,
+		repository.NewHardDiskDriveRepository,
+		repository.NewSolidStateDriveRepository,
+		repository.NewRamRepository,
+		repository.NewMotherboardRepository,
+		repository.NewProcessorRepository,
+		repository.NewGraphicsCardRepository,
+		repository.NewConsoleRepository,
+		repository.NewVideoGameRepository,
+		service.NewProductService,
+		api.NewProductAPI,
+	)
+	return api.ProductAPI{}
 }
