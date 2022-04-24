@@ -3,6 +3,7 @@ package repository
 import (
 	"product/model"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -11,8 +12,10 @@ type productRepository struct {
 }
 
 type IProductRepository interface {
-	AddPurchase(purchase model.ProductPurchase) error
 	GetCurrentCart(userId int) []model.ProductPurchase
+	GetPurchaseHistory(userId int) []model.ProductPurchase
+	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
+	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
 }
@@ -25,6 +28,18 @@ func (productRepo *productRepository) GetCurrentCart(userId int) []model.Product
 	var currentCart []model.ProductPurchase
 	productRepo.Database.Find(&currentCart, "user_id = ? and purchase_date = null", userId)
 	return currentCart
+}
+
+func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
+	var purchaseHistory []model.ProductPurchase
+	productRepo.Database.Find(&purchaseHistory, "user_id = ? and purchase_date != null", userId)
+	return purchaseHistory
+}
+
+func (productRepo *productRepository) GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error) {
+	var productPurchase model.ProductPurchase
+	result := productRepo.Database.First(&productPurchase, purchaseId)
+	return productPurchase, result.Error
 }
 
 func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {

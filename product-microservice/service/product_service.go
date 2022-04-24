@@ -4,7 +4,9 @@ import (
 	"product/dto"
 	"product/model"
 	"product/repository"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
@@ -27,6 +29,10 @@ type productService struct {
 
 type IProductService interface {
 	AddProductToCart(productPurchaseDto dto.ProductPurchaseDTO, userData dto.UserData) string
+	GetCurrentCart(userId int) []dto.ProductPurchaseDTO
+	UpdatePurchase(productPurchaseDto dto.ProductPurchaseDTO) error
+	RemoveProductFromCart(productPurchaseId uuid.UUID) error
+	ConfirmPurchase(userId int)
 }
 
 func NewProductService(
@@ -62,11 +68,44 @@ func NewProductService(
 	}
 }
 
+func (productService *productService) GetCurrentCart(userId int) []dto.ProductPurchaseDTO {
+	var productPurchaseDto dto.ProductPurchaseDTO
+	var productPurchaseDtos []dto.ProductPurchaseDTO
+	productPurchases := productService.IProductRepository.GetCurrentCart(userId)
+
+	for _, p := range productPurchases {
+		productPurchaseDto.Amount = p.Amount
+		productPurchaseDto.Id = p.Id
+		productPurchaseDto.ProductId = p.ProductId
+		productPurchaseDto.ProductName = p.ProductName
+		productPurchaseDto.TotalPrice = p.TotalPrice
+		productPurchaseDtos = append(productPurchaseDtos, productPurchaseDto)
+	}
+
+	return productPurchaseDtos
+}
+
+func (productService *productService) GetPurchaseHistory(userId int) []dto.ProductPurchaseDTO {
+	var productPurchaseDto dto.ProductPurchaseDTO
+	var productPurchaseDtos []dto.ProductPurchaseDTO
+	productPurchases := productService.IProductRepository.GetPurchaseHistory(userId)
+
+	for _, p := range productPurchases {
+		productPurchaseDto.Amount = p.Amount
+		productPurchaseDto.Id = p.Id
+		productPurchaseDto.ProductId = p.ProductId
+		productPurchaseDto.ProductName = p.ProductName
+		productPurchaseDto.TotalPrice = p.TotalPrice
+		productPurchaseDto.PurchaseDate = p.PurchaseDate.Format("2006-01-02")
+		productPurchaseDtos = append(productPurchaseDtos, productPurchaseDto)
+	}
+
+	return productPurchaseDtos
+}
 
 func (productService *productService) AddProductToCart(productPurchaseDto dto.ProductPurchaseDTO, userData dto.UserData) string {
 	var product model.ProductPurchase
 	msg := ""
-	productOutOfStockMsg := "Product is out of stock!"
 
 	console, _ := productService.IConsoleRepository.GetById(productPurchaseDto.ProductId)
 	graphicsCard, _ := productService.IGraphicsCardRepository.GetById(productPurchaseDto.ProductId)
@@ -85,121 +124,43 @@ func (productService *productService) AddProductToCart(productPurchaseDto dto.Pr
 
 	switch {
 		case console.Id == productPurchaseDto.ProductId:
-			if console.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = console.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = console.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(console.Amount, console.Id, console.Price, console.Name, userData, productPurchaseDto)
 			break
 		case graphicsCard.Id == productPurchaseDto.ProductId:
-			if graphicsCard.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = graphicsCard.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = graphicsCard.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(graphicsCard.Amount, graphicsCard.Id, graphicsCard.Price, graphicsCard.Name, userData, productPurchaseDto)
 			break
 		case hardDisk.Id == productPurchaseDto.ProductId:
-			if hardDisk.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = hardDisk.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = hardDisk.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(hardDisk.Amount, hardDisk.Id, hardDisk.Price, hardDisk.Name, userData, productPurchaseDto)
 			break
 		case headphones.Id == productPurchaseDto.ProductId:
-			if headphones.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = headphones.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = headphones.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(headphones.Amount, headphones.Id, headphones.Price, headphones.Name, userData, productPurchaseDto)
 			break
 		case keyboard.Id == productPurchaseDto.ProductId:
-			if keyboard.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = keyboard.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = keyboard.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(keyboard.Amount, keyboard.Id, keyboard.Price, keyboard.Name, userData, productPurchaseDto)
 			break
 		case monitor.Id == productPurchaseDto.ProductId:
-			if monitor.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = monitor.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = monitor.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(monitor.Amount, monitor.Id, monitor.Price, monitor.Name, userData, productPurchaseDto)
 			break
 		case motherboard.Id == productPurchaseDto.ProductId:
-			if motherboard.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = motherboard.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = motherboard.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(motherboard.Amount, motherboard.Id, motherboard.Price, motherboard.Name, userData, productPurchaseDto)
 			break
 		case mouse.Id == productPurchaseDto.ProductId:
-			if mouse.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = mouse.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = mouse.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(mouse.Amount, mouse.Id, mouse.Price, mouse.Name, userData, productPurchaseDto)
 			break
 		case psu.Id == productPurchaseDto.ProductId:
-			if psu.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = psu.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = psu.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(psu.Amount, psu.Id, psu.Price, psu.Name, userData, productPurchaseDto)
 			break
 		case processor.Id == productPurchaseDto.ProductId:
-			if processor.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = processor.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = processor.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(processor.Amount, processor.Id, processor.Price, processor.Name, userData, productPurchaseDto)
 			break
 		case ram.Id == productPurchaseDto.ProductId:
-			if ram.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = ram.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = ram.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(ram.Amount, ram.Id, ram.Price, ram.Name, userData, productPurchaseDto)
 			break
 		case ssd.Id == productPurchaseDto.ProductId:
-			if ssd.Amount < productPurchaseDto.Amount {
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = ssd.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = ssd.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setProduct(ssd.Amount, ssd.Id, ssd.Price, ssd.Name, userData, productPurchaseDto)
 			break
 		case videoGame.Id == productPurchaseDto.ProductId:
-			if videoGame.Amount < productPurchaseDto.Amount && !videoGame.Digital{
-				msg = productOutOfStockMsg
-			}
-			product.ProductId = videoGame.Id
-			product.Amount = productPurchaseDto.Amount
-			product.UserId = userData.Id
-			product.TotalPrice = videoGame.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+			product, msg = setVideoGame(videoGame, userData, productPurchaseDto)
 			break
 		default:
 			msg = "Product not found!"
@@ -209,4 +170,68 @@ func (productService *productService) AddProductToCart(productPurchaseDto dto.Pr
 		productService.IProductRepository.AddPurchase(product);
 	}
 	return msg
+}
+
+func (productService *productService) UpdatePurchase(productPurchaseDto dto.ProductPurchaseDTO) error {
+	productPurchase, err := productService.IProductRepository.GetProductPurchaseById(productPurchaseDto.Id)
+	if err != nil {
+		return err
+	}
+
+	if productPurchaseDto.Amount == 0 {
+		return productService.IProductRepository.RemoveProductFromCart(productPurchase)
+	}
+
+	productPurchase.Amount = productPurchaseDto.Amount
+	productPrice := productPurchase.TotalPrice.Div(decimal.NewFromInt(int64(productPurchase.Amount)))
+	productPurchase.TotalPrice = productPrice.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+
+	return productService.IProductRepository.UpdatePurchase(productPurchase)
+}
+
+func (productService *productService) RemoveProductFromCart(productPurchaseId uuid.UUID) error {
+	product, err := productService.IProductRepository.GetProductPurchaseById(productPurchaseId)
+	if err != nil {
+		return err
+	}
+	return productService.IProductRepository.RemoveProductFromCart(product)
+}
+
+func (productService *productService) ConfirmPurchase(userId int) {
+	productPurchases := productService.IProductRepository.GetCurrentCart(userId)
+	for _, purchase := range productPurchases {
+		purchase.PurchaseDate = time.Now().UTC()
+		productService.IProductRepository.UpdatePurchase(purchase)
+	}
+}
+
+func setProduct(productAmount uint, productId uuid.UUID, productPrice decimal.Decimal, name string,
+	userData dto.UserData, productPurchaseDto dto.ProductPurchaseDTO) (model.ProductPurchase, string) {
+	var product model.ProductPurchase
+	msg := ""
+	productOutOfStockMsg := "Product is out of stock!"
+	if productAmount < productPurchaseDto.Amount {
+		msg = productOutOfStockMsg
+	}
+	product.ProductName = name
+	product.ProductId = productId
+	product.Amount = productPurchaseDto.Amount
+	product.UserId = userData.Id
+	product.TotalPrice = productPrice.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+	return product, msg
+}
+
+func setVideoGame(videoGame model.VideoGame, userData dto.UserData, productPurchaseDto dto.ProductPurchaseDTO) (model.ProductPurchase, string) {
+	var product model.ProductPurchase
+	msg := ""
+	productOutOfStockMsg := "Product is out of stock!"
+	if videoGame.Amount < productPurchaseDto.Amount && !videoGame.Digital{
+		msg = productOutOfStockMsg
+	}
+	product.ProductName = videoGame.Name
+	product.ProductId = videoGame.Id
+	product.Amount = productPurchaseDto.Amount
+	product.UserId = userData.Id
+	product.TotalPrice = videoGame.Price.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+	return product, msg
 }

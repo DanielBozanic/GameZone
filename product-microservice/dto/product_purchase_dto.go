@@ -6,8 +6,10 @@ import (
 )
 
 type ProductPurchaseDTO struct {
+	Id uuid.UUID
 	ProductId uuid.UUID
 	ProductName string
 	TotalPrice decimal.Decimal
 	Amount uint
+	PurchaseDate string
 }

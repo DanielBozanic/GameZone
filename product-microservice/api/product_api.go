@@ -30,8 +30,8 @@ func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	msg := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
 
 	if msg == "" {
-		c.JSON(http.StatusOK, gin.H{"msg": msg})
+		c.JSON(http.StatusOK, gin.H{"msg": "Product added to cart."})
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": msg})
 	}
 }
