@@ -39,17 +39,20 @@ func (hardDiskDriveService *hardDiskDriveService) GetByName(name string) (model.
 }
 
 func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.HardDiskDrive) error {
-	hardDiskDrive.Id = uuid.New()
+	hardDiskDrive.Product.Id = uuid.New()
+	hardDiskDrive.ProductId = hardDiskDrive.Product.Id
+	hardDiskDrive.Product.Type = model.HARD_DISK_DRIVE
 	return hardDiskDriveService.IHardDiskDriveRepository.Create(hardDiskDrive)
 }
 
 func (hardDiskDriveService *hardDiskDriveService) Update(hardDiskDriveDTO dto.HardDiskDriveDTO) error {
-	hardDiskDrive, err := hardDiskDriveService.GetById(hardDiskDriveDTO.Id)
+	hardDiskDrive, err := hardDiskDriveService.GetById(hardDiskDriveDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedHardDiskDrive := mapper.ToHardDiskDrive(hardDiskDriveDTO)
-	updatedHardDiskDrive.Id = hardDiskDrive.Id
+	updatedHardDiskDrive.Product.Id = hardDiskDrive.Product.Id
+	updatedHardDiskDrive.ProductId = hardDiskDrive.Product.Id
 	return hardDiskDriveService.IHardDiskDriveRepository.Update(updatedHardDiskDrive)
 }
 

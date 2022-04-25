@@ -7,30 +7,23 @@ import (
 
 func ToHardDiskDrive(hddDTO dto.HardDiskDriveDTO) (model.HardDiskDrive) {
 	return model.HardDiskDrive {
-		Name: hddDTO.Name,
+		Product: model.Product(hddDTO.Product),
 		Interface: hddDTO.Interface,
 		Form: hddDTO.Form,
 		DiskSpeed: hddDTO.DiskSpeed,
 		TransferRate: hddDTO.TransferRate,
-		Manufacturer: hddDTO.Manufacturer,
 		Capacity: hddDTO.Capacity,
-		Price: hddDTO.Price,
-		Amount: hddDTO.Amount,
 	}
 }
 
 func ToHardDiskDriveDTO(hdd model.HardDiskDrive) dto.HardDiskDriveDTO {
 	return dto.HardDiskDriveDTO {
-		Id: hdd.Id, 
-		Name: hdd.Name,
+		Product: dto.ProductDTO(hdd.Product),
 		Interface: hdd.Interface,
 		Form: hdd.Form,
 		DiskSpeed: hdd.DiskSpeed,
 		TransferRate: hdd.TransferRate,
-		Manufacturer: hdd.Manufacturer,
 		Capacity: hdd.Capacity,
-		Price: hdd.Price,
-		Amount: hdd.Amount,
 	}
 }
 

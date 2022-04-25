@@ -15,6 +15,7 @@ type IProductRepository interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
+	GetProductById(productId uuid.UUID) (model.Product, error)
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
@@ -40,6 +41,12 @@ func (productRepo *productRepository) GetProductPurchaseById(purchaseId uuid.UUI
 	var productPurchase model.ProductPurchase
 	result := productRepo.Database.First(&productPurchase, purchaseId)
 	return productPurchase, result.Error
+}
+
+func (productRepo *productRepository) GetProductById(productId uuid.UUID) (model.Product, error) {
+	var product model.Product
+	result := productRepo.Database.First(&product, productId)
+	return product, result.Error
 }
 
 func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {

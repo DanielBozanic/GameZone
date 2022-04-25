@@ -39,17 +39,20 @@ func (consoleService *consoleService) GetByName(name string) (model.Console, err
 }
 
 func (consoleService *consoleService) Create(console model.Console) error {
-	console.Id = uuid.New()
+	console.Product.Id = uuid.New()
+	console.ProductId = console.Product.Id
+	console.Product.Type = model.CONSOLE
 	return consoleService.IConsoleRepository.Create(console)
 }
 
 func (consoleService *consoleService) Update(consoleDTO dto.ConsoleDTO) error {
-	console, err := consoleService.GetById(consoleDTO.Id)
+	console, err := consoleService.GetById(consoleDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedConsole := mapper.ToConsole(consoleDTO)
-	updatedConsole.Id = console.Id
+	updatedConsole.Product.Id = console.Product.Id
+	updatedConsole.ProductId = console.Product.Id
 	return consoleService.IConsoleRepository.Update(updatedConsole)
 }
 

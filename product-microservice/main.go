@@ -58,6 +58,11 @@ func main() {
 	headphones := api.Group("/headphones")
 
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).POST("/addToCart", productAPI.AddProductToCart)
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).GET("/getCurrentCart/:userId", productAPI.GetCurrentCart)
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).GET("/getPurchaseHistory/:userId", productAPI.GetPurchaseHistory)
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/updatePurchase", productAPI.UpdatePurchase)
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).DELETE("/removeProductFromCart/:id", productAPI.RemoveProductFromCart)
+	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/confirmPurchase/:userId", productAPI.ConfirmPurchase)
 
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/:id", videoGameAPI.GetByID)

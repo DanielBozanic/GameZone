@@ -7,9 +7,8 @@ import (
 
 
 func ToMonitor(monitorDTO dto.MonitorDTO) (model.Monitor) {
-	return model.Monitor {
-		Name: monitorDTO.Name, 
-		Price: monitorDTO.Price, 
+	return model.Monitor { 
+		Product: model.Product(monitorDTO.Product),
 		Size: monitorDTO.Size,
 		AspectRatio: monitorDTO.AspectRatio,
 		Resolution: monitorDTO.Resolution,
@@ -19,16 +18,12 @@ func ToMonitor(monitorDTO dto.MonitorDTO) (model.Monitor) {
 		ViewingAngle: monitorDTO.ViewingAngle,
 		Brightness: monitorDTO.Brightness,
 		RefreshRate: monitorDTO.RefreshRate,
-		Amount: monitorDTO.Amount,
-		Manufacturer: monitorDTO.Manufacturer,
 	}
 }
 
 func ToMonitorDTO(monitor model.Monitor) dto.MonitorDTO {
-	return dto.MonitorDTO {
-		Id: monitor.Id, 
-		Name: monitor.Name, 
-		Price: monitor.Price, 
+	return dto.MonitorDTO { 
+		Product: dto.ProductDTO(monitor.Product),
 		Size: monitor.Size,
 		AspectRatio: monitor.AspectRatio,
 		Resolution: monitor.Resolution,
@@ -38,8 +33,6 @@ func ToMonitorDTO(monitor model.Monitor) dto.MonitorDTO {
 		ViewingAngle: monitor.ViewingAngle,
 		Brightness: monitor.Brightness,
 		RefreshRate: monitor.RefreshRate,
-		Amount: monitor.Amount,
-		Manufacturer: monitor.Manufacturer,
 	}
 }
 

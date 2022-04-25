@@ -39,17 +39,20 @@ func (keyboardService *keyboardService) GetByName(name string) (model.Keyboard, 
 }
 
 func (keyboardService *keyboardService) Create(keyboard model.Keyboard) error {
-	keyboard.Id = uuid.New()
+	keyboard.Product.Id = uuid.New()
+	keyboard.ProductId = keyboard.Product.Id
+	keyboard.Product.Type = model.KEYBOARD
 	return keyboardService.IKeyboardRepository.Create(keyboard)
 }
 
 func (keyboardService *keyboardService) Update(keyboardDTO dto.KeyboardDTO) error {
-	keyboard, err := keyboardService.GetById(keyboardDTO.Id)
+	keyboard, err := keyboardService.GetById(keyboardDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedKeyboard := mapper.ToKeyboard(keyboardDTO)
-	updatedKeyboard.Id = keyboard.Id
+	updatedKeyboard.Product.Id = keyboard.Product.Id
+	updatedKeyboard.ProductId = keyboard.Product.Id
 	return keyboardService.IKeyboardRepository.Update(updatedKeyboard)
 }
 

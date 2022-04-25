@@ -8,7 +8,7 @@ import (
 
 func ToMotherboard(motherboardDTO dto.MotherboardDTO) (model.Motherboard) {
 	return model.Motherboard {
-		Name: motherboardDTO.Name,
+		Product: model.Product(motherboardDTO.Product),
 		ProcessorType: motherboardDTO.ProcessorType,
 		Socket: motherboardDTO.Socket,
 		SupportedProcessors: motherboardDTO.SupportedProcessors,
@@ -23,16 +23,12 @@ func ToMotherboard(motherboardDTO dto.MotherboardDTO) (model.Motherboard) {
 		BackPanelConnectors: motherboardDTO.BackPanelConnectors,
 		InternalConnectors: motherboardDTO.InternalConnectors,
 		BIOS: motherboardDTO.BIOS,
-		Manufacturer: motherboardDTO.Manufacturer,
-		Price: motherboardDTO.Price,
-		Amount: motherboardDTO.Amount,
 	}
 }
 
 func ToMotherboardDTO(motherboard model.Motherboard) dto.MotherboardDTO {
 	return dto.MotherboardDTO {
-		Id: motherboard.Id, 
-		Name: motherboard.Name,
+		Product: dto.ProductDTO(motherboard.Product),
 		ProcessorType: motherboard.ProcessorType,
 		Socket: motherboard.Socket,
 		SupportedProcessors: motherboard.SupportedProcessors,
@@ -47,9 +43,6 @@ func ToMotherboardDTO(motherboard model.Motherboard) dto.MotherboardDTO {
 		BackPanelConnectors: motherboard.BackPanelConnectors,
 		InternalConnectors: motherboard.InternalConnectors,
 		BIOS: motherboard.BIOS,
-		Manufacturer: motherboard.Manufacturer,
-		Price: motherboard.Price,
-		Amount: motherboard.Amount,
 	}
 }
 

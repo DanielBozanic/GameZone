@@ -39,17 +39,20 @@ func (ramService *ramService) GetByName(name string) (model.Ram, error) {
 }
 
 func (ramService *ramService) Create(ram model.Ram) error {
-	ram.Id = uuid.New()
+	ram.Product.Id = uuid.New()
+	ram.ProductId = ram.Product.Id
+	ram.Product.Type = model.RAM
 	return ramService.IRamRepository.Create(ram)
 }
 
 func (ramService *ramService) Update(ramDTO dto.RamDTO) error {
-	ram, err := ramService.GetById(ramDTO.Id)
+	ram, err := ramService.GetById(ramDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedRam := mapper.ToRam(ramDTO)
-	updatedRam.Id = ram.Id
+	updatedRam.Product.Id = ram.Product.Id
+	updatedRam.ProductId = ram.Product.Id
 	return ramService.IRamRepository.Update(updatedRam)
 }
 

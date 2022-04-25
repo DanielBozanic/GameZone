@@ -39,17 +39,20 @@ func (powerSupplyUnitService *powerSupplyUnitService) GetByName(name string) (mo
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit model.PowerSupplyUnit) error {
-	powerSupplyUnit.Id = uuid.New()
+	powerSupplyUnit.Product.Id = uuid.New()
+	powerSupplyUnit.ProductId = powerSupplyUnit.Product.Id
+	powerSupplyUnit.Product.Type = model.POWER_SUPPLY_UNIT
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.Create(powerSupplyUnit)
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) error {
-	powerSupplyUnit, err := powerSupplyUnitService.GetById(powerSupplyUnitDTO.Id)
+	powerSupplyUnit, err := powerSupplyUnitService.GetById(powerSupplyUnitDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedPowerSupplyUnit := mapper.ToPowerSupplyUnit(powerSupplyUnitDTO)
-	updatedPowerSupplyUnit.Id = powerSupplyUnit.Id
+	updatedPowerSupplyUnit.Product.Id = powerSupplyUnit.Product.Id
+	updatedPowerSupplyUnit.ProductId = updatedPowerSupplyUnit.Product.Id
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.Update(updatedPowerSupplyUnit)
 }
 

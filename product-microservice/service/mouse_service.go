@@ -39,17 +39,20 @@ func (mouseService *mouseService) GetByName(name string) (model.Mouse, error) {
 }
 
 func (mouseService *mouseService) Create(mouse model.Mouse) error {
-	mouse.Id = uuid.New()
+	mouse.Product.Id = uuid.New()
+	mouse.ProductId = mouse.Product.Id
+	mouse.Product.Type = model.MOUSE
 	return mouseService.IMouseRepository.Create(mouse)
 }
 
 func (mouseService *mouseService) Update(mouseDTO dto.MouseDTO) error {
-	mouse, err := mouseService.GetById(mouseDTO.Id)
+	mouse, err := mouseService.GetById(mouseDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedMouse := mapper.ToMouse(mouseDTO)
-	updatedMouse.Id = mouse.Id
+	updatedMouse.Product.Id = mouse.Product.Id
+	updatedMouse.ProductId = mouse.Product.Id
 	return mouseService.IMouseRepository.Update(updatedMouse)
 }
 

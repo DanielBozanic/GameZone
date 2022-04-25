@@ -40,12 +40,14 @@ func (videoGameService *videoGameService) GetByName(name string) ([]model.VideoG
 }
 
 func (videoGameService *videoGameService) Create(game model.VideoGame) error {
-	game.Id = uuid.New()
+	game.Product.Id = uuid.New()
+	game.ProductId = game.Product.Id
+	game.Product.Type = model.VIDEO_GAME
 	return videoGameService.IVideoGameRepository.Create(game)
 }
 
 func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) error {
-	videoGame, err := videoGameService.GetById(videoGameDTO.Id)
+	videoGame, err := videoGameService.GetById(videoGameDTO.Product.Id)
 	if err != nil {
 		return err
 	}
@@ -55,7 +57,8 @@ func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) 
 		return error
 	}
 	
-	updatedVideoGame.Id = videoGame.Id
+	updatedVideoGame.Product.Id = videoGame.Product.Id
+	updatedVideoGame.ProductId = videoGame.Product.Id
 	return videoGameService.IVideoGameRepository.Update(updatedVideoGame)
 }
 

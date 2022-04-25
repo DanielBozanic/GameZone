@@ -14,6 +14,7 @@ func ConnectDatabase(cfg config.Config) (*gorm.DB, error) {
 	})
 
 	db.AutoMigrate(
+		&model.Product{},
 		&model.VideoGame{}, 
 		&model.Console{}, 
 		&model.GraphicsCard{}, 

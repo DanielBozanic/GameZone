@@ -8,22 +8,15 @@ import (
 
 func ToConsole(consoleDTO dto.ConsoleDTO) (model.Console) {
 	return model.Console {
-		Name: consoleDTO.Name, 
-		Price: consoleDTO.Price, 
+		Product: model.Product(consoleDTO.Product),
 		Platform: consoleDTO.Platform,
-		Amount: consoleDTO.Amount,
-		Manufacturer: consoleDTO.Manufacturer,
 	}
 }
 
 func ToConsoleDTO(console model.Console) dto.ConsoleDTO {
 	return dto.ConsoleDTO {
-		Id: console.Id, 
-		Name: console.Name,
-		Price: console.Price, 
+		Product: dto.ProductDTO(console.Product),
 		Platform: console.Platform,
-		Manufacturer: console.Manufacturer,
-		Amount: console.Amount,
 	}
 }
 

@@ -39,17 +39,20 @@ func (solidStateDriveService *solidStateDriveService) GetByName(name string) (mo
 }
 
 func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) error {
-	solidStateDrive.Id = uuid.New()
+	solidStateDrive.Product.Id = uuid.New()
+	solidStateDrive.ProductId = solidStateDrive.Product.Id
+	solidStateDrive.Product.Type = model.SOLID_STATE_DRIVE
 	return solidStateDriveService.ISolidStateDriveRepository.Create(solidStateDrive)
 }
 
 func (solidStateDriveService *solidStateDriveService) Update(solidStateDriveDTO dto.SolidStateDriveDTO) error {
-	solidStateDrive, err := solidStateDriveService.GetById(solidStateDriveDTO.Id)
+	solidStateDrive, err := solidStateDriveService.GetById(solidStateDriveDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedSolidStateDrive := mapper.ToSolidStateDrive(solidStateDriveDTO)
-	updatedSolidStateDrive.Id = solidStateDrive.Id
+	updatedSolidStateDrive.Product.Id = solidStateDrive.Product.Id
+	updatedSolidStateDrive.ProductId = solidStateDrive.Product.Id
 	return solidStateDriveService.ISolidStateDriveRepository.Update(updatedSolidStateDrive)
 }
 

@@ -1,15 +1,6 @@
 package dto
 
-import (
-	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
-)
-
 type ConsoleDTO struct {
-	Id uuid.UUID
-	Name string 
-	Price decimal.Decimal 
+	Product ProductDTO
 	Platform string
-	Manufacturer string
-	Amount uint
 }

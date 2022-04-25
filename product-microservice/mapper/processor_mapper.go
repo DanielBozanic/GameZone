@@ -8,9 +8,8 @@ import (
 
 func ToProcessor(processorDTO dto.ProcessorDTO) (model.Processor) {
 	return model.Processor {
-		Name: processorDTO.Name,
+		Product: model.Product(processorDTO.Product),
 		Type: processorDTO.Type,
-		Manufacturer: processorDTO.Manufacturer,
 		Socket: processorDTO.Socket,
 		NumberOfCores: processorDTO.NumberOfCores,
 		Threads: processorDTO.Threads,
@@ -18,16 +17,13 @@ func ToProcessor(processorDTO dto.ProcessorDTO) (model.Processor) {
 		BaseClockRate: processorDTO.BaseClockRate,
 		TurboClockRate: processorDTO.TurboClockRate,
 		TDP: processorDTO.TDP,
-		Price: processorDTO.Price,
-		Amount: processorDTO.Amount,
 	}
 }
 
 func ToProcessorDTO(processor model.Processor) dto.ProcessorDTO {
 	return dto.ProcessorDTO {
-		Id: processor.Id, 
+		Product: dto.ProductDTO(processor.Product),
 		Type: processor.Type,
-		Manufacturer: processor.Manufacturer,
 		Socket: processor.Socket,
 		NumberOfCores: processor.NumberOfCores,
 		Threads: processor.Threads,
@@ -35,8 +31,6 @@ func ToProcessorDTO(processor model.Processor) dto.ProcessorDTO {
 		BaseClockRate: processor.BaseClockRate,
 		TurboClockRate: processor.TurboClockRate,
 		TDP: processor.TDP,
-		Price: processor.Price,
-		Amount: processor.Amount,
 	}
 }
 

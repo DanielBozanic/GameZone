@@ -39,17 +39,20 @@ func (processorService *processorService) GetByName(name string) (model.Processo
 }
 
 func (processorService *processorService) Create(processor model.Processor) error {
-	processor.Id = uuid.New()
+	processor.Product.Id = uuid.New()
+	processor.ProductId = processor.Product.Id
+	processor.Product.Type = model.PROCESSOR
 	return processorService.IProcessorRepository.Create(processor)
 }
 
 func (processorService *processorService) Update(processorDTO dto.ProcessorDTO) error {
-	processor, err := processorService.GetById(processorDTO.Id)
+	processor, err := processorService.GetById(processorDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedProcessor := mapper.ToProcessor(processorDTO)
-	updatedProcessor.Id = processor.Id
+	updatedProcessor.Product.Id = processor.Product.Id
+	updatedProcessor.ProductId = processor.Product.Id
 	return processorService.IProcessorRepository.Update(updatedProcessor)
 }
 

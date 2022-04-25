@@ -39,17 +39,20 @@ func (headphonesService *headphonesService) GetByName(name string) (model.Headph
 }
 
 func (headphonesService *headphonesService) Create(headphones model.Headphones) error {
-	headphones.Id = uuid.New()
+	headphones.Product.Id = uuid.New()
+	headphones.ProductId = headphones.Product.Id
+	headphones.Product.Type = model.HEADPHONES
 	return headphonesService.IHeadphonesRepository.Create(headphones)
 }
 
 func (headphonesService *headphonesService) Update(headphonesDTO dto.HeadphonesDTO) error {
-	headphones, err := headphonesService.GetById(headphonesDTO.Id)
+	headphones, err := headphonesService.GetById(headphonesDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedHeadphones := mapper.ToHeadphones(headphonesDTO)
-	updatedHeadphones.Id = headphones.Id
+	updatedHeadphones.Product.Id = headphones.Product.Id
+	updatedHeadphones.ProductId = updatedHeadphones.Product.Id
 	return headphonesService.IHeadphonesRepository.Update(updatedHeadphones)
 }
 

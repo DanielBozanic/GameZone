@@ -8,30 +8,23 @@ import (
 
 func ToKeyboard(keyboardDTO dto.KeyboardDTO) (model.Keyboard) {
 	return model.Keyboard {
-		Name: keyboardDTO.Name, 
-		Price: keyboardDTO.Price,
+		Product: model.Product(keyboardDTO.Product),
 		Wireless: keyboardDTO.Wireless,
 		KeyboardConnector: keyboardDTO.KeyboardConnector,
 		KeyType: keyboardDTO.KeyType,
 		LetterLayout: keyboardDTO.LetterLayout,
 		KeyboardColor: keyboardDTO.KeyboardColor,
-		Amount: keyboardDTO.Amount,
-		Manufacturer: keyboardDTO.Manufacturer,
 	}
 }
 
 func ToKeyboardDTO(keyboard model.Keyboard) dto.KeyboardDTO {
 	return dto.KeyboardDTO {
-		Id: keyboard.Id, 
-		Name: keyboard.Name, 
-		Price: keyboard.Price,
+		Product: dto.ProductDTO(keyboard.Product),
 		Wireless: keyboard.Wireless,
 		KeyboardConnector: keyboard.KeyboardConnector,
 		KeyType: keyboard.KeyType,
 		LetterLayout: keyboard.LetterLayout,
 		KeyboardColor: keyboard.KeyboardColor,
-		Amount: keyboard.Amount,
-		Manufacturer: keyboard.Manufacturer,
 	}
 }
 

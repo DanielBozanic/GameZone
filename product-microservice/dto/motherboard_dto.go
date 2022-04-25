@@ -1,13 +1,7 @@
 package dto
 
-import (
-	"github.com/google/uuid"
-	"github.com/shopspring/decimal"
-)
-
 type MotherboardDTO struct {
-	Id	uuid.UUID
-	Name string
+	Product ProductDTO
 	ProcessorType string
 	Socket  string
 	SupportedProcessors string
@@ -22,7 +16,4 @@ type MotherboardDTO struct {
 	BackPanelConnectors string
 	InternalConnectors string
 	BIOS string
-	Manufacturer string
-	Price decimal.Decimal
-	Amount uint
 }

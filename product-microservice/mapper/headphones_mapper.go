@@ -8,8 +8,7 @@ import (
 
 func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 	return model.Headphones {
-		Name: headphonesDTO.Name, 
-		Price: headphonesDTO.Price,
+		Product: model.Product(headphonesDTO.Product),
 		Wireless: headphonesDTO.Wireless,
 		Description: headphonesDTO.Description,
 		VirtualSurroundEncoding: headphonesDTO.VirtualSurroundEncoding,
@@ -20,16 +19,12 @@ func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 		Color: headphonesDTO.Color,
 		Weight: headphonesDTO.Weight,
 		FrequencyResponse: headphonesDTO.FrequencyResponse,
-		Amount: headphonesDTO.Amount,
-		Manufacturer: headphonesDTO.Manufacturer,
 	}
 }
 
 func ToHeadphonesDTO(headphone model.Headphones) dto.HeadphonesDTO {
 	return dto.HeadphonesDTO {
-		Id: headphone.Id, 
-		Name: headphone.Name, 
-		Price: headphone.Price,
+		Product: dto.ProductDTO(headphone.Product),
 		Wireless: headphone.Wireless,
 		Description: headphone.Description,
 		VirtualSurroundEncoding: headphone.VirtualSurroundEncoding,
@@ -40,8 +35,6 @@ func ToHeadphonesDTO(headphone model.Headphones) dto.HeadphonesDTO {
 		Color: headphone.Color,
 		Weight: headphone.Weight,
 		FrequencyResponse: headphone.FrequencyResponse,
-		Amount: headphone.Amount,
-		Manufacturer: headphone.Manufacturer,
 	}
 }
 

@@ -39,17 +39,20 @@ func (motherboardService *motherboardService) GetByName(name string) (model.Moth
 }
 
 func (motherboardService *motherboardService) Create(motherboard model.Motherboard) error {
-	motherboard.Id = uuid.New()
+	motherboard.Product.Id = uuid.New()
+	motherboard.ProductId = motherboard.Product.Id
+	motherboard.Product.Type = model.MOTHERBOARD
 	return motherboardService.IMotherboardRepository.Create(motherboard)
 }
 
 func (motherboardService *motherboardService) Update(motherboardDTO dto.MotherboardDTO) error {
-	motherboard, err := motherboardService.GetById(motherboardDTO.Id)
+	motherboard, err := motherboardService.GetById(motherboardDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedMotherboard := mapper.ToMotherboard(motherboardDTO)
-	updatedMotherboard.Id = motherboard.Id
+	updatedMotherboard.Product.Id = motherboard.Product.Id
+	updatedMotherboard.ProductId = motherboard.Product.Id
 	return motherboardService.IMotherboardRepository.Update(updatedMotherboard)
 }
 

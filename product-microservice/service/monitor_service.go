@@ -39,17 +39,20 @@ func (monitorService *monitorService) GetByName(name string) (model.Monitor, err
 }
 
 func (monitorService *monitorService) Create(monitor model.Monitor) error {
-	monitor.Id = uuid.New()
+	monitor.Product.Id = uuid.New()
+	monitor.ProductId = monitor.Product.Id
+	monitor.Product.Type = model.MONITOR
 	return monitorService.IMonitorRepository.Create(monitor)
 }
 
 func (monitorService *monitorService) Update(monitorDTO dto.MonitorDTO) error {
-	monitor, err := monitorService.GetById(monitorDTO.Id)
+	monitor, err := monitorService.GetById(monitorDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedMonitor := mapper.ToMonitor(monitorDTO)
-	updatedMonitor.Id = monitor.Id
+	updatedMonitor.Product.Id = monitor.Product.Id
+	updatedMonitor.ProductId = monitor.Product.Id
 	return monitorService.IMonitorRepository.Update(updatedMonitor)
 }
 

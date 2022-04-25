@@ -8,8 +8,7 @@ import (
 
 func ToMouse(mouseDTO dto.MouseDTO) (model.Mouse) {
 	return model.Mouse {
-		Name: mouseDTO.Name, 
-		Price: mouseDTO.Price,
+		Product: model.Product(mouseDTO.Product),
 		Wireless: mouseDTO.Wireless,
 		Sensor: mouseDTO.Sensor,
 		DPI: mouseDTO.DPI,
@@ -21,16 +20,12 @@ func ToMouse(mouseDTO dto.MouseDTO) (model.Mouse) {
 		Weight: mouseDTO.Weight,
 		Lifespan: mouseDTO.Lifespan,
 		TrackingSpeed: mouseDTO.TrackingSpeed,
-		Amount: mouseDTO.Amount,
-		Manufacturer: mouseDTO.Manufacturer,
 	}
 }
 
 func ToMouseDTO(mouse model.Mouse) dto.MouseDTO {
 	return dto.MouseDTO {
-		Id: mouse.Id, 
-		Name: mouse.Name, 
-		Price: mouse.Price,
+		Product: dto.ProductDTO(mouse.Product),
 		Wireless: mouse.Wireless,
 		Sensor: mouse.Sensor,
 		DPI: mouse.DPI,
@@ -42,8 +37,6 @@ func ToMouseDTO(mouse model.Mouse) dto.MouseDTO {
 		Weight: mouse.Weight,
 		Lifespan: mouse.Lifespan,
 		TrackingSpeed: mouse.TrackingSpeed,
-		Amount: mouse.Amount,
-		Manufacturer: mouse.Manufacturer,
 	}
 }
 

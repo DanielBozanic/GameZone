@@ -39,17 +39,20 @@ func (graphicsCardService *graphicsCardService) GetByName(name string) (model.Gr
 }
 
 func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) error {
-	graphicsCard.Id = uuid.New()
+	graphicsCard.Product.Id = uuid.New()
+	graphicsCard.ProductId = graphicsCard.Product.Id
+	graphicsCard.Product.Type = model.GRAPHICS_CARD
 	return graphicsCardService.IGraphicsCardRepository.Create(graphicsCard)
 }
 
 func (graphicsCardService *graphicsCardService) Update(graphicsCardDTO dto.GraphicsCardDTO) error {
-	graphicsCard, err := graphicsCardService.GetById(graphicsCardDTO.Id)
+	graphicsCard, err := graphicsCardService.GetById(graphicsCardDTO.Product.Id)
 	if err != nil {
 		return err
 	}
 	updatedGraphicsCard := mapper.ToGraphicsCard(graphicsCardDTO)
-	updatedGraphicsCard.Id = graphicsCard.Id
+	updatedGraphicsCard.Product.Id = graphicsCard.Product.Id
+	updatedGraphicsCard.ProductId = graphicsCard.Product.Id
 	return graphicsCardService.IGraphicsCardRepository.Update(updatedGraphicsCard)
 }
 
