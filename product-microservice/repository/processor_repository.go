@@ -26,19 +26,19 @@ func NewProcessorRepository(DB *gorm.DB) IProcessorRepository {
 
 func (processorRepo *processorRepository) GetAll() []model.Processor {
 	var processors []model.Processor
-	processorRepo.Database.Find(&processors)
+	processorRepo.Database.Preload("Product").Find(&processors)
 	return processors
 }
 
 func (processorRepo *processorRepository) GetById(id uuid.UUID) (model.Processor, error) {
 	var processor model.Processor
-	result := processorRepo.Database.First(&processor, id)
+	result := processorRepo.Database.Preload("Product").First(&processor, id)
 	return processor, result.Error
 }
 
 func (processorRepo *processorRepository) GetByName(name string) (model.Processor, error) {
 	var processor model.Processor
-	result := processorRepo.Database.Find(&processor, "name = ?", name)
+	result := processorRepo.Database.Preload("Product").Find(&processor, "name = ?", name)
 	return processor, result.Error
 }
 

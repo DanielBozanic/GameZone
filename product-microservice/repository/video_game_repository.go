@@ -26,19 +26,19 @@ func NewVideoGameRepository(DB *gorm.DB) IVideoGameRepository {
 
 func (videoGameRepo *videoGameRepository) GetAll() []model.VideoGame {
 	var games []model.VideoGame
-	videoGameRepo.Database.Find(&games)
+	videoGameRepo.Database.Preload("Product").Find(&games)
 	return games
 }
 
 func (videoGameRepo *videoGameRepository) GetById(id uuid.UUID) (model.VideoGame, error) {
 	var game model.VideoGame
-	result := videoGameRepo.Database.First(&game, id)
+	result := videoGameRepo.Database.Preload("Product").First(&game, id)
 	return game, result.Error
 }
 
 func (videoGameRepo *videoGameRepository) GetByName(name string) ([]model.VideoGame, error) {
 	var games []model.VideoGame
-	result := videoGameRepo.Database.Find(&games, "name = ?", name)
+	result := videoGameRepo.Database.Preload("Product").Find(&games, "name = ?", name)
 	return games, result.Error
 }
 

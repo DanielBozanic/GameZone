@@ -26,19 +26,19 @@ func NewConsoleRepository(DB *gorm.DB) IConsoleRepository {
 
 func (consoleRepo *consoleRepository) GetAll() []model.Console {
 	var consoles []model.Console
-	consoleRepo.Database.Find(&consoles)
+	consoleRepo.Database.Preload("Product").Find(&consoles)
 	return consoles
 }
 
 func (consoleRepo *consoleRepository) GetById(id uuid.UUID) (model.Console, error) {
 	var console model.Console
-	result := consoleRepo.Database.First(&console, id)
+	result := consoleRepo.Database.Preload("Product").First(&console, id)
 	return console, result.Error
 }
 
 func (consoleRepo *consoleRepository) GetByName(name string) (model.Console, error) {
 	var console model.Console
-	result := consoleRepo.Database.Find(&console, "name = ?", name)
+	result := consoleRepo.Database.Preload("Product").Find(&console, "name = ?", name)
 	return console, result.Error
 }
 

@@ -26,19 +26,19 @@ func NewKeyboardRepository(DB *gorm.DB) IKeyboardRepository {
 
 func (keyboardRepo *keyboardRepository) GetAll() []model.Keyboard {
 	var keyboards []model.Keyboard
-	keyboardRepo.Database.Find(&keyboards)
+	keyboardRepo.Database.Preload("Product").Find(&keyboards)
 	return keyboards
 }
 
 func (keyboardRepo *keyboardRepository) GetById(id uuid.UUID) (model.Keyboard, error) {
 	var keyboard model.Keyboard
-	result := keyboardRepo.Database.First(&keyboard, id)
+	result := keyboardRepo.Database.Preload("Product").First(&keyboard, id)
 	return keyboard, result.Error
 }
 
 func (keyboardRepo *keyboardRepository) GetByName(name string) (model.Keyboard, error) {
 	var keyboard model.Keyboard
-	result := keyboardRepo.Database.Find(&keyboard, "name = ?", name)
+	result := keyboardRepo.Database.Preload("Product").Find(&keyboard, "name = ?", name)
 	return keyboard, result.Error
 }
 

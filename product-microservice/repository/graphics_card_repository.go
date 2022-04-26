@@ -26,19 +26,19 @@ func NewGraphicsCardRepository(DB *gorm.DB) IGraphicsCardRepository {
 
 func (graphicsCardRepo *graphicsCardRepository) GetAll() []model.GraphicsCard {
 	var graphicsCards []model.GraphicsCard
-	graphicsCardRepo.Database.Find(&graphicsCards)
+	graphicsCardRepo.Database.Preload("Product").Find(&graphicsCards)
 	return graphicsCards
 }
 
 func (graphicsCardRepo *graphicsCardRepository) GetById(id uuid.UUID) (model.GraphicsCard, error) {
 	var graphicsCard model.GraphicsCard
-	result := graphicsCardRepo.Database.First(&graphicsCard, id)
+	result := graphicsCardRepo.Database.Preload("Product").First(&graphicsCard, id)
 	return graphicsCard, result.Error
 }
 
 func (graphicsCardRepo *graphicsCardRepository) GetByName(name string) (model.GraphicsCard, error) {
 	var graphicsCard model.GraphicsCard
-	result := graphicsCardRepo.Database.Find(&graphicsCard, "name = ?", name)
+	result := graphicsCardRepo.Database.Preload("Product").Find(&graphicsCard, "name = ?", name)
 	return graphicsCard, result.Error
 }
 

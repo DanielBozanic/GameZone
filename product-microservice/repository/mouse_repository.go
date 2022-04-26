@@ -26,19 +26,19 @@ func NewMouseRepository(DB *gorm.DB) IMouseRepository {
 
 func (mouseRepo *mouseRepository) GetAll() []model.Mouse {
 	var mouses []model.Mouse
-	mouseRepo.Database.Find(&mouses)
+	mouseRepo.Database.Preload("Product").Find(&mouses)
 	return mouses
 }
 
 func (mouseRepo *mouseRepository) GetById(id uuid.UUID) (model.Mouse, error) {
 	var mouse model.Mouse
-	result := mouseRepo.Database.First(&mouse, id)
+	result := mouseRepo.Database.Preload("Product").First(&mouse, id)
 	return mouse, result.Error
 }
 
 func (mouseRepo *mouseRepository) GetByName(name string) (model.Mouse, error) {
 	var mouse model.Mouse
-	result := mouseRepo.Database.Find(&mouse, "name = ?", name)
+	result := mouseRepo.Database.Preload("Product").Find(&mouse, "name = ?", name)
 	return mouse, result.Error
 }
 

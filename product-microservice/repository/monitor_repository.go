@@ -26,19 +26,19 @@ func NewMonitorRepository(DB *gorm.DB) IMonitorRepository {
 
 func (monitorRepo *monitorRepository) GetAll() []model.Monitor {
 	var monitors []model.Monitor
-	monitorRepo.Database.Find(&monitors)
+	monitorRepo.Database.Preload("Product").Find(&monitors)
 	return monitors
 }
 
 func (monitorRepo *monitorRepository) GetById(id uuid.UUID) (model.Monitor, error) {
 	var monitor model.Monitor
-	result := monitorRepo.Database.First(&monitor, id)
+	result := monitorRepo.Database.Preload("Product").First(&monitor, id)
 	return monitor, result.Error
 }
 
 func (monitorRepo *monitorRepository) GetByName(name string) (model.Monitor, error) {
 	var monitor model.Monitor
-	result := monitorRepo.Database.Find(&monitor, "name = ?", name)
+	result := monitorRepo.Database.Preload("Product").Find(&monitor, "name = ?", name)
 	return monitor, result.Error
 }
 

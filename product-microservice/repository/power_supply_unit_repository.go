@@ -26,19 +26,19 @@ func NewPowerSupplyUnitRepository(DB *gorm.DB) IPowerSupplyUnitRepository {
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll() []model.PowerSupplyUnit {
 	var powerSupplyUnits []model.PowerSupplyUnit
-	powerSupplyUnitRepo.Database.Find(&powerSupplyUnits)
+	powerSupplyUnitRepo.Database.Preload("Product").Find(&powerSupplyUnits)
 	return powerSupplyUnits
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetById(id uuid.UUID) (model.PowerSupplyUnit, error) {
 	var powerSupplyUnit model.PowerSupplyUnit
-	result := powerSupplyUnitRepo.Database.First(&powerSupplyUnit, id)
+	result := powerSupplyUnitRepo.Database.Preload("Product").First(&powerSupplyUnit, id)
 	return powerSupplyUnit, result.Error
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetByName(name string) (model.PowerSupplyUnit, error) {
 	var powerSupplyUnit model.PowerSupplyUnit
-	result := powerSupplyUnitRepo.Database.Find(&powerSupplyUnit, "name = ?", name)
+	result := powerSupplyUnitRepo.Database.Preload("Product").Find(&powerSupplyUnit, "name = ?", name)
 	return powerSupplyUnit, result.Error
 }
 

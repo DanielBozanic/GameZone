@@ -26,19 +26,19 @@ func NewMotherboardRepository(DB *gorm.DB) IMotherboardRepository {
 
 func (motherboardRepo *motherboardRepository) GetAll() []model.Motherboard {
 	var motherboards []model.Motherboard
-	motherboardRepo.Database.Find(&motherboards)
+	motherboardRepo.Database.Preload("Product").Find(&motherboards)
 	return motherboards
 }
 
 func (motherboardRepo *motherboardRepository) GetById(id uuid.UUID) (model.Motherboard, error) {
 	var motherboard model.Motherboard
-	result := motherboardRepo.Database.First(&motherboard, id)
+	result := motherboardRepo.Database.Preload("Product").First(&motherboard, id)
 	return motherboard, result.Error
 }
 
 func (motherboardRepo *motherboardRepository) GetByName(name string) (model.Motherboard, error) {
 	var motherboard model.Motherboard
-	result := motherboardRepo.Database.Find(&motherboard, "name = ?", name)
+	result := motherboardRepo.Database.Preload("Product").Find(&motherboard, "name = ?", name)
 	return motherboard, result.Error
 }
 

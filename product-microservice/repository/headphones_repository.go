@@ -26,19 +26,19 @@ func NewHeadphonesRepository(DB *gorm.DB) IHeadphonesRepository {
 
 func (headphonesRepo *headphonesRepository) GetAll() []model.Headphones {
 	var headphones []model.Headphones
-	headphonesRepo.Database.Find(&headphones)
+	headphonesRepo.Database.Preload("Product").Find(&headphones)
 	return headphones
 }
 
 func (headphonesRepo *headphonesRepository) GetById(id uuid.UUID) (model.Headphones, error) {
 	var headphones model.Headphones
-	result := headphonesRepo.Database.First(&headphones, id)
+	result := headphonesRepo.Database.Preload("Product").First(&headphones, id)
 	return headphones, result.Error
 }
 
 func (headphonesRepo *headphonesRepository) GetByName(name string) (model.Headphones, error) {
 	var headphones model.Headphones
-	result := headphonesRepo.Database.Find(&headphones, "name = ?", name)
+	result := headphonesRepo.Database.Preload("Product").Find(&headphones, "name = ?", name)
 	return headphones, result.Error
 }
 

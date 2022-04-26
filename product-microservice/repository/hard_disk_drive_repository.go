@@ -26,19 +26,19 @@ func NewHardDiskDriveRepository(DB *gorm.DB) IHardDiskDriveRepository {
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetAll() []model.HardDiskDrive {
 	var hardDiskDrives []model.HardDiskDrive
-	hardDiskDriveRepo.Database.Find(&hardDiskDrives)
+	hardDiskDriveRepo.Database.Preload("Product").Find(&hardDiskDrives)
 	return hardDiskDrives
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetById(id uuid.UUID) (model.HardDiskDrive, error) {
 	var hardDiskDrive model.HardDiskDrive
-	result := hardDiskDriveRepo.Database.First(&hardDiskDrive, id)
+	result := hardDiskDriveRepo.Database.Preload("Product").First(&hardDiskDrive, id)
 	return hardDiskDrive, result.Error
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetByName(name string) (model.HardDiskDrive, error) {
 	var hardDiskDrive model.HardDiskDrive
-	result := hardDiskDriveRepo.Database.Find(&hardDiskDrive, "name = ?", name)
+	result := hardDiskDriveRepo.Database.Preload("Product").Find(&hardDiskDrive, "name = ?", name)
 	return hardDiskDrive, result.Error
 }
 

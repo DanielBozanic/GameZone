@@ -26,19 +26,19 @@ func NewRamRepository(DB *gorm.DB) IRamRepository {
 
 func (ramRepo *ramRepository) GetAll() []model.Ram {
 	var Rams []model.Ram
-	ramRepo.Database.Find(&Rams)
+	ramRepo.Database.Preload("Product").Find(&Rams)
 	return Rams
 }
 
 func (ramRepo *ramRepository) GetById(id uuid.UUID) (model.Ram, error) {
 	var ram model.Ram
-	result := ramRepo.Database.First(&ram, id)
+	result := ramRepo.Database.Preload("Product").First(&ram, id)
 	return ram, result.Error
 }
 
 func (ramRepo *ramRepository) GetByName(name string) (model.Ram, error) {
 	var ram model.Ram
-	result := ramRepo.Database.Find(&ram, "name = ?", name)
+	result := ramRepo.Database.Preload("Product").Find(&ram, "name = ?", name)
 	return ram, result.Error
 }
 
