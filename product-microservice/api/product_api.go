@@ -25,7 +25,7 @@ func NewProductAPI(productService service.IProductService) ProductAPI {
 func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	productId, err := uuid.Parse(c.Param("productId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -33,45 +33,45 @@ func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	msg, err := productApi.IProductService.AddProductToCart(productId, userData);
 
 	if msg == "" {
-		c.JSON(http.StatusOK, gin.H{"msg": "Product added to cart."})
+		c.JSON(http.StatusOK, "Product added to cart.")
 	} else if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": msg})
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
 func (productApi *ProductAPI) GetCurrentCart(c *gin.Context) {
 	userData := middleware.GetUserData(c)
 	productPurchases := productApi.IProductService.GetCurrentCart(userData.Id)
-	c.JSON(http.StatusOK, gin.H{"cart": mapper.ToProductPurchaseDTOs(productPurchases)})
+	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
 }
 
 func (productApi *ProductAPI) GetPurchaseHistory(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	productPurchases := productApi.IProductService.GetPurchaseHistory(userId)
-	c.JSON(http.StatusOK, gin.H{"purchase_history": mapper.ToProductPurchaseDTOs(productPurchases)})
+	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
 }
 
 func (productApi *ProductAPI) SearchByName(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
     if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
     }
 
 	products, err := productApi.IProductService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"products": mapper.ToProductDTOs(products)})
+		c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
 	} else {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 	}
 }
 
@@ -79,32 +79,32 @@ func (productApi *ProductAPI) UpdatePurchase(c *gin.Context) {
 	var productPurchaseDTO dto.ProductPurchaseDTO
 	err := c.BindJSON(&productPurchaseDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	error := productApi.IProductService.UpdatePurchase(productPurchaseDTO)
 
 	if error == nil {
-		c.JSON(http.StatusOK, gin.H{"msg": "Cart updated successfully."})
+		c.JSON(http.StatusOK, "Cart updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+		c.JSON(http.StatusBadRequest, error.Error())
 	} 
 }
 
 func (productApi *ProductAPI) RemoveProductFromCart(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	error := productApi.IProductService.RemoveProductFromCart(id)
 
 	if error == nil {
-		c.JSON(http.StatusOK, gin.H{"msg": "Product removed from cart."})
+		c.JSON(http.StatusOK, "Product removed from cart.")
 	} else  {
-		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+		c.JSON(http.StatusBadRequest, error.Error())
 	}
 }
 
@@ -112,7 +112,7 @@ func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
 	var productPurchaseDTO dto.ProductPurchaseDTO
 	err := c.BindJSON(&productPurchaseDTO)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -122,6 +122,6 @@ func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
 	if error == nil {
 		c.Status(200)
 	} else  {
-		c.JSON(http.StatusBadRequest, gin.H{"error": error.Error()})
+		c.JSON(http.StatusBadRequest, error.Error())
 	}
 }

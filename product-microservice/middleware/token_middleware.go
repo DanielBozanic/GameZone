@@ -43,13 +43,13 @@ func parseToken(jwtToken string) (*jwt.Token, error) {
 func decodeJwtToken(c *gin.Context) (*jwt.Token) {
 	jwtToken, err := extractBearerToken(c.GetHeader("Authorization"))
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusForbidden, err.Error())
 		return nil
 	}
 
 	token, err := parseToken(jwtToken)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusForbidden, err.Error())
 		return nil
 	}
 	return token
@@ -84,7 +84,7 @@ func AuthorizationRequired(roles []string) gin.HandlerFunc {
 
 		claims, ok := token.Claims.(jwt.MapClaims)
 		if !ok {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Unable to parse claims!"})
+			c.AbortWithStatusJSON(http.StatusBadRequest, "Unable to parse claims!")
 			return
 		}
 
@@ -99,7 +99,7 @@ func AuthorizationRequired(roles []string) gin.HandlerFunc {
 		}
 
 		if !valid {
-			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized!"})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, "Unauthorized!")
 			return
 		}
 		c.Next()
