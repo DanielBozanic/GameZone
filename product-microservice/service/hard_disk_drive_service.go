@@ -14,9 +14,9 @@ type hardDiskDriveService struct {
 }
 
 type IHardDiskDriveService interface {
-	GetAll() ([] model.HardDiskDrive)
+	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
 	GetById(id uuid.UUID) (model.HardDiskDrive, error)
-	GetByName(name string) (model.HardDiskDrive, error)
+	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
 	Create(hardDiskDrive model.HardDiskDrive) error
 	Update(hardDiskDriveDTO dto.HardDiskDriveDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewHardDiskDriveService(hardDiskDriveRepository repository.IHardDiskDriveRe
 	return &hardDiskDriveService{IHardDiskDriveRepository: hardDiskDriveRepository}
 }
 
-func (hardDiskDriveService *hardDiskDriveService) GetAll() []model.HardDiskDrive {
-	return hardDiskDriveService.IHardDiskDriveRepository.GetAll()
+func (hardDiskDriveService *hardDiskDriveService) GetAll(page int, pageSize int) []model.HardDiskDrive {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetAll(page, pageSize)
 }
 
 func (hardDiskDriveService *hardDiskDriveService) GetById(id uuid.UUID) (model.HardDiskDrive, error) {
 	return hardDiskDriveService.IHardDiskDriveRepository.GetById(id)
 }
 
-func (hardDiskDriveService *hardDiskDriveService) GetByName(name string) (model.HardDiskDrive, error) {
-	return hardDiskDriveService.IHardDiskDriveRepository.GetByName(name)
+func (hardDiskDriveService *hardDiskDriveService) SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error) {
+	return hardDiskDriveService.IHardDiskDriveRepository.SearchByName(page, pageSize, name)
 }
 
 func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.HardDiskDrive) error {

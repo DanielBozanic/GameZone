@@ -1,6 +1,7 @@
 package dto
 
 type UserData struct {
-	Id int
-	Role string
+	Id    int
+	Email string
+	Role  string
 }

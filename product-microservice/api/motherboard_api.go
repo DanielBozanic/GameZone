@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewMotherboardAPI(motherboardService service.IMotherboardService) Motherboa
 }
 
 func (motherboardApi *MotherboardAPI) GetAll(c *gin.Context) {
-	motherboards := motherboardApi.IMotherboardService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	motherboards := motherboardApi.IMotherboardService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"motherboards": mapper.ToMotherboardDTOs(motherboards)})
 }
 
@@ -41,11 +49,18 @@ func (motherboardApi *MotherboardAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (motherboardApi *MotherboardAPI) GetByName(c *gin.Context) {
-	motherboard, err := motherboardApi.IMotherboardService.GetByName(c.Param("name"))
+func (motherboardApi *MotherboardAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	motherboards, err := motherboardApi.IMotherboardService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"motherboard": mapper.ToMotherboardDTO(motherboard)})
+		c.JSON(http.StatusOK, gin.H{"motherboards": mapper.ToMotherboardDTOs(motherboards)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

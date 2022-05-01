@@ -15,9 +15,9 @@ type videoGameService struct {
 }
 
 type IVideoGameService interface {
-	GetAll() ([] model.VideoGame)
+	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
-	GetByName(name string) ([]model.VideoGame, error)
+	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
 	Create(videoGame model.VideoGame) error
 	Update(videoGameDTO dto.VideoGameDTO) error
 	Delete(id uuid.UUID) error
@@ -27,16 +27,16 @@ func NewVideoGameService(videoGameRepository repository.IVideoGameRepository) IV
 	return &videoGameService{IVideoGameRepository: videoGameRepository}
 }
 
-func (videoGameService *videoGameService) GetAll() []model.VideoGame {
-	return videoGameService.IVideoGameRepository.GetAll()
+func (videoGameService *videoGameService) GetAll(page int, pageSize int) []model.VideoGame {
+	return videoGameService.IVideoGameRepository.GetAll(page, pageSize)
 }
 
 func (videoGameService *videoGameService) GetById(id uuid.UUID) (model.VideoGame, error) {
 	return videoGameService.IVideoGameRepository.GetById(id)
 }
 
-func (videoGameService *videoGameService) GetByName(name string) ([]model.VideoGame, error) {
-	return videoGameService.IVideoGameRepository.GetByName(name)
+func (videoGameService *videoGameService) SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error) {
+	return videoGameService.IVideoGameRepository.SearchByName(page, pageSize, name)
 }
 
 func (videoGameService *videoGameService) Create(game model.VideoGame) error {

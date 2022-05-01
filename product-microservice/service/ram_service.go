@@ -14,9 +14,9 @@ type ramService struct {
 }
 
 type IRamService interface {
-	GetAll() ([] model.Ram)
+	GetAll(page int, pageSize int) ([] model.Ram)
 	GetById(id uuid.UUID) (model.Ram, error)
-	GetByName(name string) (model.Ram, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
 	Create(ram model.Ram) error
 	Update(ramDTO dto.RamDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewRamServiceService(ramRepository repository.IRamRepository) IRamService {
 	return &ramService{IRamRepository: ramRepository}
 }
 
-func (ramService *ramService) GetAll() []model.Ram {
-	return ramService.IRamRepository.GetAll()
+func (ramService *ramService) GetAll(page int, pageSize int) []model.Ram {
+	return ramService.IRamRepository.GetAll(page, pageSize)
 }
 
 func (ramService *ramService) GetById(id uuid.UUID) (model.Ram, error) {
 	return ramService.IRamRepository.GetById(id)
 }
 
-func (ramService *ramService) GetByName(name string) (model.Ram, error) {
-	return ramService.IRamRepository.GetByName(name)
+func (ramService *ramService) SearchByName(page int, pageSize int, name string) ([]model.Ram, error) {
+	return ramService.IRamRepository.SearchByName(page, pageSize, name)
 }
 
 func (ramService *ramService) Create(ram model.Ram) error {

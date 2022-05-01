@@ -12,6 +12,7 @@ def encode_auth_token(user):
             'iat': datetime.datetime.utcnow(),
             'sub': {
                 "user_id": user.id,
+                "email": user.email,
                 "role": user.role
             }
         }

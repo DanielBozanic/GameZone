@@ -8,19 +8,38 @@ import (
 
 
 func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.ProductPurchase, error) {
-	purchaseDate, error := time.Parse("2006-01-02", productPurchaseDTO.PurchaseDate)
-	if error != nil {
-		return model.ProductPurchase{}, error
+	if productPurchaseDTO.PurchaseDate != "" {
+		purchaseDate, error := time.Parse("2006-01-02", productPurchaseDTO.PurchaseDate)
+		if error != nil {
+			return model.ProductPurchase{}, error
+		}
+		return model.ProductPurchase {
+			Id: productPurchaseDTO.Id,
+			UserId: productPurchaseDTO.UserId,
+			ProductId: productPurchaseDTO.ProductId,
+			ProductName: productPurchaseDTO.ProductName,
+			ProductPrice: productPurchaseDTO.ProductPrice,
+			Amount: productPurchaseDTO.Amount,
+			TotalPrice: productPurchaseDTO.TotalPrice,
+			PurchaseDate: purchaseDate,
+			DeliveryAddress: productPurchaseDTO.DeliveryAddress,
+			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
+		}, nil
+	} else {
+		purchaseDate := time.Time{}
+		return model.ProductPurchase {
+			Id: productPurchaseDTO.Id,
+			UserId: productPurchaseDTO.UserId,
+			ProductId: productPurchaseDTO.ProductId,
+			ProductName: productPurchaseDTO.ProductName,
+			ProductPrice: productPurchaseDTO.ProductPrice,
+			Amount: productPurchaseDTO.Amount,
+			TotalPrice: productPurchaseDTO.TotalPrice,
+			PurchaseDate: purchaseDate,
+			DeliveryAddress: productPurchaseDTO.DeliveryAddress,
+			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
+		}, nil
 	}
-	return model.ProductPurchase {
-		Id: productPurchaseDTO.Id,
-		UserId: productPurchaseDTO.UserId,
-		ProductId: productPurchaseDTO.ProductId,
-		ProductName: productPurchaseDTO.ProductName,
-		Amount: productPurchaseDTO.Amount,
-		TotalPrice: productPurchaseDTO.TotalPrice,
-		PurchaseDate: purchaseDate,
-	}, nil
 }
 
 func ToProductPurchaseDTO(productPurchase model.ProductPurchase) dto.ProductPurchaseDTO {
@@ -29,9 +48,12 @@ func ToProductPurchaseDTO(productPurchase model.ProductPurchase) dto.ProductPurc
 		UserId: productPurchase.UserId,
 		ProductId: productPurchase.ProductId,
 		ProductName: productPurchase.ProductName,
+		ProductPrice: productPurchase.ProductPrice,
 		TotalPrice: productPurchase.TotalPrice,
 		Amount: productPurchase.Amount,
 		PurchaseDate: productPurchase.PurchaseDate.Format("2006-01-02"),
+		DeliveryAddress: productPurchase.DeliveryAddress,
+		TypeOfPayment: productPurchase.TypeOfPayment,
 	}
 }
 

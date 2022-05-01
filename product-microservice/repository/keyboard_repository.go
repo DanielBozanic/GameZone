@@ -12,9 +12,9 @@ type keyboardRepository struct {
 }
 
 type IKeyboardRepository interface {
-	GetAll() ([] model.Keyboard)
+	GetAll(page int, pageSize int) ([] model.Keyboard)
 	GetById(id uuid.UUID) (model.Keyboard, error)
-	GetByName(name string) (model.Keyboard, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
 	Create(keyboard model.Keyboard) error
 	Update(keyboard model.Keyboard) error
 	Delete(keyboard model.Keyboard) error
@@ -24,9 +24,13 @@ func NewKeyboardRepository(DB *gorm.DB) IKeyboardRepository {
 	return &keyboardRepository{Database: DB}
 }
 
-func (keyboardRepo *keyboardRepository) GetAll() []model.Keyboard {
+func (keyboardRepo *keyboardRepository) GetAll(page int, pageSize int) []model.Keyboard {
 	var keyboards []model.Keyboard
-	keyboardRepo.Database.Preload("Product").Find(&keyboards)
+	offset := (page - 1) * pageSize
+	keyboardRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&keyboards)
 	return keyboards
 }
 
@@ -36,10 +40,16 @@ func (keyboardRepo *keyboardRepository) GetById(id uuid.UUID) (model.Keyboard, e
 	return keyboard, result.Error
 }
 
-func (keyboardRepo *keyboardRepository) GetByName(name string) (model.Keyboard, error) {
-	var keyboard model.Keyboard
-	result := keyboardRepo.Database.Preload("Product").Find(&keyboard, "name = ?", name)
-	return keyboard, result.Error
+func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error) {
+	var keyboards []model.Keyboard
+	offset := (page - 1) * pageSize
+	result := keyboardRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&keyboards)
+	return keyboards, result.Error
 }
 
 func (keyboardRepo *keyboardRepository) Create(keyboard model.Keyboard) error {

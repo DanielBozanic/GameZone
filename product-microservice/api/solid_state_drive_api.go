@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewSolidStateDriveAPI(solidStateDriveService service.ISolidStateDriveServic
 }
 
 func (solidStateDriveApi *SolidStateDriveAPI) GetAll(c *gin.Context) {
-	solidStateDrives := solidStateDriveApi.ISolidStateDriveService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	solidStateDrives := solidStateDriveApi.ISolidStateDriveService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"solid_state_drives": mapper.ToSolidStateDriveDTOs(solidStateDrives)})
 }
 
@@ -41,11 +49,18 @@ func (solidStateDriveApi *SolidStateDriveAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (solidStateDriveApi *SolidStateDriveAPI) GetByName(c *gin.Context) {
-	solidStateDrive, err := solidStateDriveApi.ISolidStateDriveService.GetByName(c.Param("name"))
+func (solidStateDriveApi *SolidStateDriveAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	solidStateDrives, err := solidStateDriveApi.ISolidStateDriveService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"solid_state_drive": mapper.ToSolidStateDriveDTO(solidStateDrive)})
+		c.JSON(http.StatusOK, gin.H{"solid_state_drives": mapper.ToSolidStateDriveDTOs(solidStateDrives)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

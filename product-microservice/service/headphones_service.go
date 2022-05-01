@@ -14,9 +14,9 @@ type headphonesService struct {
 }
 
 type IHeadphonesService interface {
-	GetAll() ([] model.Headphones)
+	GetAll(page int, pageSize int) ([] model.Headphones)
 	GetById(id uuid.UUID) (model.Headphones, error)
-	GetByName(name string) (model.Headphones, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
 	Create(headphones model.Headphones) error
 	Update(headphonesDTO dto.HeadphonesDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewHeadphonesService(headphonesRepository repository.IHeadphonesRepository)
 	return &headphonesService{IHeadphonesRepository: headphonesRepository}
 }
 
-func (headphonesService *headphonesService) GetAll() []model.Headphones {
-	return headphonesService.IHeadphonesRepository.GetAll()
+func (headphonesService *headphonesService) GetAll(page int, pageSize int) []model.Headphones {
+	return headphonesService.IHeadphonesRepository.GetAll(page, pageSize)
 }
 
 func (headphonesService *headphonesService) GetById(id uuid.UUID) (model.Headphones, error) {
 	return headphonesService.IHeadphonesRepository.GetById(id)
 }
 
-func (headphonesService *headphonesService) GetByName(name string) (model.Headphones, error) {
-	return headphonesService.IHeadphonesRepository.GetByName(name)
+func (headphonesService *headphonesService) SearchByName(page int, pageSize int, name string) ([]model.Headphones, error) {
+	return headphonesService.IHeadphonesRepository.SearchByName(page, pageSize, name)
 }
 
 func (headphonesService *headphonesService) Create(headphones model.Headphones) error {

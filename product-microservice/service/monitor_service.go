@@ -14,9 +14,9 @@ type monitorService struct {
 }
 
 type IMonitorService interface {
-	GetAll() ([] model.Monitor)
+	GetAll(page int, pageSize int) ([] model.Monitor)
 	GetById(id uuid.UUID) (model.Monitor, error)
-	GetByName(name string) (model.Monitor, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
 	Create(monitor model.Monitor) error
 	Update(monitorDTO dto.MonitorDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewMonitorService(monitorRepository repository.IMonitorRepository) IMonitor
 	return &monitorService{IMonitorRepository: monitorRepository}
 }
 
-func (monitorService *monitorService) GetAll() []model.Monitor {
-	return monitorService.IMonitorRepository.GetAll()
+func (monitorService *monitorService) GetAll(page int, pageSize int) []model.Monitor {
+	return monitorService.IMonitorRepository.GetAll(page, pageSize)
 }
 
 func (monitorService *monitorService) GetById(id uuid.UUID) (model.Monitor, error) {
 	return monitorService.IMonitorRepository.GetById(id)
 }
 
-func (monitorService *monitorService) GetByName(name string) (model.Monitor, error) {
-	return monitorService.IMonitorRepository.GetByName(name)
+func (monitorService *monitorService) SearchByName(page int, pageSize int, name string) ([]model.Monitor, error) {
+	return monitorService.IMonitorRepository.SearchByName(page, pageSize, name)
 }
 
 func (monitorService *monitorService) Create(monitor model.Monitor) error {

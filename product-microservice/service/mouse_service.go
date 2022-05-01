@@ -14,9 +14,9 @@ type mouseService struct {
 }
 
 type IMouseService interface {
-	GetAll() ([] model.Mouse)
+	GetAll(page int, pageSize int) ([] model.Mouse)
 	GetById(id uuid.UUID) (model.Mouse, error)
-	GetByName(name string) (model.Mouse, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
 	Create(mouse model.Mouse) error
 	Update(mouseDTO dto.MouseDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewMouseService(mouseRepository repository.IMouseRepository) IMouseService 
 	return &mouseService{IMouseRepository: mouseRepository}
 }
 
-func (mouseService *mouseService) GetAll() []model.Mouse {
-	return mouseService.IMouseRepository.GetAll()
+func (mouseService *mouseService) GetAll(page int, pageSize int) []model.Mouse {
+	return mouseService.IMouseRepository.GetAll(page, pageSize)
 }
 
 func (mouseService *mouseService) GetById(id uuid.UUID) (model.Mouse, error) {
 	return mouseService.IMouseRepository.GetById(id)
 }
 
-func (mouseService *mouseService) GetByName(name string) (model.Mouse, error) {
-	return mouseService.IMouseRepository.GetByName(name)
+func (mouseService *mouseService) SearchByName(page int, pageSize int, name string) ([]model.Mouse, error) {
+	return mouseService.IMouseRepository.SearchByName(page, pageSize, name)
 }
 
 func (mouseService *mouseService) Create(mouse model.Mouse) error {

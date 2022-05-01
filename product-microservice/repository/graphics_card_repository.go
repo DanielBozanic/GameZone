@@ -12,9 +12,9 @@ type graphicsCardRepository struct {
 }
 
 type IGraphicsCardRepository interface {
-	GetAll() ([] model.GraphicsCard)
+	GetAll(page int, pageSize int) ([] model.GraphicsCard)
 	GetById(id uuid.UUID) (model.GraphicsCard, error)
-	GetByName(name string) (model.GraphicsCard, error)
+	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
 	Create(graphicsCard model.GraphicsCard) error
 	Update(graphicsCard model.GraphicsCard) error
 	Delete(graphicsCard model.GraphicsCard) error
@@ -24,9 +24,13 @@ func NewGraphicsCardRepository(DB *gorm.DB) IGraphicsCardRepository {
 	return &graphicsCardRepository{Database: DB}
 }
 
-func (graphicsCardRepo *graphicsCardRepository) GetAll() []model.GraphicsCard {
+func (graphicsCardRepo *graphicsCardRepository) GetAll(page int, pageSize int) []model.GraphicsCard {
 	var graphicsCards []model.GraphicsCard
-	graphicsCardRepo.Database.Preload("Product").Find(&graphicsCards)
+	offset := (page - 1) * pageSize
+	graphicsCardRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&graphicsCards)
 	return graphicsCards
 }
 
@@ -36,10 +40,16 @@ func (graphicsCardRepo *graphicsCardRepository) GetById(id uuid.UUID) (model.Gra
 	return graphicsCard, result.Error
 }
 
-func (graphicsCardRepo *graphicsCardRepository) GetByName(name string) (model.GraphicsCard, error) {
-	var graphicsCard model.GraphicsCard
-	result := graphicsCardRepo.Database.Preload("Product").Find(&graphicsCard, "name = ?", name)
-	return graphicsCard, result.Error
+func (graphicsCardRepo *graphicsCardRepository) SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error) {
+	var graphicsCards []model.GraphicsCard
+	offset := (page - 1) * pageSize
+	result := graphicsCardRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&graphicsCards)
+	return graphicsCards, result.Error
 }
 
 func (graphicsCardRepo *graphicsCardRepository) Create(console model.GraphicsCard) error {

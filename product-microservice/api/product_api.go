@@ -5,6 +5,7 @@ import (
 	"product/mapper"
 	"product/middleware"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -22,15 +23,14 @@ func NewProductAPI(productService service.IProductService) ProductAPI {
 }
 
 func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
-	var productPurchaseDTO dto.ProductPurchaseDTO
-	err := c.BindJSON(&productPurchaseDTO)
+	productId, err := uuid.Parse(c.Param("productId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	userData := middleware.GetUserData(c)
-	msg, err := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
+	msg, err := productApi.IProductService.AddProductToCart(productId, userData);
 
 	if msg == "" {
 		c.JSON(http.StatusOK, gin.H{"msg": "Product added to cart."})
@@ -48,9 +48,31 @@ func (productApi *ProductAPI) GetCurrentCart(c *gin.Context) {
 }
 
 func (productApi *ProductAPI) GetPurchaseHistory(c *gin.Context) {
-	userData := middleware.GetUserData(c)
-	productPurchases := productApi.IProductService.GetPurchaseHistory(userData.Id)
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	productPurchases := productApi.IProductService.GetPurchaseHistory(userId)
 	c.JSON(http.StatusOK, gin.H{"purchase_history": mapper.ToProductPurchaseDTOs(productPurchases)})
+}
+
+func (productApi *ProductAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	products, err := productApi.IProductService.SearchByName(page, pageSize, c.Query("name"))
+	
+	if err == nil {
+		c.JSON(http.StatusOK, gin.H{"products": mapper.ToProductDTOs(products)})
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	}
 }
 
 func (productApi *ProductAPI) UpdatePurchase(c *gin.Context) {
@@ -87,8 +109,15 @@ func (productApi *ProductAPI) RemoveProductFromCart(c *gin.Context) {
 }
 
 func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	userData := middleware.GetUserData(c)
-	error := productApi.IProductService.ConfirmPurchase(userData.Id)
+	error := productApi.IProductService.ConfirmPurchase(productPurchaseDTO, userData.Id)
 
 	if error == nil {
 		c.Status(200)

@@ -14,9 +14,9 @@ type graphicsCardService struct {
 }
 
 type IGraphicsCardService interface {
-	GetAll() ([] model.GraphicsCard)
+	GetAll(page int, pageSize int) ([] model.GraphicsCard)
 	GetById(id uuid.UUID) (model.GraphicsCard, error)
-	GetByName(name string) (model.GraphicsCard, error)
+	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
 	Create(graphicsCard model.GraphicsCard) error
 	Update(graphicsCardDTO dto.GraphicsCardDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewGraphicsCardService(graphicsCardRepository repository.IGraphicsCardRepos
 	return &graphicsCardService{IGraphicsCardRepository: graphicsCardRepository}
 }
 
-func (graphicsCardService *graphicsCardService) GetAll() []model.GraphicsCard {
-	return graphicsCardService.IGraphicsCardRepository.GetAll()
+func (graphicsCardService *graphicsCardService) GetAll(page int, pageSize int) []model.GraphicsCard {
+	return graphicsCardService.IGraphicsCardRepository.GetAll(page, pageSize)
 }
 
 func (graphicsCardService *graphicsCardService) GetById(id uuid.UUID) (model.GraphicsCard, error) {
 	return graphicsCardService.IGraphicsCardRepository.GetById(id)
 }
 
-func (graphicsCardService *graphicsCardService) GetByName(name string) (model.GraphicsCard, error) {
-	return graphicsCardService.IGraphicsCardRepository.GetByName(name)
+func (graphicsCardService *graphicsCardService) SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error) {
+	return graphicsCardService.IGraphicsCardRepository.SearchByName(page, pageSize, name)
 }
 
 func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) error {

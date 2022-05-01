@@ -27,10 +27,10 @@ func ToRamDTO(ram model.Ram) dto.RamDTO {
 	}
 }
 
-func ToRamDTOs(processors []model.Ram) []dto.RamDTO {
-	ramDTOs := make([]dto.RamDTO, len(processors))
+func ToRamDTOs(rams []model.Ram) []dto.RamDTO {
+	ramDTOs := make([]dto.RamDTO, len(rams))
 
-	for i, itm := range processors {
+	for i, itm := range rams {
 		ramDTOs[i] = ToRamDTO(itm)
 	}
 

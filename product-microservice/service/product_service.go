@@ -28,12 +28,13 @@ type productService struct {
 }
 
 type IProductService interface {
-	AddProductToCart(productPurchaseDto dto.ProductPurchaseDTO, userData dto.UserData) (string, error)
+	AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error)
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
+	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	UpdatePurchase(productPurchaseDto dto.ProductPurchaseDTO) error
 	RemoveProductFromCart(productPurchaseId uuid.UUID) error
-	ConfirmPurchase(userId int) error
+	ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error
 }
 
 func NewProductService(
@@ -77,28 +78,36 @@ func (productService *productService) GetPurchaseHistory(userId int) []model.Pro
 	return productService.IProductRepository.GetPurchaseHistory(userId)
 }
 
-func (productService *productService) AddProductToCart(productPurchaseDto dto.ProductPurchaseDTO, userData dto.UserData) (string, error) {
+func (productService *productService) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
+	return productService.IProductRepository.SearchByName(page, pageSize, name)
+}
+
+func (productService *productService) AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error) {
 	msg := ""
 	productOutOfStockMsg := "Product is out of stock!"
 	var productPurchase model.ProductPurchase
-	product, err := productService.IProductRepository.GetProductById(productPurchaseDto.ProductId)
+	product, err := productService.IProductRepository.GetProductById(productId)
 
 	if err != nil {
 		return msg, err
 	}
 
 	if product.Type == model.VIDEO_GAME {
-		videoGame, _ := productService.IVideoGameRepository.GetById(productPurchaseDto.ProductId)
-		if videoGame.Product.Amount < productPurchaseDto.Amount && !videoGame.Digital {
+		videoGame, _ := productService.IVideoGameRepository.GetById(productId)
+		if videoGame.Product.Amount <= 0 && !videoGame.Digital {
 			msg = productOutOfStockMsg
 		}
 	} else {
-		if product.Amount < productPurchaseDto.Amount {
+		if product.Amount <= 0 {
 			msg = productOutOfStockMsg
 		}
 	}
 
 	if msg == "" {
+		
+		if err != nil {
+			return msg, err
+		}
 		productService.IProductRepository.AddPurchase(productPurchase);
 	}
 	return msg, nil
@@ -110,13 +119,8 @@ func (productService *productService) UpdatePurchase(productPurchaseDto dto.Prod
 		return err
 	}
 
-	if productPurchaseDto.Amount == 0 {
-		return productService.IProductRepository.RemoveProductFromCart(productPurchase)
-	}
-
 	productPurchase.Amount = productPurchaseDto.Amount
-	productPrice := productPurchase.TotalPrice.Div(decimal.NewFromInt(int64(productPurchase.Amount)))
-	productPurchase.TotalPrice = productPrice.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
+	productPurchase.TotalPrice = productPurchase.ProductPrice.Mul(decimal.NewFromInt(int64(productPurchaseDto.Amount)))
 
 	return productService.IProductRepository.UpdatePurchase(productPurchase)
 }
@@ -129,10 +133,12 @@ func (productService *productService) RemoveProductFromCart(productPurchaseId uu
 	return productService.IProductRepository.RemoveProductFromCart(product)
 }
 
-func (productService *productService) ConfirmPurchase(userId int) error {
+func (productService *productService) ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error {
 	productPurchases := productService.IProductRepository.GetCurrentCart(userId)
 	for _, purchase := range productPurchases {
 		purchase.PurchaseDate = time.Now().UTC()
+		purchase.DeliveryAddress = productPurchaseDto.DeliveryAddress
+		purchase.TypeOfPayment = productPurchaseDto.TypeOfPayment
 		err := productService.IProductRepository.UpdatePurchase(purchase)
 		if err != nil {
 			return err

@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewRamAPI(ramService service.IRamService) RamAPI {
 }
 
 func (ramApi *RamAPI) GetAll(c *gin.Context) {
-	rams := ramApi.IRamService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	rams := ramApi.IRamService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"rams": mapper.ToRamDTOs(rams)})
 }
 
@@ -41,11 +49,18 @@ func (ramApi *RamAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (ramApi *RamAPI) GetByName(c *gin.Context) {
-	ram, err := ramApi.IRamService.GetByName(c.Param("name"))
+func (ramApi *RamAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	rams, err := ramApi.IRamService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"ram": mapper.ToRamDTO(ram)})
+		c.JSON(http.StatusOK, gin.H{"rams": mapper.ToRamDTOs(rams)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

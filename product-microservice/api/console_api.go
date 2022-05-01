@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewConsoleAPI(consoleService service.IConsoleService) ConsoleAPI {
 }
 
 func (consoleApi *ConsoleAPI) GetAll(c *gin.Context) {
-	consoles := consoleApi.IConsoleService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	consoles := consoleApi.IConsoleService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"consoles": mapper.ToConsoleDTOs(consoles)})
 }
 
@@ -41,11 +49,18 @@ func (consoleApi *ConsoleAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (consoleApi *ConsoleAPI) GetByName(c *gin.Context) {
-	console, err := consoleApi.IConsoleService.GetByName(c.Param("name"))
+func (consoleApi *ConsoleAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	consoles, err := consoleApi.IConsoleService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"console": mapper.ToConsoleDTO(console)})
+		c.JSON(http.StatusOK, gin.H{"consoles": mapper.ToConsoleDTOs(consoles)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

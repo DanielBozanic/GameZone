@@ -12,9 +12,9 @@ type monitorRepository struct {
 }
 
 type IMonitorRepository interface {
-	GetAll() ([] model.Monitor)
+	GetAll(page int, pageSize int) ([] model.Monitor)
 	GetById(id uuid.UUID) (model.Monitor, error)
-	GetByName(name string) (model.Monitor, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
 	Create(monitor model.Monitor) error
 	Update(monitor model.Monitor) error
 	Delete(monitor model.Monitor) error
@@ -24,9 +24,13 @@ func NewMonitorRepository(DB *gorm.DB) IMonitorRepository {
 	return &monitorRepository{Database: DB}
 }
 
-func (monitorRepo *monitorRepository) GetAll() []model.Monitor {
+func (monitorRepo *monitorRepository) GetAll(page int, pageSize int) []model.Monitor {
 	var monitors []model.Monitor
-	monitorRepo.Database.Preload("Product").Find(&monitors)
+	offset := (page - 1) * pageSize
+	monitorRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&monitors)
 	return monitors
 }
 
@@ -36,10 +40,16 @@ func (monitorRepo *monitorRepository) GetById(id uuid.UUID) (model.Monitor, erro
 	return monitor, result.Error
 }
 
-func (monitorRepo *monitorRepository) GetByName(name string) (model.Monitor, error) {
-	var monitor model.Monitor
-	result := monitorRepo.Database.Preload("Product").Find(&monitor, "name = ?", name)
-	return monitor, result.Error
+func (monitorRepo *monitorRepository) SearchByName(page int, pageSize int, name string) ([]model.Monitor, error) {
+	var monitors []model.Monitor
+	offset := (page - 1) * pageSize
+	result := monitorRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&monitors)
+	return monitors, result.Error
 }
 
 func (monitorRepo *monitorRepository) Create(monitor model.Monitor) error {

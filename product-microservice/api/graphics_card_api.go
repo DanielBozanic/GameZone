@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewGraphicsCardAPI(graphicsCardService service.IGraphicsCardService) Graphi
 }
 
 func (graphicsCardApi *GraphicsCardAPI) GetAll(c *gin.Context) {
-	graphicsCards := graphicsCardApi.IGraphicsCardService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	graphicsCards := graphicsCardApi.IGraphicsCardService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"graphics_cards": mapper.ToGraphicsCardDTOs(graphicsCards)})
 }
 
@@ -41,11 +49,18 @@ func (graphicsCardApi *GraphicsCardAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (graphicsCardApi *GraphicsCardAPI) GetByName(c *gin.Context) {
-	graphicsCard, err := graphicsCardApi.IGraphicsCardService.GetByName(c.Param("name"))
+func (graphicsCardApi *GraphicsCardAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	graphicsCards, err := graphicsCardApi.IGraphicsCardService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"graphics_card": mapper.ToGraphicsCardDTO(graphicsCard)})
+		c.JSON(http.StatusOK, gin.H{"graphics_cards": mapper.ToGraphicsCardDTOs(graphicsCards)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

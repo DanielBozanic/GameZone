@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewPowerSupplyUnitAPI(powerSupplyUnitService service.IPowerSupplyUnitServic
 }
 
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetAll(c *gin.Context) {
-	powerSupplyUnits := powerSupplyUnitApi.IPowerSupplyUnitService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	powerSupplyUnits := powerSupplyUnitApi.IPowerSupplyUnitService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"psus": mapper.ToPowerSupplyUnitDTOs(powerSupplyUnits)})
 }
 
@@ -41,11 +49,18 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetByName(c *gin.Context) {
-	powerSupplyUnit, err := powerSupplyUnitApi.IPowerSupplyUnitService.GetByName(c.Param("name"))
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	powerSupplyUnits, err := powerSupplyUnitApi.IPowerSupplyUnitService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"psu": mapper.ToPowerSupplyUnitDTO(powerSupplyUnit)})
+		c.JSON(http.StatusOK, gin.H{"psus": mapper.ToPowerSupplyUnitDTOs(powerSupplyUnits)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

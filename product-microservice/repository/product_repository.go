@@ -16,6 +16,7 @@ type IProductRepository interface {
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
 	GetProductById(productId uuid.UUID) (model.Product, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
@@ -47,6 +48,16 @@ func (productRepo *productRepository) GetProductById(productId uuid.UUID) (model
 	var product model.Product
 	result := productRepo.Database.First(&product, productId)
 	return product, result.Error
+}
+
+func (productRepo *productRepository) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
+	var products []model.Product
+	offset := (page - 1) * pageSize
+	result := productRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Where("name LIKE ?", "%" + name + "%").
+		Find(&products)
+	return products, result.Error
 }
 
 func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {

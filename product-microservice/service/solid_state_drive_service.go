@@ -14,9 +14,9 @@ type solidStateDriveService struct {
 }
 
 type ISolidStateDriveService interface {
-	GetAll() ([] model.SolidStateDrive)
+	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetById(id uuid.UUID) (model.SolidStateDrive, error)
-	GetByName(name string) (model.SolidStateDrive, error)
+	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
 	Create(solidStateDrive model.SolidStateDrive) error
 	Update(solidStateDriveDTO dto.SolidStateDriveDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewSolidStateDriveService(solidStateDriveRepository repository.ISolidStateD
 	return &solidStateDriveService{ISolidStateDriveRepository: solidStateDriveRepository}
 }
 
-func (solidStateDriveService *solidStateDriveService) GetAll() []model.SolidStateDrive {
-	return solidStateDriveService.ISolidStateDriveRepository.GetAll()
+func (solidStateDriveService *solidStateDriveService) GetAll(page int, pageSize int) []model.SolidStateDrive {
+	return solidStateDriveService.ISolidStateDriveRepository.GetAll(page, pageSize)
 }
 
 func (solidStateDriveService *solidStateDriveService) GetById(id uuid.UUID) (model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.GetById(id)
 }
 
-func (solidStateDriveService *solidStateDriveService) GetByName(name string) (model.SolidStateDrive, error) {
-	return solidStateDriveService.ISolidStateDriveRepository.GetByName(name)
+func (solidStateDriveService *solidStateDriveService) SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error) {
+	return solidStateDriveService.ISolidStateDriveRepository.SearchByName(page, pageSize, name)
 }
 
 func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) error {

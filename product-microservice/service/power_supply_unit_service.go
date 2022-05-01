@@ -14,9 +14,9 @@ type powerSupplyUnitService struct {
 }
 
 type IPowerSupplyUnitService interface {
-	GetAll() ([] model.PowerSupplyUnit)
+	GetAll(page int, pageSize int) ([] model.PowerSupplyUnit)
 	GetById(id uuid.UUID) (model.PowerSupplyUnit, error)
-	GetByName(name string) (model.PowerSupplyUnit, error)
+	SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error)
 	Create(powerSupplyUnit model.PowerSupplyUnit) error
 	Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewPowerSupplyUnitService(powerSupplyUnitRepository repository.IPowerSupply
 	return &powerSupplyUnitService{IPowerSupplyUnitRepository: powerSupplyUnitRepository}
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) GetAll() []model.PowerSupplyUnit {
-	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetAll()
+func (powerSupplyUnitService *powerSupplyUnitService) GetAll(page int, pageSize int) []model.PowerSupplyUnit {
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetAll(page, pageSize)
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) GetById(id uuid.UUID) (model.PowerSupplyUnit, error) {
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetById(id)
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) GetByName(name string) (model.PowerSupplyUnit, error) {
-	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetByName(name)
+func (powerSupplyUnitService *powerSupplyUnitService) SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error) {
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.SearchByName(page, pageSize, name)
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit model.PowerSupplyUnit) error {

@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewProcessorAPI(processorService service.IProcessorService) ProcessorAPI {
 }
 
 func (processorApi *ProcessorAPI) GetAll(c *gin.Context) {
-	processors := processorApi.IProcessorService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	processors := processorApi.IProcessorService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"processors": mapper.ToProcessorDTOs(processors)})
 }
 
@@ -41,11 +49,18 @@ func (processorApi *ProcessorAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (processorApi *ProcessorAPI) GetByName(c *gin.Context) {
-	processor, err := processorApi.IProcessorService.GetByName(c.Param("name"))
+func (processorApi *ProcessorAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	processors, err := processorApi.IProcessorService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"processor": mapper.ToProcessorDTO(processor)})
+		c.JSON(http.StatusOK, gin.H{"processors": mapper.ToProcessorDTOs(processors)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

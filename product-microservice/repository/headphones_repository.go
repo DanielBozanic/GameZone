@@ -12,9 +12,9 @@ type headphonesRepository struct {
 }
 
 type IHeadphonesRepository interface {
-	GetAll() ([] model.Headphones)
+	GetAll(page int, pageSize int) ([] model.Headphones)
 	GetById(id uuid.UUID) (model.Headphones, error)
-	GetByName(name string) (model.Headphones, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
 	Create(headphones model.Headphones) error
 	Update(headphones model.Headphones) error
 	Delete(headphones model.Headphones) error
@@ -24,9 +24,13 @@ func NewHeadphonesRepository(DB *gorm.DB) IHeadphonesRepository {
 	return &headphonesRepository{Database: DB}
 }
 
-func (headphonesRepo *headphonesRepository) GetAll() []model.Headphones {
+func (headphonesRepo *headphonesRepository) GetAll(page int, pageSize int) []model.Headphones {
 	var headphones []model.Headphones
-	headphonesRepo.Database.Preload("Product").Find(&headphones)
+	offset := (page - 1) * pageSize
+	headphonesRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&headphones)
 	return headphones
 }
 
@@ -36,9 +40,15 @@ func (headphonesRepo *headphonesRepository) GetById(id uuid.UUID) (model.Headpho
 	return headphones, result.Error
 }
 
-func (headphonesRepo *headphonesRepository) GetByName(name string) (model.Headphones, error) {
-	var headphones model.Headphones
-	result := headphonesRepo.Database.Preload("Product").Find(&headphones, "name = ?", name)
+func (headphonesRepo *headphonesRepository) SearchByName(page int, pageSize int, name string) ([]model.Headphones, error) {
+	var headphones []model.Headphones
+	offset := (page - 1) * pageSize
+	result := headphonesRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = headphones.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&headphones)
 	return headphones, result.Error
 }
 

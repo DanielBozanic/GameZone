@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewKeyboardAPI(keyboardService service.IKeyboardService) KeyboardAPI {
 }
 
 func (keyboardApi *KeyboardAPI) GetAll(c *gin.Context) {
-	keyboards := keyboardApi.IKeyboardService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	keyboards := keyboardApi.IKeyboardService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"keyboards": mapper.ToKeyboardDTOs(keyboards)})
 }
 
@@ -41,11 +49,18 @@ func (keyboardApi *KeyboardAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (keyboardApi *KeyboardAPI) GetByName(c *gin.Context) {
-	keyboard, err := keyboardApi.IKeyboardService.GetByName(c.Param("name"))
+func (keyboardApi *KeyboardAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	keyboards, err := keyboardApi.IKeyboardService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"keyboard": mapper.ToKeyboardDTO(keyboard)})
+		c.JSON(http.StatusOK, gin.H{"keyboards": mapper.ToKeyboardDTOs(keyboards)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

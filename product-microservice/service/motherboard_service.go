@@ -14,9 +14,9 @@ type motherboardService struct {
 }
 
 type IMotherboardService interface {
-	GetAll() ([] model.Motherboard)
+	GetAll(page int, pageSize int) ([] model.Motherboard)
 	GetById(id uuid.UUID) (model.Motherboard, error)
-	GetByName(name string) (model.Motherboard, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error)
 	Create(motherboard model.Motherboard) error
 	Update(motherboardDTO dto.MotherboardDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewMotherboardService(motherboardRepository repository.IMotherboardReposito
 	return &motherboardService{IMotherboardRepository: motherboardRepository}
 }
 
-func (motherboardService *motherboardService) GetAll() []model.Motherboard {
-	return motherboardService.IMotherboardRepository.GetAll()
+func (motherboardService *motherboardService) GetAll(page int, pageSize int) []model.Motherboard {
+	return motherboardService.IMotherboardRepository.GetAll(page, pageSize)
 }
 
 func (motherboardService *motherboardService) GetById(id uuid.UUID) (model.Motherboard, error) {
 	return motherboardService.IMotherboardRepository.GetById(id)
 }
 
-func (motherboardService *motherboardService) GetByName(name string) (model.Motherboard, error) {
-	return motherboardService.IMotherboardRepository.GetByName(name)
+func (motherboardService *motherboardService) SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error) {
+	return motherboardService.IMotherboardRepository.SearchByName(page, pageSize, name)
 }
 
 func (motherboardService *motherboardService) Create(motherboard model.Motherboard) error {

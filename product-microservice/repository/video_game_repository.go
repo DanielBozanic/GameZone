@@ -12,9 +12,9 @@ type videoGameRepository struct {
 }
 
 type IVideoGameRepository interface {
-	GetAll() ([] model.VideoGame)
+	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
-	GetByName(name string) ([]model.VideoGame, error)
+	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
 	Create(videoGame model.VideoGame) error
 	Update(videoGame model.VideoGame) error
 	Delete(videoGame model.VideoGame) error
@@ -24,9 +24,13 @@ func NewVideoGameRepository(DB *gorm.DB) IVideoGameRepository {
 	return &videoGameRepository{Database: DB}
 }
 
-func (videoGameRepo *videoGameRepository) GetAll() []model.VideoGame {
+func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) []model.VideoGame {
 	var games []model.VideoGame
-	videoGameRepo.Database.Preload("Product").Find(&games)
+	offset := (page - 1) * pageSize
+	videoGameRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&games)
 	return games
 }
 
@@ -36,9 +40,15 @@ func (videoGameRepo *videoGameRepository) GetById(id uuid.UUID) (model.VideoGame
 	return game, result.Error
 }
 
-func (videoGameRepo *videoGameRepository) GetByName(name string) ([]model.VideoGame, error) {
+func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error) {
 	var games []model.VideoGame
-	result := videoGameRepo.Database.Preload("Product").Find(&games, "name = ?", name)
+	offset := (page - 1) * pageSize
+	result := videoGameRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = video_games.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&games)
 	return games, result.Error
 }
 

@@ -14,9 +14,9 @@ type keyboardService struct {
 }
 
 type IKeyboardService interface {
-	GetAll() ([] model.Keyboard)
+	GetAll(page int, pageSize int) ([] model.Keyboard)
 	GetById(id uuid.UUID) (model.Keyboard, error)
-	GetByName(name string) (model.Keyboard, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
 	Create(keyboard model.Keyboard) error
 	Update(keyboardDTO dto.KeyboardDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewKeyboardService(keyboardRepository repository.IKeyboardRepository) IKeyb
 	return &keyboardService{IKeyboardRepository: keyboardRepository}
 }
 
-func (keyboardService *keyboardService) GetAll() []model.Keyboard {
-	return keyboardService.IKeyboardRepository.GetAll()
+func (keyboardService *keyboardService) GetAll(page int, pageSize int) []model.Keyboard {
+	return keyboardService.IKeyboardRepository.GetAll(page, pageSize)
 }
 
 func (keyboardService *keyboardService) GetById(id uuid.UUID) (model.Keyboard, error) {
 	return keyboardService.IKeyboardRepository.GetById(id)
 }
 
-func (keyboardService *keyboardService) GetByName(name string) (model.Keyboard, error) {
-	return keyboardService.IKeyboardRepository.GetByName(name)
+func (keyboardService *keyboardService) SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error) {
+	return keyboardService.IKeyboardRepository.SearchByName(page, pageSize, name)
 }
 
 func (keyboardService *keyboardService) Create(keyboard model.Keyboard) error {

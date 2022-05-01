@@ -62,6 +62,7 @@ func GetUserData(c *gin.Context) dto.UserData {
 	sub := claims["sub"].(map[string]interface{})
 	userData.Id = sub["user_id"].(int)
 	userData.Role = sub["role"].(string)
+	userData.Email = sub["email"].(string)
 	return userData
 }
 

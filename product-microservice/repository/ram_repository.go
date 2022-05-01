@@ -12,9 +12,9 @@ type ramRepository struct {
 }
 
 type IRamRepository interface {
-	GetAll() ([] model.Ram)
+	GetAll(page int, pageSize int) ([] model.Ram)
 	GetById(id uuid.UUID) (model.Ram, error)
-	GetByName(name string) (model.Ram, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
 	Create(ram model.Ram) error
 	Update(ram model.Ram) error
 	Delete(ram model.Ram) error
@@ -24,10 +24,14 @@ func NewRamRepository(DB *gorm.DB) IRamRepository {
 	return &ramRepository{Database: DB}
 }
 
-func (ramRepo *ramRepository) GetAll() []model.Ram {
-	var Rams []model.Ram
-	ramRepo.Database.Preload("Product").Find(&Rams)
-	return Rams
+func (ramRepo *ramRepository) GetAll(page int, pageSize int) []model.Ram {
+	var rams []model.Ram
+	offset := (page - 1) * pageSize
+	ramRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&rams)
+	return rams
 }
 
 func (ramRepo *ramRepository) GetById(id uuid.UUID) (model.Ram, error) {
@@ -36,10 +40,16 @@ func (ramRepo *ramRepository) GetById(id uuid.UUID) (model.Ram, error) {
 	return ram, result.Error
 }
 
-func (ramRepo *ramRepository) GetByName(name string) (model.Ram, error) {
-	var ram model.Ram
-	result := ramRepo.Database.Preload("Product").Find(&ram, "name = ?", name)
-	return ram, result.Error
+func (ramRepo *ramRepository) SearchByName(page int, pageSize int, name string) ([]model.Ram, error) {
+	var rams []model.Ram
+	offset := (page - 1) * pageSize
+	result := ramRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = rams.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&rams)
+	return rams, result.Error
 }
 
 func (ramRepo *ramRepository) Create(ram model.Ram) error {

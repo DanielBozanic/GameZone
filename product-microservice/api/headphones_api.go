@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewHeadphonesAPI(headphonesService service.IHeadphonesService) HeadphonesAP
 }
 
 func (headphonesApi *HeadphonesAPI) GetAll(c *gin.Context) {
-	headphoness := headphonesApi.IHeadphonesService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	headphoness := headphonesApi.IHeadphonesService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"headphoness": mapper.ToHeadphonesDTOs(headphoness)})
 }
 
@@ -41,11 +49,18 @@ func (headphonesApi *HeadphonesAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (headphonesApi *HeadphonesAPI) GetByName(c *gin.Context) {
-	headphones, err := headphonesApi.IHeadphonesService.GetByName(c.Param("name"))
+func (headphonesApi *HeadphonesAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	headphones, err := headphonesApi.IHeadphonesService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"headphones": mapper.ToHeadphonesDTO(headphones)})
+		c.JSON(http.StatusOK, gin.H{"headphones": mapper.ToHeadphonesDTOs(headphones)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}

@@ -14,9 +14,9 @@ type processorService struct {
 }
 
 type IProcessorService interface {
-	GetAll() ([] model.Processor)
+	GetAll(page int, pageSize int) ([] model.Processor)
 	GetById(id uuid.UUID) (model.Processor, error)
-	GetByName(name string) (model.Processor, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Processor, error)
 	Create(processor model.Processor) error
 	Update(processorDTO dto.ProcessorDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewProcessorService(processorRepository repository.IProcessorRepository) IP
 	return &processorService{IProcessorRepository: processorRepository}
 }
 
-func (processorService *processorService) GetAll() []model.Processor {
-	return processorService.IProcessorRepository.GetAll()
+func (processorService *processorService) GetAll(page int, pageSize int) []model.Processor {
+	return processorService.IProcessorRepository.GetAll(page, pageSize)
 }
 
 func (processorService *processorService) GetById(id uuid.UUID) (model.Processor, error) {
 	return processorService.IProcessorRepository.GetById(id)
 }
 
-func (processorService *processorService) GetByName(name string) (model.Processor, error) {
-	return processorService.IProcessorRepository.GetByName(name)
+func (processorService *processorService) SearchByName(page int, pageSize int, name string) ([]model.Processor, error) {
+	return processorService.IProcessorRepository.SearchByName(page, pageSize, name)
 }
 
 func (processorService *processorService) Create(processor model.Processor) error {

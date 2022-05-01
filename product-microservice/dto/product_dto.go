@@ -15,4 +15,5 @@ type ProductDTO struct {
 	Price decimal.Decimal
 	Amount uint
 	Type model.Type
+	Image string
 }

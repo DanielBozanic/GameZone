@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,13 @@ func NewVideoGameAPI(videoGameService service.IVideoGameService) VideoGameAPI {
 }
 
 func (videoGameApi *VideoGameAPI) GetAll(c *gin.Context) {
-	videoGames := videoGameApi.IVideoGameService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	videoGames := videoGameApi.IVideoGameService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"video_games": mapper.ToVideoGameDTOs(videoGames)})
 }
 
@@ -41,8 +48,14 @@ func (videoGameApi *VideoGameAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (videoGameApi *VideoGameAPI) GetByName(c *gin.Context) {
-	videoGames, err := videoGameApi.IVideoGameService.GetByName(c.Param("name"))
+func (videoGameApi *VideoGameAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	videoGames, err := videoGameApi.IVideoGameService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
 		c.JSON(http.StatusOK, gin.H{"video_games": mapper.ToVideoGameDTOs(videoGames)})

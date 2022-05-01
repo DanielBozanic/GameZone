@@ -12,9 +12,9 @@ type powerSupplyUnitRepository struct {
 }
 
 type IPowerSupplyUnitRepository interface {
-	GetAll() ([] model.PowerSupplyUnit)
+	GetAll(page int, pageSize int) ([] model.PowerSupplyUnit)
 	GetById(id uuid.UUID) (model.PowerSupplyUnit, error)
-	GetByName(name string) (model.PowerSupplyUnit, error)
+	SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error)
 	Create(powerSupplyUnit model.PowerSupplyUnit) error
 	Update(powerSupplyUnit model.PowerSupplyUnit) error
 	Delete(powerSupplyUnit model.PowerSupplyUnit) error
@@ -24,9 +24,13 @@ func NewPowerSupplyUnitRepository(DB *gorm.DB) IPowerSupplyUnitRepository {
 	return &powerSupplyUnitRepository{Database: DB}
 }
 
-func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll() []model.PowerSupplyUnit {
+func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll(page int, pageSize int) []model.PowerSupplyUnit {
 	var powerSupplyUnits []model.PowerSupplyUnit
-	powerSupplyUnitRepo.Database.Preload("Product").Find(&powerSupplyUnits)
+	offset := (page - 1) * pageSize
+	powerSupplyUnitRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&powerSupplyUnits)
 	return powerSupplyUnits
 }
 
@@ -36,10 +40,16 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetById(id uuid.UUID) (mod
 	return powerSupplyUnit, result.Error
 }
 
-func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetByName(name string) (model.PowerSupplyUnit, error) {
-	var powerSupplyUnit model.PowerSupplyUnit
-	result := powerSupplyUnitRepo.Database.Preload("Product").Find(&powerSupplyUnit, "name = ?", name)
-	return powerSupplyUnit, result.Error
+func (powerSupplyUnitRepo *powerSupplyUnitRepository) SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error) {
+	var powerSupplyUnits []model.PowerSupplyUnit
+	offset := (page - 1) * pageSize
+	result := powerSupplyUnitRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = power_supply_units.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&powerSupplyUnits)
+	return powerSupplyUnits, result.Error
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) Create(powerSupplyUnit model.PowerSupplyUnit) error {

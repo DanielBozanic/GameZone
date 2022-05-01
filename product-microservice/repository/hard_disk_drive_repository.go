@@ -12,9 +12,9 @@ type hardDiskDriveRepository struct {
 }
 
 type IHardDiskDriveRepository interface {
-	GetAll() ([] model.HardDiskDrive)
+	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
 	GetById(id uuid.UUID) (model.HardDiskDrive, error)
-	GetByName(name string) (model.HardDiskDrive, error)
+	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
 	Create(hardDiskDrive model.HardDiskDrive) error
 	Update(hardDiskDrive model.HardDiskDrive) error
 	Delete(hardDiskDrive model.HardDiskDrive) error
@@ -24,9 +24,13 @@ func NewHardDiskDriveRepository(DB *gorm.DB) IHardDiskDriveRepository {
 	return &hardDiskDriveRepository{Database: DB}
 }
 
-func (hardDiskDriveRepo *hardDiskDriveRepository) GetAll() []model.HardDiskDrive {
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetAll(page int, pageSize int) []model.HardDiskDrive {
 	var hardDiskDrives []model.HardDiskDrive
-	hardDiskDriveRepo.Database.Preload("Product").Find(&hardDiskDrives)
+	offset := (page - 1) * pageSize
+	hardDiskDriveRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Find(&hardDiskDrives)
 	return hardDiskDrives
 }
 
@@ -36,10 +40,16 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetById(id uuid.UUID) (model.H
 	return hardDiskDrive, result.Error
 }
 
-func (hardDiskDriveRepo *hardDiskDriveRepository) GetByName(name string) (model.HardDiskDrive, error) {
-	var hardDiskDrive model.HardDiskDrive
-	result := hardDiskDriveRepo.Database.Preload("Product").Find(&hardDiskDrive, "name = ?", name)
-	return hardDiskDrive, result.Error
+func (hardDiskDriveRepo *hardDiskDriveRepository) SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error) {
+	var hardDiskDrives []model.HardDiskDrive
+	offset := (page - 1) * pageSize
+	result := hardDiskDriveRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&hardDiskDrives)
+	return hardDiskDrives, result.Error
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) Create(hardDiskDrive model.HardDiskDrive) error {

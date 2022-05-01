@@ -14,9 +14,9 @@ type consoleService struct {
 }
 
 type IConsoleService interface {
-	GetAll() ([] model.Console)
+	GetAll(page int, pageSize int) ([] model.Console)
 	GetById(id uuid.UUID) (model.Console, error)
-	GetByName(name string) (model.Console, error)
+	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
 	Create(videoGame model.Console) error
 	Update(videoGameDTO dto.ConsoleDTO) error
 	Delete(id uuid.UUID) error
@@ -26,16 +26,16 @@ func NewConsoleService(consoleRepository repository.IConsoleRepository) IConsole
 	return &consoleService{IConsoleRepository: consoleRepository}
 }
 
-func (consoleService *consoleService) GetAll() []model.Console {
-	return consoleService.IConsoleRepository.GetAll()
+func (consoleService *consoleService) GetAll(page int, pageSize int) []model.Console {
+	return consoleService.IConsoleRepository.GetAll(page, pageSize)
 }
 
 func (consoleService *consoleService) GetById(id uuid.UUID) (model.Console, error) {
 	return consoleService.IConsoleRepository.GetById(id)
 }
 
-func (consoleService *consoleService) GetByName(name string) (model.Console, error) {
-	return consoleService.IConsoleRepository.GetByName(name)
+func (consoleService *consoleService) SearchByName(page int, pageSize int, name string) ([]model.Console, error) {
+	return consoleService.IConsoleRepository.SearchByName(page, pageSize, name)
 }
 
 func (consoleService *consoleService) Create(console model.Console) error {

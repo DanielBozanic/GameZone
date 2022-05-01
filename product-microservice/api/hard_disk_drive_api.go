@@ -4,6 +4,7 @@ import (
 	"product/dto"
 	"product/mapper"
 	"product/service"
+	"strconv"
 
 	"net/http"
 
@@ -21,7 +22,14 @@ func NewHardDiskDriveAPI(hardDiskDriveService service.IHardDiskDriveService) Har
 }
 
 func (hardDiskDriveApi *HardDiskDriveAPI) GetAll(c *gin.Context) {
-	hardDiskDrives := hardDiskDriveApi.IHardDiskDriveService.GetAll()
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+	
+	hardDiskDrives := hardDiskDriveApi.IHardDiskDriveService.GetAll(page, pageSize)
 	c.JSON(http.StatusOK, gin.H{"hard_disk_drives": mapper.ToHardDiskDriveDTOs(hardDiskDrives)})
 }
 
@@ -41,11 +49,18 @@ func (hardDiskDriveApi *HardDiskDriveAPI) GetByID(c *gin.Context) {
 	}
 }
 
-func (hardDiskDriveApi *HardDiskDriveAPI) GetByName(c *gin.Context) {
-	hardDiskDrive, err := hardDiskDriveApi.IHardDiskDriveService.GetByName(c.Param("name"))
+func (hardDiskDriveApi *HardDiskDriveAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+    }
+
+	hardDiskDrives, err := hardDiskDriveApi.IHardDiskDriveService.SearchByName(page, pageSize, c.Query("name"))
 	
 	if err == nil {
-		c.JSON(http.StatusOK, gin.H{"hard_disk_drive": mapper.ToHardDiskDriveDTO(hardDiskDrive)})
+		c.JSON(http.StatusOK, gin.H{"hard_disk_drives": mapper.ToHardDiskDriveDTOs(hardDiskDrives)})
 	} else {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
