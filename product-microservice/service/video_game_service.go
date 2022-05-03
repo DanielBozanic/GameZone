@@ -18,6 +18,9 @@ type IVideoGameService interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
+	Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error)
+	GetPlatforms() []string
+	GetGenres() []string
 	Create(videoGame model.VideoGame) error
 	Update(videoGameDTO dto.VideoGameDTO) error
 	Delete(id uuid.UUID) error
@@ -37,6 +40,18 @@ func (videoGameService *videoGameService) GetById(id uuid.UUID) (model.VideoGame
 
 func (videoGameService *videoGameService) SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error) {
 	return videoGameService.IVideoGameRepository.SearchByName(page, pageSize, name)
+}
+
+func (videoGameService *videoGameService) Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error) {
+	return videoGameService.IVideoGameRepository.Filter(page, pageSize, filter)
+}
+
+func (videoGameService *videoGameService) GetPlatforms() []string {
+	return videoGameService.IVideoGameRepository.GetPlatforms()
+}
+
+func (videoGameService *videoGameService) GetGenres() []string {
+	return videoGameService.IVideoGameRepository.GetGenres()
 }
 
 func (videoGameService *videoGameService) Create(game model.VideoGame) error {

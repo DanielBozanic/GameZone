@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"product/dto"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -15,6 +16,9 @@ type IVideoGameRepository interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
+	Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error)
+	GetPlatforms() []string
+	GetGenres() []string
 	Create(videoGame model.VideoGame) error
 	Update(videoGame model.VideoGame) error
 	Delete(videoGame model.VideoGame) error
@@ -50,6 +54,39 @@ func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, n
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&games)
 	return games, result.Error
+}
+
+func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error) {
+	var games []model.VideoGame
+	offset := (page - 1) * pageSize
+	result := videoGameRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Where("(platform IN ? OR ?) AND (genre IN ? OR ?)", 
+			filter.Platforms, 
+			len(filter.Platforms) == 0, 
+			filter.Genres, 
+			len(filter.Genres) == 0).
+		Find(&games)
+	return games, result.Error
+}
+
+func (videoGameRepo *videoGameRepository) GetPlatforms() []string {
+	var platforms []string
+	videoGameRepo.Database.
+		Model(&model.VideoGame{}).
+		Distinct().
+		Pluck("platform", &platforms)
+	return platforms
+}
+
+func (videoGameRepo *videoGameRepository) GetGenres() []string {
+	var genres []string
+	videoGameRepo.Database.
+		Model(&model.VideoGame{}).
+		Distinct().
+		Pluck("genre", &genres)
+	return genres
 }
 
 func (videoGameRepo *videoGameRepository) Create(game model.VideoGame) error {

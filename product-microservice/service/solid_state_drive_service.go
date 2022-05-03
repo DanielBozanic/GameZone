@@ -17,6 +17,12 @@ type ISolidStateDriveService interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetById(id uuid.UUID) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
+	Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
+	GetCapacities() []string
+	GetForms() []string
+	GetManufacturers() []string
+	GetMaxSequentialReads() []string
+	GetMaxSequentialWrites() []string
 	Create(solidStateDrive model.SolidStateDrive) error
 	Update(solidStateDriveDTO dto.SolidStateDriveDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +42,30 @@ func (solidStateDriveService *solidStateDriveService) GetById(id uuid.UUID) (mod
 
 func (solidStateDriveService *solidStateDriveService) SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.SearchByName(page, pageSize, name)
+}
+
+func (solidStateDriveService *solidStateDriveService) Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
+	return solidStateDriveService.ISolidStateDriveRepository.Filter(page, pageSize, filter)
+}
+
+func (solidStateDriveService *solidStateDriveService) GetCapacities() []string {
+	return solidStateDriveService.ISolidStateDriveRepository.GetCapacities()
+}
+
+func (solidStateDriveService *solidStateDriveService) GetForms() []string {
+	return solidStateDriveService.ISolidStateDriveRepository.GetForms()
+}
+
+func (solidStateDriveService *solidStateDriveService) GetManufacturers() []string {
+	return solidStateDriveService.ISolidStateDriveRepository.GetManufacturers()
+}
+
+func (solidStateDriveService *solidStateDriveService) GetMaxSequentialReads() []string {
+	return solidStateDriveService.ISolidStateDriveRepository.GetMaxSequentialReads()
+}
+
+func (solidStateDriveService *solidStateDriveService) GetMaxSequentialWrites() []string {
+	return solidStateDriveService.ISolidStateDriveRepository.GetMaxSequentialWrites()
 }
 
 func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) error {

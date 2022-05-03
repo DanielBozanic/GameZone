@@ -64,6 +64,40 @@ func (videoGameApi *VideoGameAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (videoGameApi *VideoGameAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter dto.VideoGameFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	videoGames, err := videoGameApi.IVideoGameService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToVideoGameDTOs(videoGames))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (videoGameApi *VideoGameAPI) GetPlatforms(c *gin.Context) {
+	platforms := videoGameApi.IVideoGameService.GetPlatforms()
+	c.JSON(http.StatusOK, platforms)
+}
+
+func (videoGameApi *VideoGameAPI) GetGenres(c *gin.Context) {
+	genres := videoGameApi.IVideoGameService.GetGenres()
+	c.JSON(http.StatusOK, genres)
+}
+
 func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
 	var videoGameDTO dto.VideoGameDTO
 	err := c.BindJSON(&videoGameDTO)

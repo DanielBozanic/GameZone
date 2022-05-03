@@ -104,10 +104,6 @@ func (productService *productService) AddProductToCart(productId uuid.UUID, user
 	}
 
 	if msg == "" {
-		
-		if err != nil {
-			return msg, err
-		}
 		productService.IProductRepository.AddPurchase(productPurchase);
 	}
 	return msg, nil
