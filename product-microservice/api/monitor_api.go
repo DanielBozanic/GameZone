@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,50 @@ func (monitorApi *MonitorAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (monitorApi *MonitorAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.MonitorFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	monitors, err := monitorApi.IMonitorService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToMonitorDTOs(monitors))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (monitorApi *MonitorAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := monitorApi.IMonitorService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (monitorApi *MonitorAPI) GetAspectRatios(c *gin.Context) {
+	aspectRatios := monitorApi.IMonitorService.GetAspectRatios()
+	c.JSON(http.StatusOK, aspectRatios)
+}
+
+func (monitorApi *MonitorAPI) GetResolutions(c *gin.Context) {
+	resolutions := monitorApi.IMonitorService.GetResolutions()
+	c.JSON(http.StatusOK, resolutions)
+}
+
+func (monitorApi *MonitorAPI) GetRefreshRates(c *gin.Context) {
+	refreshRates := monitorApi.IMonitorService.GetRefreshRates()
+	c.JSON(http.StatusOK, refreshRates)
 }
 
 func (monitorApi *MonitorAPI) Create(c *gin.Context) {

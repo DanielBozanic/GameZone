@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,51 @@ func (ramApi *RamAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (ramApi *RamAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.RAMFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	rams, err := ramApi.IRamService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToRamDTOs(rams))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (ramApi *RamAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := ramApi.IRamService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (ramApi *RamAPI) GetCapacities(c *gin.Context) {
+	capacities := ramApi.IRamService.GetCapacities()
+	c.JSON(http.StatusOK, capacities)
+}
+
+func (ramApi *RamAPI) GetMemoryTypes(c *gin.Context) {
+	memoryTypes := ramApi.IRamService.GetMemoryTypes()
+	c.JSON(http.StatusOK, memoryTypes)
+}
+
+
+func (ramApi *RamAPI) GetSpeeds(c *gin.Context) {
+	speeds := ramApi.IRamService.GetSpeeds()
+	c.JSON(http.StatusOK, speeds)
 }
 
 func (ramApi *RamAPI) Create(c *gin.Context) {

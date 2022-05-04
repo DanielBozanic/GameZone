@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"product/dto/filter"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -15,6 +16,8 @@ type IConsoleRepository interface {
 	GetAll(page int, pageSize int) ([] model.Console)
 	GetById(id uuid.UUID) (model.Console, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
+	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
+	GetPlatforms() []string
 	Create(videoGame model.Console) error
 	Update(videoGame model.Console) error
 	Delete(videoGame model.Console) error
@@ -50,6 +53,28 @@ func (consoleRepo *consoleRepository) SearchByName(page int, pageSize int, name 
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&consoles)
 	return consoles, result.Error
+}
+
+func (consoleRepo *consoleRepository) Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error) {
+	var consoles []model.Console
+	offset := (page - 1) * pageSize
+	result := consoleRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Where(`(platform IN ? OR ?)`,
+				filter.Platforms,
+				len(filter.Platforms) == 0).
+		Find(&consoles)
+	return consoles, result.Error
+}
+
+func (consoleRepo *consoleRepository) GetPlatforms() []string {
+	var platforms []string
+	consoleRepo.Database.
+		Model(&model.Ram{}).
+		Distinct().
+		Pluck("platform", &platforms)
+	return platforms
 }
 
 func (consoleRepo *consoleRepository) Create(console model.Console) error {

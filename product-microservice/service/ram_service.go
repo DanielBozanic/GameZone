@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,11 @@ type IRamService interface {
 	GetAll(page int, pageSize int) ([] model.Ram)
 	GetById(id uuid.UUID) (model.Ram, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
+	Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error)
+	GetManufacturers() []string
+	GetCapacities() []string
+	GetMemoryTypes() []string
+	GetSpeeds() []string
 	Create(ram model.Ram) error
 	Update(ramDTO dto.RamDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +42,27 @@ func (ramService *ramService) GetById(id uuid.UUID) (model.Ram, error) {
 
 func (ramService *ramService) SearchByName(page int, pageSize int, name string) ([]model.Ram, error) {
 	return ramService.IRamRepository.SearchByName(page, pageSize, name)
+}
+
+func (ramService *ramService) Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error) {
+	return ramService.IRamRepository.Filter(page, pageSize, filter)
+}
+
+func (ramService *ramService) GetManufacturers() []string {
+	return ramService.IRamRepository.GetManufacturers()
+}
+
+func (ramService *ramService) GetCapacities() []string {
+	return ramService.IRamRepository.GetCapacities()
+}
+
+func (ramService *ramService) GetMemoryTypes() []string {
+	return ramService.IRamRepository.GetMemoryTypes()
+}
+
+
+func (ramService *ramService) GetSpeeds() []string {
+	return ramService.IRamRepository.GetSpeeds()
 }
 
 func (ramService *ramService) Create(ram model.Ram) error {

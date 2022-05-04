@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -74,7 +75,7 @@ func (solidStateDriveApi *SolidStateDriveAPI) Filter(c *gin.Context) {
 		return
     }
 
-	var filter dto.SolidStateDriveFilter
+	var filter filter.SolidStateDriveFilter
 	err = c.BindJSON(&filter)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())

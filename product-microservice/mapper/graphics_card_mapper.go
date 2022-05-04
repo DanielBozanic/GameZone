@@ -9,6 +9,7 @@ import (
 func ToGraphicsCard(graphicsCardDTO dto.GraphicsCardDTO) (model.GraphicsCard) {
 	return model.GraphicsCard {
 		Product: model.Product(graphicsCardDTO.Product),
+		ChipManufacturer: graphicsCardDTO.ChipManufacturer,
 		ModelName: graphicsCardDTO.ModelName,
 		BusWidth: graphicsCardDTO.BusWidth,
 		MemorySize: graphicsCardDTO.MemorySize,
@@ -28,6 +29,7 @@ func ToGraphicsCard(graphicsCardDTO dto.GraphicsCardDTO) (model.GraphicsCard) {
 func ToGraphicsCardDTO(graphicsCard model.GraphicsCard) dto.GraphicsCardDTO {
 	return dto.GraphicsCardDTO {
 		Product: dto.ProductDTO(graphicsCard.Product),
+		ChipManufacturer: graphicsCard.ChipManufacturer,
 		ModelName: graphicsCard.ModelName,
 		BusWidth: graphicsCard.BusWidth,
 		MemorySize: graphicsCard.MemorySize,

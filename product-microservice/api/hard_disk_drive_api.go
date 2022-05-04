@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,50 @@ func (hardDiskDriveApi *HardDiskDriveAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.HardDiskDriveFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	hardDiskDrives, err := hardDiskDriveApi.IHardDiskDriveService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToHardDiskDriveDTOs(hardDiskDrives))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) GetCapacities(c *gin.Context) {
+	capacities := hardDiskDriveApi.IHardDiskDriveService.GetCapacities()
+	c.JSON(http.StatusOK, capacities)
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) GetForms(c *gin.Context) {
+	forms := hardDiskDriveApi.IHardDiskDriveService.GetForms()
+	c.JSON(http.StatusOK, forms)
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := hardDiskDriveApi.IHardDiskDriveService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) GetDiskSpeeds(c *gin.Context) {
+	diskSpeeds := hardDiskDriveApi.IHardDiskDriveService.GetDiskSpeeds()
+	c.JSON(http.StatusOK, diskSpeeds)
 }
 
 func (hardDiskDriveApi *HardDiskDriveAPI) Create(c *gin.Context) {

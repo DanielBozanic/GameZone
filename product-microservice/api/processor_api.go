@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,55 @@ func (processorApi *ProcessorAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (processorApi *ProcessorAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.ProcessorFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	processors, err := processorApi.IProcessorService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToProcessorDTOs(processors))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (processorApi *ProcessorAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := processorApi.IProcessorService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (processorApi *ProcessorAPI) GetTypes(c *gin.Context) {
+	types := processorApi.IProcessorService.GetTypes()
+	c.JSON(http.StatusOK, types)
+}
+
+func (processorApi *ProcessorAPI) GetSockets(c *gin.Context) {
+	sockets := processorApi.IProcessorService.GetSockets()
+	c.JSON(http.StatusOK, sockets)
+}
+
+func (processorApi *ProcessorAPI) GetNumberOfCores(c *gin.Context) {
+	numberOfCores := processorApi.IProcessorService.GetNumberOfCores()
+	c.JSON(http.StatusOK, numberOfCores)
+}
+
+func (processorApi *ProcessorAPI) GetThreads(c *gin.Context) {
+	threads := processorApi.IProcessorService.GetThreads()
+	c.JSON(http.StatusOK, threads)
 }
 
 func (processorApi *ProcessorAPI) Create(c *gin.Context) {

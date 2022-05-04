@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,45 @@ func (mouseApi *MouseAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (mouseApi *MouseAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.MouseFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	mouse, err := mouseApi.IMouseService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToMouseDTOs(mouse))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (mouseApi *MouseAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := mouseApi.IMouseService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (mouseApi *MouseAPI) GetDPIs(c *gin.Context) {
+	DPIs := mouseApi.IMouseService.GetDPIs()
+	c.JSON(http.StatusOK, DPIs)
+}
+
+func (mouseApi *MouseAPI) GetConnections(c *gin.Context) {
+	connections := mouseApi.IMouseService.GetConnections()
+	c.JSON(http.StatusOK, connections)
 }
 
 func (mouseApi *MouseAPI) Create(c *gin.Context) {

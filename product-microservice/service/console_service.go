@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,8 @@ type IConsoleService interface {
 	GetAll(page int, pageSize int) ([] model.Console)
 	GetById(id uuid.UUID) (model.Console, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
+	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
+	GetPlatforms() []string
 	Create(videoGame model.Console) error
 	Update(videoGameDTO dto.ConsoleDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +39,14 @@ func (consoleService *consoleService) GetById(id uuid.UUID) (model.Console, erro
 
 func (consoleService *consoleService) SearchByName(page int, pageSize int, name string) ([]model.Console, error) {
 	return consoleService.IConsoleRepository.SearchByName(page, pageSize, name)
+}
+
+func (consoleService *consoleService) Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error) {
+	return consoleService.IConsoleRepository.Filter(page, pageSize, filter)
+}
+
+func (consoleService *consoleService) GetPlatforms() []string {
+	return consoleService.IConsoleRepository.GetPlatforms()
 }
 
 func (consoleService *consoleService) Create(console model.Console) error {

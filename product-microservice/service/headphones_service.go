@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,9 @@ type IHeadphonesService interface {
 	GetAll(page int, pageSize int) ([] model.Headphones)
 	GetById(id uuid.UUID) (model.Headphones, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
+	Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error)
+	GetManufacturers() []string
+	GetConnectionTypes() []string
 	Create(headphones model.Headphones) error
 	Update(headphonesDTO dto.HeadphonesDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +40,18 @@ func (headphonesService *headphonesService) GetById(id uuid.UUID) (model.Headpho
 
 func (headphonesService *headphonesService) SearchByName(page int, pageSize int, name string) ([]model.Headphones, error) {
 	return headphonesService.IHeadphonesRepository.SearchByName(page, pageSize, name)
+}
+
+func (headphonesService *headphonesService) Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error) {
+	return headphonesService.IHeadphonesRepository.Filter(page, pageSize, filter)
+}
+
+func (headphonesService *headphonesService) GetManufacturers() []string {
+	return headphonesService.IHeadphonesRepository.GetManufacturers()
+}
+
+func (headphonesService *headphonesService) GetConnectionTypes() []string {
+	return headphonesService.IHeadphonesRepository.GetConnectionTypes()
 }
 
 func (headphonesService *headphonesService) Create(headphones model.Headphones) error {

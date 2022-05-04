@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,7 +18,7 @@ type ISolidStateDriveService interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetById(id uuid.UUID) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
-	Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
+	Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
 	GetCapacities() []string
 	GetForms() []string
 	GetManufacturers() []string
@@ -44,7 +45,7 @@ func (solidStateDriveService *solidStateDriveService) SearchByName(page int, pag
 	return solidStateDriveService.ISolidStateDriveRepository.SearchByName(page, pageSize, name)
 }
 
-func (solidStateDriveService *solidStateDriveService) Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
+func (solidStateDriveService *solidStateDriveService) Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.Filter(page, pageSize, filter)
 }
 

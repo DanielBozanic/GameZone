@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"product/dto"
+	"product/dto/filter"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ type IVideoGameRepository interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
-	Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error)
+	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
 	GetPlatforms() []string
 	GetGenres() []string
 	Create(videoGame model.VideoGame) error
@@ -56,7 +56,7 @@ func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, n
 	return games, result.Error
 }
 
-func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error) {
+func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error) {
 	var games []model.VideoGame
 	offset := (page - 1) * pageSize
 	result := videoGameRepo.Database.

@@ -1,6 +1,6 @@
 package dto
 
 type ConsoleDTO struct {
-	Product ProductDTO
+	Product  ProductDTO
 	Platform string
 }

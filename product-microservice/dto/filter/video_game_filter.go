@@ -1,4 +1,4 @@
-package dto
+package filter
 
 type VideoGameFilter struct {
 	Platforms []string

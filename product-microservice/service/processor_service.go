@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,12 @@ type IProcessorService interface {
 	GetAll(page int, pageSize int) ([] model.Processor)
 	GetById(id uuid.UUID) (model.Processor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Processor, error)
+	Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error)
+	GetManufacturers() []string
+	GetTypes() []string
+	GetSockets() []string
+	GetNumberOfCores() []uint
+	GetThreads() []uint
 	Create(processor model.Processor) error
 	Update(processorDTO dto.ProcessorDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +43,31 @@ func (processorService *processorService) GetById(id uuid.UUID) (model.Processor
 
 func (processorService *processorService) SearchByName(page int, pageSize int, name string) ([]model.Processor, error) {
 	return processorService.IProcessorRepository.SearchByName(page, pageSize, name)
+}
+
+func (processorService *processorService) Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error) {
+	return processorService.IProcessorRepository.Filter(page, pageSize, filter)
+}
+
+func (processorService *processorService) GetManufacturers() []string {
+	return processorService.IProcessorRepository.GetManufacturers()
+}
+
+func (processorService *processorService) GetTypes() []string {
+	return processorService.IProcessorRepository.GetManufacturers()
+}
+
+func (processorService *processorService) GetSockets() []string {
+	return processorService.IProcessorRepository.GetSockets()
+}
+
+
+func (processorService *processorService) GetNumberOfCores() []uint {
+	return processorService.IProcessorRepository.GetNumberOfCores()
+}
+
+func (processorService *processorService) GetThreads() []uint {
+	return processorService.IProcessorRepository.GetThreads()
 }
 
 func (processorService *processorService) Create(processor model.Processor) error {

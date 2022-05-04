@@ -23,6 +23,7 @@ func ToMotherboard(motherboardDTO dto.MotherboardDTO) (model.Motherboard) {
 		BackPanelConnectors: motherboardDTO.BackPanelConnectors,
 		InternalConnectors: motherboardDTO.InternalConnectors,
 		BIOS: motherboardDTO.BIOS,
+		FormFactor: motherboardDTO.FormFactor,
 	}
 }
 
@@ -43,6 +44,7 @@ func ToMotherboardDTO(motherboard model.Motherboard) dto.MotherboardDTO {
 		BackPanelConnectors: motherboard.BackPanelConnectors,
 		InternalConnectors: motherboard.InternalConnectors,
 		BIOS: motherboard.BIOS,
+		FormFactor: motherboard.FormFactor,
 	}
 }
 

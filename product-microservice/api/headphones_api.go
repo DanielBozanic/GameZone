@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,40 @@ func (headphonesApi *HeadphonesAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (headphonesApi *HeadphonesAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.HeadphonesFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	headphones, err := headphonesApi.IHeadphonesService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToHeadphonesDTOs(headphones))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (headphonesApi *HeadphonesAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := headphonesApi.IHeadphonesService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (headphonesApi *HeadphonesAPI) GetConnectionTypes(c *gin.Context) {
+	connectionTypes := headphonesApi.IHeadphonesService.GetConnectionTypes()
+	c.JSON(http.StatusOK, connectionTypes)
 }
 
 func (headphonesApi *HeadphonesAPI) Create(c *gin.Context) {

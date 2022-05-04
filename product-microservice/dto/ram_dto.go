@@ -1,10 +1,10 @@
 package dto
 
 type RamDTO struct {
-	Product ProductDTO 
+	Product    ProductDTO
 	MemoryType string
-	Capacity string
-	Speed string
-	Voltage string
-	Latency string
+	Capacity   string
+	Speed      string
+	Voltage    string
+	Latency    string
 }

@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,50 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.PowerSupplyUnitFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	powerSupplyUnits, err := powerSupplyUnitApi.IPowerSupplyUnitService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToPowerSupplyUnitDTOs(powerSupplyUnits))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := powerSupplyUnitApi.IPowerSupplyUnitService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetPowers(c *gin.Context) {
+	powers := powerSupplyUnitApi.IPowerSupplyUnitService.GetPowers()
+	c.JSON(http.StatusOK, powers)
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetTypes(c *gin.Context) {
+	types := powerSupplyUnitApi.IPowerSupplyUnitService.GetTypes()
+	c.JSON(http.StatusOK, types)
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetFormFactors(c *gin.Context) {
+	formFactors := powerSupplyUnitApi.IPowerSupplyUnitService.GetFormFactors()
+	c.JSON(http.StatusOK, formFactors)
 }
 
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) Create(c *gin.Context) {

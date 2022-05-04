@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"product/dto/filter"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -15,6 +16,11 @@ type IHardDiskDriveRepository interface {
 	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
 	GetById(id uuid.UUID) (model.HardDiskDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
+	Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error)
+	GetCapacities() []string
+	GetForms() []string
+	GetManufacturers() []string
+	GetDiskSpeeds() []string
 	Create(hardDiskDrive model.HardDiskDrive) error
 	Update(hardDiskDrive model.HardDiskDrive) error
 	Delete(hardDiskDrive model.HardDiskDrive) error
@@ -50,6 +56,67 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) SearchByName(page int, pageSiz
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&hardDiskDrives)
 	return hardDiskDrives, result.Error
+}
+
+func (hardDiskDriveRepo *hardDiskDriveRepository) Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error) {
+	var hdds []model.HardDiskDrive
+	offset := (page - 1) * pageSize
+	result := hardDiskDriveRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where(`(capacity IN ? OR ?) AND 
+				(form IN ? OR ?) AND 
+				(products.manufacturer IN ? OR ?) AND 
+				(disk_speed IN ? OR ?)`,
+			filter.Capacities, 
+			len(filter.Capacities) == 0, 
+			filter.Forms, 
+			len(filter.Forms) == 0,
+			filter.Manufacturers, 
+			len(filter.Manufacturers) == 0,
+			filter.DiskSpeeds, 
+			len(filter.DiskSpeeds) == 0).
+		Find(&hdds)
+	return hdds, result.Error
+}
+
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetCapacities() []string {
+	var capacities []string
+	hardDiskDriveRepo.Database.
+		Model(&model.HardDiskDrive{}).
+		Distinct().
+		Pluck("capacity", &capacities)
+	return capacities
+}
+
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetForms() []string {
+	var forms []string
+	hardDiskDriveRepo.Database.
+		Model(&model.HardDiskDrive{}).
+		Distinct().
+		Pluck("form", &forms)
+	return forms
+}
+
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetManufacturers() []string {
+	var manufacturers []string
+	hardDiskDriveRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Model(&model.HardDiskDrive{}).
+		Distinct().
+		Pluck("products.manufacturer", &manufacturers)
+	return manufacturers
+}
+
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetDiskSpeeds() []string {
+	var diskSpeeds []string
+	hardDiskDriveRepo.Database.
+		Model(&model.HardDiskDrive{}).
+		Distinct().
+		Pluck("disk_speed", &diskSpeeds)
+	return diskSpeeds
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) Create(hardDiskDrive model.HardDiskDrive) error {

@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,11 @@ type IHardDiskDriveService interface {
 	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
 	GetById(id uuid.UUID) (model.HardDiskDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
+	Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error)
+	GetCapacities() []string
+	GetForms() []string
+	GetManufacturers() []string
+	GetDiskSpeeds() []string
 	Create(hardDiskDrive model.HardDiskDrive) error
 	Update(hardDiskDriveDTO dto.HardDiskDriveDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +42,26 @@ func (hardDiskDriveService *hardDiskDriveService) GetById(id uuid.UUID) (model.H
 
 func (hardDiskDriveService *hardDiskDriveService) SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error) {
 	return hardDiskDriveService.IHardDiskDriveRepository.SearchByName(page, pageSize, name)
+}
+
+func (hardDiskDriveService *hardDiskDriveService) Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error) {
+	return hardDiskDriveService.IHardDiskDriveRepository.Filter(page, pageSize, filter)
+}
+
+func (hardDiskDriveService *hardDiskDriveService) GetCapacities() []string {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetCapacities()
+}
+
+func (hardDiskDriveService *hardDiskDriveService) GetForms() []string {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetForms()
+}
+
+func (hardDiskDriveService *hardDiskDriveService) GetManufacturers() []string {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetManufacturers()
+}
+
+func (hardDiskDriveService *hardDiskDriveService) GetDiskSpeeds() []string {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetDiskSpeeds()
 }
 
 func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.HardDiskDrive) error {

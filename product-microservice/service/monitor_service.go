@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,11 @@ type IMonitorService interface {
 	GetAll(page int, pageSize int) ([] model.Monitor)
 	GetById(id uuid.UUID) (model.Monitor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
+	Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error)
+	GetManufacturers() []string
+	GetAspectRatios() []string
+	GetResolutions() []string
+	GetRefreshRates() []string
 	Create(monitor model.Monitor) error
 	Update(monitorDTO dto.MonitorDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +42,26 @@ func (monitorService *monitorService) GetById(id uuid.UUID) (model.Monitor, erro
 
 func (monitorService *monitorService) SearchByName(page int, pageSize int, name string) ([]model.Monitor, error) {
 	return monitorService.IMonitorRepository.SearchByName(page, pageSize, name)
+}
+
+func (monitorService *monitorService) Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error) {
+	return monitorService.IMonitorRepository.Filter(page, pageSize, filter)
+}
+
+func (monitorService *monitorService) GetManufacturers() []string {
+	return monitorService.IMonitorRepository.GetManufacturers()
+}
+
+func (monitorService *monitorService) GetAspectRatios() []string {
+	return monitorService.IMonitorRepository.GetAspectRatios()
+}
+
+func (monitorService *monitorService) GetResolutions() []string {
+	return monitorService.IMonitorRepository.GetResolutions()
+}
+
+func (monitorService *monitorService) GetRefreshRates() []string {
+	return monitorService.IMonitorRepository.GetRefreshRates()
 }
 
 func (monitorService *monitorService) Create(monitor model.Monitor) error {

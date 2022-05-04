@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,50 @@ func (motherboardApi *MotherboardAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (motherboardApi *MotherboardAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.MotherboardFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	motherboards, err := motherboardApi.IMotherboardService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToMotherboardDTOs(motherboards))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (motherboardApi *MotherboardAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := motherboardApi.IMotherboardService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (motherboardApi *MotherboardAPI) GetProcessorTypes(c *gin.Context) {
+	processorTypes := motherboardApi.IMotherboardService.GetProcessorTypes()
+	c.JSON(http.StatusOK, processorTypes)
+}
+
+func (motherboardApi *MotherboardAPI) GetSockets(c *gin.Context) {
+	sockets := motherboardApi.IMotherboardService.GetSockets()
+	c.JSON(http.StatusOK, sockets)
+}
+
+func (motherboardApi *MotherboardAPI) GetFormFactors(c *gin.Context) {
+	formFactors := motherboardApi.IMotherboardService.GetFormFactors()
+	c.JSON(http.StatusOK, formFactors)
 }
 
 func (motherboardApi *MotherboardAPI) Create(c *gin.Context) {

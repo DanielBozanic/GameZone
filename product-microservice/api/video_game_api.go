@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -72,7 +73,7 @@ func (videoGameApi *VideoGameAPI) Filter(c *gin.Context) {
 		return
     }
 
-	var filter dto.VideoGameFilter
+	var filter filter.VideoGameFilter
 	err = c.BindJSON(&filter)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())

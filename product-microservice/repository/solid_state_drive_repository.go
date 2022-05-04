@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"product/dto"
+	"product/dto/filter"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -16,7 +16,7 @@ type ISolidStateDriveRepository interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetById(id uuid.UUID) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
-	Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
+	Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
 	GetCapacities() []string
 	GetForms() []string
 	GetManufacturers() []string
@@ -59,7 +59,7 @@ func (solidStateDriveRepo *solidStateDriveRepository) SearchByName(page int, pag
 	return solidStateDrives, result.Error
 }
 
-func (solidStateDriveRepo *solidStateDriveRepository) Filter(page int, pageSize int, filter dto.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
+func (solidStateDriveRepo *solidStateDriveRepository) Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
 	var ssds []model.SolidStateDrive
 	offset := (page - 1) * pageSize
 	result := solidStateDriveRepo.Database.
@@ -68,7 +68,7 @@ func (solidStateDriveRepo *solidStateDriveRepository) Filter(page int, pageSize 
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
 		Where(`(capacity IN ? OR ?) AND 
 				(form IN ? OR ?) AND 
-				(manufacturer IN ? OR ?) AND 
+				(products.manufacturer IN ? OR ?) AND 
 				(max_sequential_read IN ? OR ?) AND 
 				(max_sequential_write IN ? OR ?)`,
 			filter.Capacities, 

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"product/dto/filter"
 	"product/model"
 
 	"github.com/google/uuid"
@@ -15,6 +16,10 @@ type IKeyboardRepository interface {
 	GetAll(page int, pageSize int) ([] model.Keyboard)
 	GetById(id uuid.UUID) (model.Keyboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
+	Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error)
+	GetManufacturers() []string
+	GetKeyboardConnectors() []string
+	GetKeyTypes() []string
 	Create(keyboard model.Keyboard) error
 	Update(keyboard model.Keyboard) error
 	Delete(keyboard model.Keyboard) error
@@ -50,6 +55,58 @@ func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, nam
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&keyboards)
 	return keyboards, result.Error
+}
+
+func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error) {
+	var keyboards []model.Keyboard
+	offset := (page - 1) * pageSize
+	result := keyboardRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Product").
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(wireless IN ? OR ?) AND 
+				(keyboard_connector IN ? OR ?) AND
+				(key_type IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Wireless,
+				len(filter.Wireless) == 0,
+				filter.KeyboardConnectors,
+				len(filter.KeyboardConnectors) == 0,
+				filter.KeyTypes,
+				len(filter.KeyTypes) == 0).
+		Find(&keyboards)
+	return keyboards, result.Error
+}
+
+func (keyboardRepo *keyboardRepository) GetManufacturers() []string {
+	var manufacturers []string
+	keyboardRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Model(&model.Keyboard{}).
+		Distinct().
+		Pluck("products.manufacturer", &manufacturers)
+	return manufacturers
+}
+
+func (keyboardRepo *keyboardRepository) GetKeyboardConnectors() []string {
+	var keyboardConnectors []string
+	keyboardRepo.Database.
+		Model(&model.Keyboard{}).
+		Distinct().
+		Pluck("keyboard_connector", &keyboardConnectors)
+	return keyboardConnectors
+}
+
+func (keyboardRepo *keyboardRepository) GetKeyTypes() []string {
+	var keyTypes []string
+	keyboardRepo.Database.
+		Model(&model.Keyboard{}).
+		Distinct().
+		Pluck("key_type", &keyTypes)
+	return keyTypes
 }
 
 func (keyboardRepo *keyboardRepository) Create(keyboard model.Keyboard) error {

@@ -1,4 +1,4 @@
-package dto
+package filter
 
 type SolidStateDriveFilter struct {
 	Manufacturers       []string

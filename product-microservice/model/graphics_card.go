@@ -7,6 +7,7 @@ import (
 type GraphicsCard struct {
 	Product Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	ProductId uuid.UUID `gorm:"primaryKey"`
+	ChipManufacturer string `gorm:"type:varchar(40);not null"`
 	ModelName string `gorm:"type:varchar(100);not null"`
 	BusWidth string  `gorm:"type:varchar(30);not null"`
 	MemorySize string `gorm:"type:varchar(30);not null"`

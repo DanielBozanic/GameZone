@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -64,6 +65,45 @@ func (keyboardApi *KeyboardAPI) SearchByName(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (keyboardApi *KeyboardAPI) Filter(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	var filter filter.KeyboardFilter
+	err = c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	keyboards, err := keyboardApi.IKeyboardService.Filter(page, pageSize, filter)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToKeyboardDTOs(keyboards))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
+func (keyboardApi *KeyboardAPI) GetManufacturers(c *gin.Context) {
+	manufacturers := keyboardApi.IKeyboardService.GetManufacturers()
+	c.JSON(http.StatusOK, manufacturers)
+}
+
+func (keyboardApi *KeyboardAPI) GetKeyboardConnectors(c *gin.Context) {
+	keyboardConnectors := keyboardApi.IKeyboardService.GetKeyboardConnectors()
+	c.JSON(http.StatusOK, keyboardConnectors)
+}
+
+func (keyboardApi *KeyboardAPI) GetKeyTypes(c *gin.Context) {
+	keyTypes := keyboardApi.IKeyboardService.GetKeyTypes()
+	c.JSON(http.StatusOK, keyTypes)
 }
 
 func (keyboardApi *KeyboardAPI) Create(c *gin.Context) {

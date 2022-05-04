@@ -21,4 +21,5 @@ type Motherboard struct {
 	BackPanelConnectors string `gorm:"type:text;not null"`
 	InternalConnectors string `gorm:"type:text;not null"`
 	BIOS string `gorm:"type:text;not null"`
+	FormFactor string `gorm:"type:varchar(40);not null"`
 }

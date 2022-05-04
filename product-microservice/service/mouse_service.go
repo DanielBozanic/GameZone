@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,10 @@ type IMouseService interface {
 	GetAll(page int, pageSize int) ([] model.Mouse)
 	GetById(id uuid.UUID) (model.Mouse, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
+	Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error)
+	GetManufacturers() []string
+	GetDPIs() []string
+	GetConnections() []string
 	Create(mouse model.Mouse) error
 	Update(mouseDTO dto.MouseDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +41,22 @@ func (mouseService *mouseService) GetById(id uuid.UUID) (model.Mouse, error) {
 
 func (mouseService *mouseService) SearchByName(page int, pageSize int, name string) ([]model.Mouse, error) {
 	return mouseService.IMouseRepository.SearchByName(page, pageSize, name)
+}
+
+func (mouseService *mouseService) Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error) {
+	return mouseService.IMouseRepository.Filter(page, pageSize, filter)
+}
+
+func (mouseService *mouseService) GetManufacturers() []string {
+	return mouseService.IMouseRepository.GetManufacturers()
+}
+
+func (mouseService *mouseService) GetDPIs() []string {
+	return mouseService.IMouseRepository.GetDPIs()
+}
+
+func (mouseService *mouseService) GetConnections() []string {
+	return mouseService.IMouseRepository.GetConnections()
 }
 
 func (mouseService *mouseService) Create(mouse model.Mouse) error {

@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -18,7 +19,7 @@ type IVideoGameService interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
-	Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error)
+	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
 	GetPlatforms() []string
 	GetGenres() []string
 	Create(videoGame model.VideoGame) error
@@ -42,7 +43,7 @@ func (videoGameService *videoGameService) SearchByName(page int, pageSize int, n
 	return videoGameService.IVideoGameRepository.SearchByName(page, pageSize, name)
 }
 
-func (videoGameService *videoGameService) Filter(page int, pageSize int, filter dto.VideoGameFilter) ([]model.VideoGame, error) {
+func (videoGameService *videoGameService) Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error) {
 	return videoGameService.IVideoGameRepository.Filter(page, pageSize, filter)
 }
 

@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,12 @@ type IGraphicsCardService interface {
 	GetAll(page int, pageSize int) ([] model.GraphicsCard)
 	GetById(id uuid.UUID) (model.GraphicsCard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
+	Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error)
+	GetManufacturers() []string
+	GetChipManufacturers() []string
+	GetMemorySizes() []string
+	GetMemoryTypes() []string
+	GetModelNames() []string
 	Create(graphicsCard model.GraphicsCard) error
 	Update(graphicsCardDTO dto.GraphicsCardDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +43,30 @@ func (graphicsCardService *graphicsCardService) GetById(id uuid.UUID) (model.Gra
 
 func (graphicsCardService *graphicsCardService) SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error) {
 	return graphicsCardService.IGraphicsCardRepository.SearchByName(page, pageSize, name)
+}
+
+func (graphicsCardService *graphicsCardService) Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error) {
+	return graphicsCardService.IGraphicsCardRepository.Filter(page, pageSize, filter)
+}
+
+func (graphicsCardService *graphicsCardService) GetManufacturers() []string {
+	return graphicsCardService.IGraphicsCardRepository.GetManufacturers()
+}
+
+func (graphicsCardService *graphicsCardService) GetChipManufacturers() []string {
+	return graphicsCardService.IGraphicsCardRepository.GetChipManufacturers()
+}
+
+func (graphicsCardService *graphicsCardService) GetMemorySizes() []string {
+	return graphicsCardService.IGraphicsCardRepository.GetMemorySizes()
+}
+
+func (graphicsCardService *graphicsCardService) GetMemoryTypes() []string {
+	return graphicsCardService.IGraphicsCardRepository.GetMemoryTypes()
+}
+
+func (graphicsCardService *graphicsCardService) GetModelNames() []string {
+	return graphicsCardService.IGraphicsCardRepository.GetModelNames()
 }
 
 func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) error {

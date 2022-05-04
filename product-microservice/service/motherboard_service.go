@@ -2,6 +2,7 @@ package service
 
 import (
 	"product/dto"
+	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
@@ -17,6 +18,11 @@ type IMotherboardService interface {
 	GetAll(page int, pageSize int) ([] model.Motherboard)
 	GetById(id uuid.UUID) (model.Motherboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error)
+	Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error)
+	GetManufacturers() []string
+	GetProcessorTypes() []string
+	GetSockets() []string
+	GetFormFactors() []string
 	Create(motherboard model.Motherboard) error
 	Update(motherboardDTO dto.MotherboardDTO) error
 	Delete(id uuid.UUID) error
@@ -36,6 +42,27 @@ func (motherboardService *motherboardService) GetById(id uuid.UUID) (model.Mothe
 
 func (motherboardService *motherboardService) SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error) {
 	return motherboardService.IMotherboardRepository.SearchByName(page, pageSize, name)
+}
+
+func (motherboardService *motherboardService) Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error) {
+	return motherboardService.IMotherboardRepository.Filter(page, pageSize, filter)
+}
+
+func (motherboardService *motherboardService) GetManufacturers() []string {
+	return motherboardService.IMotherboardRepository.GetManufacturers()
+}
+
+func (motherboardService *motherboardService) GetProcessorTypes() []string {
+	return motherboardService.IMotherboardRepository.GetProcessorTypes()
+}
+
+func (motherboardService *motherboardService) GetSockets() []string {
+	return motherboardService.IMotherboardRepository.GetSockets()
+}
+
+
+func (motherboardService *motherboardService) GetFormFactors() []string {
+	return motherboardService.IMotherboardRepository.GetFormFactors()
 }
 
 func (motherboardService *motherboardService) Create(motherboard model.Motherboard) error {
