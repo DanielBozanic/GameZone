@@ -12,5 +12,5 @@ type Product struct {
 	Price decimal.Decimal `gorm:"type:numeric;not null"`
 	Amount uint `gorm:"not null"`
 	Type Type `gorm:"not null"`
-	Image string `gorm:"type:blob;not null"`
+	Image string `gorm:"type:LONGBLOB;not null"`
 }

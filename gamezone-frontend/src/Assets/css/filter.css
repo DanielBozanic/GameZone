@@ -1,0 +1,63 @@
+.main-container {
+  display: flex;
+}
+
+.filter-button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: rgb(33, 37, 41);
+  color: orange;
+  font-weight: bold;
+  width: 100%;
+  max-width: 100px;
+}
+
+.modal-content {
+  background-color: rgb(33, 37, 41);
+  color: orange;
+  font-weight: bold;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+.btn-close {
+  background-image: url("../images/orange-cross.png");
+}
+
+.confirm-filter-btn {
+  background-color: orange;
+  color: rgb(33, 37, 41);
+  font-weight: bold;
+}
+
+.search-bar {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding-right: 50px;
+  color: orange;
+  font-weight: bold;
+  background-color: rgb(33, 37, 41);
+  border: 1px solid rgb(33, 37, 41);
+}
+
+.search-bar:focus {
+  background-color: rgb(33, 37, 41);
+  color: orange;
+  font-weight: bold;
+}
+
+.search-btn {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: rgb(33, 37, 41);
+  color: orange;
+  font-weight: bold;
+  width: 100%;
+  max-width: 100px;
+}

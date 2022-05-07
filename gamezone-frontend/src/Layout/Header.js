@@ -1,5 +1,6 @@
-import { Row, Col, Container } from "reactstrap";
 import logo from "../Assets/images/logo.PNG";
+import "../Assets/css/header.css";
+import { Row, Col, Container } from "reactstrap";
 
 const Header = () => {
   return (

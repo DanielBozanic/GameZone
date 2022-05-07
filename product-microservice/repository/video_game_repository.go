@@ -14,6 +14,7 @@ type videoGameRepository struct {
 
 type IVideoGameRepository interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
+	GetPageCount(pageSize int) int
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
 	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
@@ -36,6 +37,14 @@ func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) []model
 		Preload("Product").
 		Find(&games)
 	return games
+}
+
+func (videoGameRepo *videoGameRepository) GetPageCount(pageSize int) int {
+	var games []model.VideoGame
+	videoGameRepo.Database.
+		Preload("Product").
+		Find(&games)
+	return len(games)
 }
 
 func (videoGameRepo *videoGameRepository) GetById(id uuid.UUID) (model.VideoGame, error) {

@@ -1,16 +1,10 @@
-import { Row, Col, Container } from "reactstrap";
 import logo from "../Assets/images/logo.PNG";
+import "../Assets/css/footer.css";
 
 const Footer = () => {
   return (
     <div className="footer">
-      <Container>
-        <Row>
-          <Col>
-            <img src={logo} alt="Logo" className="responsive-img-footer" />
-          </Col>
-        </Row>
-      </Container>
+      <img src={logo} alt="Logo" className="responsive-img-footer" />
     </div>
   );
 };

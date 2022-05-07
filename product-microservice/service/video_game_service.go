@@ -17,6 +17,7 @@ type videoGameService struct {
 
 type IVideoGameService interface {
 	GetAll(page int, pageSize int) ([] model.VideoGame)
+	GetPageCount(pageSize int) int
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
 	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
@@ -33,6 +34,10 @@ func NewVideoGameService(videoGameRepository repository.IVideoGameRepository) IV
 
 func (videoGameService *videoGameService) GetAll(page int, pageSize int) []model.VideoGame {
 	return videoGameService.IVideoGameRepository.GetAll(page, pageSize)
+}
+
+func (videoGameService *videoGameService) GetPageCount(pageSize int) int {
+	return videoGameService.IVideoGameRepository.GetPageCount(pageSize)
 }
 
 func (videoGameService *videoGameService) GetById(id uuid.UUID) (model.VideoGame, error) {

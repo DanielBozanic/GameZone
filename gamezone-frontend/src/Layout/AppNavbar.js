@@ -1,3 +1,4 @@
+import "../Assets/css/app-navbar.css";
 import { Link } from "react-router-dom";
 import {
   Navbar,
@@ -19,7 +20,7 @@ const AppNavbar = () => {
 
   return (
     <div className="navbar">
-      <Navbar color="dark" expand="md">
+      <Navbar color="dark" expand="md" dark>
         <NavbarToggler onClick={toggleNavbar} className="mr-2" />
         <Collapse isOpen={!collapsed} navbar>
           <Nav className="me-auto" navbar>
@@ -38,17 +39,48 @@ const AppNavbar = () => {
                 Hardware components
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem>Option 1</DropdownItem>
-                <DropdownItem>Option 2</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Reset</DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Graphics cards</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">RAMs</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Motherboards</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Processors</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Solid state drives</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Hard disk drives</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Monitors</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Power supply units</Link>
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
-            <NavItem>
-              <NavLink>
-                <Link to="/">Accessories</Link>
-              </NavLink>
-            </NavItem>
+            <UncontrolledDropdown inNavbar nav>
+              <DropdownToggle caret nav>
+                Accessories
+              </DropdownToggle>
+              <DropdownMenu right>
+                <DropdownItem>
+                  <Link to="/">Headphones</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Keyboards</Link>
+                </DropdownItem>
+                <DropdownItem>
+                  <Link to="/">Mice</Link>
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
           </Nav>
         </Collapse>
       </Navbar>

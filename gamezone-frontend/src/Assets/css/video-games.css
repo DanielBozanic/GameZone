@@ -1,0 +1,44 @@
+.card-row {
+  padding-top: 20px;
+}
+
+.card-with-image {
+  width: 10vw;
+  min-width: 120px;
+  max-width: 160px;
+  background: rgb(33, 37, 41);
+  color: orange;
+}
+
+.card-image {
+  width: 100%;
+  height: auto;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding-top: 30px;
+}
+
+.page-link {
+  background: rgb(33, 37, 41);
+  color: orange;
+  border: 1px solid rgb(33, 37, 41);
+  font-weight: bold;
+}
+
+.page-item.disabled .page-link {
+  background: rgb(33, 37, 41);
+  color: orange;
+  border: 1px solid rgb(33, 37, 41);
+  font-weight: bold;
+}
+
+.page-item.active .page-link {
+  background-color: orange;
+  color: rgb(33, 37, 41);
+  font-weight: bold;
+}

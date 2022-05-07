@@ -1,0 +1,52 @@
+.navbar {
+  padding-top: 30px;
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  color: orange;
+}
+
+.navbar a {
+  color: orange;
+  font-weight: bold;
+}
+
+.navbar a:link {
+  text-decoration: none;
+}
+
+.navbar a:visited {
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  text-decoration: none;
+}
+
+.navbar a:active {
+  text-decoration: none;
+}
+
+.navbar-dark .navbar-toggler-icon {
+  background-image: url("../images/navbar-icon.png");
+}
+
+.navbar-dark .navbar-nav .nav-link:focus,
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: orange;
+  font-weight: bold;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+  color: orange;
+  font-weight: bold;
+}
+
+.dropdown-menu {
+  background-color: rgb(33, 37, 41);
+}
+
+.dropdown-item {
+  color: orange;
+  font-weight: bold;
+}

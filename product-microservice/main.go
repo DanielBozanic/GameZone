@@ -6,7 +6,9 @@ import (
 	"product/db"
 	"product/di"
 	"product/middleware"
+	"time"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,6 +26,17 @@ func main() {
 		log.Fatal("Error while connecting to database: ", databaseError)
 	}
 
+	r := gin.Default()
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},
+		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge: 12 * time.Hour,
+	  }))
+
+
 	productAPI := di.InitProductAPI(database)
 	videoGameAPI := di.InitVideoGameAPI(database)
 	consoleAPI := di.InitConsoleAPI(database)
@@ -38,8 +51,6 @@ func main() {
 	keyboardAPI := di.InitKeyboardAPI(database)
 	mouseAPI := di.InitMouseAPI(database)
 	headphonesAPI := di.InitHeadphonesAPI(database)
-
-	r := gin.Default()
 
 	api := r.Group("/api/products")
 
@@ -66,6 +77,7 @@ func main() {
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/confirmPurchase", productAPI.ConfirmPurchase)
 
 	videoGames.GET("", videoGameAPI.GetAll)
+	videoGames.GET("/getPageCount", videoGameAPI.GetPageCount)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
 	videoGames.GET("/searchByName", videoGameAPI.SearchByName)
 	videoGames.POST("/filter", videoGameAPI.Filter)
