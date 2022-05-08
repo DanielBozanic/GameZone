@@ -3,6 +3,7 @@ package api
 import (
 	"product/dto"
 	"product/dto/filter"
+	"product/dto/pagination"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -29,18 +30,11 @@ func (videoGameApi *VideoGameAPI) GetAll(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
     }
-	videoGames := videoGameApi.IVideoGameService.GetAll(page, pageSize)
-	c.JSON(http.StatusOK, mapper.ToVideoGameDTOs(videoGames))
-}
-
-func (videoGameApi *VideoGameAPI) GetPageCount(c *gin.Context) {
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-	pageCount := videoGameApi.IVideoGameService.GetPageCount(pageSize)
-	c.JSON(http.StatusOK, pageCount)
+	videoGames, pageCount := videoGameApi.IVideoGameService.GetAll(page, pageSize)
+	var videoGamesPag pagination.VideoGamesPag
+	videoGamesPag.VideoGames = mapper.ToVideoGameDTOs(videoGames)
+	videoGamesPag.PageCount = pageCount
+	c.JSON(http.StatusOK, videoGamesPag)
 }
 
 func (videoGameApi *VideoGameAPI) GetByID(c *gin.Context) {

@@ -20,7 +20,6 @@
   align-items: center;
   justify-content: center;
   flex: 1;
-  padding-top: 30px;
 }
 
 .page-link {
@@ -41,4 +40,12 @@
   background-color: orange;
   color: rgb(33, 37, 41);
   font-weight: bold;
+}
+
+.pagination-padding {
+  padding-top: 380px;
+}
+
+.pagination-padding-normal {
+  padding-top: 20px;
 }

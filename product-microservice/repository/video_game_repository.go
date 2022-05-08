@@ -13,8 +13,7 @@ type videoGameRepository struct {
 }
 
 type IVideoGameRepository interface {
-	GetAll(page int, pageSize int) ([] model.VideoGame)
-	GetPageCount(pageSize int) int
+	GetAll(page int, pageSize int) ([] model.VideoGame, int)
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
 	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
@@ -29,22 +28,18 @@ func NewVideoGameRepository(DB *gorm.DB) IVideoGameRepository {
 	return &videoGameRepository{Database: DB}
 }
 
-func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) []model.VideoGame {
+func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) ([]model.VideoGame, int) {
+	var allGames []model.VideoGame
 	var games []model.VideoGame
 	offset := (page - 1) * pageSize
 	videoGameRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Preload("Product").
 		Find(&games)
-	return games
-}
-
-func (videoGameRepo *videoGameRepository) GetPageCount(pageSize int) int {
-	var games []model.VideoGame
 	videoGameRepo.Database.
 		Preload("Product").
-		Find(&games)
-	return len(games)
+		Find(&allGames)
+	return games, len(allGames)
 }
 
 func (videoGameRepo *videoGameRepository) GetById(id uuid.UUID) (model.VideoGame, error) {

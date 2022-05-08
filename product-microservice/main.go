@@ -77,7 +77,6 @@ func main() {
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/confirmPurchase", productAPI.ConfirmPurchase)
 
 	videoGames.GET("", videoGameAPI.GetAll)
-	videoGames.GET("/getPageCount", videoGameAPI.GetPageCount)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
 	videoGames.GET("/searchByName", videoGameAPI.SearchByName)
 	videoGames.POST("/filter", videoGameAPI.Filter)

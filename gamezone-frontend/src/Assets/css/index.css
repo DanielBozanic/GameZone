@@ -1,3 +1,37 @@
 body {
   background-image: url("../images/background.jpg");
 }
+
+.full-page {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  display: block;
+  top: 0;
+  left: 0;
+  background-size: cover;
+  background-position: center center;
+}
+
+.full-page .footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  background: rgb(33, 37, 41);
+  color: orange;
+  font-size: 30px;
+  padding: 10px 0 10px 0;
+  height: 135px;
+}
+
+.full-page > .app-content,
+.full-page > .footer {
+  position: relative;
+  z-index: 4;
+}
+
+.app-content {
+  height: calc(100% - 270px);
+  overflow-y: auto;
+}

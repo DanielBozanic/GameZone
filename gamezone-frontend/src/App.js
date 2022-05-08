@@ -8,15 +8,17 @@ import VideoGames from "./Pages/VideoGames";
 
 function App() {
   return (
-    <div className="App">
+    <div className="full-page">
       <Header />
-      <Router>
-        <Fragment>
-          <Routes>
-            <Route path="/" element={<VideoGames />} />
-          </Routes>
-        </Fragment>
-      </Router>
+      <div className="app-content">
+        <Router>
+          <Fragment>
+            <Routes>
+              <Route path="/" element={<VideoGames />} />
+            </Routes>
+          </Fragment>
+        </Router>
+      </div>
       <Footer />
     </div>
   );

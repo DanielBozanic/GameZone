@@ -15,46 +15,35 @@ import {
   PaginationLink,
 } from "reactstrap";
 import axios from "axios";
+import cn from "classnames";
 import { useState, useEffect } from "react";
 
 const VideoGames = () => {
   const [videoGames, setVideoGames] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState([]);
-  const [pageSize, setPageSize] = useState(8);
-
-  useEffect(() => {
-    getPageCount();
-    getVideoGames();
-  }, [currentPage]);
+  const pageSize = 8;
 
   const handleClick = (e, index) => {
     e.preventDefault();
     setCurrentPage(index);
   };
 
-  const getPageCount = () => {
-    axios
-      .get(
-        `http://localhost:7000/api/products/videoGames/getPageCount?pageSize=${pageSize}`
-      )
-      .then((res) => {
-        let pc = Math.ceil(res.data / pageSize);
-        setPageCount(pc);
-      })
-      .catch((err) => {});
-  };
+  useEffect(() => {
+    const getVideoGames = () => {
+      axios
+        .get(
+          `http://localhost:7000/api/products/videoGames?page=${currentPage}&pageSize=${pageSize}`
+        )
+        .then((res) => {
+          setVideoGames(res.data.VideoGames);
+          setPageCount(Math.ceil(res.data.PageCount / pageSize));
+        })
+        .catch((err) => {});
+    };
 
-  const getVideoGames = () => {
-    axios
-      .get(
-        `http://localhost:7000/api/products/videoGames?page=${currentPage}&pageSize=${pageSize}`
-      )
-      .then((res) => {
-        setVideoGames(res.data);
-      })
-      .catch((err) => {});
-  };
+    getVideoGames();
+  }, [currentPage]);
 
   return (
     <>
@@ -103,23 +92,26 @@ const VideoGames = () => {
             )
           )}
         </Row>
-        <Row className="pagination">
+        <Row
+          className={cn(
+            "pagination",
+            videoGames.length < 4
+              ? "pagination-padding"
+              : "pagination-padding-normal"
+          )}
+        >
           <Col md="12">
             <Pagination size="lg">
               <PaginationItem disabled={currentPage <= 1}>
                 <PaginationLink
                   onClick={(e) => handleClick(e, currentPage - 1)}
                   previous
-                  href="#"
                 />
               </PaginationItem>
 
               {[...Array(pageCount)].map((page, i) => (
                 <PaginationItem active={i === currentPage - 1} key={i}>
-                  <PaginationLink
-                    onClick={(e) => handleClick(e, i + 1)}
-                    href="#"
-                  >
+                  <PaginationLink onClick={(e) => handleClick(e, i + 1)}>
                     {i + 1}
                   </PaginationLink>
                 </PaginationItem>
@@ -128,7 +120,6 @@ const VideoGames = () => {
                 <PaginationLink
                   onClick={(e) => handleClick(e, currentPage + 1)}
                   next
-                  href="#"
                 />
               </PaginationItem>
             </Pagination>

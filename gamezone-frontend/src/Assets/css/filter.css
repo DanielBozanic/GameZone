@@ -3,8 +3,8 @@
 }
 
 .filter-button {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   background-color: rgb(33, 37, 41);
   color: orange;
   font-weight: bold;
@@ -37,8 +37,8 @@
 }
 
 .search-bar {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   padding-right: 50px;
   color: orange;
   font-weight: bold;
@@ -53,11 +53,20 @@
 }
 
 .search-btn {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   background-color: rgb(33, 37, 41);
   color: orange;
   font-weight: bold;
   width: 100%;
   max-width: 100px;
+}
+
+@media screen and (min-width: 768px) {
+  .filter-button,
+  .search-bar,
+  .search-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 }
