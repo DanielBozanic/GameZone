@@ -16,9 +16,12 @@ type headphonesService struct {
 
 type IHeadphonesService interface {
 	GetAll(page int, pageSize int) ([] model.Headphones)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Headphones, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error)
+	GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64
 	GetManufacturers() []string
 	GetConnectionTypes() []string
 	Create(headphones model.Headphones) error
@@ -34,6 +37,10 @@ func (headphonesService *headphonesService) GetAll(page int, pageSize int) []mod
 	return headphonesService.IHeadphonesRepository.GetAll(page, pageSize)
 }
 
+func (headphonesService *headphonesService) GetNumberOfRecords() int64 {
+	return headphonesService.IHeadphonesRepository.GetNumberOfRecords()
+}
+
 func (headphonesService *headphonesService) GetById(id uuid.UUID) (model.Headphones, error) {
 	return headphonesService.IHeadphonesRepository.GetById(id)
 }
@@ -42,8 +49,16 @@ func (headphonesService *headphonesService) SearchByName(page int, pageSize int,
 	return headphonesService.IHeadphonesRepository.SearchByName(page, pageSize, name)
 }
 
+func (headphonesService *headphonesService) GetNumberOfRecordsSearch(name string) int64 {
+	return headphonesService.IHeadphonesRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (headphonesService *headphonesService) Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error) {
 	return headphonesService.IHeadphonesRepository.Filter(page, pageSize, filter)
+}
+
+func (headphonesService *headphonesService) GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64 {
+	return headphonesService.IHeadphonesRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (headphonesService *headphonesService) GetManufacturers() []string {

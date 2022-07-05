@@ -16,9 +16,12 @@ type hardDiskDriveService struct {
 
 type IHardDiskDriveService interface {
 	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.HardDiskDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error)
+	GetNumberOfRecordsFilter(filter filter.HardDiskDriveFilter) int64
 	GetCapacities() []string
 	GetForms() []string
 	GetManufacturers() []string
@@ -36,6 +39,10 @@ func (hardDiskDriveService *hardDiskDriveService) GetAll(page int, pageSize int)
 	return hardDiskDriveService.IHardDiskDriveRepository.GetAll(page, pageSize)
 }
 
+func (hardDiskDriveService *hardDiskDriveService) GetNumberOfRecords() int64 {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetNumberOfRecords()
+}
+
 func (hardDiskDriveService *hardDiskDriveService) GetById(id uuid.UUID) (model.HardDiskDrive, error) {
 	return hardDiskDriveService.IHardDiskDriveRepository.GetById(id)
 }
@@ -44,8 +51,16 @@ func (hardDiskDriveService *hardDiskDriveService) SearchByName(page int, pageSiz
 	return hardDiskDriveService.IHardDiskDriveRepository.SearchByName(page, pageSize, name)
 }
 
+func (hardDiskDriveService *hardDiskDriveService) GetNumberOfRecordsSearch(name string) int64 {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (hardDiskDriveService *hardDiskDriveService) Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error) {
 	return hardDiskDriveService.IHardDiskDriveRepository.Filter(page, pageSize, filter)
+}
+
+func (hardDiskDriveService *hardDiskDriveService) GetNumberOfRecordsFilter(filter filter.HardDiskDriveFilter) int64 {
+	return hardDiskDriveService.IHardDiskDriveRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (hardDiskDriveService *hardDiskDriveService) GetCapacities() []string {

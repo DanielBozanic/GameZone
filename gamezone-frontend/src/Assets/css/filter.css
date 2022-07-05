@@ -1,72 +1,122 @@
 .main-container {
-  display: flex;
+	display: flex;
 }
 
 .filter-button {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  background-color: rgb(33, 37, 41);
-  color: orange;
-  font-weight: bold;
-  width: 100%;
-  max-width: 100px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
+	width: 100%;
+	max-width: 100px;
+}
+
+.filter-button:hover {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+	transition: 0.7s;
+}
+
+.filter-button:focus {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+}
+
+.filter-button:active {
+	background-color: orange;
+	color: rgb(33, 37, 41);
 }
 
 .modal-content {
-  background-color: rgb(33, 37, 41);
-  color: orange;
-  font-weight: bold;
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
 }
 
 .modal-header {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .modal-footer {
-  border-top: none;
+	border-top: none;
 }
 
 .btn-close {
-  background-image: url("../images/orange-cross.png");
+	background-image: url("../images/orange-cross.png");
 }
 
 .confirm-filter-btn {
-  background-color: orange;
-  color: rgb(33, 37, 41);
-  font-weight: bold;
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
+	border-color: orange;
+	border: 1px solid;
+}
+
+.confirm-filter-btn:hover {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+	transition: 0.7s;
+}
+
+.confirm-filter-btn:focus {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+}
+
+.confirm-filter-btn:active {
+	background-color: orange;
+	color: rgb(33, 37, 41);
 }
 
 .search-bar {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  padding-right: 50px;
-  color: orange;
-  font-weight: bold;
-  background-color: rgb(33, 37, 41);
-  border: 1px solid rgb(33, 37, 41);
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding-right: 50px;
+	color: orange;
+	font-weight: bold;
+	background-color: rgb(33, 37, 41);
+	border: 1px solid rgb(33, 37, 41);
 }
 
 .search-bar:focus {
-  background-color: rgb(33, 37, 41);
-  color: orange;
-  font-weight: bold;
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
 }
 
 .search-btn {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  background-color: rgb(33, 37, 41);
-  color: orange;
-  font-weight: bold;
-  width: 100%;
-  max-width: 100px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
+	width: 100%;
+	max-width: 100px;
+}
+
+.search-btn:hover {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+	transition: 0.7s;
+}
+
+.search-btn:focus {
+	background-color: orange;
+	color: rgb(33, 37, 41);
+}
+
+.search-btn:active {
+	background-color: orange;
+	color: rgb(33, 37, 41);
 }
 
 @media screen and (min-width: 768px) {
-  .filter-button,
-  .search-bar,
-  .search-btn {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
+	.filter-button,
+	.search-bar,
+	.search-btn {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
 }

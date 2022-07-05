@@ -34,6 +34,11 @@ func (ramApi *RamAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToRamDTOs(rams))
 }
 
+func (ramApi *RamAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := ramApi.IRamService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (ramApi *RamAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (ramApi *RamAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (ramApi *RamAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := ramApi.IRamService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (ramApi *RamAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (ramApi *RamAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (ramApi *RamAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.RAMFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := ramApi.IRamService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (ramApi *RamAPI) GetManufacturers(c *gin.Context) {

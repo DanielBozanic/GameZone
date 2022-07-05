@@ -13,10 +13,13 @@ type videoGameRepository struct {
 }
 
 type IVideoGameRepository interface {
-	GetAll(page int, pageSize int) ([] model.VideoGame, int)
+	GetAll(page int, pageSize int) [] model.VideoGame
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
+	GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64
 	GetPlatforms() []string
 	GetGenres() []string
 	Create(videoGame model.VideoGame) error
@@ -28,18 +31,20 @@ func NewVideoGameRepository(DB *gorm.DB) IVideoGameRepository {
 	return &videoGameRepository{Database: DB}
 }
 
-func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) ([]model.VideoGame, int) {
-	var allGames []model.VideoGame
+func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) ([]model.VideoGame) {
 	var games []model.VideoGame
 	offset := (page - 1) * pageSize
 	videoGameRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Preload("Product").
 		Find(&games)
-	videoGameRepo.Database.
-		Preload("Product").
-		Find(&allGames)
-	return games, len(allGames)
+	return games
+}
+
+func (videoGameRepo *videoGameRepository) GetNumberOfRecords() int64 {
+	var count int64
+	videoGameRepo.Database.Model(&model.VideoGame{}).Count(&count)
+	return count
 }
 
 func (videoGameRepo *videoGameRepository) GetById(id uuid.UUID) (model.VideoGame, error) {
@@ -60,12 +65,23 @@ func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, n
 	return games, result.Error
 }
 
+func (videoGameRepo *videoGameRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	videoGameRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = video_games.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
+}
+
 func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error) {
 	var games []model.VideoGame
 	offset := (page - 1) * pageSize
 	result := videoGameRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Preload("Product").
+		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("(platform IN ? OR ?) AND (genre IN ? OR ?)", 
 			filter.Platforms, 
 			len(filter.Platforms) == 0, 
@@ -73,6 +89,20 @@ func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter 
 			len(filter.Genres) == 0).
 		Find(&games)
 	return games, result.Error
+}
+
+func (videoGameRepo *videoGameRepository) GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64 {
+	var count int64
+	videoGameRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = video_games.product_id").
+		Where("(platform IN ? OR ?) AND (genre IN ? OR ?)", 
+			filter.Platforms, 
+			len(filter.Platforms) == 0, 
+			filter.Genres, 
+			len(filter.Genres) == 0).
+		Count(&count)
+	return count
 }
 
 func (videoGameRepo *videoGameRepository) GetPlatforms() []string {

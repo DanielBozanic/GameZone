@@ -16,9 +16,12 @@ type mouseService struct {
 
 type IMouseService interface {
 	GetAll(page int, pageSize int) ([] model.Mouse)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Mouse, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error)
+	GetNumberOfRecordsFilter(filter filter.MouseFilter) int64
 	GetManufacturers() []string
 	GetDPIs() []string
 	GetConnections() []string
@@ -35,6 +38,10 @@ func (mouseService *mouseService) GetAll(page int, pageSize int) []model.Mouse {
 	return mouseService.IMouseRepository.GetAll(page, pageSize)
 }
 
+func (mouseService *mouseService) GetNumberOfRecords() int64 {
+	return mouseService.IMouseRepository.GetNumberOfRecords()
+}
+
 func (mouseService *mouseService) GetById(id uuid.UUID) (model.Mouse, error) {
 	return mouseService.IMouseRepository.GetById(id)
 }
@@ -43,8 +50,16 @@ func (mouseService *mouseService) SearchByName(page int, pageSize int, name stri
 	return mouseService.IMouseRepository.SearchByName(page, pageSize, name)
 }
 
+func (mouseService *mouseService) GetNumberOfRecordsSearch(name string) int64 {
+	return mouseService.IMouseRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (mouseService *mouseService) Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error) {
 	return mouseService.IMouseRepository.Filter(page, pageSize, filter)
+}
+
+func (mouseService *mouseService) GetNumberOfRecordsFilter(filter filter.MouseFilter) int64 {
+	return mouseService.IMouseRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (mouseService *mouseService) GetManufacturers() []string {

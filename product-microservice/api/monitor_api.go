@@ -34,6 +34,11 @@ func (monitorApi *MonitorAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToMonitorDTOs(monitors))
 }
 
+func (monitorApi *MonitorAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := monitorApi.IMonitorService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (monitorApi *MonitorAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (monitorApi *MonitorAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (monitorApi *MonitorAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := monitorApi.IMonitorService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (monitorApi *MonitorAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (monitorApi *MonitorAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (monitorApi *MonitorAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.MonitorFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := monitorApi.IMonitorService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (monitorApi *MonitorAPI) GetManufacturers(c *gin.Context) {

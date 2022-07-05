@@ -16,9 +16,12 @@ type ramService struct {
 
 type IRamService interface {
 	GetAll(page int, pageSize int) ([] model.Ram)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Ram, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error)
+	GetNumberOfRecordsFilter(filter filter.RAMFilter) int64
 	GetManufacturers() []string
 	GetCapacities() []string
 	GetMemoryTypes() []string
@@ -36,6 +39,10 @@ func (ramService *ramService) GetAll(page int, pageSize int) []model.Ram {
 	return ramService.IRamRepository.GetAll(page, pageSize)
 }
 
+func (ramService *ramService) GetNumberOfRecords() int64 {
+	return ramService.IRamRepository.GetNumberOfRecords()
+}
+
 func (ramService *ramService) GetById(id uuid.UUID) (model.Ram, error) {
 	return ramService.IRamRepository.GetById(id)
 }
@@ -44,8 +51,16 @@ func (ramService *ramService) SearchByName(page int, pageSize int, name string) 
 	return ramService.IRamRepository.SearchByName(page, pageSize, name)
 }
 
+func (ramService *ramService) GetNumberOfRecordsSearch(name string) int64 {
+	return ramService.IRamRepository.GetNumberOfRecordsSearch(name)
+}
+ 
 func (ramService *ramService) Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error) {
 	return ramService.IRamRepository.Filter(page, pageSize, filter)
+}
+
+func (ramService *ramService) GetNumberOfRecordsFilter(filter filter.RAMFilter) int64 {
+	return ramService.IRamRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (ramService *ramService) GetManufacturers() []string {

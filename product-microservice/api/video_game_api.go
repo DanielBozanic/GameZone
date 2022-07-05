@@ -3,7 +3,6 @@ package api
 import (
 	"product/dto"
 	"product/dto/filter"
-	"product/dto/pagination"
 	"product/mapper"
 	"product/service"
 	"strconv"
@@ -30,11 +29,13 @@ func (videoGameApi *VideoGameAPI) GetAll(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
     }
-	videoGames, pageCount := videoGameApi.IVideoGameService.GetAll(page, pageSize)
-	var videoGamesPag pagination.VideoGamesPag
-	videoGamesPag.VideoGames = mapper.ToVideoGameDTOs(videoGames)
-	videoGamesPag.PageCount = pageCount
-	c.JSON(http.StatusOK, videoGamesPag)
+	videoGames := videoGameApi.IVideoGameService.GetAll(page, pageSize)
+	c.JSON(http.StatusOK, mapper.ToVideoGameDTOs(videoGames))
+}
+
+func (videoGameApi *VideoGameAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := videoGameApi.IVideoGameService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (videoGameApi *VideoGameAPI) GetByID(c *gin.Context) {
@@ -69,6 +70,11 @@ func (videoGameApi *VideoGameAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (videoGameApi *VideoGameAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := videoGameApi.IVideoGameService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (videoGameApi *VideoGameAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -91,6 +97,18 @@ func (videoGameApi *VideoGameAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (videoGameApi *VideoGameAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.VideoGameFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := videoGameApi.IVideoGameService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (videoGameApi *VideoGameAPI) GetPlatforms(c *gin.Context) {

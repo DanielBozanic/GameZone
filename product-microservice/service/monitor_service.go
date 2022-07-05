@@ -16,9 +16,12 @@ type monitorService struct {
 
 type IMonitorService interface {
 	GetAll(page int, pageSize int) ([] model.Monitor)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Monitor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error)
+	GetNumberOfRecordsFilter(filter filter.MonitorFilter) int64
 	GetManufacturers() []string
 	GetAspectRatios() []string
 	GetResolutions() []string
@@ -36,6 +39,10 @@ func (monitorService *monitorService) GetAll(page int, pageSize int) []model.Mon
 	return monitorService.IMonitorRepository.GetAll(page, pageSize)
 }
 
+func (monitorService *monitorService) GetNumberOfRecords() int64 {
+	return monitorService.IMonitorRepository.GetNumberOfRecords()
+}
+
 func (monitorService *monitorService) GetById(id uuid.UUID) (model.Monitor, error) {
 	return monitorService.IMonitorRepository.GetById(id)
 }
@@ -44,8 +51,16 @@ func (monitorService *monitorService) SearchByName(page int, pageSize int, name 
 	return monitorService.IMonitorRepository.SearchByName(page, pageSize, name)
 }
 
+func (monitorService *monitorService) GetNumberOfRecordsSearch(name string) int64 {
+	return monitorService.IMonitorRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (monitorService *monitorService) Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error) {
 	return monitorService.IMonitorRepository.Filter(page, pageSize, filter)
+}
+
+func (monitorService *monitorService) GetNumberOfRecordsFilter(filter filter.MonitorFilter) int64 {
+	return monitorService.IMonitorRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (monitorService *monitorService) GetManufacturers() []string {

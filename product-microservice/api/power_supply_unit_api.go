@@ -34,6 +34,11 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToPowerSupplyUnitDTOs(powerSupplyUnits))
 }
 
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := powerSupplyUnitApi.IPowerSupplyUnitService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := powerSupplyUnitApi.IPowerSupplyUnitService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.PowerSupplyUnitFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := powerSupplyUnitApi.IPowerSupplyUnitService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetManufacturers(c *gin.Context) {

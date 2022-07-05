@@ -34,6 +34,11 @@ func (motherboardApi *MotherboardAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToMotherboardDTOs(motherboards))
 }
 
+func (motherboardApi *MotherboardAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := motherboardApi.IMotherboardService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (motherboardApi *MotherboardAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (motherboardApi *MotherboardAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (motherboardApi *MotherboardAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := motherboardApi.IMotherboardService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (motherboardApi *MotherboardAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (motherboardApi *MotherboardAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (motherboardApi *MotherboardAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.MotherboardFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := motherboardApi.IMotherboardService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (motherboardApi *MotherboardAPI) GetManufacturers(c *gin.Context) {

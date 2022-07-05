@@ -14,9 +14,12 @@ type ramRepository struct {
 
 type IRamRepository interface {
 	GetAll(page int, pageSize int) ([] model.Ram)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Ram, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error)
+	GetNumberOfRecordsFilter(filter filter.RAMFilter) int64
 	GetManufacturers() []string
 	GetCapacities() []string
 	GetMemoryTypes() []string
@@ -40,6 +43,12 @@ func (ramRepo *ramRepository) GetAll(page int, pageSize int) []model.Ram {
 	return rams
 }
 
+func (ramRepo *ramRepository) GetNumberOfRecords() int64 {
+	var count int64
+	ramRepo.Database.Model(&model.Ram{}).Count(&count)
+	return count
+}
+
 func (ramRepo *ramRepository) GetById(id uuid.UUID) (model.Ram, error) {
 	var ram model.Ram
 	result := ramRepo.Database.Preload("Product").First(&ram, id)
@@ -56,6 +65,16 @@ func (ramRepo *ramRepository) SearchByName(page int, pageSize int, name string) 
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&rams)
 	return rams, result.Error
+}
+
+func (ramRepo *ramRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	ramRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = rams.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error) {
@@ -79,6 +98,27 @@ func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFi
 				len(filter.Speeds)).
 		Find(&rams)
 	return rams, result.Error
+}
+
+func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) int64 {
+	var count int64
+	ramRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = rams.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(capacity IN ? OR ?) AND 
+				(memory_type IN ? OR ?) AND 
+				(speed IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Capacities,
+				len(filter.Capacities) == 0,
+				filter.MemoryTypes,
+				len(filter.MemoryTypes) == 0,
+				filter.Speeds, 
+				len(filter.Speeds)).
+		Count(&count)
+	return count
 }
 
 func (ramRepo *ramRepository) GetManufacturers() []string {

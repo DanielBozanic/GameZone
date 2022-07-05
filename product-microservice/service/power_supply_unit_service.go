@@ -16,9 +16,12 @@ type powerSupplyUnitService struct {
 
 type IPowerSupplyUnitService interface {
 	GetAll(page int, pageSize int) ([] model.PowerSupplyUnit)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.PowerSupplyUnit, error)
 	SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.PowerSupplyUnitFilter) ([]model.PowerSupplyUnit, error)
+	GetNumberOfRecordsFilter(filter filter.PowerSupplyUnitFilter) int64
 	GetManufacturers() []string
 	GetPowers() []string
 	GetTypes() []string
@@ -36,6 +39,10 @@ func (powerSupplyUnitService *powerSupplyUnitService) GetAll(page int, pageSize 
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetAll(page, pageSize)
 }
 
+func (powerSupplyUnitService *powerSupplyUnitService) GetNumberOfRecords() int64 {
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetNumberOfRecords()
+}
+
 func (powerSupplyUnitService *powerSupplyUnitService) GetById(id uuid.UUID) (model.PowerSupplyUnit, error) {
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetById(id)
 }
@@ -44,8 +51,16 @@ func (powerSupplyUnitService *powerSupplyUnitService) SearchByName(page int, pag
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.SearchByName(page, pageSize, name)
 }
 
+func (powerSupplyUnitService *powerSupplyUnitService) GetNumberOfRecordsSearch(name string) int64 {
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (powerSupplyUnitService *powerSupplyUnitService) Filter(page int, pageSize int, filter filter.PowerSupplyUnitFilter) ([]model.PowerSupplyUnit, error) {
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.Filter(page, pageSize, filter)
+}
+
+func (powerSupplyUnitService *powerSupplyUnitService) GetNumberOfRecordsFilter(filter filter.PowerSupplyUnitFilter) int64 {
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) GetManufacturers() []string {

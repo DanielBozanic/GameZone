@@ -34,6 +34,11 @@ func (consoleApi *ConsoleAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToConsoleDTOs(consoles))
 }
 
+func (consoleApi *ConsoleAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := consoleApi.IConsoleService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (consoleApi *ConsoleAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (consoleApi *ConsoleAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (consoleApi *ConsoleAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := consoleApi.IConsoleService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (consoleApi *ConsoleAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (consoleApi *ConsoleAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (consoleApi *ConsoleAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.ConsoleFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := consoleApi.IConsoleService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (consoleApi *ConsoleAPI) GetPlatforms(c *gin.Context) {

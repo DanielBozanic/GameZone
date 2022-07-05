@@ -16,9 +16,12 @@ type processorService struct {
 
 type IProcessorService interface {
 	GetAll(page int, pageSize int) ([] model.Processor)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Processor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Processor, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error)
+	GetNumberOfRecordsFilter(filter filter.ProcessorFilter) int64
 	GetManufacturers() []string
 	GetTypes() []string
 	GetSockets() []string
@@ -37,6 +40,10 @@ func (processorService *processorService) GetAll(page int, pageSize int) []model
 	return processorService.IProcessorRepository.GetAll(page, pageSize)
 }
 
+func (processorService *processorService) GetNumberOfRecords() int64 {
+	return processorService.IProcessorRepository.GetNumberOfRecords()
+}
+
 func (processorService *processorService) GetById(id uuid.UUID) (model.Processor, error) {
 	return processorService.IProcessorRepository.GetById(id)
 }
@@ -45,8 +52,16 @@ func (processorService *processorService) SearchByName(page int, pageSize int, n
 	return processorService.IProcessorRepository.SearchByName(page, pageSize, name)
 }
 
+func (processorService *processorService) GetNumberOfRecordsSearch(name string) int64 {
+	return processorService.IProcessorRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (processorService *processorService) Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error) {
 	return processorService.IProcessorRepository.Filter(page, pageSize, filter)
+}
+
+func (processorService *processorService) GetNumberOfRecordsFilter(filter filter.ProcessorFilter) int64 {
+	return processorService.IProcessorRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (processorService *processorService) GetManufacturers() []string {

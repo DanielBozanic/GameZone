@@ -34,6 +34,11 @@ func (mouseApi *MouseAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToMouseDTOs(mouses))
 }
 
+func (mouseApi *MouseAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := mouseApi.IMouseService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (mouseApi *MouseAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (mouseApi *MouseAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (mouseApi *MouseAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := mouseApi.IMouseService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (mouseApi *MouseAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (mouseApi *MouseAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (mouseApi *MouseAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.MouseFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := mouseApi.IMouseService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (mouseApi *MouseAPI) GetManufacturers(c *gin.Context) {

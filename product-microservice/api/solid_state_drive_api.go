@@ -34,6 +34,11 @@ func (solidStateDriveApi *SolidStateDriveAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToSolidStateDriveDTOs(solidStateDrives))
 }
 
+func (solidStateDriveApi *SolidStateDriveAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := solidStateDriveApi.ISolidStateDriveService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (solidStateDriveApi *SolidStateDriveAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (solidStateDriveApi *SolidStateDriveAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (solidStateDriveApi *SolidStateDriveAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := solidStateDriveApi.ISolidStateDriveService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (solidStateDriveApi *SolidStateDriveAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (solidStateDriveApi *SolidStateDriveAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (solidStateDriveApi *SolidStateDriveAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.SolidStateDriveFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := solidStateDriveApi.ISolidStateDriveService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (solidStateDriveApi *SolidStateDriveAPI) GetCapacities(c *gin.Context) {

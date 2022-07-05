@@ -34,6 +34,11 @@ func (headphonesApi *HeadphonesAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToHeadphonesDTOs(headphoness))
 }
 
+func (headphonesApi *HeadphonesAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := headphonesApi.IHeadphonesService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (headphonesApi *HeadphonesAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (headphonesApi *HeadphonesAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (headphonesApi *HeadphonesAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := headphonesApi.IHeadphonesService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (headphonesApi *HeadphonesAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (headphonesApi *HeadphonesAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (headphonesApi *HeadphonesAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.HeadphonesFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := headphonesApi.IHeadphonesService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (headphonesApi *HeadphonesAPI) GetManufacturers(c *gin.Context) {

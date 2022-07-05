@@ -14,9 +14,12 @@ type mouseRepository struct {
 
 type IMouseRepository interface {
 	GetAll(page int, pageSize int) ([] model.Mouse)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Mouse, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error)
+	GetNumberOfRecordsFilter(filter filter.MouseFilter) int64
 	GetManufacturers() []string
 	GetDPIs() []string
 	GetConnections() []string
@@ -39,6 +42,12 @@ func (mouseRepo *mouseRepository) GetAll(page int, pageSize int) []model.Mouse {
 	return mice
 }
 
+func (mouseRepo *mouseRepository) GetNumberOfRecords() int64 {
+	var count int64
+	mouseRepo.Database.Model(&model.Mouse{}).Count(&count)
+	return count
+}
+
 func (mouseRepo *mouseRepository) GetById(id uuid.UUID) (model.Mouse, error) {
 	var mouse model.Mouse
 	result := mouseRepo.Database.Preload("Product").First(&mouse, id)
@@ -55,6 +64,16 @@ func (mouseRepo *mouseRepository) SearchByName(page int, pageSize int, name stri
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&mice)
 	return mice, result.Error
+}
+
+func (mouseRepo *mouseRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	mouseRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error) {
@@ -78,6 +97,27 @@ func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.M
 				len(filter.Connections) == 0).
 		Find(&mice)
 	return mice, result.Error
+}
+
+func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFilter) int64 {
+	var count int64
+	mouseRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(dpi IN ? OR ?) AND 
+				(wireless IN ? OR ?) AND 
+				(connection IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.DPIs,
+				len(filter.DPIs) == 0,
+				filter.Wireless,
+				len(filter.Wireless) == 0,
+				filter.Connections,
+				len(filter.Connections) == 0).
+		Count(&count)
+	return count
 }
 
 func (mouseRepo *mouseRepository) GetManufacturers() []string {

@@ -16,9 +16,12 @@ type motherboardService struct {
 
 type IMotherboardService interface {
 	GetAll(page int, pageSize int) ([] model.Motherboard)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Motherboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error)
+	GetNumberOfRecordsFilter(filter filter.MotherboardFilter) int64
 	GetManufacturers() []string
 	GetProcessorTypes() []string
 	GetSockets() []string
@@ -36,6 +39,10 @@ func (motherboardService *motherboardService) GetAll(page int, pageSize int) []m
 	return motherboardService.IMotherboardRepository.GetAll(page, pageSize)
 }
 
+func (motherboardService *motherboardService) GetNumberOfRecords() int64 {
+	return motherboardService.IMotherboardRepository.GetNumberOfRecords()
+}
+
 func (motherboardService *motherboardService) GetById(id uuid.UUID) (model.Motherboard, error) {
 	return motherboardService.IMotherboardRepository.GetById(id)
 }
@@ -44,8 +51,16 @@ func (motherboardService *motherboardService) SearchByName(page int, pageSize in
 	return motherboardService.IMotherboardRepository.SearchByName(page, pageSize, name)
 }
 
+func (motherboardService *motherboardService) GetNumberOfRecordsSearch(name string) int64 {
+	return motherboardService.IMotherboardRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (motherboardService *motherboardService) Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error) {
 	return motherboardService.IMotherboardRepository.Filter(page, pageSize, filter)
+}
+
+func (motherboardService *motherboardService) GetNumberOfRecordsFilter(filter filter.MotherboardFilter) int64 {
+	return motherboardService.IMotherboardRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (motherboardService *motherboardService) GetManufacturers() []string {

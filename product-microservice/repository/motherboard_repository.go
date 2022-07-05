@@ -14,9 +14,12 @@ type motherboardRepository struct {
 
 type IMotherboardRepository interface {
 	GetAll(page int, pageSize int) ([] model.Motherboard)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Motherboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error)
+	GetNumberOfRecordsFilter(filter filter.MotherboardFilter) int64
 	GetManufacturers() []string
 	GetProcessorTypes() []string
 	GetSockets() []string
@@ -40,6 +43,12 @@ func (motherboardRepo *motherboardRepository) GetAll(page int, pageSize int) []m
 	return motherboards
 }
 
+func (motherboardRepo *motherboardRepository) GetNumberOfRecords() int64 {
+	var count int64
+	motherboardRepo.Database.Model(&model.Motherboard{}).Count(&count)
+	return count
+}
+
 func (motherboardRepo *motherboardRepository) GetById(id uuid.UUID) (model.Motherboard, error) {
 	var motherboard model.Motherboard
 	result := motherboardRepo.Database.Preload("Product").First(&motherboard, id)
@@ -56,6 +65,16 @@ func (motherboardRepo *motherboardRepository) SearchByName(page int, pageSize in
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&motherboards)
 	return motherboards, result.Error
+}
+
+func (motherboardRepo *motherboardRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	motherboardRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = motherboards.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error) {
@@ -79,6 +98,27 @@ func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, fil
 				len(filter.FormFactor) == 0).
 		Find(&motherboards)
 	return motherboards, result.Error
+}
+
+func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter filter.MotherboardFilter) int64 {
+	var count int64
+	motherboardRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = motherboards.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(processor_type IN ? OR ?) AND 
+				(socket IN ? OR ?) AND 
+				(form_factor IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.ProcessorTypes,
+				len(filter.ProcessorTypes) == 0,
+				filter.Sockets,
+				len(filter.Sockets) == 0,
+				filter.FormFactor,
+				len(filter.FormFactor) == 0).
+		Count(&count)
+	return count
 }
 
 func (motherboardRepo *motherboardRepository) GetManufacturers() []string {

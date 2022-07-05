@@ -34,6 +34,11 @@ func (keyboardApi *KeyboardAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToKeyboardDTOs(keyboards))
 }
 
+func (keyboardApi *KeyboardAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := keyboardApi.IKeyboardService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (keyboardApi *KeyboardAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (keyboardApi *KeyboardAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (keyboardApi *KeyboardAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := keyboardApi.IKeyboardService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (keyboardApi *KeyboardAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (keyboardApi *KeyboardAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (keyboardApi *KeyboardAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.KeyboardFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := keyboardApi.IKeyboardService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (keyboardApi *KeyboardAPI) GetManufacturers(c *gin.Context) {

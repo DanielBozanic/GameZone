@@ -14,9 +14,12 @@ type consoleRepository struct {
 
 type IConsoleRepository interface {
 	GetAll(page int, pageSize int) ([] model.Console)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Console, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
+	GetNumberOfRecordsFilter(filter filter.ConsoleFilter) int64
 	GetPlatforms() []string
 	Create(videoGame model.Console) error
 	Update(videoGame model.Console) error
@@ -37,6 +40,12 @@ func (consoleRepo *consoleRepository) GetAll(page int, pageSize int) []model.Con
 	return consoles
 }
 
+func (consoleRepo *consoleRepository) GetNumberOfRecords() int64 {
+	var count int64
+	consoleRepo.Database.Model(&model.Console{}).Count(&count)
+	return count
+}
+
 func (consoleRepo *consoleRepository) GetById(id uuid.UUID) (model.Console, error) {
 	var console model.Console
 	result := consoleRepo.Database.Preload("Product").First(&console, id)
@@ -55,17 +64,40 @@ func (consoleRepo *consoleRepository) SearchByName(page int, pageSize int, name 
 	return consoles, result.Error
 }
 
+func (consoleRepo *consoleRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	consoleRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
+}
+
 func (consoleRepo *consoleRepository) Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error) {
 	var consoles []model.Console
 	offset := (page - 1) * pageSize
 	result := consoleRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Preload("Product").
+		Joins("JOIN products ON products.id = consoles.product_id").
 		Where(`(platform IN ? OR ?)`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
 		Find(&consoles)
 	return consoles, result.Error
+}
+
+func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.ConsoleFilter) int64 {
+	var count int64
+	consoleRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where(`(platform IN ? OR ?)`,
+				filter.Platforms,
+				len(filter.Platforms) == 0).
+		Count(&count)
+	return count
 }
 
 func (consoleRepo *consoleRepository) GetPlatforms() []string {

@@ -14,9 +14,12 @@ type processorRepository struct {
 
 type IProcessorRepository interface {
 	GetAll(page int, pageSize int) ([] model.Processor)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Processor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Processor, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error)
+	GetNumberOfRecordsFilter(filter filter.ProcessorFilter) int64
 	GetManufacturers() []string
 	GetTypes() []string
 	GetSockets() []string
@@ -41,6 +44,12 @@ func (processorRepo *processorRepository) GetAll(page int, pageSize int) []model
 	return processors
 }
 
+func (processorRepo *processorRepository) GetNumberOfRecords() int64 {
+	var count int64
+	processorRepo.Database.Model(&model.Processor{}).Count(&count)
+	return count
+}
+
 func (processorRepo *processorRepository) GetById(id uuid.UUID) (model.Processor, error) {
 	var processor model.Processor
 	result := processorRepo.Database.Preload("Product").First(&processor, id)
@@ -57,6 +66,16 @@ func (processorRepo *processorRepository) SearchByName(page int, pageSize int, n
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&processors)
 	return processors, result.Error
+}
+
+func (processorRepo *processorRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	processorRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = processors.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (processorRepo *processorRepository) Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error) {
@@ -83,6 +102,30 @@ func (processorRepo *processorRepository) Filter(page int, pageSize int, filter 
 				len(filter.Threads) == 0).
 		Find(&processors)
 	return processors, result.Error
+}
+
+func (processorRepo *processorRepository) GetNumberOfRecordsFilter(filter filter.ProcessorFilter) int64 {
+	var count int64
+	processorRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = processors.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(type IN ? OR ?) AND 
+				(socket IN ? OR ?) AND 
+				(number_of_cores IN ? OR ?) AND 
+				(threads IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Types,
+				len(filter.Types) == 0,
+				filter.Sockets,
+				len(filter.Sockets) == 0,
+				filter.NumberOfCores,
+				len(filter.NumberOfCores) == 0,
+				filter.Threads,
+				len(filter.Threads) == 0).
+		Count(&count)
+	return count
 }
 
 func (processorRepo *processorRepository) GetManufacturers() []string {

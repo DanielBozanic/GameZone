@@ -14,9 +14,12 @@ type headphonesRepository struct {
 
 type IHeadphonesRepository interface {
 	GetAll(page int, pageSize int) ([] model.Headphones)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Headphones, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error)
+	GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64
 	GetManufacturers() []string
 	GetConnectionTypes() []string
 	Create(headphones model.Headphones) error
@@ -38,6 +41,12 @@ func (headphonesRepo *headphonesRepository) GetAll(page int, pageSize int) []mod
 	return headphones
 }
 
+func (headphonesRepo *headphonesRepository) GetNumberOfRecords() int64 {
+	var count int64
+	headphonesRepo.Database.Model(&model.Headphones{}).Count(&count)
+	return count
+}
+
 func (headphonesRepo *headphonesRepository) GetById(id uuid.UUID) (model.Headphones, error) {
 	var headphones model.Headphones
 	result := headphonesRepo.Database.Preload("Product").First(&headphones, id)
@@ -54,6 +63,16 @@ func (headphonesRepo *headphonesRepository) SearchByName(page int, pageSize int,
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&headphones)
 	return headphones, result.Error
+}
+
+func (headphonesRepo *headphonesRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	headphonesRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = headphones.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (headphonesRepo *headphonesRepository) Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error) {
@@ -77,6 +96,27 @@ func (headphonesRepo *headphonesRepository) Filter(page int, pageSize int, filte
 				len(filter.Microphone) == 0).
 		Find(&headphones)
 	return headphones, result.Error
+}
+
+func (headphonesRepo *headphonesRepository) GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64 {
+	var count int64
+	headphonesRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = headphones.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(wireless IN ? OR ?) AND 
+				(connection_type IN ? OR ?) AND
+				(microphone IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Wireless,
+				len(filter.Wireless) == 0,
+				filter.ConnectionTypes,
+				len(filter.ConnectionTypes) == 0,
+				filter.Microphone,
+				len(filter.Microphone) == 0).
+		Count(&count)
+	return count
 }
 
 func (headphonesRepo *headphonesRepository) GetManufacturers() []string {

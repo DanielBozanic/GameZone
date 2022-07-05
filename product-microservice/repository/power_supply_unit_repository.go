@@ -14,9 +14,12 @@ type powerSupplyUnitRepository struct {
 
 type IPowerSupplyUnitRepository interface {
 	GetAll(page int, pageSize int) ([] model.PowerSupplyUnit)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.PowerSupplyUnit, error)
 	SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.PowerSupplyUnitFilter) ([]model.PowerSupplyUnit, error)
+	GetNumberOfRecordsFilter(filter filter.PowerSupplyUnitFilter) int64
 	GetManufacturers() []string
 	GetPowers() []string
 	GetTypes() []string
@@ -40,6 +43,12 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll(page int, pageSize 
 	return powerSupplyUnits
 }
 
+func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecords() int64 {
+	var count int64
+	powerSupplyUnitRepo.Database.Model(&model.PowerSupplyUnit{}).Count(&count)
+	return count
+}
+
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetById(id uuid.UUID) (model.PowerSupplyUnit, error) {
 	var powerSupplyUnit model.PowerSupplyUnit
 	result := powerSupplyUnitRepo.Database.Preload("Product").First(&powerSupplyUnit, id)
@@ -56,6 +65,16 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) SearchByName(page int, pag
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&powerSupplyUnits)
 	return powerSupplyUnits, result.Error
+}
+
+func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	powerSupplyUnitRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = power_supply_units.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) Filter(page int, pageSize int, filter filter.PowerSupplyUnitFilter) ([]model.PowerSupplyUnit, error) {
@@ -79,6 +98,27 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) Filter(page int, pageSize 
 				len(filter.FormFactors) == 0).
 		Find(&psus)
 	return psus, result.Error
+}
+
+func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsFilter(filter filter.PowerSupplyUnitFilter) int64 {
+	var count int64
+	powerSupplyUnitRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = power_supply_units.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(power IN ? OR ?) AND 
+				(type IN ? OR ?) AND 
+				(form_factor IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Powers,
+				len(filter.Powers) == 0,
+				filter.Types,
+				len(filter.Types) == 0,
+				filter.FormFactors,
+				len(filter.FormFactors) == 0).
+		Count(&count)
+	return count
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetManufacturers() []string {

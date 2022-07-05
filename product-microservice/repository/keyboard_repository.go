@@ -14,9 +14,12 @@ type keyboardRepository struct {
 
 type IKeyboardRepository interface {
 	GetAll(page int, pageSize int) ([] model.Keyboard)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Keyboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error)
+	GetNumberOfRecordsFilter(filter filter.KeyboardFilter) int64
 	GetManufacturers() []string
 	GetKeyboardConnectors() []string
 	GetKeyTypes() []string
@@ -39,6 +42,12 @@ func (keyboardRepo *keyboardRepository) GetAll(page int, pageSize int) []model.K
 	return keyboards
 }
 
+func (keyboardRepo *keyboardRepository) GetNumberOfRecords() int64 {
+	var count int64
+	keyboardRepo.Database.Model(&model.Keyboard{}).Count(&count)
+	return count
+}
+
 func (keyboardRepo *keyboardRepository) GetById(id uuid.UUID) (model.Keyboard, error) {
 	var keyboard model.Keyboard
 	result := keyboardRepo.Database.Preload("Product").First(&keyboard, id)
@@ -55,6 +64,16 @@ func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, nam
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&keyboards)
 	return keyboards, result.Error
+}
+
+func (keyboardRepo *keyboardRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	keyboardRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error) {
@@ -78,6 +97,27 @@ func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter fi
 				len(filter.KeyTypes) == 0).
 		Find(&keyboards)
 	return keyboards, result.Error
+}
+
+func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.KeyboardFilter) int64 {
+	var count int64
+	keyboardRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(wireless IN ? OR ?) AND 
+				(keyboard_connector IN ? OR ?) AND
+				(key_type IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.Wireless,
+				len(filter.Wireless) == 0,
+				filter.KeyboardConnectors,
+				len(filter.KeyboardConnectors) == 0,
+				filter.KeyTypes,
+				len(filter.KeyTypes) == 0).
+		Count(&count)
+	return count
 }
 
 func (keyboardRepo *keyboardRepository) GetManufacturers() []string {

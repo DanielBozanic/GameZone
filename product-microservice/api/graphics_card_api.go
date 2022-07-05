@@ -34,6 +34,11 @@ func (graphicsCardApi *GraphicsCardAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToGraphicsCardDTOs(graphicsCards))
 }
 
+func (graphicsCardApi *GraphicsCardAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := graphicsCardApi.IGraphicsCardService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (graphicsCardApi *GraphicsCardAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (graphicsCardApi *GraphicsCardAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (graphicsCardApi *GraphicsCardAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := graphicsCardApi.IGraphicsCardService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (graphicsCardApi *GraphicsCardAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (graphicsCardApi *GraphicsCardAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (graphicsCardApi *GraphicsCardAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.GraphicsCardFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := graphicsCardApi.IGraphicsCardService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (graphicsCardApi *GraphicsCardAPI) GetManufacturers(c *gin.Context) {

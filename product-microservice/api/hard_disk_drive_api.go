@@ -34,6 +34,11 @@ func (hardDiskDriveApi *HardDiskDriveAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToHardDiskDriveDTOs(hardDiskDrives))
 }
 
+func (hardDiskDriveApi *HardDiskDriveAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := hardDiskDriveApi.IHardDiskDriveService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (hardDiskDriveApi *HardDiskDriveAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (hardDiskDriveApi *HardDiskDriveAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (hardDiskDriveApi *HardDiskDriveAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := hardDiskDriveApi.IHardDiskDriveService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (hardDiskDriveApi *HardDiskDriveAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (hardDiskDriveApi *HardDiskDriveAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (hardDiskDriveApi *HardDiskDriveAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.HardDiskDriveFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := hardDiskDriveApi.IHardDiskDriveService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (hardDiskDriveApi *HardDiskDriveAPI) GetCapacities(c *gin.Context) {

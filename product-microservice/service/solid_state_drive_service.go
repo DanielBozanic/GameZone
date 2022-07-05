@@ -16,9 +16,12 @@ type solidStateDriveService struct {
 
 type ISolidStateDriveService interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
+	GetNumberOfRecordsFilter(filter filter.SolidStateDriveFilter) int64
 	GetCapacities() []string
 	GetForms() []string
 	GetManufacturers() []string
@@ -37,6 +40,10 @@ func (solidStateDriveService *solidStateDriveService) GetAll(page int, pageSize 
 	return solidStateDriveService.ISolidStateDriveRepository.GetAll(page, pageSize)
 }
 
+func (solidStateDriveService *solidStateDriveService) GetNumberOfRecords() int64 {
+	return solidStateDriveService.ISolidStateDriveRepository.GetNumberOfRecords()
+}
+
 func (solidStateDriveService *solidStateDriveService) GetById(id uuid.UUID) (model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.GetById(id)
 }
@@ -45,8 +52,16 @@ func (solidStateDriveService *solidStateDriveService) SearchByName(page int, pag
 	return solidStateDriveService.ISolidStateDriveRepository.SearchByName(page, pageSize, name)
 }
 
+func (solidStateDriveService *solidStateDriveService) GetNumberOfRecordsSearch(name string) int64 {
+	return solidStateDriveService.ISolidStateDriveRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (solidStateDriveService *solidStateDriveService) Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.Filter(page, pageSize, filter)
+}
+
+func (solidStateDriveService *solidStateDriveService) GetNumberOfRecordsFilter(filter filter.SolidStateDriveFilter) int64 {
+	return solidStateDriveService.ISolidStateDriveRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (solidStateDriveService *solidStateDriveService) GetCapacities() []string {

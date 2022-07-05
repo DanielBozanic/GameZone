@@ -34,6 +34,11 @@ func (processorApi *ProcessorAPI) GetAll(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToProcessorDTOs(processors))
 }
 
+func (processorApi *ProcessorAPI) GetNumberOfRecords(c *gin.Context) {
+	numberOfRecords := processorApi.IProcessorService.GetNumberOfRecords()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (processorApi *ProcessorAPI) GetByID(c *gin.Context) {
 	id, err := uuid.Parse(c.Param("id"))
 	if err != nil {
@@ -67,6 +72,11 @@ func (processorApi *ProcessorAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (processorApi *ProcessorAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := processorApi.IProcessorService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (processorApi *ProcessorAPI) Filter(c *gin.Context) {
 	page, err := strconv.Atoi(c.Query("page"))
 	pageSize, err := strconv.Atoi(c.Query("pageSize"))
@@ -89,6 +99,18 @@ func (processorApi *ProcessorAPI) Filter(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
 	}
+}
+
+func (processorApi *ProcessorAPI) GetNumberOfRecordsFilter(c *gin.Context) {
+	var filter filter.ProcessorFilter
+	err := c.BindJSON(&filter)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	numberOfRecords := processorApi.IProcessorService.GetNumberOfRecordsFilter(filter)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (processorApi *ProcessorAPI) GetManufacturers(c *gin.Context) {

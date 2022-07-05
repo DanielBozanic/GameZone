@@ -14,9 +14,12 @@ type monitorRepository struct {
 
 type IMonitorRepository interface {
 	GetAll(page int, pageSize int) ([] model.Monitor)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.Monitor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error)
+	GetNumberOfRecordsFilter(filter filter.MonitorFilter) int64
 	GetManufacturers() []string
 	GetAspectRatios() []string
 	GetResolutions() []string
@@ -40,6 +43,12 @@ func (monitorRepo *monitorRepository) GetAll(page int, pageSize int) []model.Mon
 	return monitors
 }
 
+func (monitorRepo *monitorRepository) GetNumberOfRecords() int64 {
+	var count int64
+	monitorRepo.Database.Model(&model.Monitor{}).Count(&count)
+	return count
+}
+
 func (monitorRepo *monitorRepository) GetById(id uuid.UUID) (model.Monitor, error) {
 	var monitor model.Monitor
 	result := monitorRepo.Database.Preload("Product").First(&monitor, id)
@@ -56,6 +65,16 @@ func (monitorRepo *monitorRepository) SearchByName(page int, pageSize int, name 
 		Where("products.name LIKE ?", "%" + name + "%").
 		Find(&monitors)
 	return monitors, result.Error
+}
+
+func (monitorRepo *monitorRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var count int64
+	monitorRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.name LIKE ?", "%" + name + "%").
+		Count(&count)
+	return count
 }
 
 func (monitorRepo *monitorRepository) Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error) {
@@ -79,6 +98,27 @@ func (monitorRepo *monitorRepository) Filter(page int, pageSize int, filter filt
 				len(filter.RefreshRates) == 0).
 		Find(&monitors)
 	return monitors, result.Error
+}
+
+func (monitorRepo *monitorRepository) GetNumberOfRecordsFilter(filter filter.MonitorFilter) int64 {
+	var count int64
+	monitorRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where(`(products.manufacturer IN ? OR ?) AND 
+				(aspect_ratio IN ? OR ?) AND 
+				(resolution IN ? OR ?) AND 
+				(refresh_rate IN ? OR ?)`,
+				filter.Manufacturers,
+				len(filter.Manufacturers) == 0,
+				filter.AspectRatios,
+				len(filter.AspectRatios) == 0,
+				filter.Resolutions,
+				len(filter.Resolutions) == 0,
+				filter.RefreshRates,
+				len(filter.RefreshRates) == 0).
+		Count(&count)
+	return count
 }
 
 func (monitorRepo *monitorRepository) GetManufacturers() []string {

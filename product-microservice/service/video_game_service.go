@@ -16,10 +16,13 @@ type videoGameService struct {
 }
 
 type IVideoGameService interface {
-	GetAll(page int, pageSize int) ([]model.VideoGame, int)
+	GetAll(page int, pageSize int) ([]model.VideoGame)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.VideoGame, error)
 	SearchByName(page int, pageSize int, name string) ([]model.VideoGame, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error)
+	GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64
 	GetPlatforms() []string
 	GetGenres() []string
 	Create(videoGame model.VideoGame) error
@@ -31,8 +34,12 @@ func NewVideoGameService(videoGameRepository repository.IVideoGameRepository) IV
 	return &videoGameService{IVideoGameRepository: videoGameRepository}
 }
 
-func (videoGameService *videoGameService) GetAll(page int, pageSize int) ([]model.VideoGame, int) {
+func (videoGameService *videoGameService) GetAll(page int, pageSize int) ([]model.VideoGame) {
 	return videoGameService.IVideoGameRepository.GetAll(page, pageSize)
+}
+
+func (videoGameService *videoGameService) GetNumberOfRecords() int64 {
+	return videoGameService.IVideoGameRepository.GetNumberOfRecords()
 }
 
 func (videoGameService *videoGameService) GetById(id uuid.UUID) (model.VideoGame, error) {
@@ -43,8 +50,16 @@ func (videoGameService *videoGameService) SearchByName(page int, pageSize int, n
 	return videoGameService.IVideoGameRepository.SearchByName(page, pageSize, name)
 }
 
+func (videoGameService *videoGameService) GetNumberOfRecordsSearch(name string) int64 {
+	return videoGameService.IVideoGameRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (videoGameService *videoGameService) Filter(page int, pageSize int, filter filter.VideoGameFilter) ([]model.VideoGame, error) {
 	return videoGameService.IVideoGameRepository.Filter(page, pageSize, filter)
+}
+
+func (videoGameService *videoGameService) GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64 {
+	return videoGameService.IVideoGameRepository.GetNumberOfRecordsFilter(filter);
 }
 
 func (videoGameService *videoGameService) GetPlatforms() []string {

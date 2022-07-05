@@ -16,9 +16,12 @@ type graphicsCardService struct {
 
 type IGraphicsCardService interface {
 	GetAll(page int, pageSize int) ([] model.GraphicsCard)
+	GetNumberOfRecords() int64
 	GetById(id uuid.UUID) (model.GraphicsCard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
+	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error)
+	GetNumberOfRecordsFilter(filter filter.GraphicsCardFilter) int64
 	GetManufacturers() []string
 	GetChipManufacturers() []string
 	GetMemorySizes() []string
@@ -37,6 +40,10 @@ func (graphicsCardService *graphicsCardService) GetAll(page int, pageSize int) [
 	return graphicsCardService.IGraphicsCardRepository.GetAll(page, pageSize)
 }
 
+func (graphicsCardService *graphicsCardService) GetNumberOfRecords() int64 {
+	return graphicsCardService.IGraphicsCardRepository.GetNumberOfRecords()
+}
+
 func (graphicsCardService *graphicsCardService) GetById(id uuid.UUID) (model.GraphicsCard, error) {
 	return graphicsCardService.IGraphicsCardRepository.GetById(id)
 }
@@ -45,8 +52,16 @@ func (graphicsCardService *graphicsCardService) SearchByName(page int, pageSize 
 	return graphicsCardService.IGraphicsCardRepository.SearchByName(page, pageSize, name)
 }
 
+func (graphicsCardService *graphicsCardService) GetNumberOfRecordsSearch(name string) int64 {
+	return graphicsCardService.IGraphicsCardRepository.GetNumberOfRecordsSearch(name)
+}
+
 func (graphicsCardService *graphicsCardService) Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error) {
 	return graphicsCardService.IGraphicsCardRepository.Filter(page, pageSize, filter)
+}
+
+func (graphicsCardService *graphicsCardService) GetNumberOfRecordsFilter(filter filter.GraphicsCardFilter) int64 {
+	return graphicsCardService.IGraphicsCardRepository.GetNumberOfRecordsFilter(filter)
 }
 
 func (graphicsCardService *graphicsCardService) GetManufacturers() []string {
