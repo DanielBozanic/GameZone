@@ -42,8 +42,31 @@
 	border-top: none;
 }
 
-.btn-close {
-	background-image: url("../images/orange-cross.png");
+.close {
+	color: rgb(33, 37, 41) !important;
+	background-color: orange !important;
+	font-weight: bold !important;
+	opacity: 100 !important;
+	padding-top: 2px !important;
+	padding-bottom: 6px !important;
+	padding-left: 9px !important;
+	padding-right: 8px !important;
+}
+
+.close:hover {
+	background-color: rgb(33, 37, 41) !important;
+	color: orange !important;
+	transition: 0.7s;
+}
+
+.close:focus {
+	background-color: rgb(33, 37, 41) !important;
+	color: orange !important;
+	transition: 0.7s;
+}
+
+.close span {
+	text-align: center;
 }
 
 .confirm-filter-btn {
