@@ -68,11 +68,13 @@ func (ramRepo *ramRepository) SearchByName(page int, pageSize int, name string) 
 }
 
 func (ramRepo *ramRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var rams []model.Ram
 	var count int64
 	ramRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&rams).
 		Count(&count)
 	return count
 }
@@ -101,6 +103,7 @@ func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFi
 }
 
 func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) int64 {
+	var rams []model.Ram
 	var count int64
 	ramRepo.Database.
 		Preload("Product").
@@ -117,6 +120,7 @@ func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) 
 				len(filter.MemoryTypes) == 0,
 				filter.Speeds, 
 				len(filter.Speeds)).
+		Find(&rams).
 		Count(&count)
 	return count
 }

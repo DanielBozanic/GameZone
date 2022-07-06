@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"product/dto/filter"
 	"product/model"
 
@@ -66,11 +67,13 @@ func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, n
 }
 
 func (videoGameRepo *videoGameRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var games []model.VideoGame
 	var count int64
 	videoGameRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&games).
 		Count(&count)
 	return count
 }
@@ -92,6 +95,7 @@ func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter 
 }
 
 func (videoGameRepo *videoGameRepository) GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64 {
+	var games []model.VideoGame
 	var count int64
 	videoGameRepo.Database.
 		Preload("Product").
@@ -101,7 +105,9 @@ func (videoGameRepo *videoGameRepository) GetNumberOfRecordsFilter(filter filter
 			len(filter.Platforms) == 0, 
 			filter.Genres, 
 			len(filter.Genres) == 0).
+		Find(&games).
 		Count(&count)
+	fmt.Printf("%d", uint64(count))
 	return count
 }
 

@@ -68,11 +68,13 @@ func (monitorRepo *monitorRepository) SearchByName(page int, pageSize int, name 
 }
 
 func (monitorRepo *monitorRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var monitors []model.Monitor
 	var count int64
 	monitorRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = monitors.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&monitors).
 		Count(&count)
 	return count
 }
@@ -101,6 +103,7 @@ func (monitorRepo *monitorRepository) Filter(page int, pageSize int, filter filt
 }
 
 func (monitorRepo *monitorRepository) GetNumberOfRecordsFilter(filter filter.MonitorFilter) int64 {
+	var monitors []model.Monitor
 	var count int64
 	monitorRepo.Database.
 		Preload("Product").
@@ -117,6 +120,7 @@ func (monitorRepo *monitorRepository) GetNumberOfRecordsFilter(filter filter.Mon
 				len(filter.Resolutions) == 0,
 				filter.RefreshRates,
 				len(filter.RefreshRates) == 0).
+		Find(&monitors).
 		Count(&count)
 	return count
 }

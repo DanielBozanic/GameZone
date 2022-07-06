@@ -69,11 +69,13 @@ func (processorRepo *processorRepository) SearchByName(page int, pageSize int, n
 }
 
 func (processorRepo *processorRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var processors []model.Processor
 	var count int64
 	processorRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&processors).
 		Count(&count)
 	return count
 }
@@ -105,6 +107,7 @@ func (processorRepo *processorRepository) Filter(page int, pageSize int, filter 
 }
 
 func (processorRepo *processorRepository) GetNumberOfRecordsFilter(filter filter.ProcessorFilter) int64 {
+	var processors []model.Processor
 	var count int64
 	processorRepo.Database.
 		Preload("Product").
@@ -124,6 +127,7 @@ func (processorRepo *processorRepository) GetNumberOfRecordsFilter(filter filter
 				len(filter.NumberOfCores) == 0,
 				filter.Threads,
 				len(filter.Threads) == 0).
+		Find(&processors).
 		Count(&count)
 	return count
 }

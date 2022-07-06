@@ -68,11 +68,13 @@ func (motherboardRepo *motherboardRepository) SearchByName(page int, pageSize in
 }
 
 func (motherboardRepo *motherboardRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var motherboards []model.Motherboard
 	var count int64
 	motherboardRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&motherboards).
 		Count(&count)
 	return count
 }
@@ -101,6 +103,7 @@ func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, fil
 }
 
 func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter filter.MotherboardFilter) int64 {
+	var motherboards []model.Motherboard
 	var count int64
 	motherboardRepo.Database.
 		Preload("Product").
@@ -117,6 +120,7 @@ func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter fi
 				len(filter.Sockets) == 0,
 				filter.FormFactor,
 				len(filter.FormFactor) == 0).
+		Find(&motherboards).
 		Count(&count)
 	return count
 }

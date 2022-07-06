@@ -68,11 +68,13 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) SearchByName(page int, pageSiz
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var hardDiskDrives []model.HardDiskDrive
 	var count int64
 	hardDiskDriveRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&hardDiskDrives).
 		Count(&count)
 	return count
 }
@@ -101,6 +103,7 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) Filter(page int, pageSize int,
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsFilter(filter filter.HardDiskDriveFilter) int64 {
+	var hdds []model.HardDiskDrive
 	var count int64
 	hardDiskDriveRepo.Database.
 		Preload("Product").
@@ -117,6 +120,7 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsFilter(filte
 			len(filter.Manufacturers) == 0,
 			filter.DiskSpeeds, 
 			len(filter.DiskSpeeds) == 0).
+		Find(&hdds).
 		Count(&count)
 	return count
 }

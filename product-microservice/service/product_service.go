@@ -32,6 +32,7 @@ type IProductService interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
+	GetNumberOfRecordsSearch(name string) int64
 	UpdatePurchase(productPurchaseDto dto.ProductPurchaseDTO) error
 	RemoveProductFromCart(productPurchaseId uuid.UUID) error
 	ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error
@@ -80,6 +81,10 @@ func (productService *productService) GetPurchaseHistory(userId int) []model.Pro
 
 func (productService *productService) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
 	return productService.IProductRepository.SearchByName(page, pageSize, name)
+}
+
+func (productService *productService) GetNumberOfRecordsSearch(name string) int64 {
+	return productService.IProductRepository.GetNumberOfRecordsSearch(name)
 }
 
 func (productService *productService) AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error) {

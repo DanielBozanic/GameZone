@@ -65,11 +65,13 @@ func (consoleRepo *consoleRepository) SearchByName(page int, pageSize int, name 
 }
 
 func (consoleRepo *consoleRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&consoles).
 		Count(&count)
 	return count
 }
@@ -89,6 +91,7 @@ func (consoleRepo *consoleRepository) Filter(page int, pageSize int, filter filt
 }
 
 func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.ConsoleFilter) int64 {
+	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
 		Preload("Product").
@@ -96,6 +99,7 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 		Where(`(platform IN ? OR ?)`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
+		Find(&consoles).
 		Count(&count)
 	return count
 }

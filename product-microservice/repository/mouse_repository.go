@@ -67,11 +67,13 @@ func (mouseRepo *mouseRepository) SearchByName(page int, pageSize int, name stri
 }
 
 func (mouseRepo *mouseRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&mice).
 		Count(&count)
 	return count
 }
@@ -100,6 +102,7 @@ func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.M
 }
 
 func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFilter) int64 {
+	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
 		Preload("Product").
@@ -116,6 +119,7 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFi
 				len(filter.Wireless) == 0,
 				filter.Connections,
 				len(filter.Connections) == 0).
+		Find(&mice).
 		Count(&count)
 	return count
 }

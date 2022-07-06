@@ -67,11 +67,13 @@ func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, nam
 }
 
 func (keyboardRepo *keyboardRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&keyboards).
 		Count(&count)
 	return count
 }
@@ -100,6 +102,7 @@ func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter fi
 }
 
 func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.KeyboardFilter) int64 {
+	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
 		Preload("Product").
@@ -116,6 +119,7 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.K
 				len(filter.KeyboardConnectors) == 0,
 				filter.KeyTypes,
 				len(filter.KeyTypes) == 0).
+		Find(&keyboards).
 		Count(&count)
 	return count
 }

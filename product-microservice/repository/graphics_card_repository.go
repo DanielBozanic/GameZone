@@ -69,11 +69,13 @@ func (graphicsCardRepo *graphicsCardRepository) SearchByName(page int, pageSize 
 }
 
 func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var graphicsCards []model.GraphicsCard
 	var count int64
 	graphicsCardRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&graphicsCards).
 		Count(&count)
 	return count
 }
@@ -105,6 +107,7 @@ func (graphicsCardRepo *graphicsCardRepository) Filter(page int, pageSize int, f
 }
 
 func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsFilter(filter filter.GraphicsCardFilter) int64 {
+	var graphicsCards []model.GraphicsCard
 	var count int64
 	graphicsCardRepo.Database.
 		Preload("Product").
@@ -124,6 +127,7 @@ func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsFilter(filter 
 				len(filter.MemoryTypes) == 0,
 				filter.ModelNames,
 				len(filter.ModelNames) == 0).
+		Find(&graphicsCards).
 		Count(&count)
 	return count
 }

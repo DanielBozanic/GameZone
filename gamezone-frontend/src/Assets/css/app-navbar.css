@@ -27,13 +27,23 @@
 	text-decoration: none;
 }
 
+.navbar .dropdown-item:hover a {
+	color: rgb(33, 37, 41);
+	transition: 0.7s;
+}
+
+.navbar .dropdown-item:focus a {
+	color: rgb(33, 37, 41);
+	transition: 0.7s;
+}
+
 .navbar .dropdown-item:hover {
 	background-color: orange;
 	transition: 0.7s;
 }
 
-.navbar .dropdown-item a:hover {
-	color: rgb(33, 37, 41);
+.navbar .dropdown-item:focus {
+	background-color: orange;
 	transition: 0.7s;
 }
 

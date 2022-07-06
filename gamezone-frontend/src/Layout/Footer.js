@@ -1,12 +1,15 @@
 import logo from "../Assets/images/logo.PNG";
 import "../Assets/css/footer.css";
 import { Navbar, NavbarBrand } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
 	return (
 		<Navbar className="footer" color="dark" expand="md" dark>
 			<NavbarBrand>
-				<img src={logo} alt="Logo" className="responsive-img-footer" />
+				<Link to="/">
+					<img src={logo} alt="Logo" className="responsive-img-footer" />
+				</Link>
 			</NavbarBrand>
 		</Navbar>
 	);

@@ -75,6 +75,11 @@ func (productApi *ProductAPI) SearchByName(c *gin.Context) {
 	}
 }
 
+func (productApi *ProductAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := productApi.IProductService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (productApi *ProductAPI) UpdatePurchase(c *gin.Context) {
 	var productPurchaseDTO dto.ProductPurchaseDTO
 	err := c.BindJSON(&productPurchaseDTO)

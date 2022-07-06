@@ -69,11 +69,13 @@ func (solidStateDriveRepo *solidStateDriveRepository) SearchByName(page int, pag
 }
 
 func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var ssds []model.SolidStateDrive
 	var count int64
 	solidStateDriveRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&ssds).
 		Count(&count)
 	return count
 }
@@ -105,6 +107,7 @@ func (solidStateDriveRepo *solidStateDriveRepository) Filter(page int, pageSize 
 }
 
 func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsFilter(filter filter.SolidStateDriveFilter) int64 {
+	var ssds []model.SolidStateDrive
 	var count int64
 	solidStateDriveRepo.Database.
 		Preload("Product").
@@ -124,6 +127,7 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsFilter(f
 			len(filter.MaxSequentialReads) == 0,
 			filter.MaxSequentialWrites, 
 			len(filter.MaxSequentialWrites) == 0).
+		Find(&ssds).
 		Count(&count)
 	return count
 }

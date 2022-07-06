@@ -68,11 +68,13 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) SearchByName(page int, pag
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var psus []model.PowerSupplyUnit
 	var count int64
 	powerSupplyUnitRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&psus).
 		Count(&count)
 	return count
 }
@@ -101,6 +103,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) Filter(page int, pageSize 
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsFilter(filter filter.PowerSupplyUnitFilter) int64 {
+	var psus []model.PowerSupplyUnit
 	var count int64
 	powerSupplyUnitRepo.Database.
 		Preload("Product").
@@ -117,6 +120,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsFilter(f
 				len(filter.Types) == 0,
 				filter.FormFactors,
 				len(filter.FormFactors) == 0).
+		Find(&psus).
 		Count(&count)
 	return count
 }

@@ -66,11 +66,13 @@ func (headphonesRepo *headphonesRepository) SearchByName(page int, pageSize int,
 }
 
 func (headphonesRepo *headphonesRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var headphones []model.Headphones
 	var count int64
 	headphonesRepo.Database.
 		Preload("Product").
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.name LIKE ?", "%" + name + "%").
+		Find(&headphones).
 		Count(&count)
 	return count
 }
@@ -99,6 +101,7 @@ func (headphonesRepo *headphonesRepository) Filter(page int, pageSize int, filte
 }
 
 func (headphonesRepo *headphonesRepository) GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64 {
+	var headphones []model.Headphones
 	var count int64
 	headphonesRepo.Database.
 		Preload("Product").
@@ -115,6 +118,7 @@ func (headphonesRepo *headphonesRepository) GetNumberOfRecordsFilter(filter filt
 				len(filter.ConnectionTypes) == 0,
 				filter.Microphone,
 				len(filter.Microphone) == 0).
+		Find(&headphones).
 		Count(&count)
 	return count
 }

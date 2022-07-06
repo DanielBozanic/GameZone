@@ -30,7 +30,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Headers", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge: 12 * time.Hour,
@@ -68,10 +68,11 @@ func main() {
 	mouses := api.Group("/mouses")
 	headphones := api.Group("/headphones")
 
+	api.GET("/searchByName", productAPI.SearchByName)
+	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).POST("/addProductToCart/:productId", productAPI.AddProductToCart)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).GET("/getCurrentCart", productAPI.GetCurrentCart)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" })).GET("/getPurchaseHistory/:userId", productAPI.GetPurchaseHistory)
-	api.GET("/searchByName", productAPI.SearchByName)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/updatePurchase", productAPI.UpdatePurchase)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).DELETE("/removeProductFromCart/:id", productAPI.RemoveProductFromCart)
 	api.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" })).PUT("/confirmPurchase", productAPI.ConfirmPurchase)

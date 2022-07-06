@@ -17,6 +17,7 @@ type IProductRepository interface {
 	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
 	GetProductById(productId uuid.UUID) (model.Product, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
+	GetNumberOfRecordsSearch(name string) int64
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
@@ -58,6 +59,16 @@ func (productRepo *productRepository) SearchByName(page int, pageSize int, name 
 		Where("name LIKE ?", "%" + name + "%").
 		Find(&products)
 	return products, result.Error
+}
+
+func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var products []model.Product
+	var count int64
+	productRepo.Database.
+		Where("name LIKE ?", "%" + name + "%").
+		Find(&products).
+		Count(&count)
+	return count
 }
 
 func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {
