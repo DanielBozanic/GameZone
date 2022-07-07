@@ -169,7 +169,7 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) Create(hardDiskDrive model.Har
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) Update(hardDiskDrive model.HardDiskDrive) error {
-	result := hardDiskDriveRepo.Database.Save(&hardDiskDrive)
+	result := hardDiskDriveRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&hardDiskDrive)
 	return result.Error
 }
 

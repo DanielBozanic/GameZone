@@ -169,7 +169,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) Create(powerSupplyUnit mod
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) Update(powerSupplyUnit model.PowerSupplyUnit) error {
-	result := powerSupplyUnitRepo.Database.Save(&powerSupplyUnit)
+	result := powerSupplyUnitRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&powerSupplyUnit)
 	return result.Error
 }
 

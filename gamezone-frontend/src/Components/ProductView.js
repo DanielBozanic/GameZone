@@ -30,7 +30,7 @@ const ProductView = (props) => {
 									<Card className="card-with-image">
 										<CardImg
 											className="card-image"
-											alt="Card image cap"
+											alt="No image"
 											src={
 												product.Product === undefined
 													? product.Image
@@ -64,7 +64,7 @@ const ProductView = (props) => {
 									<Card className="card-with-image">
 										<CardImg
 											className="card-image"
-											alt="Card image cap"
+											alt="No image"
 											src={
 												product.Product === undefined
 													? product.Image

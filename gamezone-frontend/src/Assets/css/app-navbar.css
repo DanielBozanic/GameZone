@@ -67,6 +67,15 @@
 }
 
 .dropdown-item {
+	width: 100%;
+	display: block;
 	color: orange;
 	font-weight: bold;
+	padding: 0 !important;
+}
+
+.drop-down-link {
+	width: 100%;
+	display: block;
+	padding: 0 5px 0 5px;
 }

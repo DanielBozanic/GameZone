@@ -1,6 +1,10 @@
 .responsive-img-footer {
-  width: 100%;
-  max-width: 250px;
-  height: auto;
-  padding-left: 10px;
+	width: 100%;
+	max-width: 250px;
+	height: auto;
+	border: 8px solid orange;
+}
+
+.responsive-img-footer:hover {
+	border: 8px solid rgb(33, 37, 41);
 }

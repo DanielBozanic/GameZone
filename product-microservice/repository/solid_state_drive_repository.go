@@ -185,7 +185,7 @@ func (solidStateDriveRepo *solidStateDriveRepository) Create(solidStateDrive mod
 }
 
 func (solidStateDriveRepo *solidStateDriveRepository) Update(solidStateDrive model.SolidStateDrive) error {
-	result := solidStateDriveRepo.Database.Save(&solidStateDrive)
+	result := solidStateDriveRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&solidStateDrive)
 	return result.Error
 }
 

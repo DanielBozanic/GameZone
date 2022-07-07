@@ -149,7 +149,7 @@ func (headphonesRepo *headphonesRepository) Create(headphones model.Headphones) 
 }
 
 func (headphonesRepo *headphonesRepository) Update(headphones model.Headphones) error {
-	result := headphonesRepo.Database.Save(&headphones)
+	result := headphonesRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&headphones)
 	return result.Error
 }
 

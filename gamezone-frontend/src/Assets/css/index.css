@@ -17,18 +17,14 @@ body {
 .full-page .footer {
 	position: absolute;
 	max-width: 100%;
-	bottom: 0;
 	font-size: 30px;
-	padding: 10px 0 10px 0;
 	height: 135px;
 }
 
 .full-page .header {
 	position: absolute;
 	max-width: 100%;
-	top: 0;
 	font-size: 30px;
-	padding: 10px 0 10px 0;
 	height: 135px;
 }
 

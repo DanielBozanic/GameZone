@@ -107,7 +107,7 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 func (consoleRepo *consoleRepository) GetPlatforms() []string {
 	var platforms []string
 	consoleRepo.Database.
-		Model(&model.Ram{}).
+		Model(&model.Console{}).
 		Distinct().
 		Pluck("platform", &platforms)
 	return platforms
@@ -119,7 +119,7 @@ func (consoleRepo *consoleRepository) Create(console model.Console) error {
 }
 
 func (consoleRepo *consoleRepository) Update(console model.Console) error {
-	result := consoleRepo.Database.Save(&console)
+	result := consoleRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&console)
 	return result.Error
 }
 

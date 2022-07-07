@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
@@ -88,6 +89,7 @@ func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) 
 		return error
 	}
 	
+	fmt.Printf("%d", updatedVideoGame.Product.Amount)
 	updatedVideoGame.Product.Id = videoGame.Product.Id
 	updatedVideoGame.ProductId = videoGame.Product.Id
 	return videoGameService.IVideoGameRepository.Update(updatedVideoGame)

@@ -185,7 +185,7 @@ func (graphicsCardRepo *graphicsCardRepository) Create(console model.GraphicsCar
 }
 
 func (graphicsCardRepo *graphicsCardRepository) Update(console model.GraphicsCard) error {
-	result := graphicsCardRepo.Database.Save(&console)
+	result := graphicsCardRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&console)
 	return result.Error
 }
 

@@ -170,7 +170,7 @@ func (ramRepo *ramRepository) Create(ram model.Ram) error {
 }
 
 func (ramRepo *ramRepository) Update(ram model.Ram) error {
-	result := ramRepo.Database.Save(&ram)
+	result := ramRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&ram)
 	return result.Error
 }
 

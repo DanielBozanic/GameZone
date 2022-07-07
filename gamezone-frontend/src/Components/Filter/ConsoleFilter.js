@@ -1,4 +1,4 @@
-import "../Assets/css/filter.css";
+import "../../Assets/css/filter.css";
 import {
 	Button,
 	Modal,
@@ -14,16 +14,15 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
+import * as consoleAPI from "../../APIs/ProductMicroservice/console_api";
 
-const VideoGamesFilter = (props) => {
+const ConsoleFilter = (props) => {
 	const [modal, setModal] = useState(false);
 	const toggle = () => setModal(!modal);
 	const [platforms, setPlatforms] = useState([]);
-	const [genres, setGenres] = useState([]);
 
 	useEffect(() => {
 		getPlatforms();
-		getGenres();
 	}, []);
 
 	const { handleSubmit, setValue, control } = useForm({
@@ -32,7 +31,6 @@ const VideoGamesFilter = (props) => {
 		shouldUnregister: true,
 		defaultValues: {
 			Platforms: [],
-			Genres: [],
 		},
 	});
 
@@ -47,7 +45,7 @@ const VideoGamesFilter = (props) => {
 
 	const getPlatforms = () => {
 		axios
-			.get(`http://localhost:7000/api/products/videoGames/getPlatforms`)
+			.get(consoleAPI.GET_PLATFORMS)
 			.then((res) => {
 				const temp = res.data.map((value) => ({
 					label: value,
@@ -55,22 +53,6 @@ const VideoGamesFilter = (props) => {
 				}));
 				setPlatforms(temp);
 				setValue("Platforms", res.data);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-
-	const getGenres = () => {
-		axios
-			.get(`http://localhost:7000/api/products/videoGames/getGenres`)
-			.then((res) => {
-				const temp = res.data.map((value) => ({
-					label: value,
-					value: value,
-				}));
-				setGenres(temp);
-				setValue("Genres", res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -112,30 +94,6 @@ const VideoGamesFilter = (props) => {
 								}}
 							/>
 						</FormGroup>
-
-						<FormGroup>
-							<Label>Filter by genre</Label>
-							<Controller
-								name={"Genres"}
-								control={control}
-								render={({ value, onChange }) => {
-									return (
-										<Select
-											options={genres}
-											isMulti={true}
-											onChange={(val) => {
-												onChange(
-													genres
-														.filter((o) => val.includes(o))
-														.map((g) => g.value)
-												);
-											}}
-											value={genres.find((c) => c.value === value)}
-										/>
-									);
-								}}
-							/>
-						</FormGroup>
 					</Form>
 				</ModalBody>
 				<ModalFooter>
@@ -148,4 +106,4 @@ const VideoGamesFilter = (props) => {
 	);
 };
 
-export default VideoGamesFilter;
+export default ConsoleFilter;

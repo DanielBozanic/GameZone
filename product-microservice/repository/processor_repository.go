@@ -186,7 +186,7 @@ func (processorRepo *processorRepository) Create(processor model.Processor) erro
 }
 
 func (processorRepo *processorRepository) Update(processor model.Processor) error {
-	result := processorRepo.Database.Save(&processor)
+	result := processorRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&processor)
 	return result.Error
 }
 

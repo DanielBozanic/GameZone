@@ -170,7 +170,7 @@ func (monitorRepo *monitorRepository) Create(monitor model.Monitor) error {
 }
 
 func (monitorRepo *monitorRepository) Update(monitor model.Monitor) error {
-	result := monitorRepo.Database.Save(&monitor)
+	result := monitorRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&monitor)
 	return result.Error
 }
 

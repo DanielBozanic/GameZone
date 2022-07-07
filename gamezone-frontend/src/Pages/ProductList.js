@@ -1,7 +1,5 @@
-import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import AppNavbar from "../Layout/AppNavbar";
 import ProductView from "../Components/ProductView";
-import Filter from "../Components/VideoGamesFilter";
 import Search from "../Components/Search";
 import { Row, Container } from "reactstrap";
 import axios from "axios";
@@ -23,22 +21,21 @@ const ProductList = (props) => {
 	};
 
 	useEffect(() => {
+		const pageSetup = () => {
+			if (filter !== null) {
+				getProductsFilter();
+				getPageCountFilter();
+			} else if (searchTerm !== "") {
+				getProductsSearch();
+				getPageCountSearch();
+			} else {
+				getProducts();
+				getPageCount();
+				setShowFilter(true);
+			}
+		};
 		pageSetup();
 	}, [currentPage, filter, searchTerm]);
-
-	const pageSetup = () => {
-		if (filter !== null) {
-			getProductsFilter();
-			getPageCountFilter();
-		} else if (searchTerm !== "") {
-			getProductsSearch();
-			getPageCountSearch();
-		} else {
-			getProducts();
-			getPageCount();
-			setShowFilter(true);
-		}
-	};
 
 	const getProducts = () => {
 		axios
@@ -87,7 +84,7 @@ const ProductList = (props) => {
 	const getProductsSearch = () => {
 		axios
 			.get(
-				`${productAPI.SEARCH_BY_NAME}?page=${currentPage}&pageSize=${pageSize}&name=${searchTerm}`
+				`${props.SEARCH_BY_NAME}?page=${currentPage}&pageSize=${pageSize}&name=${searchTerm}`
 			)
 			.then((res) => {
 				setProducts(res.data);
@@ -99,7 +96,7 @@ const ProductList = (props) => {
 
 	const getPageCountSearch = () => {
 		axios
-			.get(`${productAPI.GET_NUMBER_OF_RECORDS_SEARCH}?name=${searchTerm}`)
+			.get(`${props.GET_NUMBER_OF_RECORDS_SEARCH}?name=${searchTerm}`)
 			.then((res) => {
 				setPageCount(Math.ceil(Number(res.data) / pageSize));
 			})
@@ -117,8 +114,10 @@ const ProductList = (props) => {
 
 	const onSearchClick = (st) => {
 		setSearchTerm(st);
-		setFilter(null);
-		setShowFilter(false);
+		if (st !== "") {
+			setFilter(null);
+			setShowFilter(false);
+		}
 		setCurrentPage(1);
 	};
 
@@ -126,7 +125,9 @@ const ProductList = (props) => {
 		<>
 			<Container>
 				<Row style={{ display: "flex" }}>
-					{showFilter && <Filter onFilterClick={onFilterClick} />}
+					{showFilter && props.filter && (
+						<props.filter onFilterClick={onFilterClick} />
+					)}
 					<Search
 						onSearchClick={onSearchClick}
 						clearSearchTerm={clearSearchTerm}

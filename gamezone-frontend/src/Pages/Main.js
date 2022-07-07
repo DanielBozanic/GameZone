@@ -22,6 +22,8 @@ const Main = () => {
 		if (searchTerm !== "") {
 			getProductsSearch();
 			getPageCountSearch();
+		} else {
+			setProducts([]);
 		}
 	}, [currentPage, searchTerm]);
 

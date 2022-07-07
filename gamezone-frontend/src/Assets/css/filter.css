@@ -4,6 +4,7 @@
 	background-color: rgb(33, 37, 41);
 	color: orange;
 	font-weight: bold;
+	border: 2px solid orange;
 	width: 100%;
 	max-width: 100px;
 }
@@ -70,7 +71,7 @@
 	color: orange;
 	font-weight: bold;
 	border-color: orange;
-	border: 1px solid;
+	border: 2px solid orange;
 }
 
 .confirm-filter-btn:hover {
@@ -96,13 +97,21 @@
 	color: orange;
 	font-weight: bold;
 	background-color: rgb(33, 37, 41);
-	border: 1px solid rgb(33, 37, 41);
+	border: 2px solid orange;
 }
 
 .search-bar:focus {
 	background-color: rgb(33, 37, 41);
 	color: orange;
 	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.search-bar:active {
+	background-color: rgb(33, 37, 41);
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
 }
 
 .search-btn {
@@ -110,6 +119,7 @@
 	margin-bottom: 5px;
 	background-color: rgb(33, 37, 41);
 	color: orange;
+	border: 2px solid orange;
 	font-weight: bold;
 	width: 100%;
 	max-width: 100px;

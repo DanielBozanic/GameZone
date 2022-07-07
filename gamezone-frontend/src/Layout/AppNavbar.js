@@ -40,28 +40,44 @@ const AppNavbar = () => {
 							</DropdownToggle>
 							<DropdownMenu right>
 								<DropdownItem>
-									<Link to="/graphicsCards">Graphics cards</Link>
+									<Link className="drop-down-link" to="/graphicsCards">
+										Graphics cards
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/rams">RAMs</Link>
+									<Link className="drop-down-link" to="/rams">
+										RAMs
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/motherboards">Motherboards</Link>
+									<Link className="drop-down-link" to="/motherboards">
+										Motherboards
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/processors">Processors</Link>
+									<Link className="drop-down-link" to="/processors">
+										Processors
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/ssds">Solid state drives</Link>
+									<Link className="drop-down-link" to="/ssds">
+										Solid state drives
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/hdds">Hard disk drives</Link>
+									<Link className="drop-down-link" to="/hdds">
+										Hard disk drives
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/monitors">Monitors</Link>
+									<Link className="drop-down-link" to="/monitors">
+										Monitors
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/psus">Power supply units</Link>
+									<Link className="drop-down-link" to="/psus">
+										Power supply units
+									</Link>
 								</DropdownItem>
 							</DropdownMenu>
 						</UncontrolledDropdown>
@@ -71,13 +87,19 @@ const AppNavbar = () => {
 							</DropdownToggle>
 							<DropdownMenu right>
 								<DropdownItem>
-									<Link to="/headphones">Headphones</Link>
+									<Link className="drop-down-link" to="/headphones">
+										Headphones
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/keyboards">Keyboards</Link>
+									<Link className="drop-down-link" to="/keyboards">
+										Keyboards
+									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link to="/mice">Mice</Link>
+									<Link className="drop-down-link" to="/mice">
+										Mice
+									</Link>
 								</DropdownItem>
 							</DropdownMenu>
 						</UncontrolledDropdown>

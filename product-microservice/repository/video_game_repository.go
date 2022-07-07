@@ -135,7 +135,7 @@ func (videoGameRepo *videoGameRepository) Create(game model.VideoGame) error {
 }
 
 func (videoGameRepo *videoGameRepository) Update(game model.VideoGame) error {
-	result := videoGameRepo.Database.Save(&game)
+	result := videoGameRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&game)
 	return result.Error
 }
 

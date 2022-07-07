@@ -159,7 +159,7 @@ func (mouseRepo *mouseRepository) Create(mouse model.Mouse) error {
 }
 
 func (mouseRepo *mouseRepository) Update(mouse model.Mouse) error {
-	result := mouseRepo.Database.Save(&mouse)
+	result := mouseRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&mouse)
 	return result.Error
 }
 

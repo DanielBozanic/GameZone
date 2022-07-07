@@ -159,7 +159,7 @@ func (keyboardRepo *keyboardRepository) Create(keyboard model.Keyboard) error {
 }
 
 func (keyboardRepo *keyboardRepository) Update(keyboard model.Keyboard) error {
-	result := keyboardRepo.Database.Save(&keyboard)
+	result := keyboardRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&keyboard)
 	return result.Error
 }
 

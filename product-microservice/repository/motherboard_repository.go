@@ -170,7 +170,7 @@ func (motherboardRepo *motherboardRepository) Create(motherboard model.Motherboa
 }
 
 func (motherboardRepo *motherboardRepository) Update(motherboard model.Motherboard) error {
-	result := motherboardRepo.Database.Save(&motherboard)
+	result := motherboardRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&motherboard)
 	return result.Error
 }
 
