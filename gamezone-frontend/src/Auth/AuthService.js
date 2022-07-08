@@ -1,29 +1,29 @@
-export const getAccessToken = () => {
-  return localStorage.getItem("accessToken");
+export const getToken = () => {
+	return sessionStorage.getItem("token");
 };
 
 export const getEmail = () => {
-  return localStorage.getItem("email");
+	return sessionStorage.getItem("email");
 };
 
 export const getRole = () => {
-  return localStorage.getItem("role");
+	return sessionStorage.getItem("role");
 };
 
-export const getJMBG = () => {
-  return localStorage.getItem("id");
+export const getId = () => {
+	return sessionStorage.getItem("id");
 };
 
 export const removeToken = () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("email");
-  localStorage.removeItem("role");
-  localStorage.removeItem("id");
+	sessionStorage.removeItem("token");
+	sessionStorage.removeItem("email");
+	sessionStorage.removeItem("role");
+	sessionStorage.removeItem("id");
 };
 
-export const storeToken = (token) => {
-  localStorage.setItem("accessToken", token.accessToken);
-  localStorage.setItem("email", token.email);
-  localStorage.setItem("role", token.role);
-  localStorage.setItem("id", token.id);
+export const storeToken = (data) => {
+	sessionStorage.setItem("token", data.token);
+	sessionStorage.setItem("email", data.user.email);
+	sessionStorage.setItem("role", data.user.role);
+	sessionStorage.setItem("id", data.user.id);
 };

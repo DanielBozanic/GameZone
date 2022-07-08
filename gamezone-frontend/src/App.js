@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
+import ProtectedRoute from "./Auth/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Assets/css/index.css";
 import Header from "./Layout/Header";
@@ -35,6 +36,9 @@ import MouseFilter from "./Components/Filter/MouseFilter";
 
 import Main from "./Pages/Main";
 import ProductList from "./Pages/ProductList";
+import SignUp from "./Pages/SignUp/SignUp";
+import SignIn from "./Pages/SignIn/SignIn";
+import ShoppingCart from "./Pages/ShoppingCart/ShoppingCart";
 
 function App() {
 	return (
@@ -294,6 +298,14 @@ function App() {
 									/>
 								}
 							/>
+							<Route path="/signUp" element={<SignUp />} />
+							<Route path="/signIn" element={<SignIn />} />
+							<Route
+								path="/shoppingCart"
+								element={<ProtectedRoute roles={["ROLE_USER"]} />}
+							>
+								<Route path="/shoppingCart" element={<ShoppingCart />} />
+							</Route>
 						</Routes>
 					</Fragment>
 				</div>

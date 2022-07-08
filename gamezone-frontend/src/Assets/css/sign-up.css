@@ -1,0 +1,66 @@
+.sign-up-card {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	margin-bottom: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
+	padding: 1em;
+	text-align: left;
+	border-collapse: collapse;
+}
+
+.sign-up-card-form {
+	padding: 1em;
+	border-collapse: collapse;
+	max-width: 90%;
+	font-weight: bold;
+}
+
+.input-field {
+	color: #343a40;
+	font-weight: bold;
+}
+
+.input-field-error-msg {
+	font-weight: bold;
+	color: orange;
+}
+
+.signup-btn {
+	margin-top: 25px;
+	background-color: orange;
+	color: #343a40;
+	font-weight: bold;
+	border: 2px solid #343a40;
+}
+
+.signup-btn:hover {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+	transition: 0.7s;
+}
+
+.signup-btn:focus {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+}
+
+.signup-btn:active {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+}
+
+.Toastify__toast--error {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
+}
+
+.Toastify__close-button {
+	color: #343a40 !important;
+}

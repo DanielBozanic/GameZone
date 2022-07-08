@@ -2,45 +2,46 @@ body {
 	background-image: url("../images/background.jpg");
 }
 
-.full-page {
-	position: absolute;
-	z-index: 1;
-	height: 100%;
-	width: 100%;
-	display: block;
-	top: 0;
-	left: 0;
-	background-size: cover;
-	background-position: center center;
-}
+@media screen and (min-width: 769px) {
+	.full-page {
+		position: absolute;
+		z-index: 1;
+		height: 100%;
+		width: 100%;
+		display: block;
+		top: 0;
+		left: 0;
+		background-size: cover;
+		background-position: center center;
+	}
 
-.full-page .footer {
-	position: absolute;
-	max-width: 100%;
-	font-size: 30px;
-	height: 135px;
-}
+	.full-page .footer {
+		position: absolute;
+		max-width: 100%;
+		font-size: 30px;
+		height: 135px;
+	}
 
-.full-page .header {
-	position: absolute;
-	max-width: 100%;
-	font-size: 30px;
-	height: 135px;
-}
+	.full-page .header {
+		position: absolute;
+		max-width: 100%;
+		font-size: 30px;
+		height: 135px;
+	}
 
-.full-page > .app-content,
-.full-page > .footer {
-	position: relative;
-	z-index: 4;
-}
+	.full-page > .app-content,
+	.full-page > .footer {
+		position: relative;
+		z-index: 4;
+	}
 
-.full-page > .app-content,
-.full-page > .header {
-	position: relative;
-	z-index: 4;
-}
-
-.app-content {
-	height: calc(100% - 270px);
-	overflow-y: auto;
+	.full-page > .app-content,
+	.full-page > .header {
+		position: relative;
+		z-index: 4;
+	}
+	.app-content {
+		height: calc(100% - 270px);
+		overflow-y: auto;
+	}
 }

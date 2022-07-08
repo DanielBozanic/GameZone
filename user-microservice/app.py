@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flask_cors import CORS
 from db.database import db
 from routes.user_bp import user_bp
 from routes.auth_bp import auth_bp
 
 app = Flask(__name__)
 app.config.from_object('config')
+CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 app.register_blueprint(user_bp, url_prefix='/api/users')
