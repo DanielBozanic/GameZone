@@ -17,7 +17,7 @@ const Search = (props) => {
 		<>
 			<Col md="10">
 				<Row>
-					<Col md="10" style={{ textAlign: "right" }}>
+					<Col md="9" style={{ textAlign: "right" }}>
 						<Input
 							className="search-bar"
 							name="searchTerm"
@@ -27,7 +27,7 @@ const Search = (props) => {
 							onChange={(e) => setSearchTerm(e.target.value)}
 						/>
 					</Col>
-					<Col md="2">
+					<Col md="3">
 						<Button className="search-btn" onClick={search}>
 							Search
 						</Button>

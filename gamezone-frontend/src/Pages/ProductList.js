@@ -1,5 +1,5 @@
 import AppNavbar from "../Layout/AppNavbar";
-import ProductView from "../Components/ProductView";
+import ProductsView from "../Components/ProductsView";
 import Search from "../Components/Search";
 import { Row, Container } from "reactstrap";
 import axios from "axios";
@@ -135,7 +135,7 @@ const ProductList = (props) => {
 				</Row>
 			</Container>
 			<AppNavbar />
-			<ProductView
+			<ProductsView
 				products={products}
 				currentPage={currentPage}
 				pageCount={pageCount}

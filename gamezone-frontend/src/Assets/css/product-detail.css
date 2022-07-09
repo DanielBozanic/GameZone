@@ -1,0 +1,38 @@
+.product-detail-card {
+	padding-top: 20px;
+}
+
+.product-detail-card-with-image {
+	background: #343a40;
+	color: orange;
+}
+
+.product-detail-card-image {
+	height: auto;
+}
+
+.product-detail-table-card {
+	background: #343a40;
+}
+
+.product-detail-table {
+	color: orange !important;
+	border-color: orange !important;
+}
+
+.product-detail-table {
+	color: orange !important;
+	border-color: orange !important;
+}
+
+.product-detail-table td {
+	width: 60%;
+	border-top: none !important;
+	word-break: break-all;
+}
+
+.product-detail-table th {
+	width: 40%;
+	border-top: none !important;
+	word-break: break-all;
+}

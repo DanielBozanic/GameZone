@@ -14,5 +14,6 @@ export const REMOVE_PRODUCT_FROM_CART =
 export const CONFIRM_PURCHASE =
 	api + userProtectedProducts + "/confirmPurchase";
 
+export const GET_PRODUCT_BY_ID = api;
 export const SEARCH_BY_NAME = api + "/searchByName";
 export const GET_NUMBER_OF_RECORDS_SEARCH = api + "/getNumberOfRecordsSearch";

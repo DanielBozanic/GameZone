@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import cn from "classnames";
 
-const ProductView = (props) => {
+const ProductsView = (props) => {
 	const onHandleClick = (e, nextOrPrev) => {
 		props.handleClick && props.handleClick(e, nextOrPrev);
 	};
@@ -132,4 +132,4 @@ const ProductView = (props) => {
 	);
 };
 
-export default ProductView;
+export default ProductsView;

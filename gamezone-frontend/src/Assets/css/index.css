@@ -45,3 +45,12 @@ body {
 		overflow-y: auto;
 	}
 }
+
+.header {
+	font-family: "Batman";
+}
+
+@font-face {
+	font-family: "Batman";
+	src: local("batmfa__"), url("../fonts/batmfa__.ttf") format("truetype");
+}

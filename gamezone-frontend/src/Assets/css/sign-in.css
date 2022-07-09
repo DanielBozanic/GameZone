@@ -11,6 +11,10 @@
 	border-collapse: collapse;
 }
 
+.sign-in-card-title {
+	font-family: "Batman";
+}
+
 .sign-in-card-form {
 	padding: 1em;
 	border-collapse: collapse;
@@ -33,6 +37,7 @@
 	background-color: orange;
 	color: #343a40;
 	font-weight: bold;
+	font-family: "Batman";
 	border: 2px solid #343a40;
 }
 

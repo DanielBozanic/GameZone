@@ -60,7 +60,9 @@ const SignUp = () => {
 			<Row>
 				<Col md="10">
 					<Card className="sign-up-card">
-						<CardTitle tag="h2">Sign Up</CardTitle>
+						<CardTitle className="sign-up-card-title" tag="h2">
+							Sign Up
+						</CardTitle>
 						<CardBody>
 							<Form className="sign-up-card-form">
 								<Row>

@@ -9,6 +9,7 @@
 .navbar a {
 	color: orange;
 	font-weight: bold;
+	font-family: "Batman";
 }
 
 .navbar a:link {

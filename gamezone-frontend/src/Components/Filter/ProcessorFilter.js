@@ -144,7 +144,9 @@ const ProcessorFilter = (props) => {
 			</Col>
 
 			<Modal isOpen={modal} toggle={toggle}>
-				<ModalHeader toggle={toggle}>Filter</ModalHeader>
+				<ModalHeader className="filter-modal-title" toggle={toggle}>
+					Filter
+				</ModalHeader>
 				<ModalBody>
 					<Form>
 						<FormGroup>

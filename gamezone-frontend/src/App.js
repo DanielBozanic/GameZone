@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import ProtectedRoute from "./Auth/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Assets/css/index.css";
+import "./Assets/fonts/batmfa__.ttf";
 import Header from "./Layout/Header";
 import Footer from "./Layout/Footer";
 
@@ -36,6 +37,7 @@ import MouseFilter from "./Components/Filter/MouseFilter";
 
 import Main from "./Pages/Main";
 import ProductList from "./Pages/ProductList";
+import ProductDetail from "./Pages/ProductDetail";
 import SignUp from "./Pages/SignUp/SignUp";
 import SignIn from "./Pages/SignIn/SignIn";
 import ShoppingCart from "./Pages/ShoppingCart/ShoppingCart";
@@ -69,6 +71,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/videoGames/:id"
+								path="/videoGames/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/consoles"
 								element={
 									<ProductList
@@ -86,6 +93,11 @@ function App() {
 										filter={ConsoleFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/consoles/:id"
+								path="/consoles/:id"
+								element={<ProductDetail />}
 							/>
 							<Route
 								path="/graphicsCards"
@@ -109,6 +121,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/graphicsCards/:id"
+								path="/graphicsCards/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/rams"
 								element={
 									<ProductList
@@ -126,6 +143,11 @@ function App() {
 										filter={RAMFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/rams/:id"
+								path="/rams/:id"
+								element={<ProductDetail />}
 							/>
 							<Route
 								path="/motherboards"
@@ -147,6 +169,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/motherboards/:id"
+								path="/motherboards/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/processors"
 								element={
 									<ProductList
@@ -164,6 +191,11 @@ function App() {
 										filter={ProcessorFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/processors/:id"
+								path="/processors/:id"
+								element={<ProductDetail />}
 							/>
 							<Route
 								path="/hdds"
@@ -185,6 +217,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/hdds/:id"
+								path="/hdds/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/ssds"
 								element={
 									<ProductList
@@ -202,6 +239,11 @@ function App() {
 										filter={SSDFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/ssds/:id"
+								path="/ssds/:id"
+								element={<ProductDetail />}
 							/>
 							<Route
 								path="/monitors"
@@ -223,6 +265,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/monitors/:id"
+								path="/monitors/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/psus"
 								element={
 									<ProductList
@@ -240,6 +287,11 @@ function App() {
 										filter={PSUFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/psus/:id"
+								path="/psus/:id"
+								element={<ProductDetail />}
 							/>
 							<Route
 								path="/headphones"
@@ -261,6 +313,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/headphones/:id"
+								path="/headphones/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/keyboards"
 								element={
 									<ProductList
@@ -280,6 +337,11 @@ function App() {
 								}
 							/>
 							<Route
+								key="/keyboards/:id"
+								path="/keyboards/:id"
+								element={<ProductDetail />}
+							/>
+							<Route
 								path="/mice"
 								element={
 									<ProductList
@@ -297,6 +359,11 @@ function App() {
 										filter={MouseFilter}
 									/>
 								}
+							/>
+							<Route
+								key="/mice/:id"
+								path="/mice/:id"
+								element={<ProductDetail />}
 							/>
 							<Route path="/signUp" element={<SignUp />} />
 							<Route path="/signIn" element={<SignIn />} />

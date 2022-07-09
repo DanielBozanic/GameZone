@@ -1,9 +1,14 @@
+.filter-modal-title {
+	font-family: "Batman";
+}
+
 .filter-button {
 	margin-top: 5px;
 	margin-bottom: 5px;
 	background-color: rgb(33, 37, 41);
 	color: orange;
 	font-weight: bold;
+	font-family: "Batman";
 	border: 2px solid orange;
 	width: 100%;
 	max-width: 100px;
@@ -70,6 +75,7 @@
 	background-color: rgb(33, 37, 41);
 	color: orange;
 	font-weight: bold;
+	font-family: "Batman";
 	border-color: orange;
 	border: 2px solid orange;
 }
@@ -121,6 +127,7 @@
 	color: orange;
 	border: 2px solid orange;
 	font-weight: bold;
+	font-family: "Batman";
 	width: 100%;
 	max-width: 100px;
 }

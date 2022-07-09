@@ -68,6 +68,7 @@ func main() {
 	mouses := api.Group("/mouses")
 	headphones := api.Group("/headphones")
 
+	api.GET("/:id", productAPI.GetProductById)
 	api.GET("/searchByName", productAPI.SearchByName)
 	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
 

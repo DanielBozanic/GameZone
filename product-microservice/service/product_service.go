@@ -28,6 +28,7 @@ type productService struct {
 }
 
 type IProductService interface {
+	GetProductById(id uuid.UUID) (model.Product, error)
 	AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error)
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
@@ -69,6 +70,10 @@ func NewProductService(
 		IVideoGameRepository: videoGameRepository,
 		IProductRepository: productRepository,
 	}
+}
+
+func (productService *productService) GetProductById(id uuid.UUID) (model.Product, error) {
+	return productService.IProductRepository.GetProductById(id);
 }
 
 func (productService *productService) GetCurrentCart(userId int) []model.ProductPurchase {

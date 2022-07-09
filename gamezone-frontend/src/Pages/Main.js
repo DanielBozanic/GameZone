@@ -1,7 +1,7 @@
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import AppNavbar from "../Layout/AppNavbar";
 import Search from "../Components/Search";
-import ProductView from "../Components/ProductView";
+import ProductsView from "../Components/ProductsView";
 import { Row, Container } from "reactstrap";
 import axios from "axios";
 import { useState, useEffect } from "react";
@@ -65,7 +65,7 @@ const Main = () => {
 				</Row>
 			</Container>
 			<AppNavbar />
-			<ProductView
+			<ProductsView
 				products={products}
 				currentPage={currentPage}
 				pageCount={pageCount}

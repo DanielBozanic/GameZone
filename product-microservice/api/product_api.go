@@ -22,6 +22,22 @@ func NewProductAPI(productService service.IProductService) ProductAPI {
 	return ProductAPI{IProductService: productService}
 }
 
+func (productApi *ProductAPI) GetProductById(c *gin.Context) {
+	id, err := uuid.Parse(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	product, err := productApi.IProductService.GetProductById(id)
+	
+	if err == nil {
+		c.JSON(http.StatusOK, mapper.ToProductDTO(product))
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}
+
 func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	productId, err := uuid.Parse(c.Param("productId"))
 	if err != nil {
