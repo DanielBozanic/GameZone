@@ -13,10 +13,66 @@ import {
 	PaginationLink,
 } from "reactstrap";
 import cn from "classnames";
+import { useNavigate } from "react-router-dom";
+import * as productType from "../Utils/ProductType";
 
 const ProductsView = (props) => {
+	const navigate = useNavigate();
+
 	const onHandleClick = (e, nextOrPrev) => {
 		props.handleClick && props.handleClick(e, nextOrPrev);
+	};
+
+	const viewProductDetails = (product) => {
+		if (product.Product !== undefined) {
+			navigate(window.location.pathname + "/" + product.Product.Id);
+		} else {
+			navigationBasedOnType(product);
+		}
+	};
+
+	const navigationBasedOnType = (product) => {
+		switch (product.Type) {
+			case productType.CONSOLE:
+				navigate("/consoles/" + product.Id);
+				break;
+			case productType.GRAPHICS_CARD:
+				navigate("/graphicsCards/" + product.Id);
+				break;
+			case productType.HARD_DISK_DRIVE:
+				navigate("/hdds/" + product.Id);
+				break;
+			case productType.HEADPHONES:
+				navigate("/headphones/" + product.Id);
+				break;
+			case productType.KEYBOARD:
+				navigate("/keyboards/" + product.Id);
+				break;
+			case productType.MONITOR:
+				navigate("/monitors/" + product.Id);
+				break;
+			case productType.MOTHERBOARD:
+				navigate("/motherboards/" + product.Id);
+				break;
+			case productType.MOUSE:
+				navigate("/mice/" + product.Id);
+				break;
+			case productType.POWER_SUPPLY_UNIT:
+				navigate("/psus/" + product.Id);
+				break;
+			case productType.PROCESSOR:
+				navigate("/processors/" + product.Id);
+				break;
+			case productType.RAM:
+				navigate("/rams/" + product.Id);
+				break;
+			case productType.SOLID_STATE_DRIVE:
+				navigate("/ssds/" + product.Id);
+				break;
+			case productType.VIDEO_GAME:
+				navigate("/videoGames/" + product.Id);
+				break;
+		}
 	};
 
 	return (
@@ -27,7 +83,10 @@ const ProductsView = (props) => {
 						{props.products.map((product, index) =>
 							index < 4 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card className="card-with-image">
+									<Card
+										className="card-with-image"
+										onClick={() => viewProductDetails(product)}
+									>
 										<CardImg
 											className="card-image"
 											alt="No image"
@@ -61,7 +120,10 @@ const ProductsView = (props) => {
 						{props.products.map((product, index) =>
 							index > 3 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card className="card-with-image">
+									<Card
+										className="card-with-image"
+										onClick={() => viewProductDetails(product)}
+									>
 										<CardImg
 											className="card-image"
 											alt="No image"

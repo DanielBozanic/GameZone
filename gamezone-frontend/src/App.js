@@ -71,9 +71,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/videoGames/:id"
 								path="/videoGames/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/videoGames/:id"
+										GET_PRODUCT_BY_ID={videoGameAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/consoles"
@@ -95,9 +99,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/consoles/:id"
 								path="/consoles/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/consoles/:id"
+										GET_PRODUCT_BY_ID={consoleAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/graphicsCards"
@@ -121,9 +129,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/graphicsCards/:id"
 								path="/graphicsCards/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/graphicsCards/:id"
+										GET_PRODUCT_BY_ID={graphicsCardsAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/rams"
@@ -145,9 +157,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/rams/:id"
 								path="/rams/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/rams/:id"
+										GET_PRODUCT_BY_ID={ramAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/motherboards"
@@ -169,9 +185,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/motherboards/:id"
 								path="/motherboards/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/motherboards/:id"
+										GET_PRODUCT_BY_ID={motherboardAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/processors"
@@ -193,9 +213,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/processors/:id"
 								path="/processors/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/processors/:id"
+										GET_PRODUCT_BY_ID={processorAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/hdds"
@@ -217,9 +241,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/hdds/:id"
 								path="/hdds/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/hdds/:id"
+										GET_PRODUCT_BY_ID={hddAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/ssds"
@@ -243,7 +271,12 @@ function App() {
 							<Route
 								key="/ssds/:id"
 								path="/ssds/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/ssds/:id"
+										GET_PRODUCT_BY_ID={ssdAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/monitors"
@@ -265,9 +298,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/monitors/:id"
 								path="/monitors/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/monitors/:id"
+										GET_PRODUCT_BY_ID={monitorAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/psus"
@@ -289,9 +326,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/psus/:id"
 								path="/psus/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/psus/:id"
+										GET_PRODUCT_BY_ID={psuAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/headphones"
@@ -313,9 +354,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/headphones/:id"
 								path="/headphones/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/headphones/:id"
+										GET_PRODUCT_BY_ID={headphonesAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/keyboards"
@@ -337,9 +382,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/keyboards/:id"
 								path="/keyboards/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/keyboards/:id"
+										GET_PRODUCT_BY_ID={keyboardAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route
 								path="/mice"
@@ -361,9 +410,13 @@ function App() {
 								}
 							/>
 							<Route
-								key="/mice/:id"
 								path="/mice/:id"
-								element={<ProductDetail />}
+								element={
+									<ProductDetail
+										key="/mice/:id"
+										GET_PRODUCT_BY_ID={mouseAPI.GET_BY_ID}
+									/>
+								}
 							/>
 							<Route path="/signUp" element={<SignUp />} />
 							<Route path="/signIn" element={<SignIn />} />

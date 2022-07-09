@@ -9,15 +9,13 @@ import {
 	Row,
 	Col,
 	Container,
+	Table,
 } from "reactstrap";
 import axios from "axios";
 import "../Assets/css/product-detail.css";
 import AppNavbar from "../Layout/AppNavbar";
-import * as productAPI from "../APIs/ProductMicroservice/product_api";
 
-import VideoGameDetail from "../Components/ProductDetails/VideoGameDetail";
-
-const ProductDetail = () => {
+const ProductDetail = (props) => {
 	const { id } = useParams();
 	const [product, setProduct] = useState(null);
 
@@ -27,44 +25,13 @@ const ProductDetail = () => {
 
 	const getProductById = () => {
 		axios
-			.get(`${productAPI.GET_PRODUCT_BY_ID}/${id}`)
+			.get(`${props.GET_PRODUCT_BY_ID}/${id}`)
 			.then((res) => {
 				setProduct(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
 			});
-	};
-
-	const getSpecificProductDetails = () => {
-		switch (product.Type) {
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
-			case 4:
-				break;
-			case 5:
-				break;
-			case 6:
-				break;
-			case 7:
-				break;
-			case 8:
-				break;
-			case 9:
-				break;
-			case 10:
-				break;
-			case 11:
-				break;
-			case 12:
-				break;
-			case 13:
-				return <VideoGameDetail product={product} />;
-		}
 	};
 
 	return (
@@ -77,20 +44,45 @@ const ProductDetail = () => {
 							<Card className="product-detail-card-with-image">
 								<CardImg
 									className="product-detail-card-image"
-									src={product.Image}
+									src={product.Product.Image}
 									alt="No image"
 								/>
 								<CardBody>
-									<CardTitle tag="h5">{product.Name}</CardTitle>
+									<CardTitle tag="h5">{product.Product.Name}</CardTitle>
 
 									<CardText>
-										{product.Price}
+										{product.Product.Price}
 										RSD
 									</CardText>
 								</CardBody>
 							</Card>
 						</Col>
-						{getSpecificProductDetails()}
+						<Col style={{ paddingTop: "5px", paddingBottom: "10px" }} md={7}>
+							<Card className="product-detail-table-card">
+								<Table className="product-detail-table">
+									{product !== null &&
+										Object.keys(product).map(function (value, idx) {
+											if (value !== "Product") {
+												if (typeof product[value] == "boolean") {
+													return (
+														<tr key={idx}>
+															<th>{value.replace(/([A-Z])/g, " $1").trim()}</th>
+															<td>{product[value] ? "Yes" : "No"}</td>
+														</tr>
+													);
+												} else {
+													return (
+														<tr key={idx}>
+															<th>{value.replace(/([A-Z])/g, " $1").trim()}</th>
+															<td>{product[value].toString()}</td>
+														</tr>
+													);
+												}
+											}
+										})}
+								</Table>
+							</Card>
+						</Col>
 					</Row>
 				</Container>
 			)}

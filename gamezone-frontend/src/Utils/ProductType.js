@@ -1,0 +1,13 @@
+export const CONSOLE = 1;
+export const GRAPHICS_CARD = 2;
+export const HARD_DISK_DRIVE = 3;
+export const HEADPHONES = 4;
+export const KEYBOARD = 5;
+export const MONITOR = 6;
+export const MOTHERBOARD = 7;
+export const MOUSE = 8;
+export const POWER_SUPPLY_UNIT = 9;
+export const PROCESSOR = 10;
+export const RAM = 11;
+export const SOLID_STATE_DRIVE = 12;
+export const VIDEO_GAME = 13;
