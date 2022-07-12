@@ -48,12 +48,14 @@
 	border-top: none !important;
 	text-align: center;
 	vertical-align: middle;
+	word-break: break-all;
 }
 
 .shopping-cart-table td {
 	border-top: none !important;
 	text-align: center;
 	vertical-align: middle;
+	word-break: break-all;
 }
 
 @media only screen and (max-width: 760px),

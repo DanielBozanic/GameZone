@@ -42,11 +42,13 @@
 .product-detail-table td {
 	width: 60%;
 	border-top: none !important;
+	word-break: break-all;
 }
 
 .product-detail-table th {
 	width: 40%;
 	border-top: none !important;
+	word-break: break-all;
 }
 
 .amount-product-select {
