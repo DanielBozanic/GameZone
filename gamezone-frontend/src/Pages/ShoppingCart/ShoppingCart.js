@@ -80,50 +80,56 @@ const ShoppingCart = () => {
 									<th>Name</th>
 									<th>Price</th>
 									<th>Quantity</th>
+									<th>Amount</th>
 								</tr>
-								{shoppingCart.map((product, idx) => {
-									return (
-										<tr key={idx}>
-											{/* <td>
+								<tbody>
+									{shoppingCart.map((product, idx) => {
+										return (
+											<tr key={idx}>
+												{/* <td>
 												<img className="product-img" src={product.ProductImage} />
 											</td> */}
-											<td>{product.ProductName}</td>
-											<td>{product.ProductPrice} RSD</td>
-											<td>{product.Amount}</td>
-											<td>
-												<Input
-													className="amount-select"
-													type="select"
-													onChange={(e) =>
-														updateProductPurchase(
-															product,
-															Number(e.target.value)
-														)
-													}
-												>
-													<option hidden>Select quantity</option>
-													<option>1</option>
-													<option>2</option>
-													<option>3</option>
-													<option>4</option>
-													<option>5</option>
-												</Input>
-											</td>
-											<td>
-												<Button
-													type="button"
-													className="remove-product-from-cart-btn"
-													onClick={() => removeProductFromCart(product)}
-												>
-													Remove
-												</Button>
-											</td>
-										</tr>
-									);
-								})}
-								<tr>
-									<td className="total-price-td">Total: {totalPrice} RSD</td>
-								</tr>
+												<td>{product.ProductName}</td>
+												<td>{product.ProductPrice} RSD</td>
+												<td>{product.Amount}</td>
+												<td>{product.TotalPrice} RSD</td>
+												<td>
+													<Input
+														className="amount-select"
+														type="select"
+														onChange={(e) =>
+															updateProductPurchase(
+																product,
+																Number(e.target.value)
+															)
+														}
+													>
+														<option hidden>Select quantity</option>
+														<option>1</option>
+														<option>2</option>
+														<option>3</option>
+														<option>4</option>
+														<option>5</option>
+													</Input>
+												</td>
+												<td>
+													<Button
+														type="button"
+														className="remove-product-from-cart-btn"
+														onClick={() => removeProductFromCart(product)}
+													>
+														Remove
+													</Button>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+								<tfoot>
+									<tr>
+										<td className="total-price-td">Total: {totalPrice} RSD</td>
+									</tr>
+								</tfoot>
 							</Table>
 							<Button
 								type="button"

@@ -54,7 +54,7 @@ const ProductDetail = (props) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
 					toastId: customId,
-					autoClose: false,
+					autoClose: 5000,
 				});
 			})
 			.catch((err) => {

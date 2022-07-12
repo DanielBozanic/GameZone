@@ -5,7 +5,7 @@
 .filter-button {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
 	font-family: "Batman";
@@ -16,22 +16,22 @@
 
 .filter-button:hover {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .filter-button:focus {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 .filter-button:active {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 .modal-content {
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
 }
@@ -45,7 +45,7 @@
 }
 
 .close {
-	color: rgb(33, 37, 41) !important;
+	color: #343a40 !important;
 	background-color: orange !important;
 	font-weight: bold !important;
 	opacity: 100 !important;
@@ -56,13 +56,13 @@
 }
 
 .close:hover {
-	background-color: rgb(33, 37, 41) !important;
+	background-color: #343a40 !important;
 	color: orange !important;
 	transition: 0.7s;
 }
 
 .close:focus {
-	background-color: rgb(33, 37, 41) !important;
+	background-color: #343a40 !important;
 	color: orange !important;
 	transition: 0.7s;
 }
@@ -72,7 +72,7 @@
 }
 
 .confirm-filter-btn {
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
 	font-family: "Batman";
@@ -82,18 +82,18 @@
 
 .confirm-filter-btn:hover {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .confirm-filter-btn:focus {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 .confirm-filter-btn:active {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 .search-bar {
@@ -102,19 +102,19 @@
 	padding-right: 50px;
 	color: orange;
 	font-weight: bold;
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	border: 2px solid orange;
 }
 
 .search-bar:focus {
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
 	border: 2px solid orange;
 }
 
 .search-bar:active {
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
 	border: 2px solid orange;
@@ -123,7 +123,7 @@
 .search-btn {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 	font-weight: bold;
@@ -134,18 +134,18 @@
 
 .search-btn:hover {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .search-btn:focus {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 .search-btn:active {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 }
 
 @media screen and (min-width: 768px) {

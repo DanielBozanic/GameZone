@@ -49,13 +49,11 @@ func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	userData := middleware.GetUserData(c)
 	msg, err := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
 
-	if msg == "" {
-		c.JSON(http.StatusOK, "Product added to cart.")
-	} else if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
+	if err == nil {
+		c.JSON(http.StatusOK, msg)
 	} else {
-		c.JSON(http.StatusBadRequest, msg)
-	}
+		c.JSON(http.StatusBadRequest, err.Error())
+	} 
 }
 
 func (productApi *ProductAPI) GetCurrentCart(c *gin.Context) {

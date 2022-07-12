@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/model"
 	"product/repository"
@@ -105,20 +106,21 @@ func (productService *productService) AddProductToCart(productPurchaseDTO dto.Pr
 	if product.Type == model.VIDEO_GAME {
 		videoGame, _ := productService.IVideoGameRepository.GetById(productPurchaseDTO.ProductId)
 		if videoGame.Product.Amount < productPurchaseDTO.Amount && !videoGame.Digital {
-			msg = productOutOfStockMsg
+			err = errors.New(productOutOfStockMsg)
 		}
 	} else {
 		if product.Amount < productPurchaseDTO.Amount {
-			msg = productOutOfStockMsg
+			err = errors.New(productOutOfStockMsg)
 		}
 	}
 
 	if msg == "" {
 		productInCart, err := productService.IProductRepository.GetProductPurchaseFromCart(product.Name, userData.Id)
 		if err == nil {
-			productInCart.Amount += productPurchaseDTO.Amount
+			productInCart.Amount = productPurchaseDTO.Amount
 			productInCart.TotalPrice = productInCart.ProductPrice.Mul(decimal.NewFromInt(int64(productInCart.Amount)))
 			productService.IProductRepository.UpdatePurchase(productInCart)
+			msg = "Cart updated."
 		} else {
 			productPurchase.Id = uuid.New()
 			productPurchase.ProductId = product.Id
@@ -129,6 +131,7 @@ func (productService *productService) AddProductToCart(productPurchaseDTO dto.Pr
 			productPurchase.Amount = productPurchaseDTO.Amount
 			productPurchase.UserId = userData.Id 
 			productService.IProductRepository.AddPurchase(productPurchase);
+			msg = "Product added to cart."
 		}
 	}
 	return msg, nil

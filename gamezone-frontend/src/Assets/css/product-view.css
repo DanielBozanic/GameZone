@@ -6,7 +6,7 @@
 	width: 10vw;
 	min-width: 120px;
 	max-width: 160px;
-	background: rgb(33, 37, 41);
+	background: #343a40;
 	color: orange;
 }
 
@@ -27,40 +27,40 @@
 }
 
 .page-link {
-	background: rgb(33, 37, 41);
+	background: #343a40;
 	color: orange;
-	border: 1px solid rgb(33, 37, 41);
+	border: 1px solid #343a40;
 	font-weight: bold;
 }
 
 .page-link:hover {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .page-link:focus {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .page-link:active {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .page-item.disabled .page-link {
-	background: rgb(33, 37, 41);
+	background: #343a40;
 	color: orange;
-	border: 1px solid rgb(33, 37, 41);
+	border: 1px solid #343a40;
 	font-weight: bold;
 }
 
 .page-item.active .page-link {
 	background-color: orange;
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	font-weight: bold;
 }
 

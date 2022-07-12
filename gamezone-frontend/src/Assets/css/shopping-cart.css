@@ -63,6 +63,7 @@
 	.shopping-cart-table,
 	thead,
 	tbody,
+	tfoot,
 	th,
 	td,
 	tr {
@@ -82,23 +83,21 @@
 		white-space: nowrap;
 	}
 
-	.shopping-cart-table td:nth-of-type(1):before {
+	.shopping-cart-table tbody td:nth-of-type(1):before {
 		content: "Name:";
 		font-weight: bold;
 	}
-	.shopping-cart-table td:nth-of-type(2):before {
+	.shopping-cart-table tbody td:nth-of-type(2):before {
 		content: "Price:";
 		font-weight: bold;
 	}
-	.shopping-cart-table td:nth-of-type(3):before {
+	.shopping-cart-table tbody td:nth-of-type(3):before {
 		content: "Quantity:";
 		font-weight: bold;
 	}
-	.shopping-cart-table td:nth-of-type(4):before {
-		content: "";
-	}
-	.shopping-cart-table td:nth-of-type(5):before {
-		content: "";
+	.shopping-cart-table tbody td:nth-of-type(4):before {
+		content: "Amount:";
+		font-weight: bold;
 	}
 }
 

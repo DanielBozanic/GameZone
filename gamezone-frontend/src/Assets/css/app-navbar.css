@@ -29,12 +29,12 @@
 }
 
 .navbar .dropdown-item:hover a {
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
 .navbar .dropdown-item:focus a {
-	color: rgb(33, 37, 41);
+	color: #343a40;
 	transition: 0.7s;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .dropdown-menu {
-	background-color: rgb(33, 37, 41);
+	background-color: #343a40;
 }
 
 .dropdown-item {
