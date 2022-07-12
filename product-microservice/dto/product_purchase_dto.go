@@ -13,9 +13,10 @@ type ProductPurchaseDTO struct {
 	ProductId uuid.UUID
 	ProductName string
 	ProductPrice decimal.Decimal
+	ProductImage string;
 	TotalPrice decimal.Decimal
 	Amount uint
 	PurchaseDate string
-	DeliveryAddress string `gorm:"type:varchar(50)"`
+	DeliveryAddress string
 	TypeOfPayment model.TypeOfPayment
 }

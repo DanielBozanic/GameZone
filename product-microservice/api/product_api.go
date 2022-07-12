@@ -39,14 +39,15 @@ func (productApi *ProductAPI) GetProductById(c *gin.Context) {
 }
 
 func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
-	productId, err := uuid.Parse(c.Param("productId"))
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	userData := middleware.GetUserData(c)
-	msg, err := productApi.IProductService.AddProductToCart(productId, userData);
+	msg, err := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "Product added to cart.")

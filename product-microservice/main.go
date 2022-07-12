@@ -78,7 +78,7 @@ func main() {
 
 	userProtectedProducts := api.Group("/userProtectedProducts")
 	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedProducts.POST("/addProductToCart/:productId", productAPI.AddProductToCart)
+	userProtectedProducts.POST("/addProductToCart", productAPI.AddProductToCart)
 	userProtectedProducts.GET("/getCurrentCart", productAPI.GetCurrentCart)
 	userProtectedProducts.PUT("/updatePurchase", productAPI.UpdatePurchase)
 	userProtectedProducts.DELETE("/removeProductFromCart/:id", productAPI.RemoveProductFromCart)

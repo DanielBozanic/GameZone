@@ -59,10 +59,10 @@ func GetUserData(c *gin.Context) dto.UserData {
 	var userData dto.UserData
 	token := decodeJwtToken(c)
 	claims, _ := token.Claims.(jwt.MapClaims)
-	sub := claims["sub"].(map[string]interface{})
-	userData.Id = sub["user_id"].(int)
-	userData.Role = sub["role"].(string)
-	userData.Email = sub["email"].(string)
+	float64UserId := claims["sub"].(map[string]interface{})["user_id"].(float64)
+	userData.Id = int(float64UserId)
+	userData.Role = claims["sub"].(map[string]interface{})["role"].(string)
+	userData.Email = claims["sub"].(map[string]interface{})["email"].(string)
 	return userData
 }
 

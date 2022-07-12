@@ -15,12 +15,14 @@ type IProductRepository interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
+	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
 	GetProductById(productId uuid.UUID) (model.Product, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	GetNumberOfRecordsSearch(name string) int64
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
+	UpdateProduct(product model.Product) error
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
@@ -29,13 +31,17 @@ func NewProductRepository(DB *gorm.DB) IProductRepository {
 
 func (productRepo *productRepository) GetCurrentCart(userId int) []model.ProductPurchase {
 	var currentCart []model.ProductPurchase
-	productRepo.Database.Find(&currentCart, "user_id = ? and purchase_date = null", userId)
+	productRepo.Database.
+		Where("user_id = ? AND purchase_date IS NULL", userId).
+		Find(&currentCart)
 	return currentCart
 }
 
 func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
 	var purchaseHistory []model.ProductPurchase
-	productRepo.Database.Find(&purchaseHistory, "user_id = ? and purchase_date != null", userId)
+	productRepo.Database.
+		Where("user_id = ? AND purchase_date IS NOT null", userId).
+		Find(&purchaseHistory)
 	return purchaseHistory
 }
 
@@ -51,6 +57,12 @@ func (productRepo *productRepository) GetProductById(productId uuid.UUID) (model
 	return product, result.Error
 }
 
+func (productRepo *productRepository) GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error) {
+	var productPurchase model.ProductPurchase
+	result := productRepo.Database.First(&productPurchase, "product_name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
+	return productPurchase, result.Error
+}
+ 
 func (productRepo *productRepository) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
 	var products []model.Product
 	offset := (page - 1) * pageSize
@@ -77,11 +89,16 @@ func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase
 }
 
 func (productRepo *productRepository) UpdatePurchase(purchase model.ProductPurchase) error {
-	result := productRepo.Database.Save(&purchase)
+	result := productRepo.Database.Updates(&purchase)
 	return result.Error
 }
 
 func (productRepo *productRepository) RemoveProductFromCart(purchase model.ProductPurchase) error {
 	result := productRepo.Database.Delete(&purchase)
+	return result.Error
+}
+
+func (productRepo *productRepository) UpdateProduct(product model.Product) error {
+	result := productRepo.Database.Save(&product)
 	return result.Error
 }

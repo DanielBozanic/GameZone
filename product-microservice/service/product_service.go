@@ -29,7 +29,7 @@ type productService struct {
 
 type IProductService interface {
 	GetProductById(id uuid.UUID) (model.Product, error)
-	AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error)
+	AddProductToCart(productPurchaseDTO dto.ProductPurchaseDTO, userData dto.UserData) (string, error)
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
@@ -92,29 +92,44 @@ func (productService *productService) GetNumberOfRecordsSearch(name string) int6
 	return productService.IProductRepository.GetNumberOfRecordsSearch(name)
 }
 
-func (productService *productService) AddProductToCart(productId uuid.UUID, userData dto.UserData) (string, error) {
+func (productService *productService) AddProductToCart(productPurchaseDTO dto.ProductPurchaseDTO, userData dto.UserData) (string, error) {
 	msg := ""
 	productOutOfStockMsg := "Product is out of stock!"
 	var productPurchase model.ProductPurchase
-	product, err := productService.IProductRepository.GetProductById(productId)
+	product, err := productService.IProductRepository.GetProductById(productPurchaseDTO.ProductId)
 
 	if err != nil {
 		return msg, err
 	}
 
 	if product.Type == model.VIDEO_GAME {
-		videoGame, _ := productService.IVideoGameRepository.GetById(productId)
-		if videoGame.Product.Amount <= 0 && !videoGame.Digital {
+		videoGame, _ := productService.IVideoGameRepository.GetById(productPurchaseDTO.ProductId)
+		if videoGame.Product.Amount < productPurchaseDTO.Amount && !videoGame.Digital {
 			msg = productOutOfStockMsg
 		}
 	} else {
-		if product.Amount <= 0 {
+		if product.Amount < productPurchaseDTO.Amount {
 			msg = productOutOfStockMsg
 		}
 	}
 
 	if msg == "" {
-		productService.IProductRepository.AddPurchase(productPurchase);
+		productInCart, err := productService.IProductRepository.GetProductPurchaseFromCart(product.Name, userData.Id)
+		if err == nil {
+			productInCart.Amount += productPurchaseDTO.Amount
+			productInCart.TotalPrice = productInCart.ProductPrice.Mul(decimal.NewFromInt(int64(productInCart.Amount)))
+			productService.IProductRepository.UpdatePurchase(productInCart)
+		} else {
+			productPurchase.Id = uuid.New()
+			productPurchase.ProductId = product.Id
+			productPurchase.ProductName = product.Name
+			productPurchase.ProductImage = product.Image
+			productPurchase.ProductPrice = product.Price
+			productPurchase.TotalPrice = productPurchase.ProductPrice.Mul(decimal.NewFromInt(int64(productPurchaseDTO.Amount)))
+			productPurchase.Amount = productPurchaseDTO.Amount
+			productPurchase.UserId = userData.Id 
+			productService.IProductRepository.AddPurchase(productPurchase);
+		}
 	}
 	return msg, nil
 }
@@ -149,6 +164,12 @@ func (productService *productService) ConfirmPurchase(productPurchaseDto dto.Pro
 		if err != nil {
 			return err
 		}
+		product, err := productService.IProductRepository.GetProductById(purchase.ProductId)
+		if err != nil {
+			return err
+		}
+		product.Amount -= purchase.Amount
+		productService.IProductRepository.UpdateProduct(product)
 	}
 	return nil
 }
