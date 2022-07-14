@@ -23,8 +23,24 @@
 }
 
 .input-field {
-	color: #343a40;
+	background-color: #343a40;
+	color: orange;
 	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:focus {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:active {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
 }
 
 .input-field-error-msg {

@@ -19,6 +19,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../Assets/css/product-detail.css";
 import AppNavbar from "../Layout/AppNavbar";
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
+import * as productType from "../Utils/ProductType";
+import * as authService from "../Auth/AuthService";
 
 toast.configure();
 const ProductDetail = (props) => {
@@ -27,6 +29,8 @@ const ProductDetail = (props) => {
 	const { id } = useParams();
 	const [product, setProduct] = useState(null);
 	const [amount, setAmount] = useState(1);
+	const [available, setAvailable] = useState("");
+	const [disabled, setDisabled] = useState(false);
 
 	useEffect(() => {
 		getProductById();
@@ -37,15 +41,43 @@ const ProductDetail = (props) => {
 			.get(`${props.GET_PRODUCT_BY_ID}/${id}`)
 			.then((res) => {
 				setProduct(res.data);
+				pageSetup(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
 			});
 	};
 
+	const pageSetup = (p) => {
+		if (p.Product.Type === productType.VIDEO_GAME) {
+			if (p.Digital) {
+				setAvailable("This product is available for purchase");
+			} else if (p.Product.Amount > 0) {
+				setAvailable("This product is available for purchase");
+			} else {
+				setAvailable("This product is unavailable for purchase");
+				setDisabled(true);
+			}
+		} else {
+			if (p.Product.Amount > 0) {
+				setAvailable("This product is available for purchase");
+			} else {
+				setAvailable("This product is unavailable for purchase");
+				setDisabled(true);
+			}
+		}
+
+		if (
+			authService.getToken() == null ||
+			(authService.getToken() != null && authService.getRole() !== "ROLE_USER")
+		) {
+			setDisabled(true);
+		}
+	};
+
 	const addToCart = () => {
 		const productPurchase = {
-			ProductId: product.Product.Id,
+			Product: { Id: product.Product.Id },
 			Amount: amount,
 		};
 		axios
@@ -60,7 +92,6 @@ const ProductDetail = (props) => {
 			.catch((err) => {
 				console.log(err);
 			});
-		getProductById();
 	};
 
 	return (
@@ -78,35 +109,36 @@ const ProductDetail = (props) => {
 								/>
 								<CardBody>
 									<CardTitle tag="h5">{product.Product.Name}</CardTitle>
-
 									<CardText>
 										{product.Product.Price}
 										RSD
 									</CardText>
-									{product.Product.Amount > 0 && (
-										<CardText>This product is available for purchase</CardText>
-									)}
+									<CardText>{available}</CardText>
 								</CardBody>
 							</Card>
-							<Input
-								className="amount-product-select"
-								type="select"
-								onChange={(e) => setAmount(Number(e.target.value))}
-							>
-								<option hidden>Select quantity</option>
-								<option>1</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
-							</Input>
-							<Button
-								className="add-to-cart-btn"
-								type="button"
-								onClick={addToCart}
-							>
-								Add to cart
-							</Button>
+							{!disabled && (
+								<>
+									<Input
+										className="amount-product-select"
+										type="select"
+										onChange={(e) => setAmount(Number(e.target.value))}
+									>
+										<option hidden>Select quantity</option>
+										<option>1</option>
+										<option>2</option>
+										<option>3</option>
+										<option>4</option>
+										<option>5</option>
+									</Input>
+									<Button
+										className="add-to-cart-btn"
+										type="button"
+										onClick={addToCart}
+									>
+										Add to cart
+									</Button>
+								</>
+							)}
 						</Col>
 						<Col style={{ paddingTop: "5px", paddingBottom: "10px" }} md={7}>
 							<Card className="product-detail-table-card">

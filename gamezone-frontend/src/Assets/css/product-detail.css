@@ -85,18 +85,18 @@
 	margin-bottom: 15px;
 }
 
-.add-to-cart-btn:hover {
+.add-to-cart-btn:hover:enabled {
 	background-color: orange;
 	color: #343a40;
 	transition: 0.7s;
 }
 
-.add-to-cart-btn:focus {
+.add-to-cart-btn:focus:enabled {
 	background-color: orange;
 	color: #343a40;
 }
 
-.add-to-cart-btn:active {
+.add-to-cart-btn:active:enabled {
 	background-color: orange;
 	color: #343a40;
 }

@@ -16,30 +16,30 @@ func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.Product
 		return model.ProductPurchase {
 			Id: productPurchaseDTO.Id,
 			UserId: productPurchaseDTO.UserId,
-			ProductId: productPurchaseDTO.ProductId,
-			ProductName: productPurchaseDTO.ProductName,
-			ProductPrice: productPurchaseDTO.ProductPrice,
-			ProductImage: productPurchaseDTO.ProductImage,
+			Product: model.Product(productPurchaseDTO.Product),
 			Amount: productPurchaseDTO.Amount,
 			TotalPrice: productPurchaseDTO.TotalPrice,
 			PurchaseDate: purchaseDate,
 			DeliveryAddress: productPurchaseDTO.DeliveryAddress,
+			City: productPurchaseDTO.City,
+			MobilePhoneNumber: productPurchaseDTO.MobilePhoneNumber,
 			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
+			IsPayedFor: productPurchaseDTO.IsPayedFor,
 		}, nil
 	} else {
 		purchaseDate := time.Time{}
 		return model.ProductPurchase {
 			Id: productPurchaseDTO.Id,
 			UserId: productPurchaseDTO.UserId,
-			ProductId: productPurchaseDTO.ProductId,
-			ProductName: productPurchaseDTO.ProductName,
-			ProductPrice: productPurchaseDTO.ProductPrice,
-			ProductImage: productPurchaseDTO.ProductImage,
+			Product: model.Product(productPurchaseDTO.Product),
 			Amount: productPurchaseDTO.Amount,
 			TotalPrice: productPurchaseDTO.TotalPrice,
 			PurchaseDate: purchaseDate,
 			DeliveryAddress: productPurchaseDTO.DeliveryAddress,
+			City: productPurchaseDTO.City,
+			MobilePhoneNumber: productPurchaseDTO.MobilePhoneNumber,
 			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
+			IsPayedFor: productPurchaseDTO.IsPayedFor,
 		}, nil
 	}
 }
@@ -48,15 +48,15 @@ func ToProductPurchaseDTO(productPurchase model.ProductPurchase) dto.ProductPurc
 	return dto.ProductPurchaseDTO {
 		Id: productPurchase.Id,
 		UserId: productPurchase.UserId,
-		ProductId: productPurchase.ProductId,
-		ProductName: productPurchase.ProductName,
-		ProductPrice: productPurchase.ProductPrice,
-		ProductImage: productPurchase.ProductImage,
+		Product: dto.ProductDTO(productPurchase.Product),
 		TotalPrice: productPurchase.TotalPrice,
 		Amount: productPurchase.Amount,
 		PurchaseDate: productPurchase.PurchaseDate.Format("2006-01-02"),
 		DeliveryAddress: productPurchase.DeliveryAddress,
+		City: productPurchase.City,
+		MobilePhoneNumber: productPurchase.MobilePhoneNumber,
 		TypeOfPayment: productPurchase.TypeOfPayment,
+		IsPayedFor: productPurchase.IsPayedFor,
 	}
 }
 

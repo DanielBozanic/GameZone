@@ -10,13 +10,22 @@ import {
 	Input,
 } from "reactstrap";
 import axios from "axios";
-import "../../Assets/css/shopping-cart.css";
-import * as productAPI from "../../APIs/ProductMicroservice/product_api";
-import AppNavbar from "../../Layout/AppNavbar";
+import "../Assets/css/shopping-cart.css";
+import * as productAPI from "../APIs/ProductMicroservice/product_api";
+import AppNavbar from "../Layout/AppNavbar";
+import BuyerInfo from "../Components/Checkout/BuyerInfo/BuyerInfo";
+import PaymentType from "../Components/Checkout/PaymentType/PaymentType";
+import ReviewCheckoutInfo from "../Components/Checkout/ReviewCheckoutInfo";
 
 const ShoppingCart = () => {
 	const [shoppingCart, setShoppingCart] = useState([]);
 	const [totalPrice, setTotalPrice] = useState(0);
+	const [confirmedCheckout, setConfirmedCheckout] = useState(false);
+
+	const [buyerInfo, setBuyerInfo] = useState(null);
+	const [paymentType, setPaymentType] = useState(null);
+
+	const [allDigital, setAllDigital] = useState(false);
 
 	useEffect(() => {
 		getShoppingCart();
@@ -32,6 +41,18 @@ const ShoppingCart = () => {
 				}
 				setTotalPrice(temp);
 				setShoppingCart(res.data);
+				cartContainsOnlyDigitalItems();
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
+	const cartContainsOnlyDigitalItems = () => {
+		axios
+			.get(productAPI.CART_CONTAINS_ONLY_DIGITAL_ITEMS)
+			.then((res) => {
+				setAllDigital(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -63,7 +84,29 @@ const ShoppingCart = () => {
 			});
 	};
 
-	const checkout = () => {};
+	const checkout = () => {
+		setConfirmedCheckout(true);
+	};
+
+	const purchaseComplete = () => {
+		const finalPurchase = {
+			DeliveryAddress: buyerInfo.deliveryAddress,
+			City: buyerInfo.city,
+			MobilePhoneNumber: buyerInfo.mobilePhoneNumber,
+			TypeOfPayment: paymentType,
+		};
+		axios
+			.put(productAPI.CONFIRM_PURCHASE, finalPurchase)
+			.then((res) => {
+				setConfirmedCheckout(false);
+				setBuyerInfo(null);
+				setPaymentType(null);
+				getShoppingCart();
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	return (
 		<>
@@ -83,23 +126,23 @@ const ShoppingCart = () => {
 									<th>Amount</th>
 								</tr>
 								<tbody>
-									{shoppingCart.map((product, idx) => {
+									{shoppingCart.map((productInCart, idx) => {
 										return (
 											<tr key={idx}>
 												{/* <td>
-												<img className="product-img" src={product.ProductImage} />
+												<img className="product-img" src={productInCart.Product.Image} />
 											</td> */}
-												<td>{product.ProductName}</td>
-												<td>{product.ProductPrice} RSD</td>
-												<td>{product.Amount}</td>
-												<td>{product.TotalPrice} RSD</td>
+												<td>{productInCart.Product.Name}</td>
+												<td>{productInCart.Product.Price} RSD</td>
+												<td>{productInCart.Amount}</td>
+												<td>{productInCart.TotalPrice} RSD</td>
 												<td>
 													<Input
 														className="amount-select"
 														type="select"
 														onChange={(e) =>
 															updateProductPurchase(
-																product,
+																productInCart,
 																Number(e.target.value)
 															)
 														}
@@ -116,7 +159,7 @@ const ShoppingCart = () => {
 													<Button
 														type="button"
 														className="remove-product-from-cart-btn"
-														onClick={() => removeProductFromCart(product)}
+														onClick={() => removeProductFromCart(productInCart)}
 													>
 														Remove
 													</Button>
@@ -131,17 +174,35 @@ const ShoppingCart = () => {
 									</tr>
 								</tfoot>
 							</Table>
-							<Button
-								type="button"
-								className="checkout-btn"
-								disabled={shoppingCart.length === 0 ? true : false}
-								onClick={checkout}
-							>
-								Checkout
-							</Button>
+							<Row>
+								<Col md={10}>
+									<Button
+										type="button"
+										className="checkout-btn"
+										disabled={shoppingCart.length === 0 ? true : false}
+										onClick={checkout}
+									>
+										Checkout
+									</Button>
+								</Col>
+							</Row>
 						</Card>
 					</Col>
 				</Row>
+				{confirmedCheckout && <BuyerInfo setBuyerInfo={setBuyerInfo} />}
+				{buyerInfo !== null && (
+					<PaymentType
+						allDigital={allDigital}
+						setPaymentType={setPaymentType}
+					/>
+				)}
+				{buyerInfo != null && paymentType !== null && (
+					<ReviewCheckoutInfo
+						buyerInfo={buyerInfo}
+						paymentType={paymentType}
+						purchaseComplete={purchaseComplete}
+					/>
+				)}
 			</Container>
 		</>
 	);

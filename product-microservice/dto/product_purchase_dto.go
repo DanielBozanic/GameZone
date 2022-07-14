@@ -10,13 +10,13 @@ import (
 type ProductPurchaseDTO struct {
 	Id uuid.UUID
 	UserId int
-	ProductId uuid.UUID
-	ProductName string
-	ProductPrice decimal.Decimal
-	ProductImage string;
+	Product ProductDTO
 	TotalPrice decimal.Decimal
 	Amount uint
 	PurchaseDate string
 	DeliveryAddress string
+	City string
+	MobilePhoneNumber string
 	TypeOfPayment model.TypeOfPayment
+	IsPayedFor bool
 }

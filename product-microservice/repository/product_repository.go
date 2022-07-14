@@ -13,6 +13,7 @@ type productRepository struct {
 
 type IProductRepository interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
+	GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
 	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
@@ -32,14 +33,27 @@ func NewProductRepository(DB *gorm.DB) IProductRepository {
 func (productRepo *productRepository) GetCurrentCart(userId int) []model.ProductPurchase {
 	var currentCart []model.ProductPurchase
 	productRepo.Database.
+		Preload("Product").
 		Where("user_id = ? AND purchase_date IS NULL", userId).
 		Find(&currentCart)
 	return currentCart
 }
 
+func (productRepo *productRepository) GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase {
+	var allDigitalItems []model.ProductPurchase
+	productRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = product_purchases.product_id").
+		Joins("JOIN video_games ON video_games.product_id = products.id").
+		Where("products.type = 13 AND video_games.Digital = true AND user_id = ? AND purchase_date IS NULL", userId).
+		Find(&allDigitalItems)
+	return allDigitalItems
+}
+
 func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
 	var purchaseHistory []model.ProductPurchase
 	productRepo.Database.
+		Preload("Product").
 		Where("user_id = ? AND purchase_date IS NOT null", userId).
 		Find(&purchaseHistory)
 	return purchaseHistory
@@ -47,7 +61,7 @@ func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.Pro
 
 func (productRepo *productRepository) GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
-	result := productRepo.Database.First(&productPurchase, purchaseId)
+	result := productRepo.Database.Preload("Product").First(&productPurchase, purchaseId)
 	return productPurchase, result.Error
 }
 
@@ -59,7 +73,10 @@ func (productRepo *productRepository) GetProductById(productId uuid.UUID) (model
 
 func (productRepo *productRepository) GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
-	result := productRepo.Database.First(&productPurchase, "product_name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
+	result := productRepo.Database.
+		Preload("Product").
+		Joins("JOIN products ON products.id = product_purchases.product_id").
+		First(&productPurchase, "products.name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
 	return productPurchase, result.Error
 }
  
@@ -89,7 +106,7 @@ func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase
 }
 
 func (productRepo *productRepository) UpdatePurchase(purchase model.ProductPurchase) error {
-	result := productRepo.Database.Updates(&purchase)
+	result := productRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&purchase)
 	return result.Error
 }
 
@@ -99,6 +116,6 @@ func (productRepo *productRepository) RemoveProductFromCart(purchase model.Produ
 }
 
 func (productRepo *productRepository) UpdateProduct(product model.Product) error {
-	result := productRepo.Database.Save(&product)
+	result := productRepo.Database.Updates(&product)
 	return result.Error
 }

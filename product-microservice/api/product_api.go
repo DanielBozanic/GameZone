@@ -62,6 +62,12 @@ func (productApi *ProductAPI) GetCurrentCart(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
 }
 
+func (productApi *ProductAPI) CartContainsOnlyDigitalItems(c *gin.Context) {
+	userData := middleware.GetUserData(c)
+	onlyDigital := productApi.IProductService.CartContainsOnlyDigitalItems(userData.Id);
+	c.JSON(http.StatusOK, onlyDigital)
+}
+
 func (productApi *ProductAPI) GetPurchaseHistory(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("userId"))
 	if err != nil {

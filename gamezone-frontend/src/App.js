@@ -40,7 +40,7 @@ import ProductList from "./Pages/ProductList";
 import ProductDetail from "./Pages/ProductDetail";
 import SignUp from "./Pages/SignUp/SignUp";
 import SignIn from "./Pages/SignIn/SignIn";
-import ShoppingCart from "./Pages/ShoppingCart/ShoppingCart";
+import ShoppingCart from "./Pages/ShoppingCart";
 
 function App() {
 	return (

@@ -6,6 +6,8 @@ const userProtectedProducts = "/userProtectedProducts";
 export const ADD_PRODUCT_TO_CART =
 	api + userProtectedProducts + "/addProductToCart";
 export const GET_CURRENT_CART = api + userProtectedProducts + "/getCurrentCart";
+export const CART_CONTAINS_ONLY_DIGITAL_ITEMS =
+	api + userProtectedProducts + "/cartContainsOnlyDigitalItems";
 export const GET_PURCHASE_HISTORY =
 	api + +adminAndUserProtectedProducts + "/getPurchaseHistory";
 export const UPDATE_PURCHASE = api + userProtectedProducts + "/updatePurchase";
