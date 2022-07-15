@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../Assets/css/sign-in.css";
+import "../../Assets/css/forms.css";
 import * as authAPI from "../../APIs/UserMicroservice/auth_api";
 import * as authService from "../../Auth/AuthService";
 
@@ -61,12 +61,12 @@ const SignIn = () => {
 		<Container>
 			<Row>
 				<Col md="10">
-					<Card className="sign-in-card">
-						<CardTitle className="sign-in-card-title" tag="h2">
+					<Card className="form-card">
+						<CardTitle className="form-title" tag="h2">
 							Sign In
 						</CardTitle>
 						<CardBody>
-							<Form className="sign-in-card-form">
+							<Form className="form">
 								<Row>
 									<Col>
 										<FormGroup>
@@ -104,7 +104,7 @@ const SignIn = () => {
 								<Row>
 									<Col>
 										<Button
-											className="signin-btn"
+											className="confirm-form-btn"
 											type="button"
 											onClick={handleSubmit(signIn)}
 										>

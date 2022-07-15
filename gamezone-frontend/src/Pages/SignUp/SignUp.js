@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../Assets/css/sign-up.css";
+import "../../Assets/css/forms.css";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
 
 toast.configure();
@@ -59,12 +59,12 @@ const SignUp = () => {
 		<Container>
 			<Row>
 				<Col md="10">
-					<Card className="sign-up-card">
-						<CardTitle className="sign-up-card-title" tag="h2">
+					<Card className="form-card">
+						<CardTitle className="form-title" tag="h2">
 							Sign Up
 						</CardTitle>
 						<CardBody>
-							<Form className="sign-up-card-form">
+							<Form className="form">
 								<Row>
 									<Col>
 										<FormGroup>
@@ -154,7 +154,7 @@ const SignUp = () => {
 								<Row>
 									<Col>
 										<Button
-											className="signup-btn"
+											className="confirm-form-btn"
 											type="button"
 											onClick={handleSubmit(signUp)}
 										>

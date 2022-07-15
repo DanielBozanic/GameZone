@@ -1,4 +1,9 @@
-.sign-up-card {
+.form-border {
+	border: 5px solid orange;
+	padding: 15px 15px 15px 15px;
+}
+
+.form-card {
 	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
@@ -11,11 +16,11 @@
 	border-collapse: collapse;
 }
 
-.sign-up-card-title {
+.form-title {
 	font-family: "Batman";
 }
 
-.sign-up-card-form {
+.form {
 	padding: 1em;
 	border-collapse: collapse;
 	max-width: 90%;
@@ -46,9 +51,10 @@
 .input-field-error-msg {
 	font-weight: bold;
 	color: orange;
+	font-size: 80%;
 }
 
-.signup-btn {
+.confirm-form-btn {
 	margin-top: 25px;
 	background-color: orange;
 	color: #343a40;
@@ -57,23 +63,40 @@
 	border: 2px solid #343a40;
 }
 
-.signup-btn:hover {
+.form-btn {
+	background-color: orange;
+	color: #343a40;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid #343a40;
+}
+
+.confirm-form-btn:hover,
+.form-btn:hover {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 	transition: 0.7s;
 }
 
-.signup-btn:focus {
+.confirm-form-btn:focus,
+.form-btn:focus {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 }
 
-.signup-btn:active {
+.confirm-form-btn:active,
+.form-btn:active {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
+}
+
+.Toastify__toast--success {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
 }
 
 .Toastify__toast--error {

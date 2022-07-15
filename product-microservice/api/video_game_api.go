@@ -135,12 +135,12 @@ func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := videoGameApi.IVideoGameService.Create(videoGame)
+	msg := videoGameApi.IVideoGameService.Create(videoGame)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Video game stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Video game added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 

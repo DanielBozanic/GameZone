@@ -21,6 +21,7 @@ import AppNavbar from "../Layout/AppNavbar";
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import * as productType from "../Utils/ProductType";
 import * as authService from "../Auth/AuthService";
+import * as role from "../Utils/Role";
 
 toast.configure();
 const ProductDetail = (props) => {
@@ -69,7 +70,8 @@ const ProductDetail = (props) => {
 
 		if (
 			authService.getToken() == null ||
-			(authService.getToken() != null && authService.getRole() !== "ROLE_USER")
+			(authService.getToken() != null &&
+				authService.getRole() !== role.ROLE_USER)
 		) {
 			setDisabled(true);
 		}
@@ -100,7 +102,7 @@ const ProductDetail = (props) => {
 			{product !== null && (
 				<Container>
 					<Row className="product-detail-card">
-						<Col style={{ paddingTop: "5px" }} md={5}>
+						<Col style={{ marginTop: "10px", marginBottom: "10px" }} md={5}>
 							<Card className="product-detail-card-with-image">
 								<CardImg
 									className="product-detail-card-image"
@@ -140,32 +142,58 @@ const ProductDetail = (props) => {
 								</>
 							)}
 						</Col>
-						<Col style={{ paddingTop: "5px", paddingBottom: "10px" }} md={7}>
-							<Card className="product-detail-table-card">
-								<Table className="product-detail-table">
-									{product !== null &&
-										Object.keys(product).map(function (value, idx) {
-											if (value !== "Product") {
-												if (typeof product[value] == "boolean") {
-													return (
-														<tr key={idx}>
-															<th>{value.replace(/([A-Z])/g, " $1").trim()}</th>
-															<td>{product[value] ? "Yes" : "No"}</td>
-														</tr>
-													);
-												} else {
-													return (
-														<tr key={idx}>
-															<th>{value.replace(/([A-Z])/g, " $1").trim()}</th>
-															<td>{product[value].toString()}</td>
-														</tr>
-													);
+						{product !== null && (
+							<>
+								<Col>
+									<Card
+										style={{ marginTop: "10px", marginBottom: "10px" }}
+										className="product-detail-description-card"
+									>
+										<CardTitle
+											className="product-detail-description-card-title"
+											tag="h4"
+										>
+											Description
+										</CardTitle>
+										<CardBody>{product.Product.Description}</CardBody>
+									</Card>
+									<Card
+										style={{ marginTop: "20px", marginBottom: "10px" }}
+										className="product-detail-table-card"
+									>
+										<Table className="product-detail-table">
+											<tr>
+												<th>Manufacturer</th>
+												<td>{product.Product.Manufacturer}</td>
+											</tr>
+											{Object.keys(product).map(function (value, idx) {
+												if (value !== "Product") {
+													if (typeof product[value] == "boolean") {
+														return (
+															<tr key={idx}>
+																<th>
+																	{value.replace(/([A-Z])/g, " $1").trim()}
+																</th>
+																<td>{product[value] ? "Yes" : "No"}</td>
+															</tr>
+														);
+													} else {
+														return (
+															<tr key={idx}>
+																<th>
+																	{value.replace(/([A-Z])/g, " $1").trim()}
+																</th>
+																<td>{product[value].toString()}</td>
+															</tr>
+														);
+													}
 												}
-											}
-										})}
-								</Table>
-							</Card>
-						</Col>
+											})}
+										</Table>
+									</Card>
+								</Col>
+							</>
+						)}
 					</Row>
 				</Container>
 			)}

@@ -42,6 +42,10 @@ import SignUp from "./Pages/SignUp/SignUp";
 import SignIn from "./Pages/SignIn/SignIn";
 import ShoppingCart from "./Pages/ShoppingCart";
 
+import VideoGameForm from "./Pages/ProductForms/VideoGameForm/VideoGameForm";
+
+import * as role from "./Utils/Role";
+
 function App() {
 	return (
 		<div className="full-page">
@@ -422,9 +426,15 @@ function App() {
 							<Route path="/signIn" element={<SignIn />} />
 							<Route
 								path="/shoppingCart"
-								element={<ProtectedRoute roles={["ROLE_USER"]} />}
+								element={<ProtectedRoute roles={[role.ROLE_USER]} />}
 							>
 								<Route path="/shoppingCart" element={<ShoppingCart />} />
+							</Route>
+							<Route
+								path="/addNewVideoGame"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route path="/addNewVideoGame" element={<VideoGameForm />} />
 							</Route>
 						</Routes>
 					</Fragment>

@@ -38,8 +38,8 @@ body {
 	.full-page > .app-content,
 	.full-page > .header {
 		position: relative;
-		z-index: 4;
 	}
+
 	.app-content {
 		height: calc(100% - 270px);
 		overflow-y: auto;

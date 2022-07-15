@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -25,7 +27,7 @@ type IVideoGameService interface {
 	GetNumberOfRecordsFilter(filter filter.VideoGameFilter) int64
 	GetPlatforms() []string
 	GetGenres() []string
-	Create(videoGame model.VideoGame) error
+	Create(videoGame model.VideoGame) string
 	Update(videoGameDTO dto.VideoGameDTO) error
 	Delete(id uuid.UUID) error
 }
@@ -70,11 +72,17 @@ func (videoGameService *videoGameService) GetGenres() []string {
 	return videoGameService.IVideoGameRepository.GetGenres()
 }
 
-func (videoGameService *videoGameService) Create(game model.VideoGame) error {
+func (videoGameService *videoGameService) Create(game model.VideoGame) string {
+	msg := ""
 	game.Product.Id = uuid.New()
 	game.ProductId = game.Product.Id
 	game.Product.Type = model.VIDEO_GAME
-	return videoGameService.IVideoGameRepository.Create(game)
+	err := videoGameService.IVideoGameRepository.Create(game)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Video game with this name already exists"
+	}
+	return msg
 }
 
 func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) error {

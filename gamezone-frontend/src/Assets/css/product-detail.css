@@ -11,6 +11,17 @@
 	height: auto;
 }
 
+.product-detail-description-card {
+	background: #343a40;
+	color: orange;
+}
+
+.product-detail-description-card-title {
+	font-family: "Batman";
+	margin-left: 10px;
+	margin-top: 5px;
+}
+
 .product-detail-table-card {
 	background: #343a40;
 }

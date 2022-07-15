@@ -11,6 +11,7 @@ import (
 type ProductDTO struct {
 	Id	uuid.UUID
 	Name string
+	Description string
 	Manufacturer string
 	Price decimal.Decimal
 	Amount uint

@@ -1,4 +1,4 @@
-import "../Assets/css/product-view.css";
+import "../Assets/css/products-view.css";
 import {
 	CardText,
 	CardImg,

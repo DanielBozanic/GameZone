@@ -1,16 +1,19 @@
 import logo from "../Assets/images/logo.PNG";
 import "../Assets/css/header.css";
-import "../Assets/css/app-navbar.css";
 import { Link } from "react-router-dom";
 import { Navbar, NavbarBrand } from "reactstrap";
 import UnauthenticatedNavbar from "./UnauthenticatedNavbar";
 import UserNavbar from "./UserNavbar";
+import EmployeeNavbar from "./EmployeeNavbar";
 import * as authService from "../Auth/AuthService";
+import * as role from "../Utils/Role";
 
 const Header = () => {
 	const navbar = () => {
-		if (authService.getRole() === "ROLE_USER") {
+		if (authService.getRole() === role.ROLE_USER) {
 			return <UserNavbar />;
+		} else if (authService.getRole() === role.ROLE_EMPLOYEE) {
+			return <EmployeeNavbar />;
 		} else {
 			return <UnauthenticatedNavbar />;
 		}
