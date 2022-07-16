@@ -59,6 +59,16 @@ const EmployeeNavbar = () => {
 											</Link>
 										</DropdownItem>
 										<DropdownItem>
+											<Link className="drop-down-link" to="/addNewMotherboard">
+												Motherboard
+											</Link>
+										</DropdownItem>
+										<DropdownItem>
+											<Link className="drop-down-link" to="/addNewRam">
+												RAM
+											</Link>
+										</DropdownItem>
+										<DropdownItem>
 											<Link className="drop-down-link" to="/addNewSsd">
 												Solid state drive
 											</Link>

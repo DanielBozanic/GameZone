@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -26,8 +28,8 @@ type IHardDiskDriveService interface {
 	GetForms() []string
 	GetManufacturers() []string
 	GetDiskSpeeds() []string
-	Create(hardDiskDrive model.HardDiskDrive) error
-	Update(hardDiskDriveDTO dto.HardDiskDriveDTO) error
+	Create(hardDiskDrive model.HardDiskDrive) string
+	Update(hardDiskDriveDTO dto.HardDiskDriveDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -79,22 +81,34 @@ func (hardDiskDriveService *hardDiskDriveService) GetDiskSpeeds() []string {
 	return hardDiskDriveService.IHardDiskDriveRepository.GetDiskSpeeds()
 }
 
-func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.HardDiskDrive) error {
+func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.HardDiskDrive) string {
+	msg := ""
 	hardDiskDrive.Product.Id = uuid.New()
 	hardDiskDrive.ProductId = hardDiskDrive.Product.Id
 	hardDiskDrive.Product.Type = model.HARD_DISK_DRIVE
-	return hardDiskDriveService.IHardDiskDriveRepository.Create(hardDiskDrive)
+	err := hardDiskDriveService.IHardDiskDriveRepository.Create(hardDiskDrive)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (hardDiskDriveService *hardDiskDriveService) Update(hardDiskDriveDTO dto.HardDiskDriveDTO) error {
+func (hardDiskDriveService *hardDiskDriveService) Update(hardDiskDriveDTO dto.HardDiskDriveDTO) string {
+	msg := ""
 	hardDiskDrive, err := hardDiskDriveService.GetById(hardDiskDriveDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedHardDiskDrive := mapper.ToHardDiskDrive(hardDiskDriveDTO)
 	updatedHardDiskDrive.Product.Id = hardDiskDrive.Product.Id
 	updatedHardDiskDrive.ProductId = hardDiskDrive.Product.Id
-	return hardDiskDriveService.IHardDiskDriveRepository.Update(updatedHardDiskDrive)
+	err = hardDiskDriveService.IHardDiskDriveRepository.Update(updatedHardDiskDrive)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (hardDiskDriveService *hardDiskDriveService) Delete(id uuid.UUID) error {

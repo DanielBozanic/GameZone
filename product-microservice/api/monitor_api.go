@@ -147,12 +147,12 @@ func (monitorApi *MonitorAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := monitorApi.IMonitorService.Create(monitor)
+	msg := monitorApi.IMonitorService.Create(monitor)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Monitor stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Monitor added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -164,12 +164,12 @@ func (monitorApi *MonitorAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := monitorApi.IMonitorService.Update(monitorDTO)
+	msg := monitorApi.IMonitorService.Update(monitorDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Monitor updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

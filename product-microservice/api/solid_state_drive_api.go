@@ -152,12 +152,12 @@ func (solidStateDriveApi *SolidStateDriveAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := solidStateDriveApi.ISolidStateDriveService.Create(solidStateDrive)
+	msg := solidStateDriveApi.ISolidStateDriveService.Create(solidStateDrive)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Solid state drive stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Solid state drive added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -169,12 +169,12 @@ func (solidStateDriveApi *SolidStateDriveAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := solidStateDriveApi.ISolidStateDriveService.Update(solidStateDriveDTO)
+	msg := solidStateDriveApi.ISolidStateDriveService.Update(solidStateDriveDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Solid state drive updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

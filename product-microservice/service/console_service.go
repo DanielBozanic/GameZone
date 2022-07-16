@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -23,8 +25,8 @@ type IConsoleService interface {
 	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
 	GetNumberOfRecordsFilter(filter filter.ConsoleFilter) int64
 	GetPlatforms() []string
-	Create(videoGame model.Console) error
-	Update(videoGameDTO dto.ConsoleDTO) error
+	Create(videoGame model.Console) string
+	Update(videoGameDTO dto.ConsoleDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -64,22 +66,34 @@ func (consoleService *consoleService) GetPlatforms() []string {
 	return consoleService.IConsoleRepository.GetPlatforms()
 }
 
-func (consoleService *consoleService) Create(console model.Console) error {
+func (consoleService *consoleService) Create(console model.Console) string {
+	msg := ""
 	console.Product.Id = uuid.New()
 	console.ProductId = console.Product.Id
 	console.Product.Type = model.CONSOLE
-	return consoleService.IConsoleRepository.Create(console)
+	err := consoleService.IConsoleRepository.Create(console)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (consoleService *consoleService) Update(consoleDTO dto.ConsoleDTO) error {
+func (consoleService *consoleService) Update(consoleDTO dto.ConsoleDTO) string {
+	msg := ""
 	console, err := consoleService.GetById(consoleDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedConsole := mapper.ToConsole(consoleDTO)
 	updatedConsole.Product.Id = console.Product.Id
 	updatedConsole.ProductId = console.Product.Id
-	return consoleService.IConsoleRepository.Update(updatedConsole)
+	err = consoleService.IConsoleRepository.Update(updatedConsole)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (consoleService *consoleService) Delete(id uuid.UUID) error {

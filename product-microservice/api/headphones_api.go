@@ -137,12 +137,12 @@ func (headphonesApi *HeadphonesAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := headphonesApi.IHeadphonesService.Create(headphones)
+	msg := headphonesApi.IHeadphonesService.Create(headphones)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Headphones stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Headphones added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -154,12 +154,12 @@ func (headphonesApi *HeadphonesAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := headphonesApi.IHeadphonesService.Update(headphonesDTO)
+	msg := headphonesApi.IHeadphonesService.Update(headphonesDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Headphones updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -26,8 +28,8 @@ type IPowerSupplyUnitService interface {
 	GetPowers() []string
 	GetTypes() []string
 	GetFormFactors() []string
-	Create(powerSupplyUnit model.PowerSupplyUnit) error
-	Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) error
+	Create(powerSupplyUnit model.PowerSupplyUnit) string
+	Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -79,22 +81,34 @@ func (powerSupplyUnitService *powerSupplyUnitService) GetFormFactors() []string 
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetFormFactors()
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit model.PowerSupplyUnit) error {
+func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit model.PowerSupplyUnit) string {
+	msg := ""
 	powerSupplyUnit.Product.Id = uuid.New()
 	powerSupplyUnit.ProductId = powerSupplyUnit.Product.Id
 	powerSupplyUnit.Product.Type = model.POWER_SUPPLY_UNIT
-	return powerSupplyUnitService.IPowerSupplyUnitRepository.Create(powerSupplyUnit)
+	err := powerSupplyUnitService.IPowerSupplyUnitRepository.Create(powerSupplyUnit)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) error {
+func (powerSupplyUnitService *powerSupplyUnitService) Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) string {
+	msg := ""
 	powerSupplyUnit, err := powerSupplyUnitService.GetById(powerSupplyUnitDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedPowerSupplyUnit := mapper.ToPowerSupplyUnit(powerSupplyUnitDTO)
 	updatedPowerSupplyUnit.Product.Id = powerSupplyUnit.Product.Id
 	updatedPowerSupplyUnit.ProductId = updatedPowerSupplyUnit.Product.Id
-	return powerSupplyUnitService.IPowerSupplyUnitRepository.Update(updatedPowerSupplyUnit)
+	err = powerSupplyUnitService.IPowerSupplyUnitRepository.Update(updatedPowerSupplyUnit)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (powerSupplyUnitService *powerSupplyUnitService) Delete(id uuid.UUID) error {

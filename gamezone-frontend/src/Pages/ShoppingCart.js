@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
 	CardTitle,
 	Card,
@@ -11,13 +12,18 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import "../Assets/css/shopping-cart.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import AppNavbar from "../Layout/AppNavbar";
 import BuyerInfo from "../Components/Checkout/BuyerInfo/BuyerInfo";
 import PaymentType from "../Components/Checkout/PaymentType/PaymentType";
 import ReviewCheckoutInfo from "../Components/Checkout/ReviewCheckoutInfo";
 
+toast.configure();
 const ShoppingCart = () => {
+	const customId = "shopping-cart";
+
 	const [shoppingCart, setShoppingCart] = useState([]);
 	const [totalPrice, setTotalPrice] = useState(0);
 	const [confirmedCheckout, setConfirmedCheckout] = useState(false);
@@ -26,6 +32,8 @@ const ShoppingCart = () => {
 	const [paymentType, setPaymentType] = useState(null);
 
 	const [allDigital, setAllDigital] = useState(false);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		getShoppingCart();
@@ -98,10 +106,12 @@ const ShoppingCart = () => {
 		axios
 			.put(productAPI.CONFIRM_PURCHASE, finalPurchase)
 			.then((res) => {
-				setConfirmedCheckout(false);
-				setBuyerInfo(null);
-				setPaymentType(null);
-				getShoppingCart();
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+				navigate("/");
 			})
 			.catch((err) => {
 				console.log(err);

@@ -5,6 +5,6 @@ type KeyboardDTO struct {
 	Wireless          bool
 	KeyboardConnector string
 	KeyType           string
-	KeyboardColor     string
-	LetterLayout      string
+	KeyboardColor     *string
+	LetterLayout      *string
 }

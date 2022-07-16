@@ -5,6 +5,7 @@ import {
 	CardImg,
 	CardTitle,
 	CardBody,
+	CardFooter,
 	Card,
 	Row,
 	Col,
@@ -156,6 +157,9 @@ const ProductDetail = (props) => {
 											Description
 										</CardTitle>
 										<CardBody>{product.Product.Description}</CardBody>
+										<CardFooter>
+											More information on the manufacturer's website
+										</CardFooter>
 									</Card>
 									<Card
 										style={{ marginTop: "20px", marginBottom: "10px" }}
@@ -167,21 +171,43 @@ const ProductDetail = (props) => {
 												<td>{product.Product.Manufacturer}</td>
 											</tr>
 											{Object.keys(product).map(function (value, idx) {
-												if (value !== "Product") {
+												if (value !== "Product" && product[value] !== null) {
 													if (typeof product[value] == "boolean") {
 														return (
 															<tr key={idx}>
 																<th>
-																	{value.replace(/([A-Z])/g, " $1").trim()}
+																	{value
+																		.replace(/([A-Z]+)/g, " $1")
+																		.replace(/([A-Z][a-z])/g, " $1")
+																		.trim()}
 																</th>
 																<td>{product[value] ? "Yes" : "No"}</td>
+															</tr>
+														);
+													} else if (
+														new Date(product[value]) !== "Invalid Date"
+													) {
+														return (
+															<tr key={idx}>
+																<th>
+																	{value
+																		.replace(/([A-Z]+)/g, " $1")
+																		.replace(/([A-Z][a-z])/g, " $1")
+																		.trim()}
+																</th>
+																<td>
+																	{product[value].toString().split("T")[0]}
+																</td>
 															</tr>
 														);
 													} else {
 														return (
 															<tr key={idx}>
 																<th>
-																	{value.replace(/([A-Z])/g, " $1").trim()}
+																	{value
+																		.replace(/([A-Z]+)/g, " $1")
+																		.replace(/([A-Z][a-z])/g, " $1")
+																		.trim()}
 																</th>
 																<td>{product[value].toString()}</td>
 															</tr>

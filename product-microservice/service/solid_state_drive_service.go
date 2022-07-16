@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -27,8 +29,8 @@ type ISolidStateDriveService interface {
 	GetManufacturers() []string
 	GetMaxSequentialReads() []string
 	GetMaxSequentialWrites() []string
-	Create(solidStateDrive model.SolidStateDrive) error
-	Update(solidStateDriveDTO dto.SolidStateDriveDTO) error
+	Create(solidStateDrive model.SolidStateDrive) string
+	Update(solidStateDriveDTO dto.SolidStateDriveDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -84,22 +86,34 @@ func (solidStateDriveService *solidStateDriveService) GetMaxSequentialWrites() [
 	return solidStateDriveService.ISolidStateDriveRepository.GetMaxSequentialWrites()
 }
 
-func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) error {
+func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) string {
+	msg := ""
 	solidStateDrive.Product.Id = uuid.New()
 	solidStateDrive.ProductId = solidStateDrive.Product.Id
 	solidStateDrive.Product.Type = model.SOLID_STATE_DRIVE
-	return solidStateDriveService.ISolidStateDriveRepository.Create(solidStateDrive)
+	err := solidStateDriveService.ISolidStateDriveRepository.Create(solidStateDrive)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (solidStateDriveService *solidStateDriveService) Update(solidStateDriveDTO dto.SolidStateDriveDTO) error {
+func (solidStateDriveService *solidStateDriveService) Update(solidStateDriveDTO dto.SolidStateDriveDTO) string {
+	msg := ""
 	solidStateDrive, err := solidStateDriveService.GetById(solidStateDriveDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedSolidStateDrive := mapper.ToSolidStateDrive(solidStateDriveDTO)
 	updatedSolidStateDrive.Product.Id = solidStateDrive.Product.Id
 	updatedSolidStateDrive.ProductId = solidStateDrive.Product.Id
-	return solidStateDriveService.ISolidStateDriveRepository.Update(updatedSolidStateDrive)
+	err = solidStateDriveService.ISolidStateDriveRepository.Update(updatedSolidStateDrive)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (solidStateDriveService *solidStateDriveService) Delete(id uuid.UUID) error {

@@ -15,5 +15,5 @@ export const videoGameFormSchema = yup.object({
 		.string()
 		.max(50, "Maximum number of characters allowed is 50")
 		.required("Genre is required"),
-	ReleaseDate: yup.string().required("Release date is required"),
+	ReleaseDate: yup.string(),
 });

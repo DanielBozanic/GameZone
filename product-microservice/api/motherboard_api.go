@@ -147,12 +147,12 @@ func (motherboardApi *MotherboardAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := motherboardApi.IMotherboardService.Create(motherboard)
+	msg := motherboardApi.IMotherboardService.Create(motherboard)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Motherboard stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Motherboard added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -164,12 +164,12 @@ func (motherboardApi *MotherboardAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := motherboardApi.IMotherboardService.Update(motherboardDTO)
+	msg := motherboardApi.IMotherboardService.Update(motherboardDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Motherboard updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

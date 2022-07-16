@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -25,8 +27,8 @@ type IMouseService interface {
 	GetManufacturers() []string
 	GetDPIs() []string
 	GetConnections() []string
-	Create(mouse model.Mouse) error
-	Update(mouseDTO dto.MouseDTO) error
+	Create(mouse model.Mouse) string
+	Update(mouseDTO dto.MouseDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -74,22 +76,34 @@ func (mouseService *mouseService) GetConnections() []string {
 	return mouseService.IMouseRepository.GetConnections()
 }
 
-func (mouseService *mouseService) Create(mouse model.Mouse) error {
+func (mouseService *mouseService) Create(mouse model.Mouse) string {
+	msg := ""
 	mouse.Product.Id = uuid.New()
 	mouse.ProductId = mouse.Product.Id
 	mouse.Product.Type = model.MOUSE
-	return mouseService.IMouseRepository.Create(mouse)
+	err := mouseService.IMouseRepository.Create(mouse)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (mouseService *mouseService) Update(mouseDTO dto.MouseDTO) error {
+func (mouseService *mouseService) Update(mouseDTO dto.MouseDTO) string {
+	msg := ""
 	mouse, err := mouseService.GetById(mouseDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedMouse := mapper.ToMouse(mouseDTO)
 	updatedMouse.Product.Id = mouse.Product.Id
 	updatedMouse.ProductId = mouse.Product.Id
-	return mouseService.IMouseRepository.Update(updatedMouse)
+	err = mouseService.IMouseRepository.Update(updatedMouse)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (mouseService *mouseService) Delete(id uuid.UUID) error {

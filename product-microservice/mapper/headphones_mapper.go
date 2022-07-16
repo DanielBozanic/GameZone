@@ -10,7 +10,6 @@ func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 	return model.Headphones {
 		Product: model.Product(headphonesDTO.Product),
 		Wireless: headphonesDTO.Wireless,
-		Description: headphonesDTO.Description,
 		VirtualSurroundEncoding: headphonesDTO.VirtualSurroundEncoding,
 		Sensitivity: headphonesDTO.Sensitivity,
 		ConnectionType: headphonesDTO.ConnectionType,
@@ -26,7 +25,6 @@ func ToHeadphonesDTO(headphone model.Headphones) dto.HeadphonesDTO {
 	return dto.HeadphonesDTO {
 		Product: dto.ProductDTO(headphone.Product),
 		Wireless: headphone.Wireless,
-		Description: headphone.Description,
 		VirtualSurroundEncoding: headphone.VirtualSurroundEncoding,
 		Sensitivity: headphone.Sensitivity,
 		ConnectionType: headphone.ConnectionType,

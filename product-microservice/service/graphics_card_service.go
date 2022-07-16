@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -27,8 +29,8 @@ type IGraphicsCardService interface {
 	GetMemorySizes() []string
 	GetMemoryTypes() []string
 	GetModelNames() []string
-	Create(graphicsCard model.GraphicsCard) error
-	Update(graphicsCardDTO dto.GraphicsCardDTO) error
+	Create(graphicsCard model.GraphicsCard) string
+	Update(graphicsCardDTO dto.GraphicsCardDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -84,22 +86,34 @@ func (graphicsCardService *graphicsCardService) GetModelNames() []string {
 	return graphicsCardService.IGraphicsCardRepository.GetModelNames()
 }
 
-func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) error {
+func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) string {
+	msg := ""
 	graphicsCard.Product.Id = uuid.New()
 	graphicsCard.ProductId = graphicsCard.Product.Id
 	graphicsCard.Product.Type = model.GRAPHICS_CARD
-	return graphicsCardService.IGraphicsCardRepository.Create(graphicsCard)
+	err := graphicsCardService.IGraphicsCardRepository.Create(graphicsCard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (graphicsCardService *graphicsCardService) Update(graphicsCardDTO dto.GraphicsCardDTO) error {
+func (graphicsCardService *graphicsCardService) Update(graphicsCardDTO dto.GraphicsCardDTO) string {
+	msg := ""
 	graphicsCard, err := graphicsCardService.GetById(graphicsCardDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedGraphicsCard := mapper.ToGraphicsCard(graphicsCardDTO)
 	updatedGraphicsCard.Product.Id = graphicsCard.Product.Id
 	updatedGraphicsCard.ProductId = graphicsCard.Product.Id
-	return graphicsCardService.IGraphicsCardRepository.Update(updatedGraphicsCard)
+	err = graphicsCardService.IGraphicsCardRepository.Update(updatedGraphicsCard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (graphicsCardService *graphicsCardService) Delete(id uuid.UUID) error {

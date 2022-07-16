@@ -9,5 +9,5 @@ type PowerSupplyUnit struct {
 	ProductId	uuid.UUID	`gorm:"primaryKey"`
 	Power string `gorm:"type:varchar(40);not null"`
 	Type string `gorm:"type:varchar(40);not null"`
-	FormFactor string `gorm:"type:varchar(40);not null"`
+	FormFactor *string `gorm:"type:varchar(40)"`
 }

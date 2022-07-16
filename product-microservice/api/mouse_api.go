@@ -142,12 +142,12 @@ func (mouseApi *MouseAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := mouseApi.IMouseService.Create(mouse)
+	msg := mouseApi.IMouseService.Create(mouse)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Mouse stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Mouse added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -159,12 +159,12 @@ func (mouseApi *MouseAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := mouseApi.IMouseService.Update(mouseDTO)
+	msg := mouseApi.IMouseService.Update(mouseDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Mouse updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

@@ -9,7 +9,7 @@ type Ram struct {
 	ProductId	uuid.UUID	`gorm:"primaryKey"`
 	MemoryType string `gorm:"type:varchar(30);not null"`
 	Capacity string `gorm:"type:varchar(30);not null"`
-	Speed string `gorm:"type:varchar(30);not null"`
-	Voltage string `gorm:"type:varchar(30);not null"`
-	Latency string `gorm:"type:varchar(30);not null"`
+	Speed *string `gorm:"type:varchar(30)"`
+	Voltage *string `gorm:"type:varchar(30)"`
+	Latency *string `gorm:"type:varchar(30)"`
 }

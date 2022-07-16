@@ -28,7 +28,7 @@ type IVideoGameService interface {
 	GetPlatforms() []string
 	GetGenres() []string
 	Create(videoGame model.VideoGame) string
-	Update(videoGameDTO dto.VideoGameDTO) error
+	Update(videoGameDTO dto.VideoGameDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -80,25 +80,28 @@ func (videoGameService *videoGameService) Create(game model.VideoGame) string {
 	err := videoGameService.IVideoGameRepository.Create(game)
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
-		msg = "Video game with this name already exists"
+		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) error {
+func (videoGameService *videoGameService) Update(videoGameDTO dto.VideoGameDTO) string {
+	msg := ""
 	videoGame, err := videoGameService.GetById(videoGameDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 
-	updatedVideoGame, error := mapper.ToVideoGame(videoGameDTO)
-	if error != nil {
-		return error
-	}
-	
+	updatedVideoGame := mapper.ToVideoGame(videoGameDTO)
+
 	updatedVideoGame.Product.Id = videoGame.Product.Id
 	updatedVideoGame.ProductId = videoGame.Product.Id
-	return videoGameService.IVideoGameRepository.Update(updatedVideoGame)
+	err = videoGameService.IVideoGameRepository.Update(updatedVideoGame)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (videoGameService *videoGameService) Delete(id uuid.UUID) error {

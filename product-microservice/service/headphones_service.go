@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -24,8 +26,8 @@ type IHeadphonesService interface {
 	GetNumberOfRecordsFilter(filter filter.HeadphonesFilter) int64
 	GetManufacturers() []string
 	GetConnectionTypes() []string
-	Create(headphones model.Headphones) error
-	Update(headphonesDTO dto.HeadphonesDTO) error
+	Create(headphones model.Headphones) string
+	Update(headphonesDTO dto.HeadphonesDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -69,22 +71,34 @@ func (headphonesService *headphonesService) GetConnectionTypes() []string {
 	return headphonesService.IHeadphonesRepository.GetConnectionTypes()
 }
 
-func (headphonesService *headphonesService) Create(headphones model.Headphones) error {
+func (headphonesService *headphonesService) Create(headphones model.Headphones) string {
+	msg := ""
 	headphones.Product.Id = uuid.New()
 	headphones.ProductId = headphones.Product.Id
 	headphones.Product.Type = model.HEADPHONES
-	return headphonesService.IHeadphonesRepository.Create(headphones)
+	err := headphonesService.IHeadphonesRepository.Create(headphones)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (headphonesService *headphonesService) Update(headphonesDTO dto.HeadphonesDTO) error {
+func (headphonesService *headphonesService) Update(headphonesDTO dto.HeadphonesDTO) string {
+	msg := ""
 	headphones, err := headphonesService.GetById(headphonesDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedHeadphones := mapper.ToHeadphones(headphonesDTO)
 	updatedHeadphones.Product.Id = headphones.Product.Id
 	updatedHeadphones.ProductId = updatedHeadphones.Product.Id
-	return headphonesService.IHeadphonesRepository.Update(updatedHeadphones)
+	err = headphonesService.IHeadphonesRepository.Update(updatedHeadphones)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (headphonesService *headphonesService) Delete(id uuid.UUID) error {

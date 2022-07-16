@@ -132,12 +132,12 @@ func (consoleApi *ConsoleAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := consoleApi.IConsoleService.Create(console)
+	msg := consoleApi.IConsoleService.Create(console)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Console stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Console added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -149,12 +149,12 @@ func (consoleApi *ConsoleAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := consoleApi.IConsoleService.Update(consoleDTO)
+	msg := consoleApi.IConsoleService.Update(consoleDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Console updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

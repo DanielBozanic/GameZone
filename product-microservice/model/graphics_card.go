@@ -9,16 +9,16 @@ type GraphicsCard struct {
 	ProductId uuid.UUID `gorm:"primaryKey"`
 	ChipManufacturer string `gorm:"type:varchar(40);not null"`
 	ModelName string `gorm:"type:varchar(100);not null"`
-	BusWidth string  `gorm:"type:varchar(30);not null"`
-	MemorySize string `gorm:"type:varchar(30);not null"`
-	MemoryType string `gorm:"type:varchar(30);not null"`
-	PCIInterface string `gorm:"type:varchar(40);not null"`
-	GPUSpeed string `gorm:"type:varchar(20);not null"`
-	CUDAStreamProcessors uint `gorm:"not null"`
-	Cooling string `gorm:"type:varchar(20);not null"`
-	HDMI uint `gorm:"not null"`
-	DisplayPort uint `gorm:"not null"`
-	TDP string `gorm:"type:varchar(30);not null"`
-	PowerConnector string `gorm:"type:varchar(30);not null"`
-	Dimensions string `gorm:"type:varchar(40);not null"`
+	BusWidth *string  `gorm:"type:varchar(30)"`
+	MemorySize *string `gorm:"type:varchar(30)"`
+	MemoryType *string `gorm:"type:varchar(30)"`
+	PCIInterface *string `gorm:"type:varchar(40)"`
+	GPUSpeed *string `gorm:"type:varchar(20)"`
+	CUDAStreamProcessors *uint
+	Cooling *string `gorm:"type:varchar(20)"`
+	HDMI *uint
+	DisplayPort *uint
+	TDP *string `gorm:"type:varchar(30)"`
+	PowerConnector *string `gorm:"type:varchar(30)"`
+	Dimensions *string `gorm:"type:varchar(40)"`
 }

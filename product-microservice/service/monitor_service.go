@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -26,8 +28,8 @@ type IMonitorService interface {
 	GetAspectRatios() []string
 	GetResolutions() []string
 	GetRefreshRates() []string
-	Create(monitor model.Monitor) error
-	Update(monitorDTO dto.MonitorDTO) error
+	Create(monitor model.Monitor) string
+	Update(monitorDTO dto.MonitorDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -79,22 +81,34 @@ func (monitorService *monitorService) GetRefreshRates() []string {
 	return monitorService.IMonitorRepository.GetRefreshRates()
 }
 
-func (monitorService *monitorService) Create(monitor model.Monitor) error {
+func (monitorService *monitorService) Create(monitor model.Monitor) string {
+	msg := ""
 	monitor.Product.Id = uuid.New()
 	monitor.ProductId = monitor.Product.Id
 	monitor.Product.Type = model.MONITOR
-	return monitorService.IMonitorRepository.Create(monitor)
+	err := monitorService.IMonitorRepository.Create(monitor)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (monitorService *monitorService) Update(monitorDTO dto.MonitorDTO) error {
+func (monitorService *monitorService) Update(monitorDTO dto.MonitorDTO) string {
+	msg := ""
 	monitor, err := monitorService.GetById(monitorDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedMonitor := mapper.ToMonitor(monitorDTO)
 	updatedMonitor.Product.Id = monitor.Product.Id
 	updatedMonitor.ProductId = monitor.Product.Id
-	return monitorService.IMonitorRepository.Update(updatedMonitor)
+	err = monitorService.IMonitorRepository.Update(updatedMonitor)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (monitorService *monitorService) Delete(id uuid.UUID) error {

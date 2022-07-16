@@ -146,7 +146,7 @@ func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
 	error := productApi.IProductService.ConfirmPurchase(productPurchaseDTO, userData.Id)
 
 	if error == nil {
-		c.Status(200)
+		c.JSON(http.StatusOK, "Purchase successful")
 	} else  {
 		c.JSON(http.StatusBadRequest, error.Error())
 	}

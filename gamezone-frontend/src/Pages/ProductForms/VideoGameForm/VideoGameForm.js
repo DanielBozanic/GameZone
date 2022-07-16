@@ -26,7 +26,7 @@ import * as videoGameAPI from "../../../APIs/ProductMicroservice/video_game_api"
 import * as helperFunctions from "../../../Utils/HelperFunctions";
 
 toast.configure();
-const VideoGameForm = () => {
+const VideoGameForm = (props) => {
 	const customId = "videoGameForm";
 
 	const [digital, setDigital] = useState(false);
@@ -39,10 +39,10 @@ const VideoGameForm = () => {
 		mode: "onChange",
 	});
 
-	const addNewVideoGame = (data) => {
+	const add = (data) => {
 		data.Product.Image = base64Image;
 		data.Digital = helperFunctions.str2Bool(data.Digital);
-		console.log(data);
+		data.ReleaseDate = new Date(data.ReleaseDate);
 		axios
 			.post(videoGameAPI.CREATE, data)
 			.then((res) => {
@@ -51,7 +51,6 @@ const VideoGameForm = () => {
 					autoClose: 5000,
 					toastId: customId,
 				});
-				methods.reset();
 			})
 			.catch((err) => {
 				toast.error(err.response.data, {
@@ -68,127 +67,141 @@ const VideoGameForm = () => {
 				<Col>
 					<Card className="form-card">
 						<CardTitle className="form-title" tag="h2">
-							Add new video game
+							{props.title}
 						</CardTitle>
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
 									<ProductForm setBase64Image={setBase64Image} />
-									<div className="form-border">
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Platform</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="Platform"
-														invalid={methods.formState.errors.Platform?.message}
-														innerRef={methods.register}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{methods.formState.errors.Platform?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<div>
-													<Label>Digital</Label>
-												</div>
-												<span>
-													<Label>Yes</Label>
-													<Input
-														className="ml-2"
-														type="radio"
-														name="Digital"
-														checked={digital}
-														value={digital}
-														innerRef={methods.register}
-														onChange={() => setDigital(true)}
-													/>
-												</span>
-												<span className="pl-5">
-													<Label>No</Label>
-													<Input
-														className="ml-2"
-														type="radio"
-														name="Digital"
-														checked={!digital}
-														value={digital}
-														innerRef={methods.register}
-														onChange={() => setDigital(false)}
-													/>
-												</span>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Rating</Label>
-													<Input
-														className="input-field"
-														type="number"
-														name="Rating"
-														min="1"
-														invalid={methods.formState.errors.Rating?.message}
-														innerRef={methods.register}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{methods.formState.errors.Rating?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Genre</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="Genre"
-														invalid={methods.formState.errors.Genre?.message}
-														innerRef={methods.register}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{methods.formState.errors.Genre?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Release date</Label>
-													<Input
-														className="input-field"
-														type="date"
-														name="ReleaseDate"
-														invalid={
-															methods.formState.errors.ReleaseDate?.message
-														}
-														innerRef={methods.register}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{methods.formState.errors.ReleaseDate?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-									</div>
+
 									<Row>
 										<Col>
-											<Button
-												className="confirm-form-btn"
-												type="button"
-												onClick={methods.handleSubmit(addNewVideoGame)}
-											>
-												Add
-											</Button>
+											<FormGroup>
+												<Label>Platform</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="Platform"
+													invalid={methods.formState.errors.Platform?.message}
+													innerRef={methods.register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{methods.formState.errors.Platform?.message}
+												</FormFeedback>
+											</FormGroup>
 										</Col>
 									</Row>
+									<Row>
+										<Col>
+											<div>
+												<Label>Digital</Label>
+											</div>
+											<span>
+												<Label>Yes</Label>
+												<Input
+													className="ml-2"
+													type="radio"
+													name="Digital"
+													checked={digital}
+													value={digital}
+													innerRef={methods.register}
+													onChange={() => setDigital(true)}
+												/>
+											</span>
+											<span className="pl-5">
+												<Label>No</Label>
+												<Input
+													className="ml-2"
+													type="radio"
+													name="Digital"
+													checked={!digital}
+													value={digital}
+													innerRef={methods.register}
+													onChange={() => setDigital(false)}
+												/>
+											</span>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Rating</Label>
+												<Input
+													className="input-field"
+													type="number"
+													name="Rating"
+													min="1"
+													invalid={methods.formState.errors.Rating?.message}
+													innerRef={methods.register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{methods.formState.errors.Rating?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Genre</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="Genre"
+													invalid={methods.formState.errors.Genre?.message}
+													innerRef={methods.register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{methods.formState.errors.Genre?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Release Date</Label>
+												<Input
+													className="input-field"
+													type="date"
+													name="ReleaseDate"
+													invalid={
+														methods.formState.errors.ReleaseDate?.message
+													}
+													innerRef={methods.register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{methods.formState.errors.ReleaseDate?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									{props.addButton && (
+										<Row>
+											<Col>
+												<Button
+													className="confirm-form-btn"
+													type="button"
+													onClick={methods.handleSubmit(add)}
+												>
+													Add
+												</Button>
+											</Col>
+										</Row>
+									)}
+									{props.updateButton && (
+										<Row>
+											<Col>
+												<Button
+													className="confirm-form-btn"
+													type="button"
+													onClick={methods.handleSubmit(add)}
+												>
+													Update
+												</Button>
+											</Col>
+										</Row>
+									)}
 								</Form>
 							</FormProvider>
 						</CardBody>

@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -26,8 +28,8 @@ type IRamService interface {
 	GetCapacities() []string
 	GetMemoryTypes() []string
 	GetSpeeds() []string
-	Create(ram model.Ram) error
-	Update(ramDTO dto.RamDTO) error
+	Create(ram model.Ram) string
+	Update(ramDTO dto.RamDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -80,22 +82,34 @@ func (ramService *ramService) GetSpeeds() []string {
 	return ramService.IRamRepository.GetSpeeds()
 }
 
-func (ramService *ramService) Create(ram model.Ram) error {
+func (ramService *ramService) Create(ram model.Ram) string {
+	msg := ""
 	ram.Product.Id = uuid.New()
 	ram.ProductId = ram.Product.Id
 	ram.Product.Type = model.RAM
-	return ramService.IRamRepository.Create(ram)
+	err := ramService.IRamRepository.Create(ram)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (ramService *ramService) Update(ramDTO dto.RamDTO) error {
+func (ramService *ramService) Update(ramDTO dto.RamDTO) string {
+	msg := ""
 	ram, err := ramService.GetById(ramDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedRam := mapper.ToRam(ramDTO)
 	updatedRam.Product.Id = ram.Product.Id
 	updatedRam.ProductId = ram.Product.Id
-	return ramService.IRamRepository.Update(updatedRam)
+	err =  ramService.IRamRepository.Update(updatedRam)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (ramService *ramService) Delete(id uuid.UUID) error {

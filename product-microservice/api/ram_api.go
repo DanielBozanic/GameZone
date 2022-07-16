@@ -148,12 +148,12 @@ func (ramApi *RamAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := ramApi.IRamService.Create(ram)
+	msg := ramApi.IRamService.Create(ram)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "RAM stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "RAM added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -165,12 +165,12 @@ func (ramApi *RamAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := ramApi.IRamService.Update(ramDTO)
+	msg := ramApi.IRamService.Update(ramDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "RAM updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

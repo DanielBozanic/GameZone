@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -25,8 +27,8 @@ type IKeyboardService interface {
 	GetManufacturers() []string
 	GetKeyboardConnectors() []string
 	GetKeyTypes() []string
-	Create(keyboard model.Keyboard) error
-	Update(keyboardDTO dto.KeyboardDTO) error
+	Create(keyboard model.Keyboard) string
+	Update(keyboardDTO dto.KeyboardDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -74,22 +76,34 @@ func (keyboardService *keyboardService) GetKeyTypes() []string {
 	return keyboardService.IKeyboardRepository.GetKeyTypes()
 }
 
-func (keyboardService *keyboardService) Create(keyboard model.Keyboard) error {
+func (keyboardService *keyboardService) Create(keyboard model.Keyboard) string {
+	msg := ""
 	keyboard.Product.Id = uuid.New()
 	keyboard.ProductId = keyboard.Product.Id
 	keyboard.Product.Type = model.KEYBOARD
-	return keyboardService.IKeyboardRepository.Create(keyboard)
+	err := keyboardService.IKeyboardRepository.Create(keyboard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (keyboardService *keyboardService) Update(keyboardDTO dto.KeyboardDTO) error {
+func (keyboardService *keyboardService) Update(keyboardDTO dto.KeyboardDTO) string {
+	msg := ""
 	keyboard, err := keyboardService.GetById(keyboardDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedKeyboard := mapper.ToKeyboard(keyboardDTO)
 	updatedKeyboard.Product.Id = keyboard.Product.Id
 	updatedKeyboard.ProductId = keyboard.Product.Id
-	return keyboardService.IKeyboardRepository.Update(updatedKeyboard)
+	err = keyboardService.IKeyboardRepository.Update(updatedKeyboard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (keyboardService *keyboardService) Delete(id uuid.UUID) error {

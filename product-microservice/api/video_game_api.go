@@ -129,12 +129,7 @@ func (videoGameApi *VideoGameAPI) Create(c *gin.Context) {
 		return
 	}
 
-	videoGame, err := mapper.ToVideoGame(videoGameDTO)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
+	videoGame := mapper.ToVideoGame(videoGameDTO)
 	msg := videoGameApi.IVideoGameService.Create(videoGame)
 
 	if msg == "" {
@@ -152,12 +147,12 @@ func (videoGameApi *VideoGameAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := videoGameApi.IVideoGameService.Update(videoGameDTO)
+	msg := videoGameApi.IVideoGameService.Update(videoGameDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Video game updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

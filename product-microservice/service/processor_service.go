@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -27,8 +29,8 @@ type IProcessorService interface {
 	GetSockets() []string
 	GetNumberOfCores() []uint
 	GetThreads() []uint
-	Create(processor model.Processor) error
-	Update(processorDTO dto.ProcessorDTO) error
+	Create(processor model.Processor) string
+	Update(processorDTO dto.ProcessorDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -85,22 +87,34 @@ func (processorService *processorService) GetThreads() []uint {
 	return processorService.IProcessorRepository.GetThreads()
 }
 
-func (processorService *processorService) Create(processor model.Processor) error {
+func (processorService *processorService) Create(processor model.Processor) string {
+	msg := ""
 	processor.Product.Id = uuid.New()
 	processor.ProductId = processor.Product.Id
 	processor.Product.Type = model.PROCESSOR
-	return processorService.IProcessorRepository.Create(processor)
+	err := processorService.IProcessorRepository.Create(processor)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (processorService *processorService) Update(processorDTO dto.ProcessorDTO) error {
+func (processorService *processorService) Update(processorDTO dto.ProcessorDTO) string {
+	msg := ""
 	processor, err := processorService.GetById(processorDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedProcessor := mapper.ToProcessor(processorDTO)
 	updatedProcessor.Product.Id = processor.Product.Id
 	updatedProcessor.ProductId = processor.Product.Id
-	return processorService.IProcessorRepository.Update(updatedProcessor)
+	err = processorService.IProcessorRepository.Update(updatedProcessor)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (processorService *processorService) Delete(id uuid.UUID) error {

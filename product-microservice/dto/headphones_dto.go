@@ -2,14 +2,13 @@ package dto
 
 type HeadphonesDTO struct {
 	Product                 ProductDTO
-	Description             string
-	VirtualSurroundEncoding string
-	Sensitivity             string
+	VirtualSurroundEncoding *string
+	Sensitivity             *string
 	ConnectionType          string
 	Wireless                bool
-	DriverSize              string
+	DriverSize              *string
 	Microphone              bool
-	Color                   string
-	Weight                  string
-	FrequencyResponse       string
+	Color                   *string
+	Weight                  *string
+	FrequencyResponse       *string
 }

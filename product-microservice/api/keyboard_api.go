@@ -142,12 +142,12 @@ func (keyboardApi *KeyboardAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := keyboardApi.IKeyboardService.Create(keyboard)
+	msg := keyboardApi.IKeyboardService.Create(keyboard)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Keyboard stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Keyboard added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -159,12 +159,12 @@ func (keyboardApi *KeyboardAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := keyboardApi.IKeyboardService.Update(keyboardDTO)
+	msg := keyboardApi.IKeyboardService.Update(keyboardDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Keyboard updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

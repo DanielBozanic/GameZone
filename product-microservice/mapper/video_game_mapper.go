@@ -3,16 +3,12 @@ package mapper
 import (
 	"product/dto"
 	"product/model"
-
-	"time"
 )
 
 
-func ToVideoGame(videoGameDTO dto.VideoGameDTO) (model.VideoGame, error) {
-	releaseDate, error := time.Parse("2006-01-02", videoGameDTO.ReleaseDate)
-	if error != nil {
-		return model.VideoGame{}, error
-	}
+func ToVideoGame(videoGameDTO dto.VideoGameDTO) (model.VideoGame) {
+
+
 	
 	return model.VideoGame {
 		Product: model.Product(videoGameDTO.Product),
@@ -20,8 +16,8 @@ func ToVideoGame(videoGameDTO dto.VideoGameDTO) (model.VideoGame, error) {
 		Platform: videoGameDTO.Platform,
 		Rating: videoGameDTO.Rating,
 		Genre: videoGameDTO.Genre,
-		ReleaseDate: releaseDate,
-	}, error
+		ReleaseDate: videoGameDTO.ReleaseDate,
+	}
 }
 
 func ToVideoGameDTO(videoGame model.VideoGame) dto.VideoGameDTO {
@@ -31,7 +27,7 @@ func ToVideoGameDTO(videoGame model.VideoGame) dto.VideoGameDTO {
 		Platform: videoGame.Platform,
 		Rating: videoGame.Rating,
 		Genre: videoGame.Genre,
-		ReleaseDate: videoGame.ReleaseDate.Format("2006-01-02"),
+		ReleaseDate: videoGame.ReleaseDate,
 	}
 }
 

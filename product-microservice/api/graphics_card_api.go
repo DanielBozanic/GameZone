@@ -152,12 +152,12 @@ func (graphicsCardApi *GraphicsCardAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := graphicsCardApi.IGraphicsCardService.Create(graphicsCard)
+	msg := graphicsCardApi.IGraphicsCardService.Create(graphicsCard)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Graphics card stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Graphics card added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -169,12 +169,12 @@ func (graphicsCardApi *GraphicsCardAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := graphicsCardApi.IGraphicsCardService.Update(graphicsCardDTO)
+	msg := graphicsCardApi.IGraphicsCardService.Update(graphicsCardDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Graphics card updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

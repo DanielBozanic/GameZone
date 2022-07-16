@@ -1,12 +1,14 @@
 package service
 
 import (
+	"errors"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
 	"product/model"
 	"product/repository"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
 
@@ -26,8 +28,8 @@ type IMotherboardService interface {
 	GetProcessorTypes() []string
 	GetSockets() []string
 	GetFormFactors() []string
-	Create(motherboard model.Motherboard) error
-	Update(motherboardDTO dto.MotherboardDTO) error
+	Create(motherboard model.Motherboard) string
+	Update(motherboardDTO dto.MotherboardDTO) string
 	Delete(id uuid.UUID) error
 }
 
@@ -80,22 +82,34 @@ func (motherboardService *motherboardService) GetFormFactors() []string {
 	return motherboardService.IMotherboardRepository.GetFormFactors()
 }
 
-func (motherboardService *motherboardService) Create(motherboard model.Motherboard) error {
+func (motherboardService *motherboardService) Create(motherboard model.Motherboard) string {
+	msg := ""
 	motherboard.Product.Id = uuid.New()
 	motherboard.ProductId = motherboard.Product.Id
 	motherboard.Product.Type = model.MOTHERBOARD
-	return motherboardService.IMotherboardRepository.Create(motherboard)
+	err := motherboardService.IMotherboardRepository.Create(motherboard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
-func (motherboardService *motherboardService) Update(motherboardDTO dto.MotherboardDTO) error {
+func (motherboardService *motherboardService) Update(motherboardDTO dto.MotherboardDTO) string {
+	msg := ""
 	motherboard, err := motherboardService.GetById(motherboardDTO.Product.Id)
 	if err != nil {
-		return err
+		return err.Error()
 	}
 	updatedMotherboard := mapper.ToMotherboard(motherboardDTO)
 	updatedMotherboard.Product.Id = motherboard.Product.Id
 	updatedMotherboard.ProductId = motherboard.Product.Id
-	return motherboardService.IMotherboardRepository.Update(updatedMotherboard)
+	err = motherboardService.IMotherboardRepository.Update(updatedMotherboard)
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+		msg = "Product with this name already exists"
+	}
+	return msg
 }
 
 func (motherboardService *motherboardService) Delete(id uuid.UUID) error {

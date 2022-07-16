@@ -9,17 +9,15 @@ type Motherboard struct {
 	ProductId	uuid.UUID	`gorm:"primaryKey"`
 	ProcessorType string `gorm:"type:varchar(30);not null"`
 	Socket  string  `gorm:"type:varchar(30);not null"`
-	SupportedProcessors string `gorm:"type:text;not null"`
-	Chipset string  `gorm:"type:varchar(30);not null"`
-	Memory  string `gorm:"type:text;not null"`
-	MultiGraphicsTechnology string `gorm:"type:text;not null"`
-	ExpansionSlots string  `gorm:"type:text;not null"`
-	StorageInterface string `gorm:"type:text;not null"`
-	WirelessCommunicationModule string `gorm:"type:text;not null"`
-	Audio string `gorm:"type:text;not null"`
-	USB string `gorm:"type:text;not null"`
-	BackPanelConnectors string `gorm:"type:text;not null"`
-	InternalConnectors string `gorm:"type:text;not null"`
-	BIOS string `gorm:"type:text;not null"`
-	FormFactor string `gorm:"type:varchar(40);not null"`
+	SupportedProcessors *string `gorm:"type:varchar(600)"`
+	Chipset *string  `gorm:"type:varchar(30)"`
+	Memory  *string `gorm:"type:varchar(1000)"`
+	ExpansionSlots *string `gorm:"type:varchar(400)"`
+	StorageInterface *string `gorm:"type:varchar(200)"`
+	Audio *string `gorm:"type:varchar(200)"`
+	USB *string `gorm:"type:varchar(600)"`
+	BackPanelConnectors *string `gorm:"type:varchar(1000)"`
+	InternalConnectors *string `gorm:"type:varchar(1000)"`
+	BIOS *string `gorm:"type:varchar(400)"`
+	FormFactor *string `gorm:"type:varchar(40)"`
 }

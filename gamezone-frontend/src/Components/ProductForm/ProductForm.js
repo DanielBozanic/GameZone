@@ -37,7 +37,7 @@ const ProductForm = (props) => {
 	};
 
 	return (
-		<div className="form-border">
+		<>
 			<Row>
 				<Col>
 					<FormGroup>
@@ -162,7 +162,7 @@ const ProductForm = (props) => {
 					</FormGroup>
 				</Col>
 			</Row>
-		</div>
+		</>
 	);
 };
 

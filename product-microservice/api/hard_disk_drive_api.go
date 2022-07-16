@@ -147,12 +147,12 @@ func (hardDiskDriveApi *HardDiskDriveAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := hardDiskDriveApi.IHardDiskDriveService.Create(hardDiskDrive)
+	msg := hardDiskDriveApi.IHardDiskDriveService.Create(hardDiskDrive)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Hard disk drive stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Hard disk drive added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -164,12 +164,12 @@ func (hardDiskDriveApi *HardDiskDriveAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := hardDiskDriveApi.IHardDiskDriveService.Update(hardDiskDriveDTO)
+	msg := hardDiskDriveApi.IHardDiskDriveService.Update(hardDiskDriveDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Hard disk drive updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

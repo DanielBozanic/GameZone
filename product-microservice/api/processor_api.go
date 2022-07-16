@@ -152,12 +152,12 @@ func (processorApi *ProcessorAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := processorApi.IProcessorService.Create(processor)
+	msg := processorApi.IProcessorService.Create(processor)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Processor stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "Processor added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -169,12 +169,12 @@ func (processorApi *ProcessorAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := processorApi.IProcessorService.Update(processorDTO)
+	msg := processorApi.IProcessorService.Update(processorDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "Processor updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 

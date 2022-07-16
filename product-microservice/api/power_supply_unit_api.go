@@ -147,12 +147,12 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) Create(c *gin.Context) {
 		return
 	}
 
-	error := powerSupplyUnitApi.IPowerSupplyUnitService.Create(powerSupplyUnit)
+	msg := powerSupplyUnitApi.IPowerSupplyUnitService.Create(powerSupplyUnit)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "PSU stored successfully.")
+	if msg == "" {
+		c.JSON(http.StatusOK, "PSU added successfully.")
 	} else {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 
@@ -164,12 +164,12 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) Update(c *gin.Context) {
 		return
 	}
 
-	error := powerSupplyUnitApi.IPowerSupplyUnitService.Update(powerSupplyUnitDTO)
+	msg := powerSupplyUnitApi.IPowerSupplyUnitService.Update(powerSupplyUnitDTO)
 
-	if error == nil {
+	if msg == "" {
 		c.JSON(http.StatusOK, "PSU updated successfully.")
 	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+		c.JSON(http.StatusBadRequest, msg)
 	} 
 }
 
