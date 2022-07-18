@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type mouseService struct {
@@ -19,7 +18,7 @@ type mouseService struct {
 type IMouseService interface {
 	GetAll(page int, pageSize int) ([] model.Mouse)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Mouse, error)
+	GetById(id int) (model.Mouse, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error)
@@ -29,7 +28,7 @@ type IMouseService interface {
 	GetConnections() []string
 	Create(mouse model.Mouse) string
 	Update(mouseDTO dto.MouseDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewMouseService(mouseRepository repository.IMouseRepository) IMouseService {
@@ -44,7 +43,7 @@ func (mouseService *mouseService) GetNumberOfRecords() int64 {
 	return mouseService.IMouseRepository.GetNumberOfRecords()
 }
 
-func (mouseService *mouseService) GetById(id uuid.UUID) (model.Mouse, error) {
+func (mouseService *mouseService) GetById(id int) (model.Mouse, error) {
 	return mouseService.IMouseRepository.GetById(id)
 }
 
@@ -78,12 +77,10 @@ func (mouseService *mouseService) GetConnections() []string {
 
 func (mouseService *mouseService) Create(mouse model.Mouse) string {
 	msg := ""
-	mouse.Product.Id = uuid.New()
-	mouse.ProductId = mouse.Product.Id
 	mouse.Product.Type = model.MOUSE
 	err := mouseService.IMouseRepository.Create(mouse)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -98,18 +95,21 @@ func (mouseService *mouseService) Update(mouseDTO dto.MouseDTO) string {
 	updatedMouse := mapper.ToMouse(mouseDTO)
 	updatedMouse.Product.Id = mouse.Product.Id
 	updatedMouse.ProductId = mouse.Product.Id
+	updatedMouse.Product.Image.Id = mouse.Product.Image.Id
+	updatedMouse.Product.ImageId = mouse.Product.Image.Id
 	err = mouseService.IMouseRepository.Update(updatedMouse)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (mouseService *mouseService) Delete(id uuid.UUID) error {
+func (mouseService *mouseService) Delete(id int) error {
 	mouse, err := mouseService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return mouseService.IMouseRepository.Delete(mouse)
+	mouse.Product.Archived = true
+	return mouseService.IMouseRepository.Update(mouse)
 }

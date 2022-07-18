@@ -5,9 +5,9 @@ type HeadphonesDTO struct {
 	VirtualSurroundEncoding *string
 	Sensitivity             *string
 	ConnectionType          string
-	Wireless                bool
+	Wireless                *bool
 	DriverSize              *string
-	Microphone              bool
+	Microphone              *bool
 	Color                   *string
 	Weight                  *string
 	FrequencyResponse       *string

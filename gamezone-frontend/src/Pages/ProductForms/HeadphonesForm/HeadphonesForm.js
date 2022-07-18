@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { headphonesFormSchema } from "./HeadphonesFormSchema";
@@ -32,6 +33,8 @@ const HeadphonesForm = (props) => {
 	const [wireless, setWireless] = useState(false);
 	const [microphone, setMicrophone] = useState(false);
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -40,12 +43,61 @@ const HeadphonesForm = (props) => {
 		mode: "onChange",
 	});
 
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
+
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${headphonesAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+					setMicrophone(null);
+					setWireless(null);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		data.Wireless = helperFunctions.str2Bool(data.Wireless);
 		data.Microphone = helperFunctions.str2Bool(data.Microphone);
 		axios
 			.post(headphonesAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		data.Wireless = helperFunctions.str2Bool(data.Wireless);
+		data.Microphone = helperFunctions.str2Bool(data.Microphone);
+		console.log(data);
+		axios
+			.put(headphonesAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -73,8 +125,12 @@ const HeadphonesForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -87,6 +143,9 @@ const HeadphonesForm = (props) => {
 														methods.formState.errors.ConnectionType?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.ConnectionType : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ConnectionType?.message}
@@ -105,7 +164,11 @@ const HeadphonesForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={wireless}
+													checked={
+														product === null || wireless !== null
+															? wireless
+															: product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(true)}
@@ -117,7 +180,11 @@ const HeadphonesForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={!wireless}
+													checked={
+														product === null || wireless !== null
+															? !wireless
+															: !product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(false)}
@@ -136,7 +203,11 @@ const HeadphonesForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Microphone"
-													checked={microphone}
+													checked={
+														product === null || microphone !== null
+															? microphone
+															: product.Microphone
+													}
 													value={microphone}
 													innerRef={methods.register}
 													onChange={() => setMicrophone(true)}
@@ -148,7 +219,11 @@ const HeadphonesForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Microphone"
-													checked={!microphone}
+													checked={
+														product === null || microphone !== null
+															? !microphone
+															: !product.Microphone
+													}
 													value={microphone}
 													innerRef={methods.register}
 													onChange={() => setMicrophone(false)}
@@ -169,6 +244,12 @@ const HeadphonesForm = (props) => {
 															?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.VirtualSurroundEncoding !== null
+															? product.VirtualSurroundEncoding
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{
@@ -191,6 +272,11 @@ const HeadphonesForm = (props) => {
 														methods.formState.errors.Sensitivity?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Sensitivity !== null
+															? product.Sensitivity
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Sensitivity?.message}
@@ -208,6 +294,11 @@ const HeadphonesForm = (props) => {
 													name="DriverSize"
 													invalid={methods.formState.errors.DriverSize?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.DriverSize !== null
+															? product.DriverSize
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.DriverSize?.message}
@@ -225,6 +316,11 @@ const HeadphonesForm = (props) => {
 													name="Color"
 													invalid={methods.formState.errors.Color?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Color !== null
+															? product.Color
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Color?.message}
@@ -242,6 +338,11 @@ const HeadphonesForm = (props) => {
 													name="Weight"
 													invalid={methods.formState.errors.Weight?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Weight !== null
+															? product.Weight
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Weight?.message}
@@ -261,6 +362,12 @@ const HeadphonesForm = (props) => {
 														methods.formState.errors.FrequencyResponse?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.FrequencyResponse !== null
+															? product.FrequencyResponse
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.FrequencyResponse?.message}
@@ -287,7 +394,7 @@ const HeadphonesForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

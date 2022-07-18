@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -40,7 +39,7 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetNumberOfRecords(c *gin.Context)
 }
 
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) GetByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -174,7 +173,7 @@ func (powerSupplyUnitApi *PowerSupplyUnitAPI) Update(c *gin.Context) {
 }
 
 func (powerSupplyUnitApi *PowerSupplyUnitAPI) Delete(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

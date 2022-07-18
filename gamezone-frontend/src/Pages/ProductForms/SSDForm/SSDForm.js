@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { ssdFormSchema } from "./SSDFormSchema";
@@ -30,6 +31,14 @@ const SSDForm = (props) => {
 	const customId = "SSDForm";
 
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -38,10 +47,48 @@ const SSDForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${ssdAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(ssdAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(ssdAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -69,7 +116,12 @@ const SSDForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -80,6 +132,9 @@ const SSDForm = (props) => {
 													name="Capacity"
 													invalid={methods.formState.errors.Capacity?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.Capacity : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Capacity?.message}
@@ -97,6 +152,7 @@ const SSDForm = (props) => {
 													name="Form"
 													invalid={methods.formState.errors.Form?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Form : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Form?.message}
@@ -114,6 +170,11 @@ const SSDForm = (props) => {
 													name="Interface"
 													invalid={methods.formState.errors.Interface?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Interface !== null
+															? product.Interface
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Interface?.message}
@@ -133,6 +194,12 @@ const SSDForm = (props) => {
 														methods.formState.errors.MaxSequentialRead?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.MaxSequentialRead !== null
+															? product.MaxSequentialRead
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.MaxSequentialRead?.message}
@@ -152,6 +219,12 @@ const SSDForm = (props) => {
 														methods.formState.errors.MaxSequentialWrite?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.MaxSequentialWrite !== null
+															? product.MaxSequentialWrite
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.MaxSequentialWrite?.message}
@@ -169,6 +242,11 @@ const SSDForm = (props) => {
 													name="Dimensions"
 													invalid={methods.formState.errors.Dimensions?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Dimensions !== null
+															? product.Dimensions
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Dimensions?.message}
@@ -195,7 +273,7 @@ const SSDForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

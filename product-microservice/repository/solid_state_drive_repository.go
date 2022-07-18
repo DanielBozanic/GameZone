@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type solidStateDriveRepository struct {
@@ -15,7 +15,7 @@ type solidStateDriveRepository struct {
 type ISolidStateDriveRepository interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.SolidStateDrive, error)
+	GetById(id int) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
@@ -27,7 +27,6 @@ type ISolidStateDriveRepository interface {
 	GetMaxSequentialWrites() []string
 	Create(solidStateDrive model.SolidStateDrive) error
 	Update(solidStateDrive model.SolidStateDrive) error
-	Delete(solidStateDrive model.SolidStateDrive) error
 }
 
 func NewSolidStateDriveRepository(DB *gorm.DB) ISolidStateDriveRepository {
@@ -39,20 +38,31 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetAll(page int, pageSize 
 	offset := (page - 1) * pageSize
 	solidStateDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Find(&solidStateDrives)
 	return solidStateDrives
 }
 
 func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecords() int64 {
 	var count int64
-	solidStateDriveRepo.Database.Model(&model.SolidStateDrive{}).Count(&count)
+	solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
+		Model(&model.SolidStateDrive{}).
+		Count(&count)
 	return count
 }
 
-func (solidStateDriveRepo *solidStateDriveRepository) GetById(id uuid.UUID) (model.SolidStateDrive, error) {
+func (solidStateDriveRepo *solidStateDriveRepository) GetById(id int) (model.SolidStateDrive, error) {
 	var solidStateDrive model.SolidStateDrive
-	result := solidStateDriveRepo.Database.Preload("Product").First(&solidStateDrive, id)
+	result := solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
+		First(&solidStateDrive, id)
 	return solidStateDrive, result.Error
 }
 
@@ -61,9 +71,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) SearchByName(page int, pag
 	offset := (page - 1) * pageSize
 	result := solidStateDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&solidStateDrives)
 	return solidStateDrives, result.Error
 }
@@ -72,9 +82,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsSearch(n
 	var ssds []model.SolidStateDrive
 	var count int64
 	solidStateDriveRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&ssds).
 		Count(&count)
 	return count
@@ -85,13 +95,13 @@ func (solidStateDriveRepo *solidStateDriveRepository) Filter(page int, pageSize 
 	offset := (page - 1) * pageSize
 	result := solidStateDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
 		Where(`(capacity IN ? OR ?) AND 
 				(form IN ? OR ?) AND 
 				(products.manufacturer IN ? OR ?) AND 
 				(max_sequential_read IN ? OR ?) AND 
-				(max_sequential_write IN ? OR ?)`,
+				(max_sequential_write IN ? OR ?) AND products.archived = false`,
 			filter.Capacities, 
 			len(filter.Capacities) == 0, 
 			filter.Forms, 
@@ -110,13 +120,13 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsFilter(f
 	var ssds []model.SolidStateDrive
 	var count int64
 	solidStateDriveRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
 		Where(`(capacity IN ? OR ?) AND 
 				(form IN ? OR ?) AND 
 				(products.manufacturer IN ? OR ?) AND 
 				(max_sequential_read IN ? OR ?) AND 
-				(max_sequential_write IN ? OR ?)`,
+				(max_sequential_write IN ? OR ?) AND products.archived = false`,
 			filter.Capacities, 
 			len(filter.Capacities) == 0, 
 			filter.Forms, 
@@ -135,6 +145,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetNumberOfRecordsFilter(f
 func (solidStateDriveRepo *solidStateDriveRepository) GetCapacities() []string {
 	var capacities []string
 	solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.SolidStateDrive{}).
 		Distinct().
 		Pluck("capacity", &capacities)
@@ -144,6 +157,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetCapacities() []string {
 func (solidStateDriveRepo *solidStateDriveRepository) GetForms() []string {
 	var forms []string
 	solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.SolidStateDrive{}).
 		Distinct().
 		Pluck("form", &forms)
@@ -153,8 +169,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetForms() []string {
 func (solidStateDriveRepo *solidStateDriveRepository) GetManufacturers() []string {
 	var manufacturers []string
 	solidStateDriveRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.SolidStateDrive{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -164,6 +181,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetManufacturers() []strin
 func (solidStateDriveRepo *solidStateDriveRepository) GetMaxSequentialReads() []string {
 	var maxSequentialReads []string
 	solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.SolidStateDrive{}).
 		Distinct().
 		Pluck("max_sequential_read", &maxSequentialReads)
@@ -173,6 +193,9 @@ func (solidStateDriveRepo *solidStateDriveRepository) GetMaxSequentialReads() []
 func (solidStateDriveRepo *solidStateDriveRepository) GetMaxSequentialWrites() []string {
 	var maxSequentialWrites []string
 	solidStateDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = solid_state_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.SolidStateDrive{}).
 		Distinct().
 		Pluck("max_sequential_write", &maxSequentialWrites)
@@ -186,10 +209,5 @@ func (solidStateDriveRepo *solidStateDriveRepository) Create(solidStateDrive mod
 
 func (solidStateDriveRepo *solidStateDriveRepository) Update(solidStateDrive model.SolidStateDrive) error {
 	result := solidStateDriveRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&solidStateDrive)
-	return result.Error
-}
-
-func (solidStateDriveRepo *solidStateDriveRepository) Delete(solidStateDrive model.SolidStateDrive) error {
-	result := solidStateDriveRepo.Database.Delete(&solidStateDrive)
 	return result.Error
 }

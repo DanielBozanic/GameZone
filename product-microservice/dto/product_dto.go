@@ -3,18 +3,18 @@ package dto
 import (
 	"product/model"
 
-	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
 
 type ProductDTO struct {
-	Id	uuid.UUID
+	Id	int
 	Name string
 	Description string
 	Manufacturer string
 	Price decimal.Decimal
 	Amount uint
 	Type model.Type
-	Image string
+	Image FileDTO
+	Archived bool
 }

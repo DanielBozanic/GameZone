@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type motherboardService struct {
@@ -19,7 +18,7 @@ type motherboardService struct {
 type IMotherboardService interface {
 	GetAll(page int, pageSize int) ([] model.Motherboard)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Motherboard, error)
+	GetById(id int) (model.Motherboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Motherboard, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MotherboardFilter) ([]model.Motherboard, error)
@@ -30,7 +29,7 @@ type IMotherboardService interface {
 	GetFormFactors() []string
 	Create(motherboard model.Motherboard) string
 	Update(motherboardDTO dto.MotherboardDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewMotherboardService(motherboardRepository repository.IMotherboardRepository) IMotherboardService {
@@ -45,7 +44,7 @@ func (motherboardService *motherboardService) GetNumberOfRecords() int64 {
 	return motherboardService.IMotherboardRepository.GetNumberOfRecords()
 }
 
-func (motherboardService *motherboardService) GetById(id uuid.UUID) (model.Motherboard, error) {
+func (motherboardService *motherboardService) GetById(id int) (model.Motherboard, error) {
 	return motherboardService.IMotherboardRepository.GetById(id)
 }
 
@@ -84,12 +83,10 @@ func (motherboardService *motherboardService) GetFormFactors() []string {
 
 func (motherboardService *motherboardService) Create(motherboard model.Motherboard) string {
 	msg := ""
-	motherboard.Product.Id = uuid.New()
-	motherboard.ProductId = motherboard.Product.Id
 	motherboard.Product.Type = model.MOTHERBOARD
 	err := motherboardService.IMotherboardRepository.Create(motherboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -104,18 +101,21 @@ func (motherboardService *motherboardService) Update(motherboardDTO dto.Motherbo
 	updatedMotherboard := mapper.ToMotherboard(motherboardDTO)
 	updatedMotherboard.Product.Id = motherboard.Product.Id
 	updatedMotherboard.ProductId = motherboard.Product.Id
+	updatedMotherboard.Product.Image.Id = motherboard.Product.Image.Id
+	updatedMotherboard.Product.ImageId = motherboard.Product.Image.Id
 	err = motherboardService.IMotherboardRepository.Update(updatedMotherboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (motherboardService *motherboardService) Delete(id uuid.UUID) error {
+func (motherboardService *motherboardService) Delete(id int) error {
 	motherboard, err := motherboardService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return motherboardService.IMotherboardRepository.Delete(motherboard)
+	motherboard.Product.Archived = true
+	return motherboardService.IMotherboardRepository.Update(motherboard)
 }

@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type keyboardRepository struct {
@@ -15,7 +15,7 @@ type keyboardRepository struct {
 type IKeyboardRepository interface {
 	GetAll(page int, pageSize int) ([] model.Keyboard)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Keyboard, error)
+	GetById(id int) (model.Keyboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error)
@@ -25,7 +25,6 @@ type IKeyboardRepository interface {
 	GetKeyTypes() []string
 	Create(keyboard model.Keyboard) error
 	Update(keyboard model.Keyboard) error
-	Delete(keyboard model.Keyboard) error
 }
 
 func NewKeyboardRepository(DB *gorm.DB) IKeyboardRepository {
@@ -37,20 +36,31 @@ func (keyboardRepo *keyboardRepository) GetAll(page int, pageSize int) []model.K
 	offset := (page - 1) * pageSize
 	keyboardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
 		Find(&keyboards)
 	return keyboards
 }
 
 func (keyboardRepo *keyboardRepository) GetNumberOfRecords() int64 {
 	var count int64
-	keyboardRepo.Database.Model(&model.Keyboard{}).Count(&count)
+	keyboardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
+		Model(&model.Keyboard{}).
+		Count(&count)
 	return count
 }
 
-func (keyboardRepo *keyboardRepository) GetById(id uuid.UUID) (model.Keyboard, error) {
+func (keyboardRepo *keyboardRepository) GetById(id int) (model.Keyboard, error) {
 	var keyboard model.Keyboard
-	result := keyboardRepo.Database.Preload("Product").First(&keyboard, id)
+	result := keyboardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
+		First(&keyboard, id)
 	return keyboard, result.Error
 }
 
@@ -59,9 +69,9 @@ func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, nam
 	offset := (page - 1) * pageSize
 	result := keyboardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&keyboards)
 	return keyboards, result.Error
 }
@@ -70,9 +80,9 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsSearch(name string) in
 	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&keyboards).
 		Count(&count)
 	return count
@@ -83,12 +93,12 @@ func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter fi
 	offset := (page - 1) * pageSize
 	result := keyboardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(wireless IN ? OR ?) AND 
 				(keyboard_connector IN ? OR ?) AND
-				(key_type IN ? OR ?)`,
+				(key_type IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Wireless,
@@ -105,12 +115,12 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.K
 	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(wireless IN ? OR ?) AND 
 				(keyboard_connector IN ? OR ?) AND
-				(key_type IN ? OR ?)`,
+				(key_type IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Wireless,
@@ -127,8 +137,9 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.K
 func (keyboardRepo *keyboardRepository) GetManufacturers() []string {
 	var manufacturers []string
 	keyboardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
 		Model(&model.Keyboard{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -138,6 +149,9 @@ func (keyboardRepo *keyboardRepository) GetManufacturers() []string {
 func (keyboardRepo *keyboardRepository) GetKeyboardConnectors() []string {
 	var keyboardConnectors []string
 	keyboardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
 		Model(&model.Keyboard{}).
 		Distinct().
 		Pluck("keyboard_connector", &keyboardConnectors)
@@ -147,6 +161,9 @@ func (keyboardRepo *keyboardRepository) GetKeyboardConnectors() []string {
 func (keyboardRepo *keyboardRepository) GetKeyTypes() []string {
 	var keyTypes []string
 	keyboardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = keyboards.product_id").
+		Where("products.archived = false").
 		Model(&model.Keyboard{}).
 		Distinct().
 		Pluck("key_type", &keyTypes)
@@ -160,10 +177,5 @@ func (keyboardRepo *keyboardRepository) Create(keyboard model.Keyboard) error {
 
 func (keyboardRepo *keyboardRepository) Update(keyboard model.Keyboard) error {
 	result := keyboardRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&keyboard)
-	return result.Error
-}
-
-func (keyboardRepo *keyboardRepository) Delete(keyboard model.Keyboard) error {
-	result := keyboardRepo.Database.Delete(&keyboard)
 	return result.Error
 }

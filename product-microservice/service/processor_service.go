@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type processorService struct {
@@ -19,7 +18,7 @@ type processorService struct {
 type IProcessorService interface {
 	GetAll(page int, pageSize int) ([] model.Processor)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Processor, error)
+	GetById(id int) (model.Processor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Processor, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ProcessorFilter) ([]model.Processor, error)
@@ -31,7 +30,7 @@ type IProcessorService interface {
 	GetThreads() []uint
 	Create(processor model.Processor) string
 	Update(processorDTO dto.ProcessorDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewProcessorService(processorRepository repository.IProcessorRepository) IProcessorService {
@@ -46,7 +45,7 @@ func (processorService *processorService) GetNumberOfRecords() int64 {
 	return processorService.IProcessorRepository.GetNumberOfRecords()
 }
 
-func (processorService *processorService) GetById(id uuid.UUID) (model.Processor, error) {
+func (processorService *processorService) GetById(id int) (model.Processor, error) {
 	return processorService.IProcessorRepository.GetById(id)
 }
 
@@ -89,12 +88,10 @@ func (processorService *processorService) GetThreads() []uint {
 
 func (processorService *processorService) Create(processor model.Processor) string {
 	msg := ""
-	processor.Product.Id = uuid.New()
-	processor.ProductId = processor.Product.Id
 	processor.Product.Type = model.PROCESSOR
 	err := processorService.IProcessorRepository.Create(processor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -109,18 +106,21 @@ func (processorService *processorService) Update(processorDTO dto.ProcessorDTO) 
 	updatedProcessor := mapper.ToProcessor(processorDTO)
 	updatedProcessor.Product.Id = processor.Product.Id
 	updatedProcessor.ProductId = processor.Product.Id
+	updatedProcessor.Product.Image.Id = processor.Product.Image.Id
+	updatedProcessor.Product.ImageId = processor.Product.Image.Id
 	err = processorService.IProcessorRepository.Update(updatedProcessor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (processorService *processorService) Delete(id uuid.UUID) error {
+func (processorService *processorService) Delete(id int) error {
 	processor, err := processorService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return processorService.IProcessorRepository.Delete(processor)
+	processor.Product.Archived = true
+	return processorService.IProcessorRepository.Update(processor)
 }

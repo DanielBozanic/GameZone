@@ -8,7 +8,7 @@ import (
 
 func ToMonitor(monitorDTO dto.MonitorDTO) (model.Monitor) {
 	return model.Monitor { 
-		Product: model.Product(monitorDTO.Product),
+		Product: ToProduct(monitorDTO.Product),
 		Size: monitorDTO.Size,
 		AspectRatio: monitorDTO.AspectRatio,
 		Resolution: monitorDTO.Resolution,
@@ -23,7 +23,7 @@ func ToMonitor(monitorDTO dto.MonitorDTO) (model.Monitor) {
 
 func ToMonitorDTO(monitor model.Monitor) dto.MonitorDTO {
 	return dto.MonitorDTO { 
-		Product: dto.ProductDTO(monitor.Product),
+		Product: ToProductDTO(monitor.Product),
 		Size: monitor.Size,
 		AspectRatio: monitor.AspectRatio,
 		Resolution: monitor.Resolution,

@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type consoleService struct {
@@ -19,7 +18,7 @@ type consoleService struct {
 type IConsoleService interface {
 	GetAll(page int, pageSize int) ([] model.Console)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Console, error)
+	GetById(id int) (model.Console, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
@@ -27,7 +26,7 @@ type IConsoleService interface {
 	GetPlatforms() []string
 	Create(videoGame model.Console) string
 	Update(videoGameDTO dto.ConsoleDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewConsoleService(consoleRepository repository.IConsoleRepository) IConsoleService {
@@ -42,7 +41,7 @@ func (consoleService *consoleService) GetNumberOfRecords() int64 {
 	return consoleService.IConsoleRepository.GetNumberOfRecords()
 }
 
-func (consoleService *consoleService) GetById(id uuid.UUID) (model.Console, error) {
+func (consoleService *consoleService) GetById(id int) (model.Console, error) {
 	return consoleService.IConsoleRepository.GetById(id)
 }
 
@@ -68,12 +67,10 @@ func (consoleService *consoleService) GetPlatforms() []string {
 
 func (consoleService *consoleService) Create(console model.Console) string {
 	msg := ""
-	console.Product.Id = uuid.New()
-	console.ProductId = console.Product.Id
 	console.Product.Type = model.CONSOLE
 	err := consoleService.IConsoleRepository.Create(console)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -88,18 +85,21 @@ func (consoleService *consoleService) Update(consoleDTO dto.ConsoleDTO) string {
 	updatedConsole := mapper.ToConsole(consoleDTO)
 	updatedConsole.Product.Id = console.Product.Id
 	updatedConsole.ProductId = console.Product.Id
+	updatedConsole.Product.Image.Id = console.Product.Image.Id
+	updatedConsole.Product.ImageId = console.Product.Image.Id
 	err = consoleService.IConsoleRepository.Update(updatedConsole)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (consoleService *consoleService) Delete(id uuid.UUID) error {
+func (consoleService *consoleService) Delete(id int) error {
 	console, err := consoleService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return consoleService.IConsoleRepository.Delete(console)
+	console.Product.Archived = true
+	return consoleService.IConsoleRepository.Update(console)
 }

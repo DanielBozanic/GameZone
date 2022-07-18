@@ -8,7 +8,7 @@ import (
 
 func ToMouse(mouseDTO dto.MouseDTO) (model.Mouse) {
 	return model.Mouse {
-		Product: model.Product(mouseDTO.Product),
+		Product: ToProduct(mouseDTO.Product),
 		Wireless: mouseDTO.Wireless,
 		Sensor: mouseDTO.Sensor,
 		DPI: mouseDTO.DPI,
@@ -25,7 +25,7 @@ func ToMouse(mouseDTO dto.MouseDTO) (model.Mouse) {
 
 func ToMouseDTO(mouse model.Mouse) dto.MouseDTO {
 	return dto.MouseDTO {
-		Product: dto.ProductDTO(mouse.Product),
+		Product: ToProductDTO(mouse.Product),
 		Wireless: mouse.Wireless,
 		Sensor: mouse.Sensor,
 		DPI: mouse.DPI,

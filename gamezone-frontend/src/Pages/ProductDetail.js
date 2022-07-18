@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
 	CardText,
@@ -33,6 +33,8 @@ const ProductDetail = (props) => {
 	const [amount, setAmount] = useState(1);
 	const [available, setAvailable] = useState("");
 	const [disabled, setDisabled] = useState(false);
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		getProductById();
@@ -97,6 +99,66 @@ const ProductDetail = (props) => {
 			});
 	};
 
+	const updateProduct = () => {
+		switch (product.Product.Type) {
+			case productType.CONSOLE:
+				navigate("/updateConsole/" + product.Product.Id);
+				break;
+			case productType.GRAPHICS_CARD:
+				navigate("/updateGraphicsCard/" + product.Product.Id);
+				break;
+			case productType.HARD_DISK_DRIVE:
+				navigate("/updateHdd/" + product.Product.Id);
+				break;
+			case productType.HEADPHONES:
+				navigate("/updateHeadphones/" + product.Product.Id);
+				break;
+			case productType.KEYBOARD:
+				navigate("/updateKeyboard/" + product.Product.Id);
+				break;
+			case productType.MONITOR:
+				navigate("/updateMonitor/" + product.Product.Id);
+				break;
+			case productType.MOTHERBOARD:
+				navigate("/updateMotherboard/" + product.Product.Id);
+				break;
+			case productType.MOUSE:
+				navigate("/updateMouse/" + product.Product.Id);
+				break;
+			case productType.POWER_SUPPLY_UNIT:
+				navigate("/updatePsu/" + product.Product.Id);
+				break;
+			case productType.PROCESSOR:
+				navigate("/updateProcessor/" + product.Product.Id);
+				break;
+			case productType.RAM:
+				navigate("/updateRam/" + product.Product.Id);
+				break;
+			case productType.SOLID_STATE_DRIVE:
+				navigate("/updateSsd/" + product.Product.Id);
+				break;
+			case productType.VIDEO_GAME:
+				navigate("/updateVideoGame/" + product.Product.Id);
+				break;
+		}
+	};
+
+	const deleteProduct = () => {
+		axios
+			.delete(`${productAPI.DELETE_PRODUCT}/${product.Product.Id}`)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+				navigate("/");
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	return (
 		<>
 			<AppNavbar />
@@ -107,7 +169,7 @@ const ProductDetail = (props) => {
 							<Card className="product-detail-card-with-image">
 								<CardImg
 									className="product-detail-card-image"
-									src={product.Product.Image}
+									src={product.Product.Image.Content}
 									alt="No image"
 								/>
 								<CardBody>
@@ -142,6 +204,25 @@ const ProductDetail = (props) => {
 									</Button>
 								</>
 							)}
+							{authService.getToken() != null &&
+								authService.getRole() === role.ROLE_EMPLOYEE && (
+									<>
+										<Button
+											className="update-btn"
+											type="button"
+											onClick={updateProduct}
+										>
+											Update
+										</Button>
+										<Button
+											className="delete-btn"
+											type="button"
+											onClick={deleteProduct}
+										>
+											Delete
+										</Button>
+									</>
+								)}
 						</Col>
 						{product !== null && (
 							<>
@@ -171,7 +252,11 @@ const ProductDetail = (props) => {
 												<td>{product.Product.Manufacturer}</td>
 											</tr>
 											{Object.keys(product).map(function (value, idx) {
-												if (value !== "Product" && product[value] !== null) {
+												if (
+													value !== "Product" &&
+													product[value] !== null &&
+													product[value] !== ""
+												) {
 													if (typeof product[value] == "boolean") {
 														return (
 															<tr key={idx}>

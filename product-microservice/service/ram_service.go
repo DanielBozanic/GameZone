@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type ramService struct {
@@ -19,7 +18,7 @@ type ramService struct {
 type IRamService interface {
 	GetAll(page int, pageSize int) ([] model.Ram)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Ram, error)
+	GetById(id int) (model.Ram, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Ram, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.RAMFilter) ([]model.Ram, error)
@@ -30,7 +29,7 @@ type IRamService interface {
 	GetSpeeds() []string
 	Create(ram model.Ram) string
 	Update(ramDTO dto.RamDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewRamServiceService(ramRepository repository.IRamRepository) IRamService {
@@ -45,7 +44,7 @@ func (ramService *ramService) GetNumberOfRecords() int64 {
 	return ramService.IRamRepository.GetNumberOfRecords()
 }
 
-func (ramService *ramService) GetById(id uuid.UUID) (model.Ram, error) {
+func (ramService *ramService) GetById(id int) (model.Ram, error) {
 	return ramService.IRamRepository.GetById(id)
 }
 
@@ -84,12 +83,10 @@ func (ramService *ramService) GetSpeeds() []string {
 
 func (ramService *ramService) Create(ram model.Ram) string {
 	msg := ""
-	ram.Product.Id = uuid.New()
-	ram.ProductId = ram.Product.Id
 	ram.Product.Type = model.RAM
 	err := ramService.IRamRepository.Create(ram)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -104,18 +101,21 @@ func (ramService *ramService) Update(ramDTO dto.RamDTO) string {
 	updatedRam := mapper.ToRam(ramDTO)
 	updatedRam.Product.Id = ram.Product.Id
 	updatedRam.ProductId = ram.Product.Id
+	updatedRam.Product.Image.Id = ram.Product.Image.Id
+	updatedRam.Product.ImageId = ram.Product.Image.Id
 	err =  ramService.IRamRepository.Update(updatedRam)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (ramService *ramService) Delete(id uuid.UUID) error {
+func (ramService *ramService) Delete(id int) error {
 	ram, err := ramService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return ramService.IRamRepository.Delete(ram)
+	ram.Product.Archived = true
+	return ramService.IRamRepository.Update(ram)
 }

@@ -8,7 +8,7 @@ import (
 
 func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 	return model.Headphones {
-		Product: model.Product(headphonesDTO.Product),
+		Product: ToProduct(headphonesDTO.Product),
 		Wireless: headphonesDTO.Wireless,
 		VirtualSurroundEncoding: headphonesDTO.VirtualSurroundEncoding,
 		Sensitivity: headphonesDTO.Sensitivity,
@@ -23,7 +23,7 @@ func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 
 func ToHeadphonesDTO(headphone model.Headphones) dto.HeadphonesDTO {
 	return dto.HeadphonesDTO {
-		Product: dto.ProductDTO(headphone.Product),
+		Product: ToProductDTO(headphone.Product),
 		Wireless: headphone.Wireless,
 		VirtualSurroundEncoding: headphone.VirtualSurroundEncoding,
 		Sensitivity: headphone.Sensitivity,

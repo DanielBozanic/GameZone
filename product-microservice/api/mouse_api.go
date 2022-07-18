@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -40,7 +39,7 @@ func (mouseApi *MouseAPI) GetNumberOfRecords(c *gin.Context) {
 }
 
 func (mouseApi *MouseAPI) GetByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -169,7 +168,7 @@ func (mouseApi *MouseAPI) Update(c *gin.Context) {
 }
 
 func (mouseApi *MouseAPI) Delete(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

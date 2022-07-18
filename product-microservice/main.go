@@ -72,6 +72,10 @@ func main() {
 	api.GET("/searchByName", productAPI.SearchByName)
 	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
 
+	employeeProtectedProducts := api.Group("/employeeProtectedProducts")
+	employeeProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
+	employeeProtectedProducts.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
+
 	adminAndUserProtectedProducts := api.Group("/adminAndUserProtectedProducts")
 	adminAndUserProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
 	adminAndUserProtectedProducts.GET("/getPurchaseHistory/:userId", productAPI.GetPurchaseHistory)

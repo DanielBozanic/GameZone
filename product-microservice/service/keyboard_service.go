@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type keyboardService struct {
@@ -19,7 +18,7 @@ type keyboardService struct {
 type IKeyboardService interface {
 	GetAll(page int, pageSize int) ([] model.Keyboard)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Keyboard, error)
+	GetById(id int) (model.Keyboard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Keyboard, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.KeyboardFilter) ([]model.Keyboard, error)
@@ -29,7 +28,7 @@ type IKeyboardService interface {
 	GetKeyTypes() []string
 	Create(keyboard model.Keyboard) string
 	Update(keyboardDTO dto.KeyboardDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewKeyboardService(keyboardRepository repository.IKeyboardRepository) IKeyboardService {
@@ -44,7 +43,7 @@ func (keyboardService *keyboardService) GetNumberOfRecords() int64 {
 	return keyboardService.IKeyboardRepository.GetNumberOfRecords()
 }
 
-func (keyboardService *keyboardService) GetById(id uuid.UUID) (model.Keyboard, error) {
+func (keyboardService *keyboardService) GetById(id int) (model.Keyboard, error) {
 	return keyboardService.IKeyboardRepository.GetById(id)
 }
 
@@ -78,12 +77,10 @@ func (keyboardService *keyboardService) GetKeyTypes() []string {
 
 func (keyboardService *keyboardService) Create(keyboard model.Keyboard) string {
 	msg := ""
-	keyboard.Product.Id = uuid.New()
-	keyboard.ProductId = keyboard.Product.Id
 	keyboard.Product.Type = model.KEYBOARD
 	err := keyboardService.IKeyboardRepository.Create(keyboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -98,18 +95,21 @@ func (keyboardService *keyboardService) Update(keyboardDTO dto.KeyboardDTO) stri
 	updatedKeyboard := mapper.ToKeyboard(keyboardDTO)
 	updatedKeyboard.Product.Id = keyboard.Product.Id
 	updatedKeyboard.ProductId = keyboard.Product.Id
+	updatedKeyboard.Product.Image.Id = keyboard.Product.Image.Id
+	updatedKeyboard.Product.ImageId = keyboard.Product.Image.Id
 	err = keyboardService.IKeyboardRepository.Update(updatedKeyboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (keyboardService *keyboardService) Delete(id uuid.UUID) error {
+func (keyboardService *keyboardService) Delete(id int) error {
 	keyboard, err := keyboardService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return keyboardService.IKeyboardRepository.Delete(keyboard)
+	keyboard.Product.Archived = true
+	return keyboardService.IKeyboardRepository.Update(keyboard)
 }

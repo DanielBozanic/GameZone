@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -40,7 +39,7 @@ func (solidStateDriveApi *SolidStateDriveAPI) GetNumberOfRecords(c *gin.Context)
 }
 
 func (solidStateDriveApi *SolidStateDriveAPI) GetByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -179,7 +178,7 @@ func (solidStateDriveApi *SolidStateDriveAPI) Update(c *gin.Context) {
 }
 
 func (solidStateDriveApi *SolidStateDriveAPI) Delete(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

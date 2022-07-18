@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type graphicsCardRepository struct {
@@ -15,7 +15,7 @@ type graphicsCardRepository struct {
 type IGraphicsCardRepository interface {
 	GetAll(page int, pageSize int) ([] model.GraphicsCard)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.GraphicsCard, error)
+	GetById(id int) (model.GraphicsCard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error)
@@ -27,7 +27,6 @@ type IGraphicsCardRepository interface {
 	GetModelNames() []string
 	Create(graphicsCard model.GraphicsCard) error
 	Update(graphicsCard model.GraphicsCard) error
-	Delete(graphicsCard model.GraphicsCard) error
 }
 
 func NewGraphicsCardRepository(DB *gorm.DB) IGraphicsCardRepository {
@@ -39,20 +38,31 @@ func (graphicsCardRepo *graphicsCardRepository) GetAll(page int, pageSize int) [
 	offset := (page - 1) * pageSize
 	graphicsCardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Find(&graphicsCards)
 	return graphicsCards
 }
 
 func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecords() int64 {
 	var count int64
-	graphicsCardRepo.Database.Model(&model.GraphicsCard{}).Count(&count)
+	graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
+		Model(&model.GraphicsCard{}).
+		Count(&count)
 	return count
 }
 
-func (graphicsCardRepo *graphicsCardRepository) GetById(id uuid.UUID) (model.GraphicsCard, error) {
+func (graphicsCardRepo *graphicsCardRepository) GetById(id int) (model.GraphicsCard, error) {
 	var graphicsCard model.GraphicsCard
-	result := graphicsCardRepo.Database.Preload("Product").First(&graphicsCard, id)
+	result := graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
+		First(&graphicsCard, id)
 	return graphicsCard, result.Error
 }
 
@@ -61,9 +71,9 @@ func (graphicsCardRepo *graphicsCardRepository) SearchByName(page int, pageSize 
 	offset := (page - 1) * pageSize
 	result := graphicsCardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&graphicsCards)
 	return graphicsCards, result.Error
 }
@@ -72,9 +82,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsSearch(name st
 	var graphicsCards []model.GraphicsCard
 	var count int64
 	graphicsCardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&graphicsCards).
 		Count(&count)
 	return count
@@ -85,13 +95,13 @@ func (graphicsCardRepo *graphicsCardRepository) Filter(page int, pageSize int, f
 	offset := (page - 1) * pageSize
 	result := graphicsCardRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(chip_manufacturer IN ? OR ?) AND 
 				(memory_size IN ? OR ?) AND 
 				(memory_type IN ? OR ?) AND
-				(model_name IN ? OR ?)`,
+				(model_name IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.ChipManufacturers,
@@ -110,13 +120,13 @@ func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsFilter(filter 
 	var graphicsCards []model.GraphicsCard
 	var count int64
 	graphicsCardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(chip_manufacturer IN ? OR ?) AND 
 				(memory_size IN ? OR ?) AND 
 				(memory_type IN ? OR ?) AND
-				(model_name IN ? OR ?)`,
+				(model_name IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.ChipManufacturers,
@@ -135,8 +145,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetNumberOfRecordsFilter(filter 
 func (graphicsCardRepo *graphicsCardRepository) GetManufacturers() []string {
 	var manufacturers []string
 	graphicsCardRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Model(&model.GraphicsCard{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -146,6 +157,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetManufacturers() []string {
 func (graphicsCardRepo *graphicsCardRepository) GetChipManufacturers() []string {
 	var chipManufacturers []string
 	graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Model(&model.GraphicsCard{}).
 		Distinct().
 		Pluck("chip_manufacturer", &chipManufacturers)
@@ -155,6 +169,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetChipManufacturers() []string 
 func (graphicsCardRepo *graphicsCardRepository) GetMemorySizes() []string {
 	var memorySizes []string
 	graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Model(&model.GraphicsCard{}).
 		Distinct().
 		Pluck("memory_size", &memorySizes)
@@ -164,6 +181,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetMemorySizes() []string {
 func (graphicsCardRepo *graphicsCardRepository) GetMemoryTypes() []string {
 	var memoryTypes []string
 	graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Model(&model.GraphicsCard{}).
 		Distinct().
 		Pluck("memory_type", &memoryTypes)
@@ -173,6 +193,9 @@ func (graphicsCardRepo *graphicsCardRepository) GetMemoryTypes() []string {
 func (graphicsCardRepo *graphicsCardRepository) GetModelNames() []string {
 	var modelNames []string
 	graphicsCardRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = graphics_cards.product_id").
+		Where("products.archived = false").
 		Model(&model.GraphicsCard{}).
 		Distinct().
 		Pluck("model_name", &modelNames)
@@ -186,10 +209,5 @@ func (graphicsCardRepo *graphicsCardRepository) Create(console model.GraphicsCar
 
 func (graphicsCardRepo *graphicsCardRepository) Update(console model.GraphicsCard) error {
 	result := graphicsCardRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&console)
-	return result.Error
-}
-
-func (graphicsCardRepo *graphicsCardRepository) Delete(console model.GraphicsCard) error {
-	result := graphicsCardRepo.Database.Delete(&console)
 	return result.Error
 }

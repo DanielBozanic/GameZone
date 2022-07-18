@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { keyboardFormSchema } from "./KeyboardFormSchema";
@@ -31,6 +32,14 @@ const KeyboardForm = (props) => {
 
 	const [wireless, setWireless] = useState(false);
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -39,11 +48,51 @@ const KeyboardForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${keyboardAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setWireless(null);
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		data.Wireless = helperFunctions.str2Bool(data.Wireless);
 		axios
 			.post(keyboardAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		data.Wireless = helperFunctions.str2Bool(data.Wireless);
+		axios
+			.put(keyboardAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -71,7 +120,12 @@ const KeyboardForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<div>
@@ -83,7 +137,11 @@ const KeyboardForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={wireless}
+													checked={
+														product === null || wireless !== null
+															? wireless
+															: product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(true)}
@@ -95,7 +153,11 @@ const KeyboardForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={!wireless}
+													checked={
+														product === null || wireless !== null
+															? !wireless
+															: !product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(false)}
@@ -115,6 +177,9 @@ const KeyboardForm = (props) => {
 														methods.formState.errors.KeyboardConnector?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.KeyboardConnector : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.KeyboardConnector?.message}
@@ -132,6 +197,11 @@ const KeyboardForm = (props) => {
 													name="KeyType"
 													invalid={methods.formState.errors.KeyType?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.KeyType !== null
+															? product.KeyType
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.KeyType?.message}
@@ -151,6 +221,11 @@ const KeyboardForm = (props) => {
 														methods.formState.errors.LetterLayout?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.LetterLayout !== null
+															? product.LetterLayout
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.LetterLayout?.message}
@@ -170,6 +245,11 @@ const KeyboardForm = (props) => {
 														methods.formState.errors.KeyboardColor?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.KeyboardColor !== null
+															? product.KeyboardColor
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.KeyboardColor?.message}
@@ -196,7 +276,7 @@ const KeyboardForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

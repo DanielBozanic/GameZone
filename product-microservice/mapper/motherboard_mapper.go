@@ -8,7 +8,7 @@ import (
 
 func ToMotherboard(motherboardDTO dto.MotherboardDTO) (model.Motherboard) {
 	return model.Motherboard {
-		Product: model.Product(motherboardDTO.Product),
+		Product: ToProduct(motherboardDTO.Product),
 		ProcessorType: motherboardDTO.ProcessorType,
 		Socket: motherboardDTO.Socket,
 		SupportedProcessors: motherboardDTO.SupportedProcessors,
@@ -27,7 +27,7 @@ func ToMotherboard(motherboardDTO dto.MotherboardDTO) (model.Motherboard) {
 
 func ToMotherboardDTO(motherboard model.Motherboard) dto.MotherboardDTO {
 	return dto.MotherboardDTO {
-		Product: dto.ProductDTO(motherboard.Product),
+		Product: ToProductDTO(motherboard.Product),
 		ProcessorType: motherboard.ProcessorType,
 		Socket: motherboard.Socket,
 		SupportedProcessors: motherboard.SupportedProcessors,

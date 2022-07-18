@@ -2,7 +2,7 @@ package dto
 
 type MouseDTO struct {
 	Product       ProductDTO
-	Wireless      bool
+	Wireless      *bool
 	Sensor        *string
 	DPI           *string
 	PollingRate   *string

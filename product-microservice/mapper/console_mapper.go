@@ -8,14 +8,14 @@ import (
 
 func ToConsole(consoleDTO dto.ConsoleDTO) (model.Console) {
 	return model.Console {
-		Product: model.Product(consoleDTO.Product),
+		Product: ToProduct(consoleDTO.Product),
 		Platform: consoleDTO.Platform,
 	}
 }
 
 func ToConsoleDTO(console model.Console) dto.ConsoleDTO {
 	return dto.ConsoleDTO {
-		Product: dto.ProductDTO(console.Product),
+		Product: ToProductDTO(console.Product),
 		Platform: console.Platform,
 	}
 }

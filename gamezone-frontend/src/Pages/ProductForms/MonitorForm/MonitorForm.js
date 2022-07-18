@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { monitorFormSchema } from "./MonitorFormSchema";
@@ -28,7 +29,16 @@ import * as helperFunctions from "../../../Utils/HelperFunctions";
 toast.configure();
 const MonitorForm = (props) => {
 	const customId = "monitorForm";
+
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -37,10 +47,48 @@ const MonitorForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${monitorAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(monitorAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(monitorAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -68,8 +116,12 @@ const MonitorForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -80,6 +132,9 @@ const MonitorForm = (props) => {
 													name="Resolution"
 													invalid={methods.formState.errors.Resolution?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.Resolution : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Resolution?.message}
@@ -99,6 +154,9 @@ const MonitorForm = (props) => {
 														methods.formState.errors.RefreshRate?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.RefreshRate : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.RefreshRate?.message}
@@ -116,6 +174,7 @@ const MonitorForm = (props) => {
 													name="Size"
 													invalid={methods.formState.errors.Size?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Size : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Size?.message}
@@ -135,6 +194,11 @@ const MonitorForm = (props) => {
 														methods.formState.errors.AspectRatio?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.AspectRatio !== null
+															? product.AspectRatio
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.AspectRatio?.message}
@@ -154,6 +218,11 @@ const MonitorForm = (props) => {
 														methods.formState.errors.ContrastRatio?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.ContrastRatio !== null
+															? product.ContrastRatio
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ContrastRatio?.message}
@@ -173,6 +242,11 @@ const MonitorForm = (props) => {
 														methods.formState.errors.ResponseTime?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.ResponseTime !== null
+															? product.ResponseTime
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ResponseTime?.message}
@@ -190,6 +264,11 @@ const MonitorForm = (props) => {
 													name="PanelType"
 													invalid={methods.formState.errors.PanelType?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.PanelType !== null
+															? product.PanelType
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.PanelType?.message}
@@ -209,6 +288,11 @@ const MonitorForm = (props) => {
 														methods.formState.errors.ViewingAngle?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.ViewingAngle !== null
+															? product.ViewingAngle
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ViewingAngle?.message}
@@ -226,6 +310,11 @@ const MonitorForm = (props) => {
 													name="Brightness"
 													invalid={methods.formState.errors.Brightness?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Brightness !== null
+															? product.Brightness
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Brightness?.message}
@@ -252,7 +341,7 @@ const MonitorForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

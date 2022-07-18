@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -40,7 +39,7 @@ func (headphonesApi *HeadphonesAPI) GetNumberOfRecords(c *gin.Context) {
 }
 
 func (headphonesApi *HeadphonesAPI) GetByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -164,7 +163,7 @@ func (headphonesApi *HeadphonesAPI) Update(c *gin.Context) {
 }
 
 func (headphonesApi *HeadphonesAPI) Delete(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

@@ -7,7 +7,7 @@ import (
 
 func ToHardDiskDrive(hddDTO dto.HardDiskDriveDTO) (model.HardDiskDrive) {
 	return model.HardDiskDrive {
-		Product: model.Product(hddDTO.Product),
+		Product: ToProduct(hddDTO.Product),
 		Interface: hddDTO.Interface,
 		Form: hddDTO.Form,
 		DiskSpeed: hddDTO.DiskSpeed,
@@ -18,7 +18,7 @@ func ToHardDiskDrive(hddDTO dto.HardDiskDriveDTO) (model.HardDiskDrive) {
 
 func ToHardDiskDriveDTO(hdd model.HardDiskDrive) dto.HardDiskDriveDTO {
 	return dto.HardDiskDriveDTO {
-		Product: dto.ProductDTO(hdd.Product),
+		Product: ToProductDTO(hdd.Product),
 		Interface: hdd.Interface,
 		Form: hdd.Form,
 		DiskSpeed: hdd.DiskSpeed,

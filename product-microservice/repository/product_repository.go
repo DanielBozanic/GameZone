@@ -3,8 +3,8 @@ package repository
 import (
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type productRepository struct {
@@ -15,9 +15,9 @@ type IProductRepository interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
-	GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error)
+	GetProductPurchaseById(purchaseid int) (model.ProductPurchase, error)
 	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
-	GetProductById(productId uuid.UUID) (model.Product, error)
+	GetProductById(productid int) (model.Product, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	GetNumberOfRecordsSearch(name string) int64
 	AddPurchase(purchase model.ProductPurchase) error
@@ -33,7 +33,7 @@ func NewProductRepository(DB *gorm.DB) IProductRepository {
 func (productRepo *productRepository) GetCurrentCart(userId int) []model.ProductPurchase {
 	var currentCart []model.ProductPurchase
 	productRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Where("user_id = ? AND purchase_date IS NULL", userId).
 		Find(&currentCart)
 	return currentCart
@@ -42,7 +42,7 @@ func (productRepo *productRepository) GetCurrentCart(userId int) []model.Product
 func (productRepo *productRepository) GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase {
 	var allDigitalItems []model.ProductPurchase
 	productRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = product_purchases.product_id").
 		Joins("JOIN video_games ON video_games.product_id = products.id").
 		Where("products.type = 13 AND video_games.Digital = true AND user_id = ? AND purchase_date IS NULL", userId).
@@ -53,28 +53,33 @@ func (productRepo *productRepository) GetAllDigitalItemsFromCart(userId int) []m
 func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
 	var purchaseHistory []model.ProductPurchase
 	productRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Where("user_id = ? AND purchase_date IS NOT null", userId).
 		Find(&purchaseHistory)
 	return purchaseHistory
 }
 
-func (productRepo *productRepository) GetProductPurchaseById(purchaseId uuid.UUID) (model.ProductPurchase, error) {
+func (productRepo *productRepository) GetProductPurchaseById(purchaseId int) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
-	result := productRepo.Database.Preload("Product").First(&productPurchase, purchaseId)
+	result := productRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		First(&productPurchase, purchaseId)
 	return productPurchase, result.Error
 }
 
-func (productRepo *productRepository) GetProductById(productId uuid.UUID) (model.Product, error) {
+func (productRepo *productRepository) GetProductById(productId int) (model.Product, error) {
 	var product model.Product
-	result := productRepo.Database.First(&product, productId)
+	result := productRepo.Database.
+		Preload("Image").
+		Where("archived = false").
+		First(&product, productId)
 	return product, result.Error
 }
 
 func (productRepo *productRepository) GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
 	result := productRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = product_purchases.product_id").
 		First(&productPurchase, "products.name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
 	return productPurchase, result.Error
@@ -85,7 +90,8 @@ func (productRepo *productRepository) SearchByName(page int, pageSize int, name 
 	offset := (page - 1) * pageSize
 	result := productRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Where("name LIKE ?", "%" + name + "%").
+		Preload("Image").
+		Where("name LIKE ? AND archived = false", "%" + name + "%").
 		Find(&products)
 	return products, result.Error
 }
@@ -94,7 +100,8 @@ func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int6
 	var products []model.Product
 	var count int64
 	productRepo.Database.
-		Where("name LIKE ?", "%" + name + "%").
+		Preload("Image").
+		Where("name LIKE ? AND archived = false", "%" + name + "%").
 		Find(&products).
 		Count(&count)
 	return count

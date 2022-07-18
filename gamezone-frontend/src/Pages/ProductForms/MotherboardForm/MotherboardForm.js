@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { motherboardFormSchema } from "./MotherboardFormSchema";
@@ -28,7 +29,16 @@ import * as helperFunctions from "../../../Utils/HelperFunctions";
 toast.configure();
 const MotherboardForm = (props) => {
 	const customId = "motherboardForm";
+
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -37,10 +47,48 @@ const MotherboardForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${motherboardAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(motherboardAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(motherboardAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -68,8 +116,12 @@ const MotherboardForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -82,6 +134,9 @@ const MotherboardForm = (props) => {
 														methods.formState.errors.ProcessorType?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.ProcessorType : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ProcessorType?.message}
@@ -99,6 +154,7 @@ const MotherboardForm = (props) => {
 													name="Socket"
 													invalid={methods.formState.errors.Socket?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Socket : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Socket?.message}
@@ -119,6 +175,12 @@ const MotherboardForm = (props) => {
 															?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.SupportedProcessors !== null
+															? product.SupportedProcessors
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{
@@ -139,6 +201,11 @@ const MotherboardForm = (props) => {
 													name="Chipset"
 													invalid={methods.formState.errors.Chipset?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Chipset !== null
+															? product.Chipset
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Chipset?.message}
@@ -156,6 +223,11 @@ const MotherboardForm = (props) => {
 													name="Memory"
 													invalid={methods.formState.errors.Memory?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Memory !== null
+															? product.Memory
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Memory?.message}
@@ -175,6 +247,11 @@ const MotherboardForm = (props) => {
 														methods.formState.errors.ExpansionSlots?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.ExpansionSlots !== null
+															? product.ExpansionSlots
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ExpansionSlots?.message}
@@ -194,6 +271,12 @@ const MotherboardForm = (props) => {
 														methods.formState.errors.StorageInterface?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.StorageInterface !== null
+															? product.StorageInterface
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.StorageInterface?.message}
@@ -211,6 +294,11 @@ const MotherboardForm = (props) => {
 													name="Audio"
 													invalid={methods.formState.errors.Audio?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Audio !== null
+															? product.Audio
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Audio?.message}
@@ -228,6 +316,11 @@ const MotherboardForm = (props) => {
 													name="USB"
 													invalid={methods.formState.errors.USB?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.USB !== null
+															? product.USB
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.USB?.message}
@@ -248,6 +341,12 @@ const MotherboardForm = (props) => {
 															?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.BackPanelConnectors !== null
+															? product.BackPanelConnectors
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{
@@ -270,6 +369,12 @@ const MotherboardForm = (props) => {
 														methods.formState.errors.InternalConnectors?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.InternalConnectors !== null
+															? product.InternalConnectors
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.InternalConnectors?.message}
@@ -287,6 +392,11 @@ const MotherboardForm = (props) => {
 													name="BIOS"
 													invalid={methods.formState.errors.BIOS?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.BIOS !== null
+															? product.BIOS
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.BIOS?.message}
@@ -304,6 +414,11 @@ const MotherboardForm = (props) => {
 													name="FormFactor"
 													invalid={methods.formState.errors.FormFactor?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.FormFactor !== null
+															? product.FormFactor
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.FormFactor?.message}
@@ -330,7 +445,7 @@ const MotherboardForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

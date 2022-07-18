@@ -8,7 +8,7 @@ import (
 
 func ToProcessor(processorDTO dto.ProcessorDTO) (model.Processor) {
 	return model.Processor {
-		Product: model.Product(processorDTO.Product),
+		Product: ToProduct(processorDTO.Product),
 		Type: processorDTO.Type,
 		Socket: processorDTO.Socket,
 		NumberOfCores: processorDTO.NumberOfCores,
@@ -22,7 +22,7 @@ func ToProcessor(processorDTO dto.ProcessorDTO) (model.Processor) {
 
 func ToProcessorDTO(processor model.Processor) dto.ProcessorDTO {
 	return dto.ProcessorDTO {
-		Product: dto.ProductDTO(processor.Product),
+		Product: ToProductDTO(processor.Product),
 		Type: processor.Type,
 		Socket: processor.Socket,
 		NumberOfCores: processor.NumberOfCores,

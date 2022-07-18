@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type mouseRepository struct {
@@ -15,7 +15,7 @@ type mouseRepository struct {
 type IMouseRepository interface {
 	GetAll(page int, pageSize int) ([] model.Mouse)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Mouse, error)
+	GetById(id int) (model.Mouse, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Mouse, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MouseFilter) ([]model.Mouse, error)
@@ -25,7 +25,6 @@ type IMouseRepository interface {
 	GetConnections() []string
 	Create(mouse model.Mouse) error
 	Update(mouse model.Mouse) error
-	Delete(mouse model.Mouse) error
 }
 
 func NewMouseRepository(DB *gorm.DB) IMouseRepository {
@@ -37,20 +36,31 @@ func (mouseRepo *mouseRepository) GetAll(page int, pageSize int) []model.Mouse {
 	offset := (page - 1) * pageSize
 	mouseRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
 		Find(&mice)
 	return mice
 }
 
 func (mouseRepo *mouseRepository) GetNumberOfRecords() int64 {
 	var count int64
-	mouseRepo.Database.Model(&model.Mouse{}).Count(&count)
+	mouseRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
+		Model(&model.Mouse{}).
+		Count(&count)
 	return count
 }
 
-func (mouseRepo *mouseRepository) GetById(id uuid.UUID) (model.Mouse, error) {
+func (mouseRepo *mouseRepository) GetById(id int) (model.Mouse, error) {
 	var mouse model.Mouse
-	result := mouseRepo.Database.Preload("Product").First(&mouse, id)
+	result := mouseRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
+		First(&mouse, id)
 	return mouse, result.Error
 }
 
@@ -59,9 +69,9 @@ func (mouseRepo *mouseRepository) SearchByName(page int, pageSize int, name stri
 	offset := (page - 1) * pageSize
 	result := mouseRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&mice)
 	return mice, result.Error
 }
@@ -70,9 +80,9 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsSearch(name string) int64 {
 	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&mice).
 		Count(&count)
 	return count
@@ -83,12 +93,12 @@ func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.M
 	offset := (page - 1) * pageSize
 	result := mouseRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(dpi IN ? OR ?) AND 
 				(wireless IN ? OR ?) AND 
-				(connection IN ? OR ?)`,
+				(connection IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.DPIs,
@@ -105,12 +115,12 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFi
 	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(dpi IN ? OR ?) AND 
 				(wireless IN ? OR ?) AND 
-				(connection IN ? OR ?)`,
+				(connection IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.DPIs,
@@ -127,8 +137,9 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFi
 func (mouseRepo *mouseRepository) GetManufacturers() []string {
 	var manufacturers []string
 	mouseRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
 		Model(&model.Mouse{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -138,6 +149,9 @@ func (mouseRepo *mouseRepository) GetManufacturers() []string {
 func (mouseRepo *mouseRepository) GetDPIs() []string {
 	var dpis []string
 	mouseRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
 		Model(&model.Mouse{}).
 		Distinct().
 		Pluck("dpi", &dpis)
@@ -147,6 +161,9 @@ func (mouseRepo *mouseRepository) GetDPIs() []string {
 func (mouseRepo *mouseRepository) GetConnections() []string {
 	var connections []string
 	mouseRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = mice.product_id").
+		Where("products.archived = false").
 		Model(&model.Mouse{}).
 		Distinct().
 		Pluck("connection", &connections)
@@ -160,10 +177,5 @@ func (mouseRepo *mouseRepository) Create(mouse model.Mouse) error {
 
 func (mouseRepo *mouseRepository) Update(mouse model.Mouse) error {
 	result := mouseRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&mouse)
-	return result.Error
-}
-
-func (mouseRepo *mouseRepository) Delete(mouse model.Mouse) error {
-	result := mouseRepo.Database.Delete(&mouse)
 	return result.Error
 }

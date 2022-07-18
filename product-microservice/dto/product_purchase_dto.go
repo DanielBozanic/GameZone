@@ -3,12 +3,11 @@ package dto
 import (
 	"product/model"
 
-	"github.com/google/uuid"
 	"github.com/shopspring/decimal"
 )
 
 type ProductPurchaseDTO struct {
-	Id uuid.UUID
+	Id int
 	UserId int
 	Product ProductDTO
 	TotalPrice decimal.Decimal

@@ -7,7 +7,7 @@ import (
 
 func ToRam(ramDTO dto.RamDTO) (model.Ram) {
 	return model.Ram {
-		Product: model.Product(ramDTO.Product),
+		Product: ToProduct(ramDTO.Product),
 		MemoryType: ramDTO.MemoryType,
 		Capacity: ramDTO.Capacity,
 		Speed: ramDTO.Speed,
@@ -18,7 +18,7 @@ func ToRam(ramDTO dto.RamDTO) (model.Ram) {
 
 func ToRamDTO(ram model.Ram) dto.RamDTO {
 	return dto.RamDTO {
-		Product: dto.ProductDTO(ram.Product),
+		Product: ToProductDTO(ram.Product),
 		MemoryType: ram.MemoryType,
 		Capacity: ram.Capacity,
 		Speed: ram.Speed,

@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { mouseFormSchema } from "./MouseFormSchema";
@@ -31,6 +32,14 @@ const MouseForm = (props) => {
 
 	const [wireless, setWireless] = useState(false);
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -39,11 +48,51 @@ const MouseForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${mouseAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setWireless(null);
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		data.Wireless = helperFunctions.str2Bool(data.Wireless);
 		axios
 			.post(mouseAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		data.Wireless = helperFunctions.str2Bool(data.Wireless);
+		axios
+			.put(mouseAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -71,7 +120,12 @@ const MouseForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<div>
@@ -83,7 +137,11 @@ const MouseForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={wireless}
+													checked={
+														product === null || wireless !== null
+															? wireless
+															: product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(true)}
@@ -95,7 +153,11 @@ const MouseForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Wireless"
-													checked={!wireless}
+													checked={
+														product === null || wireless !== null
+															? !wireless
+															: !product.Wireless
+													}
 													value={wireless}
 													innerRef={methods.register}
 													onChange={() => setWireless(false)}
@@ -113,6 +175,9 @@ const MouseForm = (props) => {
 													name="Connection"
 													invalid={methods.formState.errors.Connection?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.Connection : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Connection?.message}
@@ -130,6 +195,11 @@ const MouseForm = (props) => {
 													name="Sensor"
 													invalid={methods.formState.errors.Sensor?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Sensor !== null
+															? product.Sensor
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Sensor?.message}
@@ -147,6 +217,11 @@ const MouseForm = (props) => {
 													name="DPI"
 													invalid={methods.formState.errors.DPI?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.DPI !== null
+															? product.DPI
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.DPI?.message}
@@ -166,6 +241,11 @@ const MouseForm = (props) => {
 														methods.formState.errors.PollingRate?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.PollingRate !== null
+															? product.PollingRate
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.PollingRate?.message}
@@ -183,6 +263,11 @@ const MouseForm = (props) => {
 													name="Color"
 													invalid={methods.formState.errors.Color?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Color !== null
+															? product.Color
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Color?.message}
@@ -202,6 +287,11 @@ const MouseForm = (props) => {
 														methods.formState.errors.TrackingSpeed?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.TrackingSpeed !== null
+															? product.TrackingSpeed
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.TrackingSpeed?.message}
@@ -221,6 +311,11 @@ const MouseForm = (props) => {
 														methods.formState.errors.Acceleration?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Acceleration !== null
+															? product.Acceleration
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Acceleration?.message}
@@ -239,6 +334,11 @@ const MouseForm = (props) => {
 													name="Buttons"
 													invalid={methods.formState.errors.Buttons?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Buttons !== null
+															? product.Buttons
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Buttons?.message}
@@ -256,6 +356,11 @@ const MouseForm = (props) => {
 													name="Weight"
 													invalid={methods.formState.errors.Weight?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Weight !== null
+															? product.Weight
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Weight?.message}
@@ -273,6 +378,11 @@ const MouseForm = (props) => {
 													name="Lifespan"
 													invalid={methods.formState.errors.Lifespan?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Lifespan !== null
+															? product.Lifespan
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Lifespan?.message}
@@ -299,7 +409,7 @@ const MouseForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

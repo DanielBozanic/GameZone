@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
@@ -9,7 +10,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type headphonesService struct {
@@ -19,7 +19,7 @@ type headphonesService struct {
 type IHeadphonesService interface {
 	GetAll(page int, pageSize int) ([] model.Headphones)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Headphones, error)
+	GetById(id int) (model.Headphones, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Headphones, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.HeadphonesFilter) ([]model.Headphones, error)
@@ -28,7 +28,7 @@ type IHeadphonesService interface {
 	GetConnectionTypes() []string
 	Create(headphones model.Headphones) string
 	Update(headphonesDTO dto.HeadphonesDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewHeadphonesService(headphonesRepository repository.IHeadphonesRepository) IHeadphonesService {
@@ -43,7 +43,7 @@ func (headphonesService *headphonesService) GetNumberOfRecords() int64 {
 	return headphonesService.IHeadphonesRepository.GetNumberOfRecords()
 }
 
-func (headphonesService *headphonesService) GetById(id uuid.UUID) (model.Headphones, error) {
+func (headphonesService *headphonesService) GetById(id int) (model.Headphones, error) {
 	return headphonesService.IHeadphonesRepository.GetById(id)
 }
 
@@ -73,12 +73,10 @@ func (headphonesService *headphonesService) GetConnectionTypes() []string {
 
 func (headphonesService *headphonesService) Create(headphones model.Headphones) string {
 	msg := ""
-	headphones.Product.Id = uuid.New()
-	headphones.ProductId = headphones.Product.Id
 	headphones.Product.Type = model.HEADPHONES
 	err := headphonesService.IHeadphonesRepository.Create(headphones)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -92,19 +90,23 @@ func (headphonesService *headphonesService) Update(headphonesDTO dto.HeadphonesD
 	}
 	updatedHeadphones := mapper.ToHeadphones(headphonesDTO)
 	updatedHeadphones.Product.Id = headphones.Product.Id
-	updatedHeadphones.ProductId = updatedHeadphones.Product.Id
+	updatedHeadphones.ProductId = headphones.Product.Id
+	updatedHeadphones.Product.Image.Id = headphones.Product.Image.Id
+	updatedHeadphones.Product.ImageId = headphones.Product.Image.Id
+	fmt.Println(updatedHeadphones.Wireless)
 	err = headphonesService.IHeadphonesRepository.Update(updatedHeadphones)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (headphonesService *headphonesService) Delete(id uuid.UUID) error {
+func (headphonesService *headphonesService) Delete(id int) error {
 	headphones, err := headphonesService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return headphonesService.IHeadphonesRepository.Delete(headphones)
+	headphones.Product.Archived = true
+	return headphonesService.IHeadphonesRepository.Update(headphones)
 }

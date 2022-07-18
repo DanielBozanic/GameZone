@@ -7,7 +7,7 @@ import (
 
 func ToSolidStateDrive(ssdDTO dto.SolidStateDriveDTO) (model.SolidStateDrive) {
 	return model.SolidStateDrive {
-		Product: model.Product(ssdDTO.Product),
+		Product: ToProduct(ssdDTO.Product),
 		Interface: ssdDTO.Interface,
 		MaxSequentialRead: ssdDTO.MaxSequentialRead,
 		MaxSequentialWrite: ssdDTO.MaxSequentialWrite,
@@ -19,7 +19,7 @@ func ToSolidStateDrive(ssdDTO dto.SolidStateDriveDTO) (model.SolidStateDrive) {
 
 func ToSolidStateDriveDTO(ssd model.SolidStateDrive) dto.SolidStateDriveDTO {
 	return dto.SolidStateDriveDTO {
-		Product: dto.ProductDTO(ssd.Product),
+		Product: ToProductDTO(ssd.Product),
 		Interface: ssd.Interface,
 		MaxSequentialRead: ssd.MaxSequentialRead,
 		MaxSequentialWrite: ssd.MaxSequentialWrite,

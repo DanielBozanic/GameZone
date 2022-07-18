@@ -96,18 +96,49 @@
 	margin-bottom: 15px;
 }
 
-.add-to-cart-btn:hover:enabled {
+.update-btn {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid orange;
+	width: 100%;
+	max-width: 200px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+	margin-right: 10px;
+}
+
+.delete-btn {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid orange;
+	width: 100%;
+	max-width: 200px;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.add-to-cart-btn:hover:enabled,
+.delete-btn:hover,
+.update-btn:hover {
 	background-color: orange;
 	color: #343a40;
 	transition: 0.7s;
 }
 
-.add-to-cart-btn:focus:enabled {
+.add-to-cart-btn:focus:enabled,
+.delete-btn:focus,
+.update-btn:focus {
 	background-color: orange;
 	color: #343a40;
 }
 
-.add-to-cart-btn:active:enabled {
+.add-to-cart-btn:active:enabled,
+.delete-btn:active,
+.update-btn:active {
 	background-color: orange;
 	color: #343a40;
 }

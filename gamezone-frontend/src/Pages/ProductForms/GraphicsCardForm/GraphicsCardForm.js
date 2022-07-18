@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { graphicsCardFormSchema } from "./GraphicsCardFormSchema";
@@ -28,7 +29,16 @@ import * as helperFunctions from "../../../Utils/HelperFunctions";
 toast.configure();
 const GraphicsCardForm = (props) => {
 	const customId = "graphicsCardForm";
+
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -37,10 +47,48 @@ const GraphicsCardForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${graphicsCardAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(graphicsCardAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(graphicsCardAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -68,8 +116,12 @@ const GraphicsCardForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -82,6 +134,9 @@ const GraphicsCardForm = (props) => {
 														methods.formState.errors.ChipManufacturer?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.ChipManufacturer : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ChipManufacturer?.message}
@@ -99,6 +154,9 @@ const GraphicsCardForm = (props) => {
 													name="ModelName"
 													invalid={methods.formState.errors.ModelName?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.ModelName : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ModelName?.message}
@@ -116,6 +174,11 @@ const GraphicsCardForm = (props) => {
 													name="BusWidth"
 													invalid={methods.formState.errors.BusWidth?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.BusWidth !== null
+															? product.BusWidth
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.BusWidth?.message}
@@ -133,6 +196,11 @@ const GraphicsCardForm = (props) => {
 													name="MemorySize"
 													invalid={methods.formState.errors.MemorySize?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.MemorySize !== null
+															? product.MemorySize
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.MemorySize?.message}
@@ -150,6 +218,11 @@ const GraphicsCardForm = (props) => {
 													name="MemoryType"
 													invalid={methods.formState.errors.MemoryType?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.MemoryType !== null
+															? product.MemoryType
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.MemoryType?.message}
@@ -169,6 +242,11 @@ const GraphicsCardForm = (props) => {
 														methods.formState.errors.PCIInterface?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.PCIInterface !== null
+															? product.PCIInterface
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.PCIInterface?.message}
@@ -186,6 +264,11 @@ const GraphicsCardForm = (props) => {
 													name="GPUSpeed"
 													invalid={methods.formState.errors.GPUSpeed?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.GPUSpeed !== null
+															? product.GPUSpeed
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.GPUSpeed?.message}
@@ -207,6 +290,12 @@ const GraphicsCardForm = (props) => {
 															?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.CUDAStreamProcessors !== null
+															? product.CUDAStreamProcessors
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{
@@ -227,6 +316,11 @@ const GraphicsCardForm = (props) => {
 													name="Cooling"
 													invalid={methods.formState.errors.Cooling?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Cooling !== null
+															? product.Cooling
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Cooling?.message}
@@ -245,6 +339,11 @@ const GraphicsCardForm = (props) => {
 													min="0"
 													invalid={methods.formState.errors.HDMI?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.HDMI !== null
+															? product.HDMI
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.HDMI?.message}
@@ -265,6 +364,11 @@ const GraphicsCardForm = (props) => {
 														methods.formState.errors.DisplayPort?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.DisplayPort !== null
+															? product.DisplayPort
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.DisplayPort?.message}
@@ -282,6 +386,11 @@ const GraphicsCardForm = (props) => {
 													name="TDP"
 													invalid={methods.formState.errors.TDP?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.TDP !== null
+															? product.TDP
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.TDP?.message}
@@ -301,6 +410,11 @@ const GraphicsCardForm = (props) => {
 														methods.formState.errors.PowerConnector?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.PowerConnector !== null
+															? product.PowerConnector
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.PowerConnector?.message}
@@ -318,6 +432,11 @@ const GraphicsCardForm = (props) => {
 													name="Dimensions"
 													invalid={methods.formState.errors.Dimensions?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Dimensions !== null
+															? product.Dimensions
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Dimensions?.message}
@@ -344,7 +463,7 @@ const GraphicsCardForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

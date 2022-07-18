@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type hardDiskDriveRepository struct {
@@ -15,7 +15,7 @@ type hardDiskDriveRepository struct {
 type IHardDiskDriveRepository interface {
 	GetAll(page int, pageSize int) ([] model.HardDiskDrive)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.HardDiskDrive, error)
+	GetById(id int) (model.HardDiskDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.HardDiskDrive, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.HardDiskDriveFilter) ([]model.HardDiskDrive, error)
@@ -26,7 +26,6 @@ type IHardDiskDriveRepository interface {
 	GetDiskSpeeds() []string
 	Create(hardDiskDrive model.HardDiskDrive) error
 	Update(hardDiskDrive model.HardDiskDrive) error
-	Delete(hardDiskDrive model.HardDiskDrive) error
 }
 
 func NewHardDiskDriveRepository(DB *gorm.DB) IHardDiskDriveRepository {
@@ -38,20 +37,31 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetAll(page int, pageSize int)
 	offset := (page - 1) * pageSize
 	hardDiskDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
 		Find(&hardDiskDrives)
 	return hardDiskDrives
 }
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecords() int64 {
 	var count int64
-	hardDiskDriveRepo.Database.Model(&model.HardDiskDrive{}).Count(&count)
+	hardDiskDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
+		Model(&model.HardDiskDrive{}).
+		Count(&count)
 	return count
 }
 
-func (hardDiskDriveRepo *hardDiskDriveRepository) GetById(id uuid.UUID) (model.HardDiskDrive, error) {
+func (hardDiskDriveRepo *hardDiskDriveRepository) GetById(id int) (model.HardDiskDrive, error) {
 	var hardDiskDrive model.HardDiskDrive
-	result := hardDiskDriveRepo.Database.Preload("Product").First(&hardDiskDrive, id)
+	result := hardDiskDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
+		First(&hardDiskDrive, id)
 	return hardDiskDrive, result.Error
 }
 
@@ -60,9 +70,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) SearchByName(page int, pageSiz
 	offset := (page - 1) * pageSize
 	result := hardDiskDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&hardDiskDrives)
 	return hardDiskDrives, result.Error
 }
@@ -71,9 +81,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsSearch(name 
 	var hardDiskDrives []model.HardDiskDrive
 	var count int64
 	hardDiskDriveRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&hardDiskDrives).
 		Count(&count)
 	return count
@@ -84,12 +94,12 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) Filter(page int, pageSize int,
 	offset := (page - 1) * pageSize
 	result := hardDiskDriveRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
 		Where(`(capacity IN ? OR ?) AND 
 				(form IN ? OR ?) AND 
 				(products.manufacturer IN ? OR ?) AND 
-				(disk_speed IN ? OR ?)`,
+				(disk_speed IN ? OR ?) AND product.archived = false`,
 			filter.Capacities, 
 			len(filter.Capacities) == 0, 
 			filter.Forms, 
@@ -111,7 +121,7 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsFilter(filte
 		Where(`(capacity IN ? OR ?) AND 
 				(form IN ? OR ?) AND 
 				(products.manufacturer IN ? OR ?) AND 
-				(disk_speed IN ? OR ?)`,
+				(disk_speed IN ? OR ?) AND product.archived = false`,
 			filter.Capacities, 
 			len(filter.Capacities) == 0, 
 			filter.Forms, 
@@ -128,6 +138,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetNumberOfRecordsFilter(filte
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetCapacities() []string {
 	var capacities []string
 	hardDiskDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.HardDiskDrive{}).
 		Distinct().
 		Pluck("capacity", &capacities)
@@ -137,6 +150,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetCapacities() []string {
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetForms() []string {
 	var forms []string
 	hardDiskDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.HardDiskDrive{}).
 		Distinct().
 		Pluck("form", &forms)
@@ -146,8 +162,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetForms() []string {
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetManufacturers() []string {
 	var manufacturers []string
 	hardDiskDriveRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.HardDiskDrive{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -157,6 +174,9 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) GetManufacturers() []string {
 func (hardDiskDriveRepo *hardDiskDriveRepository) GetDiskSpeeds() []string {
 	var diskSpeeds []string
 	hardDiskDriveRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = hard_disk_drives.product_id").
+		Where("products.archived = false").
 		Model(&model.HardDiskDrive{}).
 		Distinct().
 		Pluck("disk_speed", &diskSpeeds)
@@ -170,10 +190,5 @@ func (hardDiskDriveRepo *hardDiskDriveRepository) Create(hardDiskDrive model.Har
 
 func (hardDiskDriveRepo *hardDiskDriveRepository) Update(hardDiskDrive model.HardDiskDrive) error {
 	result := hardDiskDriveRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&hardDiskDrive)
-	return result.Error
-}
-
-func (hardDiskDriveRepo *hardDiskDriveRepository) Delete(hardDiskDrive model.HardDiskDrive) error {
-	result := hardDiskDriveRepo.Database.Delete(&hardDiskDrive)
 	return result.Error
 }

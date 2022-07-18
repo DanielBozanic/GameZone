@@ -33,19 +33,23 @@ export const productFormSchema = yup.object({
 			.required("Amount is required")
 			.typeError("Amount must be a number")
 			.integer("Amount must be a non decimal value"),
-		Image: yup
-			.mixed()
-			.test("required", "You need to provide an image", (value) => {
-				return value !== undefined && value.length > 0 && value[0].size > 0;
-			})
-			.test("type", "File type must be image", (value) => {
+		Image: yup.object({
+			Name: yup.string().required("You need to provide an image"),
+			Type: yup.string().test("type", "File type must be an image", (value) => {
 				return (
-					value !== undefined &&
-					value.length > 0 &&
-					(value[0].type === "image/jpeg" ||
-						value[0].type === "image/jpg" ||
-						value[0].type === "image/png")
+					value === undefined ||
+					value === "image/jpeg" ||
+					value === "image/jpg" ||
+					value === "image/png"
 				);
 			}),
+			Size: yup
+				.number()
+				.nullable()
+				.transform((_, val) => (val !== "" ? Number(val) : null))
+				.test("size", "File size must be maximum 2 MB", (value) => {
+					return value === undefined || value <= 1024 * 1024 * 2;
+				}),
+		}),
 	}),
 });

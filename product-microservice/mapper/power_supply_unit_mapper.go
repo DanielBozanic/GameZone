@@ -8,7 +8,7 @@ import (
 
 func ToPowerSupplyUnit(psuDTO dto.PowerSupplyUnitDTO) (model.PowerSupplyUnit) {
 	return model.PowerSupplyUnit {
-		Product: model.Product(psuDTO.Product),
+		Product: ToProduct(psuDTO.Product),
 		Power: psuDTO.Power,
 		Type: psuDTO.Type,
 		FormFactor: psuDTO.FormFactor,
@@ -17,7 +17,7 @@ func ToPowerSupplyUnit(psuDTO dto.PowerSupplyUnitDTO) (model.PowerSupplyUnit) {
 
 func ToPowerSupplyUnitDTO(psu model.PowerSupplyUnit) dto.PowerSupplyUnitDTO {
 	return dto.PowerSupplyUnitDTO {
-		Product: dto.ProductDTO(psu.Product),
+		Product: ToProductDTO(psu.Product),
 		Power: psu.Power,
 		Type: psu.Type,
 		FormFactor: psu.FormFactor,

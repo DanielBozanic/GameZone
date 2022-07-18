@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { ramFormSchema } from "./RAMFormSchema";
@@ -30,6 +31,14 @@ const RAMForm = (props) => {
 	const customId = "RAMForm";
 
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -38,10 +47,48 @@ const RAMForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${ramAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(ramAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(ramAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -69,7 +116,12 @@ const RAMForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -80,6 +132,9 @@ const RAMForm = (props) => {
 													name="MemoryType"
 													invalid={methods.formState.errors.MemoryType?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.MemoryType : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.MemoryType?.message}
@@ -97,6 +152,9 @@ const RAMForm = (props) => {
 													name="Capacity"
 													invalid={methods.formState.errors.Capacity?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.Capacity : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Capacity?.message}
@@ -114,6 +172,11 @@ const RAMForm = (props) => {
 													name="Speed"
 													invalid={methods.formState.errors.Speed?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Speeed !== null
+															? product.Speed
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Speed?.message}
@@ -131,6 +194,11 @@ const RAMForm = (props) => {
 													name="Voltage"
 													invalid={methods.formState.errors.Voltage?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Voltage !== null
+															? product.Voltage
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Voltage?.message}
@@ -148,6 +216,11 @@ const RAMForm = (props) => {
 													name="Latency"
 													invalid={methods.formState.errors.Latency?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Latency !== null
+															? product.Latency
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Latency?.message}
@@ -174,7 +247,7 @@ const RAMForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

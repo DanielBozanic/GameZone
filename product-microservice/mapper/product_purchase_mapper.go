@@ -16,7 +16,7 @@ func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.Product
 		return model.ProductPurchase {
 			Id: productPurchaseDTO.Id,
 			UserId: productPurchaseDTO.UserId,
-			Product: model.Product(productPurchaseDTO.Product),
+			Product: ToProduct(productPurchaseDTO.Product),
 			Amount: productPurchaseDTO.Amount,
 			TotalPrice: productPurchaseDTO.TotalPrice,
 			PurchaseDate: purchaseDate,
@@ -31,7 +31,7 @@ func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.Product
 		return model.ProductPurchase {
 			Id: productPurchaseDTO.Id,
 			UserId: productPurchaseDTO.UserId,
-			Product: model.Product(productPurchaseDTO.Product),
+			Product: ToProduct(productPurchaseDTO.Product),
 			Amount: productPurchaseDTO.Amount,
 			TotalPrice: productPurchaseDTO.TotalPrice,
 			PurchaseDate: purchaseDate,
@@ -48,7 +48,7 @@ func ToProductPurchaseDTO(productPurchase model.ProductPurchase) dto.ProductPurc
 	return dto.ProductPurchaseDTO {
 		Id: productPurchase.Id,
 		UserId: productPurchase.UserId,
-		Product: dto.ProductDTO(productPurchase.Product),
+		Product: ToProductDTO(productPurchase.Product),
 		TotalPrice: productPurchase.TotalPrice,
 		Amount: productPurchase.Amount,
 		PurchaseDate: productPurchase.PurchaseDate.Format("2006-01-02"),

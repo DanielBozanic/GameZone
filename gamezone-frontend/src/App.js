@@ -458,6 +458,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateVideoGame/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateVideoGame/:id"
+									element={
+										<VideoGameForm
+											key="/updateVideoGame/:id"
+											title={"Update video game"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewConsole"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -468,6 +483,21 @@ function App() {
 											key="/addNewConsole"
 											title={"Add new console"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updateConsole/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateConsole/:id"
+									element={
+										<ConsoleForm
+											key="/updateConsole/:id"
+											title={"Update console"}
+											updateButton={true}
 										/>
 									}
 								/>
@@ -488,6 +518,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateGraphicsCard/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateGraphicsCard/:id"
+									element={
+										<GraphicsCardForm
+											key="/updateGraphicsCard/:id"
+											title={"Update graphics card"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewProcessor"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -498,6 +543,21 @@ function App() {
 											key="/addNewProcessor"
 											title={"Add new processor"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updateProcessor/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateProcessor/:id"
+									element={
+										<ProcessorForm
+											key="/updateProcessor/:id"
+											title={"Update processor"}
+											updateButton={true}
 										/>
 									}
 								/>
@@ -518,6 +578,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateMotherboard/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateMotherboard/:id"
+									element={
+										<MotherboardForm
+											key="/updateMotherboard/:id"
+											title={"Update motherboard"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewRam"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -528,6 +603,21 @@ function App() {
 											key="/addNewRam"
 											title={"Add new RAM"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updateRam/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateRam/:id"
+									element={
+										<RAMForm
+											key="/updateRam/:id"
+											title={"Update RAM"}
+											updateButton={true}
 										/>
 									}
 								/>
@@ -548,6 +638,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateSsd/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateSsd/:id"
+									element={
+										<SSDForm
+											key="/updateSsd/:id"
+											title={"Update solid state drive"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewHdd"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -558,6 +663,21 @@ function App() {
 											key="/addNewHdd"
 											title={"Add new hard disk drive"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updateHdd/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateHdd/:id"
+									element={
+										<HDDForm
+											key="/updateHdd/:id"
+											title={"Update hard disk drive"}
+											updateButton={true}
 										/>
 									}
 								/>
@@ -578,6 +698,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateMonitor/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateMonitor/:id"
+									element={
+										<MonitorForm
+											key="/updateMonitor/:id"
+											title={"Update monitor"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewPsu"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -588,6 +723,21 @@ function App() {
 											key="/addNewPsu"
 											title={"Add new power supply unit"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updatePsu/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updatePsu/:id"
+									element={
+										<PSUForm
+											key="/updatePsu/:id"
+											title={"Update power supply unit"}
+											updateButton={true}
 										/>
 									}
 								/>
@@ -608,6 +758,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateHeadphones/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateHeadphones/:id"
+									element={
+										<HeadphonesForm
+											key="/updateHeadphones/:id"
+											title={"Update headphones"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewKeyboard"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -623,6 +788,21 @@ function App() {
 								/>
 							</Route>
 							<Route
+								path="/updateKeyboard/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateKeyboard/:id"
+									element={
+										<KeyboardForm
+											key="/updateKeyboard/:id"
+											title={"Update keyboard"}
+											updateButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
 								path="/addNewMouse"
 								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
 							>
@@ -633,6 +813,21 @@ function App() {
 											key="/addNewMouse"
 											title={"Add new mouse"}
 											addButton={true}
+										/>
+									}
+								/>
+							</Route>
+							<Route
+								path="/updateMouse/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/updateMouse/:id"
+									element={
+										<MouseForm
+											key="/updateMouse/:id"
+											title={"Update mouse"}
+											updateButton={true}
 										/>
 									}
 								/>

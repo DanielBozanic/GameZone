@@ -92,8 +92,8 @@ const ProductsView = (props) => {
 											alt="No image"
 											src={
 												product.Product === undefined
-													? product.Image
-													: product.Product.Image
+													? product.Image.Content
+													: product.Product.Image.Content
 											}
 										/>
 										<CardBody>
@@ -129,8 +129,8 @@ const ProductsView = (props) => {
 											alt="No image"
 											src={
 												product.Product === undefined
-													? product.Image
-													: product.Product.Image
+													? product.Image.Content
+													: product.Product.Image.Content
 											}
 										/>
 										<CardBody>

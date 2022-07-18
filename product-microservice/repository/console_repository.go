@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type consoleRepository struct {
@@ -15,7 +15,7 @@ type consoleRepository struct {
 type IConsoleRepository interface {
 	GetAll(page int, pageSize int) ([] model.Console)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Console, error)
+	GetById(id int) (model.Console, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Console, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.ConsoleFilter) ([]model.Console, error)
@@ -23,7 +23,6 @@ type IConsoleRepository interface {
 	GetPlatforms() []string
 	Create(videoGame model.Console) error
 	Update(videoGame model.Console) error
-	Delete(videoGame model.Console) error
 }
 
 func NewConsoleRepository(DB *gorm.DB) IConsoleRepository {
@@ -35,20 +34,31 @@ func (consoleRepo *consoleRepository) GetAll(page int, pageSize int) []model.Con
 	offset := (page - 1) * pageSize
 	consoleRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where("products.archived = false").
 		Find(&consoles)
 	return consoles
 }
 
 func (consoleRepo *consoleRepository) GetNumberOfRecords() int64 {
 	var count int64
-	consoleRepo.Database.Model(&model.Console{}).Count(&count)
+	consoleRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where("products.archived = false").
+		Model(&model.Console{}).
+		Count(&count)
 	return count
 }
 
-func (consoleRepo *consoleRepository) GetById(id uuid.UUID) (model.Console, error) {
+func (consoleRepo *consoleRepository) GetById(id int) (model.Console, error) {
 	var console model.Console
-	result := consoleRepo.Database.Preload("Product").First(&console, id)
+	result := consoleRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where("products.archived = false").
+		First(&console, id)
 	return console, result.Error
 }
 
@@ -57,9 +67,9 @@ func (consoleRepo *consoleRepository) SearchByName(page int, pageSize int, name 
 	offset := (page - 1) * pageSize
 	result := consoleRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&consoles)
 	return consoles, result.Error
 }
@@ -68,9 +78,9 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsSearch(name string) int6
 	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&consoles).
 		Count(&count)
 	return count
@@ -81,9 +91,9 @@ func (consoleRepo *consoleRepository) Filter(page int, pageSize int, filter filt
 	offset := (page - 1) * pageSize
 	result := consoleRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where(`(platform IN ? OR ?)`,
+		Where(`(platform IN ? OR ?) AND products.archived = false`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
 		Find(&consoles)
@@ -94,9 +104,9 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where(`(platform IN ? OR ?)`,
+		Where(`(platform IN ? OR ?) AND products.archived = false`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
 		Find(&consoles).
@@ -107,6 +117,9 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 func (consoleRepo *consoleRepository) GetPlatforms() []string {
 	var platforms []string
 	consoleRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = consoles.product_id").
+		Where("products.archived = false").
 		Model(&model.Console{}).
 		Distinct().
 		Pluck("platform", &platforms)
@@ -120,10 +133,5 @@ func (consoleRepo *consoleRepository) Create(console model.Console) error {
 
 func (consoleRepo *consoleRepository) Update(console model.Console) error {
 	result := consoleRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&console)
-	return result.Error
-}
-
-func (consoleRepo *consoleRepository) Delete(console model.Console) error {
-	result := consoleRepo.Database.Delete(&console)
 	return result.Error
 }

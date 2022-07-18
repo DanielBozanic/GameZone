@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { videoGameFormSchema } from "./VideoGameFormSchema";
@@ -30,7 +31,16 @@ const VideoGameForm = (props) => {
 	const customId = "videoGameForm";
 
 	const [digital, setDigital] = useState(false);
+	const [isDigital, setIsDigital] = useState(false);
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -39,12 +49,54 @@ const VideoGameForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${videoGameAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setDigital(null);
+					setIsDigital(res.data.Digital);
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		data.Digital = helperFunctions.str2Bool(data.Digital);
 		data.ReleaseDate = new Date(data.ReleaseDate);
 		axios
 			.post(videoGameAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		data.Digital = helperFunctions.str2Bool(data.Digital);
+		data.ReleaseDate = new Date(data.ReleaseDate);
+		axios
+			.put(videoGameAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -72,8 +124,13 @@ const VideoGameForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										isDigital={isDigital}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -84,6 +141,9 @@ const VideoGameForm = (props) => {
 													name="Platform"
 													invalid={methods.formState.errors.Platform?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null ? product.Platform : ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Platform?.message}
@@ -102,10 +162,17 @@ const VideoGameForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Digital"
-													checked={digital}
+													checked={
+														product === null || digital !== null
+															? digital
+															: product.Digital
+													}
 													value={digital}
 													innerRef={methods.register}
-													onChange={() => setDigital(true)}
+													onChange={() => {
+														setIsDigital(true);
+														setDigital(true);
+													}}
 												/>
 											</span>
 											<span className="pl-5">
@@ -114,10 +181,17 @@ const VideoGameForm = (props) => {
 													className="ml-2"
 													type="radio"
 													name="Digital"
-													checked={!digital}
+													checked={
+														product === null || digital !== null
+															? !digital
+															: !product.Digital
+													}
 													value={digital}
 													innerRef={methods.register}
-													onChange={() => setDigital(false)}
+													onChange={() => {
+														setIsDigital(false);
+														setDigital(false);
+													}}
 												/>
 											</span>
 										</Col>
@@ -133,6 +207,7 @@ const VideoGameForm = (props) => {
 													min="1"
 													invalid={methods.formState.errors.Rating?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Rating : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Rating?.message}
@@ -150,6 +225,7 @@ const VideoGameForm = (props) => {
 													name="Genre"
 													invalid={methods.formState.errors.Genre?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Genre : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Genre?.message}
@@ -169,6 +245,14 @@ const VideoGameForm = (props) => {
 														methods.formState.errors.ReleaseDate?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.ReleaseDate !== null
+															? product.ReleaseDate.toLocaleString().substring(
+																	0,
+																	10
+															  )
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.ReleaseDate?.message}
@@ -195,7 +279,7 @@ const VideoGameForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

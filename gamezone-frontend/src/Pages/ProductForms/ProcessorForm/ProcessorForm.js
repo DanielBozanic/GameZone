@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { processorFormSchema } from "./ProcessorFormSchema";
@@ -28,7 +29,16 @@ import * as helperFunctions from "../../../Utils/HelperFunctions";
 toast.configure();
 const ProcessorForm = (props) => {
 	const customId = "processorForm";
+
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -37,10 +47,48 @@ const ProcessorForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${processorAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(processorAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(processorAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -68,8 +116,12 @@ const ProcessorForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
-
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -80,6 +132,7 @@ const ProcessorForm = (props) => {
 													name="Type"
 													invalid={methods.formState.errors.Type?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Type : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Type?.message}
@@ -97,6 +150,7 @@ const ProcessorForm = (props) => {
 													name="Socket"
 													invalid={methods.formState.errors.Socket?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Socket : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Socket?.message}
@@ -117,6 +171,11 @@ const ProcessorForm = (props) => {
 														methods.formState.errors.NumberOfCores?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.NumberOfCores !== null
+															? product.NumberOfCores
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.NumberOfCores?.message}
@@ -135,6 +194,11 @@ const ProcessorForm = (props) => {
 													min="1"
 													invalid={methods.formState.errors.Threads?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.Threads !== null
+															? product.Threads
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Threads?.message}
@@ -152,6 +216,11 @@ const ProcessorForm = (props) => {
 													name="TDP"
 													invalid={methods.formState.errors.TDP?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.TDP !== null
+															? product.TDP
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.TDP?.message}
@@ -171,6 +240,12 @@ const ProcessorForm = (props) => {
 														methods.formState.errors.IntegratedGraphics?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null &&
+														product.IntegratedGraphics !== null
+															? product.IntegratedGraphics
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.IntegratedGraphics?.message}
@@ -190,6 +265,11 @@ const ProcessorForm = (props) => {
 														methods.formState.errors.BaseClockRate?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.BaseClockRate !== null
+															? product.BaseClockRate
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.BaseClockRate?.message}
@@ -209,6 +289,11 @@ const ProcessorForm = (props) => {
 														methods.formState.errors.TurboClockRate?.message
 													}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.TurboClockRate !== null
+															? product.TurboClockRate
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.TurboClockRate?.message}
@@ -235,7 +320,7 @@ const ProcessorForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

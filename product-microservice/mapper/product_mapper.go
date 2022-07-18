@@ -14,7 +14,8 @@ func ToProduct(productDTO dto.ProductDTO) (model.Product) {
 		Price: productDTO.Price,
 		Amount: productDTO.Amount,
 		Type: productDTO.Type,
-		Image: productDTO.Image,
+		Image: model.File(productDTO.Image),
+		Archived: productDTO.Archived,
 	}
 }
 
@@ -27,7 +28,8 @@ func ToProductDTO(product model.Product) dto.ProductDTO {
 		Price: product.Price,
 		Amount: product.Amount,
 		Type: product.Type,
-		Image: product.Image,
+		Image: dto.FileDTO(product.Image),
+		Archived: product.Archived,
 	}
 }
 

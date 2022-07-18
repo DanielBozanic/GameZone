@@ -1,5 +1,6 @@
+import { useParams } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { productFormSchema } from "../../../Components/ProductForm/ProductFormSchema";
 import { psuFormSchema } from "./PSUFormSchema";
@@ -30,6 +31,14 @@ const PSUForm = (props) => {
 	const customId = "PSUForm";
 
 	const [base64Image, setBase64Image] = useState("");
+	const [fileName, setFileName] = useState("");
+	const [product, setProduct] = useState(null);
+
+	const { id } = useParams();
+
+	useEffect(() => {
+		getProductById();
+	}, []);
 
 	const methods = useForm({
 		resolver: yupResolver(
@@ -38,10 +47,48 @@ const PSUForm = (props) => {
 		mode: "onChange",
 	});
 
+	const getProductById = () => {
+		if (id !== undefined) {
+			axios
+				.get(`${psuAPI.GET_BY_ID}/${id}`)
+				.then((res) => {
+					setProduct(res.data);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const add = (data) => {
-		data.Product.Image = base64Image;
+		data.Product.Image.Content = base64Image;
 		axios
 			.post(psuAPI.CREATE, data)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setFileName("");
+				setBase64Image("");
+				methods.reset();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const update = (data) => {
+		data.Product.Id = product.Product.Id;
+		data.Product.Type = product.Product.Type;
+		data.Product.Image.Content = base64Image;
+		axios
+			.put(psuAPI.UPDATE, data)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -69,7 +116,12 @@ const PSUForm = (props) => {
 						<CardBody>
 							<FormProvider {...methods}>
 								<Form className="form">
-									<ProductForm setBase64Image={setBase64Image} />
+									<ProductForm
+										product={product}
+										fileName={fileName}
+										setFileName={setFileName}
+										setBase64Image={setBase64Image}
+									/>
 									<Row>
 										<Col>
 											<FormGroup>
@@ -80,6 +132,7 @@ const PSUForm = (props) => {
 													name="Power"
 													invalid={methods.formState.errors.Power?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Power : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Power?.message}
@@ -97,6 +150,7 @@ const PSUForm = (props) => {
 													name="Type"
 													invalid={methods.formState.errors.Type?.message}
 													innerRef={methods.register}
+													defaultValue={product !== null ? product.Type : ""}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.Type?.message}
@@ -114,6 +168,11 @@ const PSUForm = (props) => {
 													name="FormFactor"
 													invalid={methods.formState.errors.FormFactor?.message}
 													innerRef={methods.register}
+													defaultValue={
+														product !== null && product.FormFactor !== null
+															? product.FormFactor
+															: ""
+													}
 												/>
 												<FormFeedback className="input-field-error-msg">
 													{methods.formState.errors.FormFactor?.message}
@@ -140,7 +199,7 @@ const PSUForm = (props) => {
 												<Button
 													className="confirm-form-btn"
 													type="button"
-													onClick={methods.handleSubmit(add)}
+													onClick={methods.handleSubmit(update)}
 												>
 													Update
 												</Button>

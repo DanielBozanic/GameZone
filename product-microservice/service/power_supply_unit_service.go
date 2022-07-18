@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type powerSupplyUnitService struct {
@@ -19,7 +18,7 @@ type powerSupplyUnitService struct {
 type IPowerSupplyUnitService interface {
 	GetAll(page int, pageSize int) ([] model.PowerSupplyUnit)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.PowerSupplyUnit, error)
+	GetById(id int) (model.PowerSupplyUnit, error)
 	SearchByName(page int, pageSize int, name string) ([]model.PowerSupplyUnit, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.PowerSupplyUnitFilter) ([]model.PowerSupplyUnit, error)
@@ -30,7 +29,7 @@ type IPowerSupplyUnitService interface {
 	GetFormFactors() []string
 	Create(powerSupplyUnit model.PowerSupplyUnit) string
 	Update(powerSupplyUnitDTO dto.PowerSupplyUnitDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewPowerSupplyUnitService(powerSupplyUnitRepository repository.IPowerSupplyUnitRepository) IPowerSupplyUnitService {
@@ -45,7 +44,7 @@ func (powerSupplyUnitService *powerSupplyUnitService) GetNumberOfRecords() int64
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetNumberOfRecords()
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) GetById(id uuid.UUID) (model.PowerSupplyUnit, error) {
+func (powerSupplyUnitService *powerSupplyUnitService) GetById(id int) (model.PowerSupplyUnit, error) {
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.GetById(id)
 }
 
@@ -83,12 +82,10 @@ func (powerSupplyUnitService *powerSupplyUnitService) GetFormFactors() []string 
 
 func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit model.PowerSupplyUnit) string {
 	msg := ""
-	powerSupplyUnit.Product.Id = uuid.New()
-	powerSupplyUnit.ProductId = powerSupplyUnit.Product.Id
 	powerSupplyUnit.Product.Type = model.POWER_SUPPLY_UNIT
 	err := powerSupplyUnitService.IPowerSupplyUnitRepository.Create(powerSupplyUnit)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -102,19 +99,22 @@ func (powerSupplyUnitService *powerSupplyUnitService) Update(powerSupplyUnitDTO 
 	}
 	updatedPowerSupplyUnit := mapper.ToPowerSupplyUnit(powerSupplyUnitDTO)
 	updatedPowerSupplyUnit.Product.Id = powerSupplyUnit.Product.Id
-	updatedPowerSupplyUnit.ProductId = updatedPowerSupplyUnit.Product.Id
+	updatedPowerSupplyUnit.ProductId = powerSupplyUnit.Product.Id
+	updatedPowerSupplyUnit.Product.Image.Id = powerSupplyUnit.Product.Image.Id
+	updatedPowerSupplyUnit.Product.ImageId = powerSupplyUnit.Product.Image.Id
 	err = powerSupplyUnitService.IPowerSupplyUnitRepository.Update(updatedPowerSupplyUnit)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (powerSupplyUnitService *powerSupplyUnitService) Delete(id uuid.UUID) error {
+func (powerSupplyUnitService *powerSupplyUnitService) Delete(id int) error {
 	powerSupplyUnit, err := powerSupplyUnitService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return powerSupplyUnitService.IPowerSupplyUnitRepository.Delete(powerSupplyUnit)
+	powerSupplyUnit.Product.Archived = true
+	return powerSupplyUnitService.IPowerSupplyUnitRepository.Update(powerSupplyUnit)
 }

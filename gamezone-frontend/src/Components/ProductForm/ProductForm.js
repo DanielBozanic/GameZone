@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
 	FormGroup,
 	Label,
@@ -7,16 +8,29 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
-import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import "../../Assets/css/forms.css";
 
 const ProductForm = (props) => {
 	const {
 		register,
+		setValue,
+		trigger,
 		formState: { errors },
 	} = useFormContext();
-	const [fileName, setFileName] = useState("");
+
+	useEffect(() => {
+		if (props.product !== null) {
+			setFileAttr(
+				props.product.Product.Image.Name,
+				props.product.Product.Image.Type,
+				props.product.Product.Image.Size
+			);
+			props.setFileName && props.setFileName(props.product.Product.Image.Name);
+			props.setBase64Image &&
+				props.setBase64Image(props.product.Product.Image.Content);
+		}
+	}, [props.product]);
 
 	const handleClickFile = () => {
 		document.getElementById("imageInput").click();
@@ -24,8 +38,22 @@ const ProductForm = (props) => {
 
 	const handleFileChange = (event) => {
 		const fileUploaded = event.target.files[0];
-		setFileName(event.target.files[0].name);
+		props.setFileName && props.setFileName(event.target.files[0].name);
+		setFileAttr(
+			event.target.files[0].name,
+			event.target.files[0].type,
+			event.target.files[0].size
+		);
 		convertToBase64(fileUploaded);
+		trigger("Product.Image.Name");
+		trigger("Product.Image.Type");
+		trigger("Product.Image.Size");
+	};
+
+	const setFileAttr = (name, type, size) => {
+		setValue("Product.Image.Name", name);
+		setValue("Product.Image.Type", type);
+		setValue("Product.Image.Size", size);
 	};
 
 	const convertToBase64 = (file) => {
@@ -48,6 +76,9 @@ const ProductForm = (props) => {
 							name="Product.Name"
 							invalid={errors.Product?.Name && errors.Product?.Name.message}
 							innerRef={register}
+							defaultValue={
+								props.product !== null ? props.product.Product.Name : ""
+							}
 						/>
 						<FormFeedback className="input-field-error-msg">
 							{errors.Product?.Name && errors.Product?.Name.message}
@@ -68,6 +99,9 @@ const ProductForm = (props) => {
 								errors.Product?.Description.message
 							}
 							innerRef={register}
+							defaultValue={
+								props.product !== null ? props.product.Product.Description : ""
+							}
 						/>
 						<FormFeedback className="input-field-error-msg">
 							{errors.Product?.Description &&
@@ -89,6 +123,9 @@ const ProductForm = (props) => {
 								errors.Product?.Manufacturer.message
 							}
 							innerRef={register}
+							defaultValue={
+								props.product !== null ? props.product.Product.Manufacturer : ""
+							}
 						/>
 						<FormFeedback className="input-field-error-msg">
 							{errors.Product?.Manufacturer &&
@@ -108,6 +145,9 @@ const ProductForm = (props) => {
 							min="0"
 							invalid={errors.Product?.Price && errors.Product?.Price.message}
 							innerRef={register}
+							defaultValue={
+								props.product !== null ? props.product.Product.Price : ""
+							}
 						/>
 						<FormFeedback className="input-field-error-msg">
 							{errors.Product?.Price && errors.Product?.Price.message}
@@ -115,24 +155,40 @@ const ProductForm = (props) => {
 					</FormGroup>
 				</Col>
 			</Row>
-			<Row>
-				<Col>
-					<FormGroup>
-						<Label>Amount</Label>
-						<Input
-							className="input-field"
-							type="number"
-							name="Product.Amount"
-							min="0"
-							invalid={errors.Product?.Amount && errors.Product?.Amount.message}
-							innerRef={register}
-						/>
-						<FormFeedback className="input-field-error-msg">
-							{errors.Product?.Amount && errors.Product?.Amount.message}
-						</FormFeedback>
-					</FormGroup>
-				</Col>
-			</Row>
+			{(!props.isDigital || props.isDigital === undefined) && (
+				<Row>
+					<Col>
+						<FormGroup>
+							<Label>Amount</Label>
+							<Input
+								className="input-field"
+								type="number"
+								name="Product.Amount"
+								min="0"
+								invalid={
+									errors.Product?.Amount && errors.Product?.Amount.message
+								}
+								innerRef={register}
+								defaultValue={
+									props.product !== null ? props.product.Product.Amount : ""
+								}
+							/>
+							<FormFeedback className="input-field-error-msg">
+								{errors.Product?.Amount && errors.Product?.Amount.message}
+							</FormFeedback>
+						</FormGroup>
+					</Col>
+				</Row>
+			)}
+			{props.isDigital && (
+				<Input
+					style={{ display: "none" }}
+					type="number"
+					name="Product.Amount"
+					innerRef={register}
+					value={0}
+				/>
+			)}
 			<Row>
 				<Col>
 					<FormGroup>
@@ -144,7 +200,7 @@ const ProductForm = (props) => {
 							Choose image
 						</Button>
 						<Label style={{ marginLeft: "10px", marginTop: "10px" }}>
-							{fileName}
+							{props.fileName}
 						</Label>
 						<input
 							id="imageInput"
@@ -152,13 +208,51 @@ const ProductForm = (props) => {
 							type="file"
 							accept=".jpg,.jpeg,.png"
 							name="Product.Image"
-							invalid={errors.Product?.Image && errors.Product?.Image.message}
-							ref={register}
 							onChange={handleFileChange}
 						/>
-						<p className="input-field-error-msg">
-							{errors.Product?.Image && errors.Product?.Image.message}
-						</p>
+						<input
+							style={{ display: "none" }}
+							name="Product.Image.Name"
+							invalid={
+								errors.Product?.Image?.Name &&
+								errors.Product?.Image.Name.message
+							}
+							ref={register}
+						/>
+
+						<input
+							style={{ display: "none" }}
+							name="Product.Image.Type"
+							invalid={
+								errors.Product?.Image?.Type &&
+								errors.Product?.Image.Type.message
+							}
+							ref={register}
+						/>
+
+						<input
+							style={{ display: "none" }}
+							type="number"
+							name="Product.Image.Size"
+							invalid={
+								errors.Product?.Image?.Size &&
+								errors.Product?.Image.Size.message
+							}
+							ref={register}
+						/>
+
+						<div className="input-field-error-msg">
+							{errors.Product?.Image?.Name &&
+								errors.Product?.Image.Name.message}
+						</div>
+						<div className="input-field-error-msg">
+							{errors.Product?.Image?.Type &&
+								errors.Product?.Image.Type.message}
+						</div>
+						<div className="input-field-error-msg">
+							{errors.Product?.Image?.Size &&
+								errors.Product?.Image.Size.message}
+						</div>
 					</FormGroup>
 				</Col>
 			</Row>

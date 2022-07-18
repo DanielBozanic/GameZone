@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type graphicsCardService struct {
@@ -19,7 +18,7 @@ type graphicsCardService struct {
 type IGraphicsCardService interface {
 	GetAll(page int, pageSize int) ([] model.GraphicsCard)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.GraphicsCard, error)
+	GetById(id int) (model.GraphicsCard, error)
 	SearchByName(page int, pageSize int, name string) ([]model.GraphicsCard, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.GraphicsCardFilter) ([]model.GraphicsCard, error)
@@ -31,7 +30,7 @@ type IGraphicsCardService interface {
 	GetModelNames() []string
 	Create(graphicsCard model.GraphicsCard) string
 	Update(graphicsCardDTO dto.GraphicsCardDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewGraphicsCardService(graphicsCardRepository repository.IGraphicsCardRepository) IGraphicsCardService {
@@ -46,7 +45,7 @@ func (graphicsCardService *graphicsCardService) GetNumberOfRecords() int64 {
 	return graphicsCardService.IGraphicsCardRepository.GetNumberOfRecords()
 }
 
-func (graphicsCardService *graphicsCardService) GetById(id uuid.UUID) (model.GraphicsCard, error) {
+func (graphicsCardService *graphicsCardService) GetById(id int) (model.GraphicsCard, error) {
 	return graphicsCardService.IGraphicsCardRepository.GetById(id)
 }
 
@@ -88,12 +87,10 @@ func (graphicsCardService *graphicsCardService) GetModelNames() []string {
 
 func (graphicsCardService *graphicsCardService) Create(graphicsCard model.GraphicsCard) string {
 	msg := ""
-	graphicsCard.Product.Id = uuid.New()
-	graphicsCard.ProductId = graphicsCard.Product.Id
 	graphicsCard.Product.Type = model.GRAPHICS_CARD
 	err := graphicsCardService.IGraphicsCardRepository.Create(graphicsCard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -108,18 +105,21 @@ func (graphicsCardService *graphicsCardService) Update(graphicsCardDTO dto.Graph
 	updatedGraphicsCard := mapper.ToGraphicsCard(graphicsCardDTO)
 	updatedGraphicsCard.Product.Id = graphicsCard.Product.Id
 	updatedGraphicsCard.ProductId = graphicsCard.Product.Id
+	updatedGraphicsCard.Product.Image.Id = graphicsCard.Product.Image.Id
+	updatedGraphicsCard.Product.ImageId = graphicsCard.Product.Image.Id
 	err = graphicsCardService.IGraphicsCardRepository.Update(updatedGraphicsCard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (graphicsCardService *graphicsCardService) Delete(id uuid.UUID) error {
+func (graphicsCardService *graphicsCardService) Delete(id int) error {
 	graphicsCard, err := graphicsCardService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return graphicsCardService.IGraphicsCardRepository.Delete(graphicsCard)
+	graphicsCard.Product.Archived = true
+	return graphicsCardService.IGraphicsCardRepository.Update(graphicsCard)
 }

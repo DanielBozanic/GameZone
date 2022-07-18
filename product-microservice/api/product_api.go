@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -23,7 +22,7 @@ func NewProductAPI(productService service.IProductService) ProductAPI {
 }
 
 func (productApi *ProductAPI) GetProductById(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -119,7 +118,7 @@ func (productApi *ProductAPI) UpdatePurchase(c *gin.Context) {
 }
 
 func (productApi *ProductAPI) RemoveProductFromCart(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -147,6 +146,22 @@ func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
 
 	if error == nil {
 		c.JSON(http.StatusOK, "Purchase successful")
+	} else  {
+		c.JSON(http.StatusBadRequest, error.Error())
+	}
+}
+
+func (productApi *ProductAPI) DeleteProduct(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	error := productApi.IProductService.DeleteProduct(id)
+
+	if error == nil {
+		c.JSON(http.StatusOK, "Product deleted successfully.")
 	} else  {
 		c.JSON(http.StatusBadRequest, error.Error())
 	}

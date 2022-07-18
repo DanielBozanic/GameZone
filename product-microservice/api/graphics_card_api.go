@@ -10,7 +10,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 
@@ -40,7 +39,7 @@ func (graphicsCardApi *GraphicsCardAPI) GetNumberOfRecords(c *gin.Context) {
 }
 
 func (graphicsCardApi *GraphicsCardAPI) GetByID(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
@@ -179,7 +178,7 @@ func (graphicsCardApi *GraphicsCardAPI) Update(c *gin.Context) {
 }
 
 func (graphicsCardApi *GraphicsCardAPI) Delete(c *gin.Context) {
-	id, err := uuid.Parse(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

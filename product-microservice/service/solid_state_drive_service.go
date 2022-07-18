@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type solidStateDriveService struct {
@@ -19,7 +18,7 @@ type solidStateDriveService struct {
 type ISolidStateDriveService interface {
 	GetAll(page int, pageSize int) ([] model.SolidStateDrive)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.SolidStateDrive, error)
+	GetById(id int) (model.SolidStateDrive, error)
 	SearchByName(page int, pageSize int, name string) ([]model.SolidStateDrive, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.SolidStateDriveFilter) ([]model.SolidStateDrive, error)
@@ -31,7 +30,7 @@ type ISolidStateDriveService interface {
 	GetMaxSequentialWrites() []string
 	Create(solidStateDrive model.SolidStateDrive) string
 	Update(solidStateDriveDTO dto.SolidStateDriveDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewSolidStateDriveService(solidStateDriveRepository repository.ISolidStateDriveRepository) ISolidStateDriveService {
@@ -46,7 +45,7 @@ func (solidStateDriveService *solidStateDriveService) GetNumberOfRecords() int64
 	return solidStateDriveService.ISolidStateDriveRepository.GetNumberOfRecords()
 }
 
-func (solidStateDriveService *solidStateDriveService) GetById(id uuid.UUID) (model.SolidStateDrive, error) {
+func (solidStateDriveService *solidStateDriveService) GetById(id int) (model.SolidStateDrive, error) {
 	return solidStateDriveService.ISolidStateDriveRepository.GetById(id)
 }
 
@@ -88,12 +87,10 @@ func (solidStateDriveService *solidStateDriveService) GetMaxSequentialWrites() [
 
 func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive model.SolidStateDrive) string {
 	msg := ""
-	solidStateDrive.Product.Id = uuid.New()
-	solidStateDrive.ProductId = solidStateDrive.Product.Id
 	solidStateDrive.Product.Type = model.SOLID_STATE_DRIVE
 	err := solidStateDriveService.ISolidStateDriveRepository.Create(solidStateDrive)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -108,18 +105,21 @@ func (solidStateDriveService *solidStateDriveService) Update(solidStateDriveDTO 
 	updatedSolidStateDrive := mapper.ToSolidStateDrive(solidStateDriveDTO)
 	updatedSolidStateDrive.Product.Id = solidStateDrive.Product.Id
 	updatedSolidStateDrive.ProductId = solidStateDrive.Product.Id
+	updatedSolidStateDrive.Product.Image.Id = solidStateDrive.Product.Image.Id
+	updatedSolidStateDrive.Product.ImageId = solidStateDrive.Product.Image.Id
 	err = solidStateDriveService.ISolidStateDriveRepository.Update(updatedSolidStateDrive)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (solidStateDriveService *solidStateDriveService) Delete(id uuid.UUID) error {
+func (solidStateDriveService *solidStateDriveService) Delete(id int) error {
 	solidStateDrive, err := solidStateDriveService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return solidStateDriveService.ISolidStateDriveRepository.Delete(solidStateDrive)
+	solidStateDrive.Product.Archived = true
+	return solidStateDriveService.ISolidStateDriveRepository.Update(solidStateDrive)
 }

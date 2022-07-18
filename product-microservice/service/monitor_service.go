@@ -9,7 +9,6 @@ import (
 	"product/repository"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
 )
 
 type monitorService struct {
@@ -19,7 +18,7 @@ type monitorService struct {
 type IMonitorService interface {
 	GetAll(page int, pageSize int) ([] model.Monitor)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Monitor, error)
+	GetById(id int) (model.Monitor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error)
@@ -30,7 +29,7 @@ type IMonitorService interface {
 	GetRefreshRates() []string
 	Create(monitor model.Monitor) string
 	Update(monitorDTO dto.MonitorDTO) string
-	Delete(id uuid.UUID) error
+	Delete(id int) error
 }
 
 func NewMonitorService(monitorRepository repository.IMonitorRepository) IMonitorService {
@@ -45,7 +44,7 @@ func (monitorService *monitorService) GetNumberOfRecords() int64 {
 	return monitorService.IMonitorRepository.GetNumberOfRecords()
 }
 
-func (monitorService *monitorService) GetById(id uuid.UUID) (model.Monitor, error) {
+func (monitorService *monitorService) GetById(id int) (model.Monitor, error) {
 	return monitorService.IMonitorRepository.GetById(id)
 }
 
@@ -83,12 +82,10 @@ func (monitorService *monitorService) GetRefreshRates() []string {
 
 func (monitorService *monitorService) Create(monitor model.Monitor) string {
 	msg := ""
-	monitor.Product.Id = uuid.New()
-	monitor.ProductId = monitor.Product.Id
 	monitor.Product.Type = model.MONITOR
 	err := monitorService.IMonitorRepository.Create(monitor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -103,18 +100,21 @@ func (monitorService *monitorService) Update(monitorDTO dto.MonitorDTO) string {
 	updatedMonitor := mapper.ToMonitor(monitorDTO)
 	updatedMonitor.Product.Id = monitor.Product.Id
 	updatedMonitor.ProductId = monitor.Product.Id
+	updatedMonitor.Product.Image.Id = monitor.Product.Image.Id
+	updatedMonitor.Product.ImageId = monitor.Product.Image.Id
 	err = monitorService.IMonitorRepository.Update(updatedMonitor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
 		msg = "Product with this name already exists"
 	}
 	return msg
 }
 
-func (monitorService *monitorService) Delete(id uuid.UUID) error {
+func (monitorService *monitorService) Delete(id int) error {
 	monitor, err := monitorService.GetById(id)
 	if err != nil {
 		return err
 	}
-	return monitorService.IMonitorRepository.Delete(monitor)
+	monitor.Product.Archived = true
+	return monitorService.IMonitorRepository.Update(monitor)
 }

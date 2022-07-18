@@ -4,7 +4,7 @@ import "time"
 
 type VideoGameDTO struct {
 	Product     ProductDTO
-	Digital     bool
+	Digital     *bool
 	Platform    string
 	Rating      uint
 	Genre       string

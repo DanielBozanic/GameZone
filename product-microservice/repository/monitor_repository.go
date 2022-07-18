@@ -4,8 +4,8 @@ import (
 	"product/dto/filter"
 	"product/model"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type monitorRepository struct {
@@ -15,7 +15,7 @@ type monitorRepository struct {
 type IMonitorRepository interface {
 	GetAll(page int, pageSize int) ([] model.Monitor)
 	GetNumberOfRecords() int64
-	GetById(id uuid.UUID) (model.Monitor, error)
+	GetById(id int) (model.Monitor, error)
 	SearchByName(page int, pageSize int, name string) ([]model.Monitor, error)
 	GetNumberOfRecordsSearch(name string) int64
 	Filter(page int, pageSize int, filter filter.MonitorFilter) ([]model.Monitor, error)
@@ -26,7 +26,6 @@ type IMonitorRepository interface {
 	GetRefreshRates() []string
 	Create(monitor model.Monitor) error
 	Update(monitor model.Monitor) error
-	Delete(monitor model.Monitor) error
 }
 
 func NewMonitorRepository(DB *gorm.DB) IMonitorRepository {
@@ -38,20 +37,31 @@ func (monitorRepo *monitorRepository) GetAll(page int, pageSize int) []model.Mon
 	offset := (page - 1) * pageSize
 	monitorRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
 		Find(&monitors)
 	return monitors
 }
 
 func (monitorRepo *monitorRepository) GetNumberOfRecords() int64 {
 	var count int64
-	monitorRepo.Database.Model(&model.Monitor{}).Count(&count)
+	monitorRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
+		Model(&model.Monitor{}).
+		Count(&count)
 	return count
 }
 
-func (monitorRepo *monitorRepository) GetById(id uuid.UUID) (model.Monitor, error) {
+func (monitorRepo *monitorRepository) GetById(id int) (model.Monitor, error) {
 	var monitor model.Monitor
-	result := monitorRepo.Database.Preload("Product").First(&monitor, id)
+	result := monitorRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
+		First(&monitor, id)
 	return monitor, result.Error
 }
 
@@ -60,9 +70,9 @@ func (monitorRepo *monitorRepository) SearchByName(page int, pageSize int, name 
 	offset := (page - 1) * pageSize
 	result := monitorRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = monitors.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&monitors)
 	return monitors, result.Error
 }
@@ -71,9 +81,9 @@ func (monitorRepo *monitorRepository) GetNumberOfRecordsSearch(name string) int6
 	var monitors []model.Monitor
 	var count int64
 	monitorRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = monitors.product_id").
-		Where("products.name LIKE ?", "%" + name + "%").
+		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&monitors).
 		Count(&count)
 	return count
@@ -84,12 +94,12 @@ func (monitorRepo *monitorRepository) Filter(page int, pageSize int, filter filt
 	offset := (page - 1) * pageSize
 	result := monitorRepo.Database.
 		Offset(offset).Limit(pageSize).
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = monitors.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(aspect_ratio IN ? OR ?) AND 
 				(resolution IN ? OR ?) AND 
-				(refresh_rate IN ? OR ?)`,
+				(refresh_rate IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.AspectRatios,
@@ -106,12 +116,12 @@ func (monitorRepo *monitorRepository) GetNumberOfRecordsFilter(filter filter.Mon
 	var monitors []model.Monitor
 	var count int64
 	monitorRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = monitors.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
 				(aspect_ratio IN ? OR ?) AND 
 				(resolution IN ? OR ?) AND 
-				(refresh_rate IN ? OR ?)`,
+				(refresh_rate IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.AspectRatios,
@@ -128,8 +138,9 @@ func (monitorRepo *monitorRepository) GetNumberOfRecordsFilter(filter filter.Mon
 func (monitorRepo *monitorRepository) GetManufacturers() []string {
 	var manufacturers []string
 	monitorRepo.Database.
-		Preload("Product").
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
 		Model(&model.Monitor{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -139,6 +150,9 @@ func (monitorRepo *monitorRepository) GetManufacturers() []string {
 func (monitorRepo *monitorRepository) GetAspectRatios() []string {
 	var aspectRatios []string
 	monitorRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
 		Model(&model.Monitor{}).
 		Distinct().
 		Pluck("aspect_ratio", &aspectRatios)
@@ -148,6 +162,9 @@ func (monitorRepo *monitorRepository) GetAspectRatios() []string {
 func (monitorRepo *monitorRepository) GetResolutions() []string {
 	var resolutions []string
 	monitorRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
 		Model(&model.Monitor{}).
 		Distinct().
 		Pluck("resolution", &resolutions)
@@ -158,6 +175,9 @@ func (monitorRepo *monitorRepository) GetResolutions() []string {
 func (monitorRepo *monitorRepository) GetRefreshRates() []string {
 	var refreshRates []string
 	monitorRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = monitors.product_id").
+		Where("products.archived = false").
 		Model(&model.Monitor{}).
 		Distinct().
 		Pluck("refresh_rate", &refreshRates)
@@ -171,10 +191,5 @@ func (monitorRepo *monitorRepository) Create(monitor model.Monitor) error {
 
 func (monitorRepo *monitorRepository) Update(monitor model.Monitor) error {
 	result := monitorRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&monitor)
-	return result.Error
-}
-
-func (monitorRepo *monitorRepository) Delete(monitor model.Monitor) error {
-	result := monitorRepo.Database.Delete(&monitor)
 	return result.Error
 }

@@ -8,7 +8,7 @@ import (
 
 func ToKeyboard(keyboardDTO dto.KeyboardDTO) (model.Keyboard) {
 	return model.Keyboard {
-		Product: model.Product(keyboardDTO.Product),
+		Product: ToProduct(keyboardDTO.Product),
 		Wireless: keyboardDTO.Wireless,
 		KeyboardConnector: keyboardDTO.KeyboardConnector,
 		KeyType: keyboardDTO.KeyType,
@@ -19,7 +19,7 @@ func ToKeyboard(keyboardDTO dto.KeyboardDTO) (model.Keyboard) {
 
 func ToKeyboardDTO(keyboard model.Keyboard) dto.KeyboardDTO {
 	return dto.KeyboardDTO {
-		Product: dto.ProductDTO(keyboard.Product),
+		Product: ToProductDTO(keyboard.Product),
 		Wireless: keyboard.Wireless,
 		KeyboardConnector: keyboard.KeyboardConnector,
 		KeyType: keyboard.KeyType,
