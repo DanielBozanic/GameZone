@@ -80,7 +80,7 @@ func (keyboardService *keyboardService) Create(keyboard model.Keyboard) string {
 	keyboard.Product.Type = model.KEYBOARD
 	err := keyboardService.IKeyboardRepository.Create(keyboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -110,6 +110,6 @@ func (keyboardService *keyboardService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	keyboard.Product.Archived = true
+	*keyboard.Product.Archived = true
 	return keyboardService.IKeyboardRepository.Update(keyboard)
 }

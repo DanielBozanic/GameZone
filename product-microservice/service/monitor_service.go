@@ -85,7 +85,7 @@ func (monitorService *monitorService) Create(monitor model.Monitor) string {
 	monitor.Product.Type = model.MONITOR
 	err := monitorService.IMonitorRepository.Create(monitor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -115,6 +115,6 @@ func (monitorService *monitorService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	monitor.Product.Archived = true
+	*monitor.Product.Archived = true
 	return monitorService.IMonitorRepository.Update(monitor)
 }

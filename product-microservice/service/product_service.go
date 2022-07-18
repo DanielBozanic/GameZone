@@ -200,6 +200,6 @@ func (productService *productService) DeleteProduct(id int) error {
 	if err != nil {
 		return err
 	}
-	product.Archived = true
+	*product.Archived = true
 	return productService.IProductRepository.UpdateProduct(product)
 }

@@ -85,7 +85,7 @@ func (hardDiskDriveService *hardDiskDriveService) Create(hardDiskDrive model.Har
 	hardDiskDrive.Product.Type = model.HARD_DISK_DRIVE
 	err := hardDiskDriveService.IHardDiskDriveRepository.Create(hardDiskDrive)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -115,6 +115,6 @@ func (hardDiskDriveService *hardDiskDriveService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	hardDiskDrive.Product.Archived = true
+	*hardDiskDrive.Product.Archived = true
 	return hardDiskDriveService.IHardDiskDriveRepository.Update(hardDiskDrive)
 }

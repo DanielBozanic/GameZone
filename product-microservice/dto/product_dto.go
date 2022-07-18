@@ -16,5 +16,5 @@ type ProductDTO struct {
 	Amount uint
 	Type model.Type
 	Image FileDTO
-	Archived bool
+	Archived *bool
 }

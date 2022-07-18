@@ -91,7 +91,7 @@ func (processorService *processorService) Create(processor model.Processor) stri
 	processor.Product.Type = model.PROCESSOR
 	err := processorService.IProcessorRepository.Create(processor)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -121,6 +121,6 @@ func (processorService *processorService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	processor.Product.Archived = true
+	*processor.Product.Archived = true
 	return processorService.IProcessorRepository.Update(processor)
 }

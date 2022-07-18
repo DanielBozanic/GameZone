@@ -17,5 +17,5 @@ type ProductPurchaseDTO struct {
 	City string
 	MobilePhoneNumber string
 	TypeOfPayment model.TypeOfPayment
-	IsPayedFor bool
+	IsPayedFor *bool
 }

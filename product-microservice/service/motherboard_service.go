@@ -86,7 +86,7 @@ func (motherboardService *motherboardService) Create(motherboard model.Motherboa
 	motherboard.Product.Type = model.MOTHERBOARD
 	err := motherboardService.IMotherboardRepository.Create(motherboard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -116,6 +116,6 @@ func (motherboardService *motherboardService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	motherboard.Product.Archived = true
+	*motherboard.Product.Archived = true
 	return motherboardService.IMotherboardRepository.Update(motherboard)
 }

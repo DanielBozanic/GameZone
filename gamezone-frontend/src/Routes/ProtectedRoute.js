@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import * as authService from "./AuthService";
+import * as authService from "../Auth/AuthService";
 
 const ProtectedRoute = ({ roles }) => {
 	let currentUserRole = authService.getRole();

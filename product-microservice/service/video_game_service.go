@@ -76,7 +76,7 @@ func (videoGameService *videoGameService) Create(game model.VideoGame) string {
 	game.Product.Type = model.VIDEO_GAME
 	err := videoGameService.IVideoGameRepository.Create(game)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -108,6 +108,6 @@ func (videoGameService *videoGameService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	videoGame.Product.Archived = true
+	*videoGame.Product.Archived = true
 	return videoGameService.IVideoGameRepository.Update(videoGame)
 }

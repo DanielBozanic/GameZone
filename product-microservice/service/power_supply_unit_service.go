@@ -85,7 +85,7 @@ func (powerSupplyUnitService *powerSupplyUnitService) Create(powerSupplyUnit mod
 	powerSupplyUnit.Product.Type = model.POWER_SUPPLY_UNIT
 	err := powerSupplyUnitService.IPowerSupplyUnitRepository.Create(powerSupplyUnit)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -115,6 +115,6 @@ func (powerSupplyUnitService *powerSupplyUnitService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	powerSupplyUnit.Product.Archived = true
+	*powerSupplyUnit.Product.Archived = true
 	return powerSupplyUnitService.IPowerSupplyUnitRepository.Update(powerSupplyUnit)
 }

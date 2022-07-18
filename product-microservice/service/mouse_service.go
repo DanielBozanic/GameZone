@@ -80,7 +80,7 @@ func (mouseService *mouseService) Create(mouse model.Mouse) string {
 	mouse.Product.Type = model.MOUSE
 	err := mouseService.IMouseRepository.Create(mouse)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -110,6 +110,6 @@ func (mouseService *mouseService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	mouse.Product.Archived = true
+	*mouse.Product.Archived = true
 	return mouseService.IMouseRepository.Update(mouse)
 }

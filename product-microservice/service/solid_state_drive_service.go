@@ -90,7 +90,7 @@ func (solidStateDriveService *solidStateDriveService) Create(solidStateDrive mod
 	solidStateDrive.Product.Type = model.SOLID_STATE_DRIVE
 	err := solidStateDriveService.ISolidStateDriveRepository.Create(solidStateDrive)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -120,6 +120,6 @@ func (solidStateDriveService *solidStateDriveService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	solidStateDrive.Product.Archived = true
+	*solidStateDrive.Product.Archived = true
 	return solidStateDriveService.ISolidStateDriveRepository.Update(solidStateDrive)
 }

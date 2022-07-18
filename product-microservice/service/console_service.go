@@ -70,7 +70,7 @@ func (consoleService *consoleService) Create(console model.Console) string {
 	console.Product.Type = model.CONSOLE
 	err := consoleService.IConsoleRepository.Create(console)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -100,6 +100,6 @@ func (consoleService *consoleService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	console.Product.Archived = true
+	*console.Product.Archived = true
 	return consoleService.IConsoleRepository.Update(console)
 }

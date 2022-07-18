@@ -86,7 +86,7 @@ func (ramService *ramService) Create(ram model.Ram) string {
 	ram.Product.Type = model.RAM
 	err := ramService.IRamRepository.Create(ram)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -116,6 +116,6 @@ func (ramService *ramService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	ram.Product.Archived = true
+	*ram.Product.Archived = true
 	return ramService.IRamRepository.Update(ram)
 }

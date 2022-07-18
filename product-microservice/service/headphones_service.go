@@ -76,7 +76,7 @@ func (headphonesService *headphonesService) Create(headphones model.Headphones) 
 	headphones.Product.Type = model.HEADPHONES
 	err := headphonesService.IHeadphonesRepository.Create(headphones)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -107,6 +107,6 @@ func (headphonesService *headphonesService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	headphones.Product.Archived = true
+	*headphones.Product.Archived = true
 	return headphonesService.IHeadphonesRepository.Update(headphones)
 }

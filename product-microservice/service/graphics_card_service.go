@@ -90,7 +90,7 @@ func (graphicsCardService *graphicsCardService) Create(graphicsCard model.Graphi
 	graphicsCard.Product.Type = model.GRAPHICS_CARD
 	err := graphicsCardService.IGraphicsCardRepository.Create(graphicsCard)
 	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {
+	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
 		msg = "Product with this name already exists"
 	}
 	return msg
@@ -120,6 +120,6 @@ func (graphicsCardService *graphicsCardService) Delete(id int) error {
 	if err != nil {
 		return err
 	}
-	graphicsCard.Product.Archived = true
+	*graphicsCard.Product.Archived = true
 	return graphicsCardService.IGraphicsCardRepository.Update(graphicsCard)
 }

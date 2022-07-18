@@ -18,5 +18,5 @@ type ProductPurchase struct {
 	MobilePhoneNumber string `gorm:"type:varchar(10)"`
 	TypeOfPayment TypeOfPayment
 	PurchaseDate time.Time `gorm:"default:null"`
-	IsPayedFor bool `gorm:"default:false"`
+	IsPayedFor *bool `gorm:"default:false"`
 }
