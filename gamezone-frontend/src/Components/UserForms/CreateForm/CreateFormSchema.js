@@ -1,6 +1,6 @@
 import * as yup from "yup";
 
-export const signUpSchema = yup.object().shape({
+export const createFormSchema = yup.object().shape({
 	user_name: yup
 		.string()
 		.max(120, "Maximum number of characters allowed is 120")

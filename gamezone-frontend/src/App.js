@@ -69,8 +69,11 @@ import {
 } from "./Routes/ProductFormRoutes/UpdateProductRoutes";
 
 import Main from "./Pages/Main";
-import SignUp from "./Pages/SignUp/SignUp";
+import SignUp from "./Pages/SignUp";
+import GetVerificationCode from "./Pages/AccountVerification/GetVerificationCode";
+import VerifyAccount from "./Pages/AccountVerification/VerifyAccount";
 import SignIn from "./Pages/SignIn/SignIn";
+import CreateAdminAndEmployee from "./Pages/CreateAdminAndEmployee";
 import ShoppingCart from "./Pages/ShoppingCart";
 
 import * as role from "./Utils/Role";
@@ -85,7 +88,21 @@ function App() {
 						<Routes>
 							<Route index path="/" element={<Main />} />
 							<Route path="/signUp" element={<SignUp />} />
+							<Route
+								path="/getVerificationCode"
+								element={<GetVerificationCode />}
+							/>
+							<Route path="/verify/:email" element={<VerifyAccount />} />
 							<Route path="/signIn" element={<SignIn />} />
+							<Route
+								path="/createAdminAndEmployee"
+								element={<ProtectedRoute roles={[role.ROLE_ADMIN]} />}
+							>
+								<Route
+									path="/createAdminAndEmployee"
+									element={<CreateAdminAndEmployee />}
+								/>
+							</Route>
 							<Route
 								path="/shoppingCart"
 								element={<ProtectedRoute roles={[role.ROLE_USER]} />}

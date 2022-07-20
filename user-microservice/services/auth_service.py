@@ -25,4 +25,7 @@ def login(data):
     if not user:
         return "Incorrect username/password"
 
+    if not user.verified:
+        return "Your account is not verified, please check your email"
+
     return user

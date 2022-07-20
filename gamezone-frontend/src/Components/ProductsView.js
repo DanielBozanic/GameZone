@@ -14,7 +14,7 @@ import {
 } from "reactstrap";
 import cn from "classnames";
 import { useNavigate } from "react-router-dom";
-import * as productType from "../Utils/ProductType";
+import * as helperFunctions from "../Utils/HelperFunctions";
 
 const ProductsView = (props) => {
 	const navigate = useNavigate();
@@ -27,51 +27,8 @@ const ProductsView = (props) => {
 		if (product.Product !== undefined) {
 			navigate(window.location.pathname + "/" + product.Product.Id);
 		} else {
-			navigationBasedOnType(product);
-		}
-	};
-
-	const navigationBasedOnType = (product) => {
-		switch (product.Type) {
-			case productType.CONSOLE:
-				navigate("/consoles/" + product.Id);
-				break;
-			case productType.GRAPHICS_CARD:
-				navigate("/graphicsCards/" + product.Id);
-				break;
-			case productType.HARD_DISK_DRIVE:
-				navigate("/hdds/" + product.Id);
-				break;
-			case productType.HEADPHONES:
-				navigate("/headphones/" + product.Id);
-				break;
-			case productType.KEYBOARD:
-				navigate("/keyboards/" + product.Id);
-				break;
-			case productType.MONITOR:
-				navigate("/monitors/" + product.Id);
-				break;
-			case productType.MOTHERBOARD:
-				navigate("/motherboards/" + product.Id);
-				break;
-			case productType.MOUSE:
-				navigate("/mice/" + product.Id);
-				break;
-			case productType.POWER_SUPPLY_UNIT:
-				navigate("/psus/" + product.Id);
-				break;
-			case productType.PROCESSOR:
-				navigate("/processors/" + product.Id);
-				break;
-			case productType.RAM:
-				navigate("/rams/" + product.Id);
-				break;
-			case productType.SOLID_STATE_DRIVE:
-				navigate("/ssds/" + product.Id);
-				break;
-			case productType.VIDEO_GAME:
-				navigate("/videoGames/" + product.Id);
-				break;
+			const route = helperFunctions.getProductDetailRoute(product);
+			navigate(route);
 		}
 	};
 

@@ -23,6 +23,7 @@ import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import * as productType from "../Utils/ProductType";
 import * as authService from "../Auth/AuthService";
 import * as role from "../Utils/Role";
+import * as helperFunctions from "../Utils/HelperFunctions";
 
 toast.configure();
 const ProductDetail = (props) => {
@@ -100,47 +101,8 @@ const ProductDetail = (props) => {
 	};
 
 	const updateProduct = () => {
-		switch (product.Product.Type) {
-			case productType.CONSOLE:
-				navigate("/updateConsole/" + product.Product.Id);
-				break;
-			case productType.GRAPHICS_CARD:
-				navigate("/updateGraphicsCard/" + product.Product.Id);
-				break;
-			case productType.HARD_DISK_DRIVE:
-				navigate("/updateHdd/" + product.Product.Id);
-				break;
-			case productType.HEADPHONES:
-				navigate("/updateHeadphones/" + product.Product.Id);
-				break;
-			case productType.KEYBOARD:
-				navigate("/updateKeyboard/" + product.Product.Id);
-				break;
-			case productType.MONITOR:
-				navigate("/updateMonitor/" + product.Product.Id);
-				break;
-			case productType.MOTHERBOARD:
-				navigate("/updateMotherboard/" + product.Product.Id);
-				break;
-			case productType.MOUSE:
-				navigate("/updateMouse/" + product.Product.Id);
-				break;
-			case productType.POWER_SUPPLY_UNIT:
-				navigate("/updatePsu/" + product.Product.Id);
-				break;
-			case productType.PROCESSOR:
-				navigate("/updateProcessor/" + product.Product.Id);
-				break;
-			case productType.RAM:
-				navigate("/updateRam/" + product.Product.Id);
-				break;
-			case productType.SOLID_STATE_DRIVE:
-				navigate("/updateSsd/" + product.Product.Id);
-				break;
-			case productType.VIDEO_GAME:
-				navigate("/updateVideoGame/" + product.Product.Id);
-				break;
-		}
+		const route = helperFunctions.getUpdateProductRoute(product);
+		navigate(route);
 	};
 
 	const deleteProduct = () => {
@@ -152,7 +114,8 @@ const ProductDetail = (props) => {
 					toastId: customId,
 					autoClose: 5000,
 				});
-				navigate("/");
+				const route = helperFunctions.getProductListRoute(product);
+				navigate(route);
 			})
 			.catch((err) => {
 				console.log(err);

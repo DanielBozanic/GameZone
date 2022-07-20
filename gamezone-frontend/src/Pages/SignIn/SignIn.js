@@ -23,6 +23,7 @@ import "../../Assets/css/forms.css";
 import * as authAPI from "../../APIs/UserMicroservice/auth_api";
 import * as authService from "../../Auth/AuthService";
 
+toast.configure();
 const SignIn = () => {
 	const customId = "signin";
 	const {
@@ -55,6 +56,10 @@ const SignIn = () => {
 					toastId: customId,
 				});
 			});
+	};
+
+	const getVerificationCode = () => {
+		navigate("/getVerificationCode");
 	};
 
 	return (
@@ -102,13 +107,23 @@ const SignIn = () => {
 									</Col>
 								</Row>
 								<Row>
-									<Col>
+									<Col md="4">
 										<Button
 											className="confirm-form-btn"
 											type="button"
 											onClick={handleSubmit(signIn)}
 										>
 											Sign in
+										</Button>
+									</Col>
+									<Col md="4"></Col>
+									<Col md="4">
+										<Button
+											className="confirm-form-btn"
+											type="button"
+											onClick={getVerificationCode}
+										>
+											Get verification code
 										</Button>
 									</Col>
 								</Row>

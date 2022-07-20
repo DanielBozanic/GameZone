@@ -15,9 +15,7 @@ class User(db.Model):
     name = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(30), nullable=False)
-    active = db.Column(db.Boolean, nullable=False)
-    registration_code = db.Column(db.String(30))
-    registration_code_expiration_date = db.Column(db.DateTime)
+    verified = db.Column(db.Boolean, nullable=False)
 
     def serialize(self):
         return {
@@ -27,7 +25,8 @@ class User(db.Model):
             'email': self.email,
             'name': self.name,
             'surname': self.surname,
-            'role': self.role
+            'role': self.role,
+            'verified': self.verified
         }
 
     @validates('email')

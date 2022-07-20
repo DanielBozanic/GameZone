@@ -4,6 +4,8 @@ from flask_cors import CORS
 from db.database import db
 from routes.user_bp import user_bp
 from routes.auth_bp import auth_bp
+from models import user
+from models import user_verification
 
 app = Flask(__name__)
 app.config.from_object('config')

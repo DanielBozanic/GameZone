@@ -11,3 +11,4 @@ alembic~=1.7.7
 pyjwt==1.4.2
 email_validator
 flask_cors
+requests
