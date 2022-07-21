@@ -37,22 +37,42 @@ func (productApi *ProductAPI) GetProductById(c *gin.Context) {
 	}
 }
 
-func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
-	var productPurchaseDTO dto.ProductPurchaseDTO
-	err := c.BindJSON(&productPurchaseDTO)
+func (productApi *ProductAPI) DeleteProduct(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
+	
+	error := productApi.IProductService.DeleteProduct(id)
 
-	userData := middleware.GetUserData(c)
-	msg, err := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
+	if error == nil {
+		c.JSON(http.StatusOK, "Product deleted successfully.")
+	} else  {
+		c.JSON(http.StatusBadRequest, error.Error())
+	}
+}
 
+func (productApi *ProductAPI) SearchByName(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	products, err := productApi.IProductService.SearchByName(page, pageSize, c.Query("name"))
+	
 	if err == nil {
-		c.JSON(http.StatusOK, msg)
+		c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
-	} 
+	}
+}
+
+func (productApi *ProductAPI) GetNumberOfRecordsSearch(c *gin.Context) {
+	numberOfRecords := productApi.IProductService.GetNumberOfRecordsSearch(c.Query("name"))
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (productApi *ProductAPI) GetCurrentCart(c *gin.Context) {
@@ -78,26 +98,22 @@ func (productApi *ProductAPI) GetPurchaseHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
 }
 
-func (productApi *ProductAPI) SearchByName(c *gin.Context) {
-	page, err := strconv.Atoi(c.Query("page"))
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-    if err != nil {
+func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
-    }
+	}
 
-	products, err := productApi.IProductService.SearchByName(page, pageSize, c.Query("name"))
-	
+	userData := middleware.GetUserData(c)
+	msg, err := productApi.IProductService.AddProductToCart(productPurchaseDTO, userData);
+
 	if err == nil {
-		c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
+		c.JSON(http.StatusOK, msg)
 	} else {
 		c.JSON(http.StatusBadRequest, err.Error())
-	}
-}
-
-func (productApi *ProductAPI) GetNumberOfRecordsSearch(c *gin.Context) {
-	numberOfRecords := productApi.IProductService.GetNumberOfRecordsSearch(c.Query("name"))
-	c.JSON(http.StatusOK, numberOfRecords)
+	} 
 }
 
 func (productApi *ProductAPI) UpdatePurchase(c *gin.Context) {
@@ -151,18 +167,51 @@ func (productApi *ProductAPI) ConfirmPurchase(c *gin.Context) {
 	}
 }
 
-func (productApi *ProductAPI) DeleteProduct(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+func (productApi *ProductAPI) GetProductAlertByProductIdAndEmail(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("productId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	
-	error := productApi.IProductService.DeleteProduct(id)
+	userData := middleware.GetUserData(c)
+	productAlert, err := productApi.IProductService.GetProductAlertByProductIdAndEmail(userData.Email, productId)
 
-	if error == nil {
-		c.JSON(http.StatusOK, "Product deleted successfully.")
-	} else  {
-		c.JSON(http.StatusBadRequest, error.Error())
+	if err == nil {
+		c.JSON(http.StatusOK, productAlert)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
+	}
+}
+
+func (productApi *ProductAPI) AddProductAlert(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	userData := middleware.GetUserData(c)
+	msg := productApi.IProductService.AddProductAlert(userData.Email, productId);
+
+	if msg == "" {
+		c.JSON(http.StatusOK, "You will be notified via email when product is in stock.")
+	} else {
+		c.JSON(http.StatusBadRequest, msg)
+	} 
+}
+
+func (productApi *ProductAPI) NotifyProductAvailability(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp, err := productApi.IProductService.NotifyProductAvailability(productId);
+
+	if err == nil {
+		c.JSON(http.StatusOK, resp)
+	} else {
+		c.JSON(http.StatusBadRequest, err)
 	}
 }

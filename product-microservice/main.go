@@ -74,6 +74,7 @@ func main() {
 
 	employeeProtectedProducts := api.Group("/employeeProtectedProducts")
 	employeeProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
+	employeeProtectedProducts.GET("/notifyProductAvailability", productAPI.NotifyProductAvailability)
 	employeeProtectedProducts.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
 
 	adminAndUserProtectedProducts := api.Group("/adminAndUserProtectedProducts")
@@ -88,7 +89,9 @@ func main() {
 	userProtectedProducts.PUT("/updatePurchase", productAPI.UpdatePurchase)
 	userProtectedProducts.DELETE("/removeProductFromCart/:id", productAPI.RemoveProductFromCart)
 	userProtectedProducts.PUT("/confirmPurchase", productAPI.ConfirmPurchase)
-
+	userProtectedProducts.GET("/getProductAlertByProductIdAndEmail", productAPI.GetProductAlertByProductIdAndEmail)
+	userProtectedProducts.POST("/addProductAlert", productAPI.AddProductAlert)
+	
 	employeeProtectedVideoGames := videoGames.Group("/employeeProtectedVideoGames")
 	employeeProtectedVideoGames.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
 	employeeProtectedVideoGames.PUT("", videoGameAPI.Update)

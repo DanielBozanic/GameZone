@@ -33,12 +33,14 @@ const ProductDetail = (props) => {
 	const [product, setProduct] = useState(null);
 	const [amount, setAmount] = useState(1);
 	const [available, setAvailable] = useState("");
-	const [disabled, setDisabled] = useState(false);
+	const [disableAddToCart, setDisableAddToCart] = useState(false);
+	const [disableNotify, setDisableNotify] = useState(false);
 
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		getProductById();
+		getProductAlertByProductIdAndEmail();
 	}, []);
 
 	const getProductById = () => {
@@ -53,22 +55,37 @@ const ProductDetail = (props) => {
 			});
 	};
 
+	const getProductAlertByProductIdAndEmail = () => {
+		axios
+			.get(
+				`${productAPI.GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_EMAIL}?productId=${id}`
+			)
+			.then((res) => {
+				if (res.data.ProductId === Number(id)) {
+					setDisableNotify(true);
+				}
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	};
+
 	const pageSetup = (p) => {
 		if (p.Product.Type === productType.VIDEO_GAME) {
-			if (p.Digital) {
+			if (p.Digital || p.Product.Amount > 0) {
 				setAvailable("This product is available for purchase");
-			} else if (p.Product.Amount > 0) {
-				setAvailable("This product is available for purchase");
+				setDisableNotify(true);
 			} else {
 				setAvailable("This product is unavailable for purchase");
-				setDisabled(true);
+				setDisableAddToCart(true);
 			}
 		} else {
 			if (p.Product.Amount > 0) {
 				setAvailable("This product is available for purchase");
+				setDisableNotify(true);
 			} else {
 				setAvailable("This product is unavailable for purchase");
-				setDisabled(true);
+				setDisableAddToCart(true);
 			}
 		}
 
@@ -77,7 +94,8 @@ const ProductDetail = (props) => {
 			(authService.getToken() != null &&
 				authService.getRole() !== role.ROLE_USER)
 		) {
-			setDisabled(true);
+			setDisableAddToCart(true);
+			setDisableNotify(true);
 		}
 	};
 
@@ -122,6 +140,21 @@ const ProductDetail = (props) => {
 			});
 	};
 
+	const addProductAlert = () => {
+		axios
+			.post(`${productAPI.ADD_PRODUCT_ALERT}?productId=${product.Product.Id}`)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	return (
 		<>
 			<AppNavbar />
@@ -144,7 +177,7 @@ const ProductDetail = (props) => {
 									<CardText>{available}</CardText>
 								</CardBody>
 							</Card>
-							{!disabled && (
+							{!disableAddToCart && (
 								<>
 									<Input
 										className="amount-product-select"
@@ -164,6 +197,17 @@ const ProductDetail = (props) => {
 										onClick={addToCart}
 									>
 										Add to cart
+									</Button>
+								</>
+							)}
+							{!disableNotify && (
+								<>
+									<Button
+										className="notify-btn"
+										type="button"
+										onClick={addProductAlert}
+									>
+										Alert Me When In Stock
 									</Button>
 								</>
 							)}

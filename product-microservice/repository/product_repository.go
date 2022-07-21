@@ -12,22 +12,62 @@ type productRepository struct {
 }
 
 type IProductRepository interface {
+	GetProductById(productid int) (model.Product, error)
+	UpdateProduct(product model.Product) error
+	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
+	GetNumberOfRecordsSearch(name string) int64
 	GetCurrentCart(userId int) []model.ProductPurchase
 	GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseid int) (model.ProductPurchase, error)
 	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
-	GetProductById(productid int) (model.Product, error)
-	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
-	GetNumberOfRecordsSearch(name string) int64
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
-	UpdateProduct(product model.Product) error
+	GetUserEmailsByProductId(productId int) []string
+	GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error)
+	AddProductAlert(productAlert model.ProductAlert) error
+	RemoveProductAlertByEmailAndProductId(email string, productId int) error
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
 	return &productRepository{Database: DB}
+}
+
+func (productRepo *productRepository) GetProductById(productId int) (model.Product, error) {
+	var product model.Product
+	result := productRepo.Database.
+		Preload("Image").
+		Where("archived = false").
+		First(&product, productId)
+	return product, result.Error
+}
+
+func (productRepo *productRepository) UpdateProduct(product model.Product) error {
+	result := productRepo.Database.Updates(&product)
+	return result.Error
+}
+
+func (productRepo *productRepository) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
+	var products []model.Product
+	offset := (page - 1) * pageSize
+	result := productRepo.Database.
+		Offset(offset).Limit(pageSize).
+		Preload("Image").
+		Where("name LIKE ? AND archived = false", "%" + name + "%").
+		Find(&products)
+	return products, result.Error
+}
+
+func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int64 {
+	var products []model.Product
+	var count int64
+	productRepo.Database.
+		Preload("Image").
+		Where("name LIKE ? AND archived = false", "%" + name + "%").
+		Find(&products).
+		Count(&count)
+	return count
 }
 
 func (productRepo *productRepository) GetCurrentCart(userId int) []model.ProductPurchase {
@@ -67,15 +107,6 @@ func (productRepo *productRepository) GetProductPurchaseById(purchaseId int) (mo
 	return productPurchase, result.Error
 }
 
-func (productRepo *productRepository) GetProductById(productId int) (model.Product, error) {
-	var product model.Product
-	result := productRepo.Database.
-		Preload("Image").
-		Where("archived = false").
-		First(&product, productId)
-	return product, result.Error
-}
-
 func (productRepo *productRepository) GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
 	result := productRepo.Database.
@@ -85,28 +116,6 @@ func (productRepo *productRepository) GetProductPurchaseFromCart(productName str
 	return productPurchase, result.Error
 }
  
-func (productRepo *productRepository) SearchByName(page int, pageSize int, name string) ([]model.Product, error) {
-	var products []model.Product
-	offset := (page - 1) * pageSize
-	result := productRepo.Database.
-		Offset(offset).Limit(pageSize).
-		Preload("Image").
-		Where("name LIKE ? AND archived = false", "%" + name + "%").
-		Find(&products)
-	return products, result.Error
-}
-
-func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int64 {
-	var products []model.Product
-	var count int64
-	productRepo.Database.
-		Preload("Image").
-		Where("name LIKE ? AND archived = false", "%" + name + "%").
-		Find(&products).
-		Count(&count)
-	return count
-}
-
 func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {
 	result := productRepo.Database.Create(&purchase)
 	return result.Error
@@ -122,7 +131,32 @@ func (productRepo *productRepository) RemoveProductFromCart(purchase model.Produ
 	return result.Error
 }
 
-func (productRepo *productRepository) UpdateProduct(product model.Product) error {
-	result := productRepo.Database.Updates(&product)
+func (productRepo *productRepository) GetUserEmailsByProductId(productId int) []string {
+	var userEmails []string
+	productRepo.Database.
+		Where("product_id = ?", productId).
+		Model(&model.ProductAlert{}).
+		Pluck("user_email", &userEmails)
+	return userEmails
+}
+
+func (productRepo *productRepository) GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error) {
+	var productAlert model.ProductAlert
+	result := productRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Where("user_email LIKE ? AND product_id = ?", email, productId).
+		First(&productAlert)
+	return productAlert, result.Error
+}
+
+func (productRepo *productRepository) AddProductAlert(productAlert model.ProductAlert) error {
+	result := productRepo.Database.Create(&productAlert)
+	return result.Error
+}
+
+func (productRepo *productRepository) RemoveProductAlertByEmailAndProductId(email string, productId int) error {
+	result := productRepo.Database.
+		Where("user_email LIKE ? AND product_id = ?", email, productId).
+		Delete(model.ProductAlert{})
 	return result.Error
 }

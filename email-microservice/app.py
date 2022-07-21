@@ -18,7 +18,7 @@ mail = Mail(app)
 
 @app.route("/api/email/sendEmail", methods=['POST'])
 def send_email():
-    msg = Message(request.json["subject"],
+    msg = Message(subject=request.json["subject"],
                   sender=app.config['MAIL_USERNAME'],
                   recipients=request.json["recipients"])
     env = Environment(
@@ -34,16 +34,16 @@ def send_email():
 @app.route("/api/email/sendEmails", methods=['POST'])
 def send_emails():
     with mail.connect() as conn:
-        for email in request["emails"]:
-            msg = Message(recipients=email.recipients,
+        for email in request.json["emails"]:
+            msg = Message(subject=email["subject"],
                           sender=app.config['MAIL_USERNAME'],
-                          subject=email.subject)
+                          recipients=email["recipients"])
             env = Environment(
                 loader=FileSystemLoader(os.path.abspath(os.path.dirname(__file__)) + "/templates"),
                 autoescape=select_autoescape()
             )
-            template = env.get_template(str(request.json["content"]["template"]) + ".html")
-            msg.html = template.render(request.json["content"]["params"])
+            template = env.get_template(str(email["content"]["template"]) + ".html")
+            msg.html = template.render(email["content"]["params"])
             conn.send(msg)
     return jsonify(status_code=200, content={"message": "Emails has been sent"})
 

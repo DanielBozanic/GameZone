@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../Assets/css/forms.css";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
 import * as videoGameAPI from "../../../APIs/ProductMicroservice/video_game_api";
+import * as productAPI from "../../../APIs/ProductMicroservice/product_api";
 import * as helperFunctions from "../../../Utils/HelperFunctions";
 
 toast.configure();
@@ -103,6 +104,9 @@ const VideoGameForm = (props) => {
 					autoClose: 5000,
 					toastId: customId,
 				});
+				if (product.Product.Amount === 0 && data.Product.Amount > 0) {
+					notifyProductAvailability(product.Product.Id);
+				}
 			})
 			.catch((err) => {
 				toast.error(err.response.data, {
@@ -111,6 +115,12 @@ const VideoGameForm = (props) => {
 					toastId: customId,
 				});
 			});
+	};
+
+	const notifyProductAvailability = (productId) => {
+		axios.get(
+			`${productAPI.NOTIFY_PRODUCT_AVAILABILITY}?productId=${productId}`
+		);
 	};
 
 	return (

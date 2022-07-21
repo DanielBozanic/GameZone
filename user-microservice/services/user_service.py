@@ -27,13 +27,16 @@ def register(data):
         except ValueError as err:
             return str(err)
     else:
-        return "User with this email/username already exists!"
+        return "A user with this email/username already exists!"
 
 
 def get_verification_code(email):
     user = User.query.filter(User.email.like(email)).first()
     if not user:
-        return "User with email " + str(email) + " does not exist!", 400
+        return "Cannot find any account associated with this email", 400
+
+    if user.verified:
+        return "An account with this email has already been verified", 400
 
     exists = UserVerification.query \
         .filter(UserVerification.email.like(email)).first()
@@ -45,7 +48,7 @@ def get_verification_code(email):
     user_verification = UserVerification()
     user_verification.email = user.email
     user_verification.code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
-    user_verification.expiration_date = datetime.datetime.now() + datetime.timedelta(minutes=20)
+    user_verification.expiration_date = datetime.datetime.now() + datetime.timedelta(minutes=10)
     db.session.add(user_verification)
     db.session.commit()
     content = {
@@ -73,7 +76,10 @@ def verify_account(data):
     user = User.query \
         .filter(User.email.like(data["email"])).first()
     if not user:
-        return "Email not found"
+        return "Cannot find any account associated with this email"
+
+    if user.verified:
+        return "An account with this email has already been verified"
 
     user_verification = UserVerification.query\
         .filter(UserVerification.email.like(data["email"])) \
@@ -113,7 +119,7 @@ def add_employee_and_admin(data):
         except ValueError as err:
             return str(err)
     else:
-        return "User with this email/username already exists!"
+        return "A user with this email/username already exists!"
 
 
 def get_all():
@@ -129,13 +135,13 @@ def get_by_id(user_id):
     user = User.query.filter((user_id == User.id)).first()
     if user:
         return user
-    return "User with id " + str(user_id) + " does not exist!"
+    return "A user with id " + str(user_id) + " does not exist!"
 
 
 def update(data):
     user_db = get_by_id(data["id"])
     if isinstance(user_db, str):
-        return "User with id " + str(data["id"]) + " does not exist!"
+        return "A user with id " + str(data["id"]) + " does not exist!"
 
     user_db = User.query\
         .filter(data["id"] != User.id)\
@@ -151,4 +157,4 @@ def update(data):
         db.session.commit()
         return ""
     else:
-        return "User with this email/username already exists!"
+        return "A user with this email/username already exists!"

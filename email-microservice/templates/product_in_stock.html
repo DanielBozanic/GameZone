@@ -27,21 +27,11 @@
             background: black;
          }
    </style>
-</head>
 <body>
     <div class = "main-div">
-        <h4>Hello {{name}} {{surname}}</h4>
-        <p>You can verify your account with this code <b>{{code}}</b> on the next link:
-            <a href = "http://localhost:3000/verify/{{email}}">Verify</a>
-        </p>
-        <p>
-            <b>Note: This code will expire in 10 minutes.</b>
-            <a href = "http://localhost:5000/api/users/getVerificationCode?email={{email}}">
-                Click here
-            </a>
-            to receive a new code
-        </p>
-        <br/>
+        <p>Product <a href = "http://localhost:3000{{productRoute}}">{{productName}}</a> is now in stock.</p>
+    <br/>
+    <br/>
         <p>The GameZone Team</p>
         <br/>
         <hr />
