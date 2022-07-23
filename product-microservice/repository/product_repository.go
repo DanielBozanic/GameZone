@@ -21,6 +21,7 @@ type IProductRepository interface {
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	GetProductPurchaseById(purchaseid int) (model.ProductPurchase, error)
 	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
+	GetPaidProductPurchase(productId int, userId int) (model.ProductPurchase, error)
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
 	RemoveProductFromCart(purchase model.ProductPurchase) error
@@ -113,6 +114,15 @@ func (productRepo *productRepository) GetProductPurchaseFromCart(productName str
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = product_purchases.product_id").
 		First(&productPurchase, "products.name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
+	return productPurchase, result.Error
+}
+
+func (productRepo *productRepository) GetPaidProductPurchase(productId int, userId int) (model.ProductPurchase, error) {
+	var productPurchase model.ProductPurchase
+	result := productRepo.Database.
+		Preload(clause.Associations).Preload("Product." + clause.Associations).
+		Joins("JOIN products ON products.id = product_purchases.product_id").
+		First(&productPurchase, "products.id = ? AND user_id = ? AND is_paid_for = true", productId, userId)
 	return productPurchase, result.Error
 }
  

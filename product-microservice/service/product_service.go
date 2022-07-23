@@ -41,6 +41,7 @@ type IProductService interface {
 	GetCurrentCart(userId int) []model.ProductPurchase
 	CartContainsOnlyDigitalItems(userId int) bool
 	GetPurchaseHistory(userId int) []model.ProductPurchase
+	CheckIfProductIsPaidFor(productId int, userId int) bool
 	UpdatePurchase(productPurchaseDto dto.ProductPurchaseDTO) error
 	RemoveProductFromCart(productPurchaseid int) error
 	ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error
@@ -123,6 +124,14 @@ func (productService *productService) CartContainsOnlyDigitalItems(userId int) b
 
 func (productService *productService) GetPurchaseHistory(userId int) []model.ProductPurchase {
 	return productService.IProductRepository.GetPurchaseHistory(userId)
+}
+
+func (productService *productService) CheckIfProductIsPaidFor(productId int, userId int) bool {
+	_, err := productService.IProductRepository.GetPaidProductPurchase(productId, userId)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false
+	}
+	return true
 }
 
 func (productService *productService) AddProductToCart(productPurchaseDTO dto.ProductPurchaseDTO, userData dto.UserData) (string, error) {

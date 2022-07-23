@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../Assets/css/product-detail.css";
 import AppNavbar from "../Layout/AppNavbar";
+import CommentRating from "../Components/CommentRating/CommentRating";
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import * as productType from "../Utils/ProductType";
 import * as authService from "../Auth/AuthService";
@@ -177,65 +178,12 @@ const ProductDetail = (props) => {
 									<CardText>{available}</CardText>
 								</CardBody>
 							</Card>
-							{!disableAddToCart && (
-								<>
-									<Input
-										className="amount-product-select"
-										type="select"
-										onChange={(e) => setAmount(Number(e.target.value))}
-									>
-										<option hidden>Select quantity</option>
-										<option>1</option>
-										<option>2</option>
-										<option>3</option>
-										<option>4</option>
-										<option>5</option>
-									</Input>
-									<Button
-										className="add-to-cart-btn"
-										type="button"
-										onClick={addToCart}
-									>
-										Add to cart
-									</Button>
-								</>
-							)}
-							{!disableNotify && (
-								<>
-									<Button
-										className="notify-btn"
-										type="button"
-										onClick={addProductAlert}
-									>
-										Alert Me When In Stock
-									</Button>
-								</>
-							)}
-							{authService.getToken() != null &&
-								authService.getRole() === role.ROLE_EMPLOYEE && (
-									<>
-										<Button
-											className="update-btn"
-											type="button"
-											onClick={updateProduct}
-										>
-											Update
-										</Button>
-										<Button
-											className="delete-btn"
-											type="button"
-											onClick={deleteProduct}
-										>
-											Delete
-										</Button>
-									</>
-								)}
 						</Col>
 						{product !== null && (
 							<>
 								<Col>
 									<Card
-										style={{ marginTop: "10px", marginBottom: "10px" }}
+										style={{ marginTop: "10px" }}
 										className="product-detail-description-card"
 									>
 										<CardTitle
@@ -249,70 +197,128 @@ const ProductDetail = (props) => {
 											More information on the manufacturer's website
 										</CardFooter>
 									</Card>
-									<Card
-										style={{ marginTop: "20px", marginBottom: "10px" }}
-										className="product-detail-table-card"
-									>
-										<Table className="product-detail-table">
-											<tr>
-												<th>Manufacturer</th>
-												<td>{product.Product.Manufacturer}</td>
-											</tr>
-											{Object.keys(product).map(function (value, idx) {
-												if (
-													value !== "Product" &&
-													product[value] !== null &&
-													product[value] !== ""
-												) {
-													if (typeof product[value] == "boolean") {
-														return (
-															<tr key={idx}>
-																<th>
-																	{value
-																		.replace(/([A-Z]+)/g, " $1")
-																		.replace(/([A-Z][a-z])/g, " $1")
-																		.trim()}
-																</th>
-																<td>{product[value] ? "Yes" : "No"}</td>
-															</tr>
-														);
-													} else if (
-														new Date(product[value]) !== "Invalid Date"
-													) {
-														return (
-															<tr key={idx}>
-																<th>
-																	{value
-																		.replace(/([A-Z]+)/g, " $1")
-																		.replace(/([A-Z][a-z])/g, " $1")
-																		.trim()}
-																</th>
-																<td>
-																	{product[value].toString().split("T")[0]}
-																</td>
-															</tr>
-														);
-													} else {
-														return (
-															<tr key={idx}>
-																<th>
-																	{value
-																		.replace(/([A-Z]+)/g, " $1")
-																		.replace(/([A-Z][a-z])/g, " $1")
-																		.trim()}
-																</th>
-																<td>{product[value].toString()}</td>
-															</tr>
-														);
-													}
-												}
-											})}
-										</Table>
-									</Card>
+									{!disableAddToCart && (
+										<>
+											<Input
+												className="amount-product-select"
+												type="select"
+												onChange={(e) => setAmount(Number(e.target.value))}
+											>
+												<option hidden>Select quantity</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+												<option>5</option>
+											</Input>
+											<Button
+												className="add-to-cart-btn"
+												type="button"
+												onClick={addToCart}
+											>
+												Add to cart
+											</Button>
+										</>
+									)}
+									{!disableNotify && (
+										<>
+											<Button
+												className="notify-btn"
+												type="button"
+												onClick={addProductAlert}
+											>
+												Alert Me When In Stock
+											</Button>
+										</>
+									)}
+									{authService.getToken() != null &&
+										authService.getRole() === role.ROLE_EMPLOYEE && (
+											<>
+												<Button
+													className="update-btn"
+													type="button"
+													onClick={updateProduct}
+												>
+													Update
+												</Button>
+												<Button
+													className="delete-btn"
+													type="button"
+													onClick={deleteProduct}
+												>
+													Delete
+												</Button>
+											</>
+										)}
 								</Col>
 							</>
 						)}
 					</Row>
+					{product !== null && (
+						<Row>
+							<Col>
+								<Card
+									style={{ marginTop: "20px", marginBottom: "10px" }}
+									className="product-detail-table-card"
+								>
+									<Table className="product-detail-table">
+										<tr>
+											<th>Manufacturer</th>
+											<td>{product.Product.Manufacturer}</td>
+										</tr>
+										{Object.keys(product).map(function (value, idx) {
+											if (
+												value !== "Product" &&
+												product[value] !== null &&
+												product[value] !== ""
+											) {
+												if (typeof product[value] == "boolean") {
+													return (
+														<tr key={idx}>
+															<th>
+																{value
+																	.replace(/([A-Z]+)/g, " $1")
+																	.replace(/([A-Z][a-z])/g, " $1")
+																	.trim()}
+															</th>
+															<td>{product[value] ? "Yes" : "No"}</td>
+														</tr>
+													);
+												} else if (
+													new Date(product[value]) !== "Invalid Date"
+												) {
+													return (
+														<tr key={idx}>
+															<th>
+																{value
+																	.replace(/([A-Z]+)/g, " $1")
+																	.replace(/([A-Z][a-z])/g, " $1")
+																	.trim()}
+															</th>
+															<td>{product[value].toString().split("T")[0]}</td>
+														</tr>
+													);
+												} else {
+													return (
+														<tr key={idx}>
+															<th>
+																{value
+																	.replace(/([A-Z]+)/g, " $1")
+																	.replace(/([A-Z][a-z])/g, " $1")
+																	.trim()}
+															</th>
+															<td>{product[value].toString()}</td>
+														</tr>
+													);
+												}
+											}
+										})}
+									</Table>
+								</Card>
+							</Col>
+						</Row>
+					)}
+					<CommentRating product={product} />
 				</Container>
 			)}
 		</>

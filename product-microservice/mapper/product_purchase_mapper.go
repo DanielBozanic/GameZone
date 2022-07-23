@@ -24,7 +24,7 @@ func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.Product
 			City: productPurchaseDTO.City,
 			MobilePhoneNumber: productPurchaseDTO.MobilePhoneNumber,
 			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
-			IsPayedFor: productPurchaseDTO.IsPayedFor,
+			IsPaidFor: productPurchaseDTO.IsPaidFor,
 		}, nil
 	} else {
 		purchaseDate := time.Time{}
@@ -39,7 +39,7 @@ func ToProductPurchase(productPurchaseDTO dto.ProductPurchaseDTO) (model.Product
 			City: productPurchaseDTO.City,
 			MobilePhoneNumber: productPurchaseDTO.MobilePhoneNumber,
 			TypeOfPayment: productPurchaseDTO.TypeOfPayment,
-			IsPayedFor: productPurchaseDTO.IsPayedFor,
+			IsPaidFor: productPurchaseDTO.IsPaidFor,
 		}, nil
 	}
 }
@@ -56,7 +56,7 @@ func ToProductPurchaseDTO(productPurchase model.ProductPurchase) dto.ProductPurc
 		City: productPurchase.City,
 		MobilePhoneNumber: productPurchase.MobilePhoneNumber,
 		TypeOfPayment: productPurchase.TypeOfPayment,
-		IsPayedFor: productPurchase.IsPayedFor,
+		IsPaidFor: productPurchase.IsPaidFor,
 	}
 }
 

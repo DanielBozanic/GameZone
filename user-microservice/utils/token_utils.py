@@ -13,6 +13,7 @@ def encode_auth_token(user):
             'sub': {
                 "user_id": user.id,
                 "email": user.email,
+                "username": user.user_name,
                 "role": user.role
             }
         }

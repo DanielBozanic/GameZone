@@ -14,6 +14,8 @@ export const REMOVE_PRODUCT_FROM_CART =
 	api + userProtectedProducts + "/removeProductFromCart";
 export const CONFIRM_PURCHASE =
 	api + userProtectedProducts + "/confirmPurchase";
+export const CHECK_IF_PRODUCT_IS_PAID_FOR =
+	api + userProtectedProducts + "/checkIfProductIsPaidFor";
 export const GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_EMAIL =
 	api + userProtectedProducts + "/getProductAlertByProductIdAndEmail";
 export const ADD_PRODUCT_ALERT =

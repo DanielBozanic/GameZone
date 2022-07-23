@@ -1,7 +1,3 @@
-.product-detail-card {
-	padding-top: 20px;
-}
-
 .product-detail-card-with-image {
 	background: #343a40;
 	color: orange;
@@ -93,7 +89,6 @@
 	width: 100%;
 	max-width: 200px;
 	margin-top: 15px;
-	margin-bottom: 15px;
 }
 
 .update-btn {
@@ -105,7 +100,6 @@
 	width: 100%;
 	max-width: 200px;
 	margin-top: 15px;
-	margin-bottom: 15px;
 	margin-right: 10px;
 }
 
@@ -118,7 +112,6 @@
 	width: 100%;
 	max-width: 200px;
 	margin-top: 15px;
-	margin-bottom: 15px;
 }
 
 .notify-btn {

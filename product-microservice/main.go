@@ -85,6 +85,7 @@ func main() {
 	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
 	userProtectedProducts.POST("/addProductToCart", productAPI.AddProductToCart)
 	userProtectedProducts.GET("/getCurrentCart", productAPI.GetCurrentCart)
+	userProtectedProducts.GET("/checkIfProductIsPaidFor", productAPI.CheckIfProductIsPaidFor)
 	userProtectedProducts.GET("/cartContainsOnlyDigitalItems", productAPI.CartContainsOnlyDigitalItems)
 	userProtectedProducts.PUT("/updatePurchase", productAPI.UpdatePurchase)
 	userProtectedProducts.DELETE("/removeProductFromCart/:id", productAPI.RemoveProductFromCart)

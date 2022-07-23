@@ -7,9 +7,6 @@ import (
 
 
 func ToVideoGame(videoGameDTO dto.VideoGameDTO) (model.VideoGame) {
-
-
-	
 	return model.VideoGame {
 		Product: ToProduct(videoGameDTO.Product),
 		Digital: videoGameDTO.Digital,

@@ -98,6 +98,18 @@ func (productApi *ProductAPI) GetPurchaseHistory(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
 }
 
+func (productApi *ProductAPI) CheckIfProductIsPaidFor(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Query("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	userData := middleware.GetUserData(c)
+	isPaidFor := productApi.IProductService.CheckIfProductIsPaidFor(productId, userData.Id)
+	c.JSON(http.StatusOK, isPaidFor)
+}
+
 func (productApi *ProductAPI) AddProductToCart(c *gin.Context) {
 	var productPurchaseDTO dto.ProductPurchaseDTO
 	err := c.BindJSON(&productPurchaseDTO)

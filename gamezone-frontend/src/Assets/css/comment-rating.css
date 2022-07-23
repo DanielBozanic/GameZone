@@ -1,0 +1,135 @@
+.review-card {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	margin-bottom: 5px;
+}
+
+.review-title {
+	font-family: "Batman";
+}
+
+.review-input,
+.review-input:read-only {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
+}
+
+.review-input:focus {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
+}
+
+.review-input:active {
+	background-color: #343a40;
+	color: orange;
+	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
+}
+
+.input-field-error-msg {
+	font-weight: bold;
+	color: orange;
+	font-size: 80%;
+}
+
+.rating {
+	display: inline-block;
+	position: relative;
+	height: 50px;
+	line-height: 35px;
+	font-size: 40px;
+	margin-right: 15px;
+}
+
+.rating label {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	cursor: pointer;
+}
+
+.rating label:last-child {
+	position: static;
+}
+
+.rating label:nth-child(1) {
+	z-index: 5;
+}
+
+.rating label:nth-child(2) {
+	z-index: 4;
+}
+
+.rating label:nth-child(3) {
+	z-index: 3;
+}
+
+.rating label:nth-child(4) {
+	z-index: 2;
+}
+
+.rating label:nth-child(5) {
+	z-index: 1;
+}
+
+.rating label input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+
+.rating label .icon {
+	float: left;
+	color: transparent;
+}
+
+.rating label:last-child .icon {
+	color: rgb(255, 128, 0);
+}
+
+.rating:not(:hover) label input:checked ~ .icon,
+.rating:hover label:hover input ~ .icon {
+	color: #09f;
+}
+
+.rating label input:focus:not(:checked) ~ .icon:last-child {
+	color: rgb(255, 128, 0);
+	text-shadow: 0 0 5px #09f;
+}
+
+.comment-btn {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid orange;
+	height: 40px;
+	margin-top: 10px;
+	margin-right: 5px;
+}
+
+.comment-btn:hover {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.comment-btn:focus {
+	background-color: orange;
+	color: #343a40;
+}
+
+.comment-btn:active {
+	background-color: orange;
+	color: #343a40;
+}
