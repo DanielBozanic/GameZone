@@ -21,6 +21,7 @@ import "../Assets/css/product-detail.css";
 import AppNavbar from "../Layout/AppNavbar";
 import CommentRating from "../Components/CommentRating/CommentRating";
 import * as productAPI from "../APIs/ProductMicroservice/product_api";
+import * as productPurchaseAPI from "../APIs/ProductMicroservice/product_purchase_api";
 import * as productType from "../Utils/ProductType";
 import * as authService from "../Auth/AuthService";
 import * as role from "../Utils/Role";
@@ -32,7 +33,7 @@ const ProductDetail = (props) => {
 
 	const { id } = useParams();
 	const [product, setProduct] = useState(null);
-	const [amount, setAmount] = useState(1);
+	const [quantity, setQuantity] = useState(1);
 	const [available, setAvailable] = useState("");
 	const [disableAddToCart, setDisableAddToCart] = useState(false);
 	const [disableNotify, setDisableNotify] = useState(false);
@@ -59,7 +60,7 @@ const ProductDetail = (props) => {
 	const getProductAlertByProductIdAndEmail = () => {
 		axios
 			.get(
-				`${productAPI.GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_EMAIL}?productId=${id}`
+				`${productPurchaseAPI.GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_EMAIL}?productId=${id}`
 			)
 			.then((res) => {
 				if (res.data.ProductId === Number(id)) {
@@ -101,22 +102,28 @@ const ProductDetail = (props) => {
 	};
 
 	const addToCart = () => {
-		const productPurchase = {
-			Product: { Id: product.Product.Id },
-			Amount: amount,
+		let msg = "Product added to cart.";
+		const productInCart = {
+			Product: product,
+			Quantity: quantity,
 		};
-		axios
-			.post(productAPI.ADD_PRODUCT_TO_CART, productPurchase)
-			.then((res) => {
-				toast.success(res.data, {
-					position: toast.POSITION.TOP_CENTER,
-					toastId: customId,
-					autoClose: 5000,
-				});
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		let productsInCart = JSON.parse(localStorage.getItem("cart") || "[]");
+		const productInCartExists = productsInCart.filter(
+			(pic) => pic.Product.Product.Id === productInCart.Product.Product.Id
+		);
+		if (productInCartExists.length > 0) {
+			productsInCart = productsInCart.filter(
+				(pic) => pic.Product.Product.Id !== productInCart.Product.Product.Id
+			);
+			msg = "Cart updated.";
+		}
+		productsInCart.push(productInCart);
+		localStorage.setItem("cart", JSON.stringify(productsInCart));
+		toast.success(msg, {
+			position: toast.POSITION.TOP_CENTER,
+			toastId: customId,
+			autoClose: 5000,
+		});
 	};
 
 	const updateProduct = () => {
@@ -137,13 +144,19 @@ const ProductDetail = (props) => {
 				navigate(route);
 			})
 			.catch((err) => {
-				console.log(err);
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: false,
+				});
 			});
 	};
 
 	const addProductAlert = () => {
 		axios
-			.post(`${productAPI.ADD_PRODUCT_ALERT}?productId=${product.Product.Id}`)
+			.post(
+				`${productPurchaseAPI.ADD_PRODUCT_ALERT}?productId=${product.Product.Id}`
+			)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -202,7 +215,7 @@ const ProductDetail = (props) => {
 											<Input
 												className="amount-product-select"
 												type="select"
-												onChange={(e) => setAmount(Number(e.target.value))}
+												onChange={(e) => setQuantity(Number(e.target.value))}
 											>
 												<option hidden>Select quantity</option>
 												<option>1</option>

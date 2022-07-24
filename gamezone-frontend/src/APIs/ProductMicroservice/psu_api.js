@@ -12,7 +12,7 @@ export const GET_POWERS = api + "/getPowers";
 export const GET_TYPES = api + "/getTypes";
 export const GET_FORM_FACTORS = api + "/getFormFactors";
 
-const employeeProtectedPsus = "/employeeProtectedPsus";
+const employeeProtectedPsus = "/employeeProtected";
 export const CREATE = api + employeeProtectedPsus;
 export const UPDATE = api + employeeProtectedPsus;
 export const DELETE = api + employeeProtectedPsus;

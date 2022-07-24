@@ -13,7 +13,7 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_MAX_SEQUENTIAL_READS = api + "/getMaxSequentialReads";
 export const GET_MAX_SEQUENTIAL_WRITES = api + "/getMaxSequentialWrites";
 
-const employeeProtectedSsds = "/employeeProtectedSsds";
+const employeeProtectedSsds = "/employeeProtected";
 export const CREATE = api + employeeProtectedSsds;
 export const UPDATE = api + employeeProtectedSsds;
 export const DELETE = api + employeeProtectedSsds;

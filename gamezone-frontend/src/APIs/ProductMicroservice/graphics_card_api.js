@@ -13,7 +13,7 @@ export const GET_MEMORY_SIZES = api + "/getMemorySizes";
 export const GET_MEMORY_TYPES = api + "/getMemoryTypes";
 export const GET_MODEL_NAMES = api + "/getModelNames";
 
-const employeeProtectedGraphicsCards = "/employeeProtectedGraphicsCards";
+const employeeProtectedGraphicsCards = "/employeeProtected";
 export const CREATE = api + employeeProtectedGraphicsCards;
 export const UPDATE = api + employeeProtectedGraphicsCards;
 export const DELETE = api + employeeProtectedGraphicsCards;

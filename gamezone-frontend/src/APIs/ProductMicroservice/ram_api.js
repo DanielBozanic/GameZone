@@ -12,7 +12,7 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_MEMORY_TYPES = api + "/getMemoryTypes";
 export const GET_SPEEDS = api + "/getSpeeds";
 
-const employeeProtectedRams = "/employeeProtectedRams";
+const employeeProtectedRams = "/employeeProtected";
 export const CREATE = api + employeeProtectedRams;
 export const UPDATE = api + employeeProtectedRams;
 export const DELETE = api + employeeProtectedRams;

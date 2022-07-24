@@ -10,7 +10,7 @@ export const GET_NUMBER_OF_RECORDS_FILTER = api + "/getNumberOfRecordsFilter";
 export const GET_PLATFORMS = api + "/getPlatforms";
 export const GET_GENRES = api + "/getGenres";
 
-const employeeProtectedVideoGames = "/employeeProtectedVideoGames";
+const employeeProtectedVideoGames = "/employeeProtected";
 export const CREATE = api + employeeProtectedVideoGames;
 export const UPDATE = api + employeeProtectedVideoGames;
 export const DELETE = api + employeeProtectedVideoGames;

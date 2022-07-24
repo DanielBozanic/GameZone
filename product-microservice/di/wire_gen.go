@@ -107,21 +107,18 @@ func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
 }
 
 func InitProductAPI(db *gorm.DB) api.ProductAPI {
-	iConsoleRepository := repository.NewConsoleRepository(db)
-	iGraphicsCardRepository := repository.NewGraphicsCardRepository(db)
-	iHardDiskDriveRepository := repository.NewHardDiskDriveRepository(db)
-	iHeadphonesRepository := repository.NewHeadphonesRepository(db)
-	iKeyboardRepository := repository.NewKeyboardRepository(db)
-	iMonitorRepository := repository.NewMonitorRepository(db)
-	iMotherboardRepository := repository.NewMotherboardRepository(db)
-	iMouseRepository := repository.NewMouseRepository(db)
-	iPowerSupplyUnitRepository := repository.NewPowerSupplyUnitRepository(db)
-	iProcessorRepository := repository.NewProcessorRepository(db)
-	iRamRepository := repository.NewRamRepository(db)
-	iSolidStateDriveRepository := repository.NewSolidStateDriveRepository(db)
-	iVideoGameRepository := repository.NewVideoGameRepository(db)
 	iProductRepository := repository.NewProductRepository(db)
-	iProductService := service.NewProductService(iConsoleRepository, iGraphicsCardRepository, iHardDiskDriveRepository, iHeadphonesRepository, iKeyboardRepository, iMonitorRepository, iMotherboardRepository, iMouseRepository, iPowerSupplyUnitRepository, iProcessorRepository, iRamRepository, iSolidStateDriveRepository, iVideoGameRepository, iProductRepository)
+	iProductPurchaseRepository := repository.NewProductPurchaseRepository(db)
+	iProductService := service.NewProductService(iProductRepository, iProductPurchaseRepository)
 	productAPI := api.NewProductAPI(iProductService)
 	return productAPI
+}
+
+func InitProductPurchaseAPI(db *gorm.DB) api.ProductPurchaseAPI {
+	iVideoGameRepository := repository.NewVideoGameRepository(db)
+	iProductRepository := repository.NewProductRepository(db)
+	iProductPurchaseRepository := repository.NewProductPurchaseRepository(db)
+	iProductPurchaseService := service.NewProductPurchaseService(iVideoGameRepository, iProductRepository, iProductPurchaseRepository)
+	productPurchaseAPI := api.NewProductPurchaseAPI(iProductPurchaseService)
+	return productPurchaseAPI
 }

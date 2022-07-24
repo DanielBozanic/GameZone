@@ -12,7 +12,7 @@ export const GET_ASPECT_RATIOS = api + "/getAspectRatios";
 export const GET_RESOLUTIONS = api + "/getResolutions";
 export const GET_REFRESH_RATES = api + "/getRefreshRates";
 
-const employeeProtectedMonitors = "/employeeProtectedMonitors";
+const employeeProtectedMonitors = "/employeeProtected";
 export const CREATE = api + employeeProtectedMonitors;
 export const UPDATE = api + employeeProtectedMonitors;
 export const DELETE = api + employeeProtectedMonitors;

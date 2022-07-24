@@ -11,7 +11,7 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_KEYBOARD_CONNECTORS = api + "/getKeyboardConnectors";
 export const GET_KEY_TYPES = api + "/getKeyTypes";
 
-const employeeProtectedKeyboards = "/employeeProtectedKeyboards";
+const employeeProtectedKeyboards = "/employeeProtected";
 export const CREATE = api + employeeProtectedKeyboards;
 export const UPDATE = api + employeeProtectedKeyboards;
 export const DELETE = api + employeeProtectedKeyboards;

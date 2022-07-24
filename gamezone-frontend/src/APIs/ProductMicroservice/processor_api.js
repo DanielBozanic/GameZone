@@ -13,7 +13,7 @@ export const GET_TYPES = api + "/getTypes";
 export const GET_THREADS = api + "/getThreads";
 export const GET_NUMBER_OF_CORES = api + "/getNumberOfCores";
 
-const employeeProtectedProcessors = "/employeeProtectedProcessors";
+const employeeProtectedProcessors = "/employeeProtected";
 export const CREATE = api + employeeProtectedProcessors;
 export const UPDATE = api + employeeProtectedProcessors;
 export const DELETE = api + employeeProtectedProcessors;

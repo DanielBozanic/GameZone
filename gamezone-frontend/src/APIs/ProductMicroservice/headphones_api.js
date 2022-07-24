@@ -10,7 +10,7 @@ export const GET_NUMBER_OF_RECORDS_FILTER = api + "/getNumberOfRecordsFilter";
 export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_CONNECTION_TYPES = api + "/getConnectionTypes";
 
-const employeeProtectedHeadphones = "/employeeProtectedHeadphones";
+const employeeProtectedHeadphones = "/employeeProtected";
 export const CREATE = api + employeeProtectedHeadphones;
 export const UPDATE = api + employeeProtectedHeadphones;
 export const DELETE = api + employeeProtectedHeadphones;

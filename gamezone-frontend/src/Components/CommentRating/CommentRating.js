@@ -17,7 +17,7 @@ import { commentRatingSchema } from "./CommentRatingSchema";
 import axios from "axios";
 import * as authService from "../../Auth/AuthService";
 import * as productCommentAPI from "../../APIs/CommentAndRatingMicroservice/product_comment_api";
-import * as productAPI from "../../APIs/ProductMicroservice/product_api";
+import * as productPurchaseAPI from "../../APIs/ProductMicroservice/product_purchase_api";
 import "../../Assets/css/comment-rating.css";
 
 const CommentRating = (props) => {
@@ -67,7 +67,7 @@ const CommentRating = (props) => {
 	const checkIfProductIsPaidFor = () => {
 		axios
 			.get(
-				`${productAPI.CHECK_IF_PRODUCT_IS_PAID_FOR}?productId=${props.product.Product.Id}`
+				`${productPurchaseAPI.CHECK_IF_PRODUCT_IS_PAID_FOR}?productId=${props.product.Product.Id}`
 			)
 			.then((res) => {
 				setProductIsPaidFor(res.data);

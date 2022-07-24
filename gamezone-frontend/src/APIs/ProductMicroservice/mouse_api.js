@@ -11,7 +11,7 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_DPIS = api + "/getDpis";
 export const GET_CONNECTIONS = api + "/getConnections";
 
-const employeeProtectedMouses = "/employeeProtectedMouses";
+const employeeProtectedMouses = "/employeeProtected";
 export const CREATE = api + employeeProtectedMouses;
 export const UPDATE = api + employeeProtectedMouses;
 export const DELETE = api + employeeProtectedMouses;

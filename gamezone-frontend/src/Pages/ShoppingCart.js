@@ -14,7 +14,9 @@ import axios from "axios";
 import "../Assets/css/shopping-cart.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import * as productAPI from "../APIs/ProductMicroservice/product_api";
+import * as videoGameAPI from "../APIs/ProductMicroservice/video_game_api";
+import * as productPurchaseAPI from "../APIs/ProductMicroservice/product_purchase_api";
+import * as productType from "../Utils/ProductType";
 import AppNavbar from "../Layout/AppNavbar";
 import BuyerInfo from "../Components/Checkout/BuyerInfo/BuyerInfo";
 import PaymentType from "../Components/Checkout/PaymentType/PaymentType";
@@ -40,56 +42,76 @@ const ShoppingCart = () => {
 	}, []);
 
 	const getShoppingCart = () => {
-		axios
-			.get(productAPI.GET_CURRENT_CART)
-			.then((res) => {
-				let temp = 0;
-				for (let product of res.data) {
-					temp += Number(product.TotalPrice);
-				}
-				setTotalPrice(temp);
-				setShoppingCart(res.data);
-				cartContainsOnlyDigitalItems();
-			})
-			.catch((err) => {
-				console.error(err);
-			});
+		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+		setShoppingCart(cart);
+		calculateTotalPrice(cart);
+		cartContainsOnlyDigitalItems(cart);
 	};
 
-	const cartContainsOnlyDigitalItems = () => {
-		axios
-			.get(productAPI.CART_CONTAINS_ONLY_DIGITAL_ITEMS)
-			.then((res) => {
-				setAllDigital(res.data);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
+	const calculateTotalPrice = (cart) => {
+		let temp = 0;
+		for (let product of cart) {
+			temp += Number(product.Product.Product.Price) * Number(product.Quantity);
+		}
+		setTotalPrice(temp);
 	};
 
-	const updateProductPurchase = (product, newAmount) => {
-		product.Amount = newAmount;
-		axios
-			.put(productAPI.UPDATE_PURCHASE, product)
-			.then((res) => {
-				console.log(res.data);
-				getShoppingCart();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+	const cartContainsOnlyDigitalItems = (cart) => {
+		let everyItemDigital = true;
+		setAllDigital(everyItemDigital);
+		let videoGames = cart.filter(
+			(pic) => pic.Product.Product.Type === productType.VIDEO_GAME
+		);
+		let otherProducts = cart.filter(
+			(pic) => pic.Product.Product.Type !== productType.VIDEO_GAME
+		);
+		if (otherProducts.length > 0) {
+			everyItemDigital = false;
+			setAllDigital(everyItemDigital);
+		} else if (videoGames.length > 0) {
+			for (let videoGame of videoGames) {
+				axios
+					.get(`${videoGameAPI.GET_BY_ID}/${videoGame.Product.Product.Id}`)
+					.then((res) => {
+						if (!res.data.Digital) {
+							setAllDigital(false);
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+		} else {
+			setAllDigital(false);
+		}
 	};
 
-	const removeProductFromCart = (product) => {
-		axios
-			.delete(`${productAPI.REMOVE_PRODUCT_FROM_CART}/${product.Id}`)
-			.then((res) => {
-				console.log(res.data);
-				getShoppingCart();
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+	const updateProductPurchase = (productInCart, newQuantity) => {
+		productInCart.Quantity = newQuantity;
+		const newCart = shoppingCart.filter(
+			(product) =>
+				product.Product.Product.Id !== productInCart.Product.Product.Id
+		);
+		newCart.push(productInCart);
+		localStorage.setItem("cart", JSON.stringify(newCart));
+		setShoppingCart(newCart);
+		calculateTotalPrice(newCart);
+	};
+
+	const removeProductFromCart = (productInCart) => {
+		const newCart = shoppingCart.filter(
+			(product) =>
+				product.Product.Product.Id !== productInCart.Product.Product.Id
+		);
+		if (newCart.length == 0) {
+			setConfirmedCheckout(false);
+			setBuyerInfo(null);
+			setPaymentType(null);
+		}
+		localStorage.setItem("cart", JSON.stringify(newCart));
+		setShoppingCart(newCart);
+		calculateTotalPrice(newCart);
+		cartContainsOnlyDigitalItems(newCart);
 	};
 
 	const checkout = () => {
@@ -97,14 +119,25 @@ const ShoppingCart = () => {
 	};
 
 	const purchaseComplete = () => {
+		const productPurchaseDetail = [];
+		for (let productInCart of shoppingCart) {
+			productPurchaseDetail.push({
+				ProductId: productInCart.Product.Product.Id,
+				ProductName: productInCart.Product.Product.Name,
+				ProductPrice: productInCart.Product.Product.Price,
+				ProductQuantity: productInCart.Quantity,
+			});
+		}
 		const finalPurchase = {
+			ProductPurchaseDetail: productPurchaseDetail,
 			DeliveryAddress: buyerInfo.deliveryAddress,
 			City: buyerInfo.city,
 			MobilePhoneNumber: buyerInfo.mobilePhoneNumber,
 			TypeOfPayment: paymentType,
+			TotalPrice: totalPrice,
 		};
 		axios
-			.put(productAPI.CONFIRM_PURCHASE, finalPurchase)
+			.post(productPurchaseAPI.CONFIRM_PURCHASE, finalPurchase)
 			.then((res) => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
@@ -112,6 +145,7 @@ const ShoppingCart = () => {
 					autoClose: 5000,
 				});
 				navigate("/");
+				localStorage.setItem("cart", JSON.stringify([]));
 			})
 			.catch((err) => {
 				console.log(err);
@@ -139,13 +173,14 @@ const ShoppingCart = () => {
 									{shoppingCart.map((productInCart, idx) => {
 										return (
 											<tr key={idx}>
-												{/* <td>
-												<img className="product-img" src={productInCart.Product.Image} />
-											</td> */}
-												<td>{productInCart.Product.Name}</td>
-												<td>{productInCart.Product.Price} RSD</td>
-												<td>{productInCart.Amount}</td>
-												<td>{productInCart.TotalPrice} RSD</td>
+												<td>{productInCart.Product.Product.Name}</td>
+												<td>{productInCart.Product.Product.Price} RSD</td>
+												<td>{productInCart.Quantity}</td>
+												<td>
+													{Number(productInCart.Product.Product.Price) *
+														Number(productInCart.Quantity)}{" "}
+													RSD
+												</td>
 												<td>
 													<Input
 														className="amount-select"

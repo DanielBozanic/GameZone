@@ -4,7 +4,6 @@ import (
 	"product/model"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 type productRepository struct {
@@ -16,19 +15,6 @@ type IProductRepository interface {
 	UpdateProduct(product model.Product) error
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	GetNumberOfRecordsSearch(name string) int64
-	GetCurrentCart(userId int) []model.ProductPurchase
-	GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase
-	GetPurchaseHistory(userId int) []model.ProductPurchase
-	GetProductPurchaseById(purchaseid int) (model.ProductPurchase, error)
-	GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error)
-	GetPaidProductPurchase(productId int, userId int) (model.ProductPurchase, error)
-	AddPurchase(purchase model.ProductPurchase) error
-	UpdatePurchase(purchase model.ProductPurchase) error
-	RemoveProductFromCart(purchase model.ProductPurchase) error
-	GetUserEmailsByProductId(productId int) []string
-	GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error)
-	AddProductAlert(productAlert model.ProductAlert) error
-	RemoveProductAlertByEmailAndProductId(email string, productId int) error
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
@@ -69,104 +55,4 @@ func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int6
 		Find(&products).
 		Count(&count)
 	return count
-}
-
-func (productRepo *productRepository) GetCurrentCart(userId int) []model.ProductPurchase {
-	var currentCart []model.ProductPurchase
-	productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Where("user_id = ? AND purchase_date IS NULL", userId).
-		Find(&currentCart)
-	return currentCart
-}
-
-func (productRepo *productRepository) GetAllDigitalItemsFromCart(userId int) []model.ProductPurchase {
-	var allDigitalItems []model.ProductPurchase
-	productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Joins("JOIN products ON products.id = product_purchases.product_id").
-		Joins("JOIN video_games ON video_games.product_id = products.id").
-		Where("products.type = 13 AND video_games.Digital = true AND user_id = ? AND purchase_date IS NULL", userId).
-		Find(&allDigitalItems)
-	return allDigitalItems
-}
-
-func (productRepo *productRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
-	var purchaseHistory []model.ProductPurchase
-	productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Where("user_id = ? AND purchase_date IS NOT null", userId).
-		Find(&purchaseHistory)
-	return purchaseHistory
-}
-
-func (productRepo *productRepository) GetProductPurchaseById(purchaseId int) (model.ProductPurchase, error) {
-	var productPurchase model.ProductPurchase
-	result := productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		First(&productPurchase, purchaseId)
-	return productPurchase, result.Error
-}
-
-func (productRepo *productRepository) GetProductPurchaseFromCart(productName string, userId int) (model.ProductPurchase, error) {
-	var productPurchase model.ProductPurchase
-	result := productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Joins("JOIN products ON products.id = product_purchases.product_id").
-		First(&productPurchase, "products.name LIKE ? AND user_id = ? AND purchase_date IS NULL", productName, userId)
-	return productPurchase, result.Error
-}
-
-func (productRepo *productRepository) GetPaidProductPurchase(productId int, userId int) (model.ProductPurchase, error) {
-	var productPurchase model.ProductPurchase
-	result := productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Joins("JOIN products ON products.id = product_purchases.product_id").
-		First(&productPurchase, "products.id = ? AND user_id = ? AND is_paid_for = true", productId, userId)
-	return productPurchase, result.Error
-}
- 
-func (productRepo *productRepository) AddPurchase(purchase model.ProductPurchase) error {
-	result := productRepo.Database.Create(&purchase)
-	return result.Error
-}
-
-func (productRepo *productRepository) UpdatePurchase(purchase model.ProductPurchase) error {
-	result := productRepo.Database.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&purchase)
-	return result.Error
-}
-
-func (productRepo *productRepository) RemoveProductFromCart(purchase model.ProductPurchase) error {
-	result := productRepo.Database.Delete(&purchase)
-	return result.Error
-}
-
-func (productRepo *productRepository) GetUserEmailsByProductId(productId int) []string {
-	var userEmails []string
-	productRepo.Database.
-		Where("product_id = ?", productId).
-		Model(&model.ProductAlert{}).
-		Pluck("user_email", &userEmails)
-	return userEmails
-}
-
-func (productRepo *productRepository) GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error) {
-	var productAlert model.ProductAlert
-	result := productRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Where("user_email LIKE ? AND product_id = ?", email, productId).
-		First(&productAlert)
-	return productAlert, result.Error
-}
-
-func (productRepo *productRepository) AddProductAlert(productAlert model.ProductAlert) error {
-	result := productRepo.Database.Create(&productAlert)
-	return result.Error
-}
-
-func (productRepo *productRepository) RemoveProductAlertByEmailAndProductId(email string, productId int) error {
-	result := productRepo.Database.
-		Where("user_email LIKE ? AND product_id = ?", email, productId).
-		Delete(model.ProductAlert{})
-	return result.Error
 }

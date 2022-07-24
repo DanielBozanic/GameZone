@@ -12,7 +12,7 @@ export const GET_CAPACITIES = api + "/getCapacities";
 export const GET_FORMS = api + "/getForms";
 export const GET_DISK_SPEEDS = api + "/getDiskSpeeds";
 
-const employeeProtectedHdds = "/employeeProtectedHdds";
+const employeeProtectedHdds = "/employeeProtected";
 export const CREATE = api + employeeProtectedHdds;
 export const UPDATE = api + employeeProtectedHdds;
 export const DELETE = api + employeeProtectedHdds;

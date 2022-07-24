@@ -79,22 +79,21 @@ func InitHeadphonesAPI(db *gorm.DB) api.HeadphonesAPI {
 
 func InitProductAPI(db *gorm.DB) api.ProductAPI {
 	wire.Build(
-		repository.NewProductRepository, 
-		repository.NewHeadphonesRepository, 
-		repository.NewMouseRepository, 
-		repository.NewKeyboardRepository, 
-		repository.NewPowerSupplyUnitRepository, 
-		repository.NewMonitorRepository,
-		repository.NewHardDiskDriveRepository,
-		repository.NewSolidStateDriveRepository,
-		repository.NewRamRepository,
-		repository.NewMotherboardRepository,
-		repository.NewProcessorRepository,
-		repository.NewGraphicsCardRepository,
-		repository.NewConsoleRepository,
-		repository.NewVideoGameRepository,
+		repository.NewProductRepository,
+		repository.NewProductPurchaseRepository,
 		service.NewProductService,
 		api.NewProductAPI,
 	)
 	return api.ProductAPI{}
+}
+
+func InitProductPurchaseAPI(db *gorm.DB) api.ProductPurchaseAPI {
+	wire.Build(
+		repository.NewProductPurchaseRepository, 
+		repository.NewProductRepository,
+		repository.NewVideoGameRepository,
+		service.NewProductPurchaseService,
+		api.NewProductPurchaseAPI,
+	)
+	return api.ProductPurchaseAPI{}
 }

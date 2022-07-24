@@ -2,6 +2,7 @@ package dto
 
 import (
 	"product/model"
+	"time"
 
 	"github.com/shopspring/decimal"
 )
@@ -9,10 +10,9 @@ import (
 type ProductPurchaseDTO struct {
 	Id int
 	UserId int
-	Product ProductDTO
+	ProductPurchaseDetail []ProductPurchaseDetailDTO
 	TotalPrice decimal.Decimal
-	Amount uint
-	PurchaseDate string
+	PurchaseDate time.Time
 	DeliveryAddress string
 	City string
 	MobilePhoneNumber string

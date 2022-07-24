@@ -24,7 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../Assets/css/forms.css";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
 import * as videoGameAPI from "../../../APIs/ProductMicroservice/video_game_api";
-import * as productAPI from "../../../APIs/ProductMicroservice/product_api";
+import * as productPurchaseAPI from "../../../APIs/ProductMicroservice/product_purchase_api";
 import * as helperFunctions from "../../../Utils/HelperFunctions";
 
 toast.configure();
@@ -119,7 +119,7 @@ const VideoGameForm = (props) => {
 
 	const notifyProductAvailability = (productId) => {
 		axios.get(
-			`${productAPI.NOTIFY_PRODUCT_AVAILABILITY}?productId=${productId}`
+			`${productPurchaseAPI.NOTIFY_PRODUCT_AVAILABILITY}?productId=${productId}`
 		);
 	};
 
