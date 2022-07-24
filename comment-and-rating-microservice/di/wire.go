@@ -13,6 +13,6 @@ import (
 )
 
 func InitProductCommentAPI(db *gorm.DB) api.ProductCommentAPI {
-	wire.Build(repository.NewProductCommentRepository, service.NewProductCommentService, api.NewProductCommentServiceAPI)
+	wire.Build(repository.NewProductCommentRepository, service.NewProductCommentService, api.NewProductCommentAPI)
 	return api.ProductCommentAPI{}
 }

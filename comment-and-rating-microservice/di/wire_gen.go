@@ -18,6 +18,6 @@ import (
 func InitProductCommentAPI(db *gorm.DB) api.ProductCommentAPI {
 	iProductCommentRepository := repository.NewProductCommentRepository(db)
 	iProductCommentService := service.NewProductCommentService(iProductCommentRepository)
-	productCommentAPI := api.NewProductCommentServiceAPI(iProductCommentService)
+	productCommentAPI := api.NewProductCommentAPI(iProductCommentService)
 	return productCommentAPI
 }

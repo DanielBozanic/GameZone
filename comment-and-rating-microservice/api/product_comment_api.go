@@ -17,7 +17,7 @@ type ProductCommentAPI struct {
 	IProductCommentService service.IProductCommentService
 }
 
-func NewProductCommentServiceAPI(productCommentService service.IProductCommentService) ProductCommentAPI {
+func NewProductCommentAPI(productCommentService service.IProductCommentService) ProductCommentAPI {
 	return ProductCommentAPI{IProductCommentService: productCommentService}
 }
 

@@ -1,7 +1,7 @@
 const api = "http://localhost:7001/api/comments/productComments";
 
 const userProtected = api + "/userProtected";
-const authProtected = api + "/authProtected";
+const userAndAdminProtected = api + "/userAndAdminProtected";
 
 export const GET_ALL = api;
 export const GET_BY_ID = api;
@@ -13,4 +13,4 @@ export const GET_BY_PRODUCT_NAME_AND_USERNAME =
 export const ADD_COMMENT = userProtected + "/addComment";
 export const EDIT_COMMENT = userProtected + "/editComment";
 
-export const DELETE_COMMENT = authProtected + "/deleteComment";
+export const DELETE_COMMENT = userAndAdminProtected + "/deleteComment";

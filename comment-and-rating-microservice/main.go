@@ -47,14 +47,14 @@ func main() {
 	productComments.GET("/getByUsername/:username", productCommentAPI.GetByUsername)
 	productComments.GET("/getByProductNameAndUsername", productCommentAPI.GetByProductNameAndUsername)
 
-	userProtected := productComments.Group("/userProtected")
-	userProtected.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtected.POST("/addComment", productCommentAPI.AddComment)
-	userProtected.PUT("/editComment", productCommentAPI.EditComment)
+	userProtectedProductComments := productComments.Group("/userProtected")
+	userProtectedProductComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
+	userProtectedProductComments.POST("/addComment", productCommentAPI.AddComment)
+	userProtectedProductComments.PUT("/editComment", productCommentAPI.EditComment)
 	
-	authProtected := productComments.Group("/authProtected")
-	authProtected.Use(middleware.AuthenticationRequired)
-	authProtected.DELETE("/deleteComment/:id", productCommentAPI.DeleteComment)
+	userAndAdminProtectedProductComments := productComments.Group("/userAndAdminProtected")
+	userAndAdminProtectedProductComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
+	userAndAdminProtectedProductComments.DELETE("/deleteComment/:id", productCommentAPI.DeleteComment)
 	
 	err := r.Run(":7001")
 	if err != nil {
