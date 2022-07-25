@@ -53,6 +53,23 @@ func (newsArticleApi *NewsArticleAPI) GetNumberOfRecordsPublishedArticles(c *gin
 	c.JSON(http.StatusOK, numberOfRecords)
 }
 
+func (newsArticleApi *NewsArticleAPI) GetUnpublishedArticles(c *gin.Context) {
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
+    if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+	
+	newsArticles := newsArticleApi.INewsArticleService.GetUnpublishedArticles(page, pageSize)
+	c.JSON(http.StatusOK, mapper.ToNewsArticleDTOs(newsArticles))
+}
+
+func (newsArticleApi *NewsArticleAPI) GetNumberOfRecordsUnpublishedArticles(c *gin.Context) {
+	numberOfRecords := newsArticleApi.INewsArticleService.GetNumberOfRecordsUnpublishedArticles()
+	c.JSON(http.StatusOK, numberOfRecords)
+}
+
 func (newsArticleApi *NewsArticleAPI) GetById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -83,13 +100,8 @@ func (newsArticleApi *NewsArticleAPI) AddNewsArticle(c *gin.Context) {
 		return
 	}
 
-	msg := newsArticleApi.INewsArticleService.AddNewsArticle(newsArticle)
-
-	if msg == "" {
-		c.JSON(http.StatusOK, "News article added successfully.")
-	} else {
-		c.JSON(http.StatusBadRequest, msg)
-	}
+	createdArticle := newsArticleApi.INewsArticleService.AddNewsArticle(newsArticle)
+	c.JSON(http.StatusOK, createdArticle)
 }
 
 func (newsArticleApi *NewsArticleAPI) EditNewsArticle(c *gin.Context) {

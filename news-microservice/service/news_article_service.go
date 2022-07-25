@@ -1,11 +1,14 @@
 package service
 
 import (
+	"errors"
 	"news/dto"
 	"news/mapper"
 	"news/model"
 	"news/repository"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type newsArticleService struct {
@@ -17,8 +20,10 @@ type INewsArticleService interface {
 	GetNumberOfRecords() int64
 	GetPublishedArticles(page int, pageSize int) []model.NewsArticle
 	GetNumberOfRecordsPublishedArticles() int64
+	GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle
+	GetNumberOfRecordsUnpublishedArticles() int64
 	GetById(id int) (model.NewsArticle, error)
-	AddNewsArticle(newsArticle model.NewsArticle) string
+	AddNewsArticle(newsArticle model.NewsArticle) model.NewsArticle
 	EditNewsArticle(newsArticleDTO dto.NewsArticleDTO) string
 	DeleteNewsArticle(id int) error
 	PublishNewsArticle(newsArticleDTO dto.NewsArticleDTO) string
@@ -44,18 +49,22 @@ func (newsArticleService *newsArticleService) GetNumberOfRecordsPublishedArticle
 	return newsArticleService.INewsArticleRepository.GetNumberOfRecordsPublishedArticles()
 }
 
+func (newsArticleService *newsArticleService) GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle {
+	return newsArticleService.INewsArticleRepository.GetUnpublishedArticles(page, pageSize);
+}
+
+func (newsArticleService *newsArticleService) GetNumberOfRecordsUnpublishedArticles() int64 {
+	return newsArticleService.INewsArticleRepository.GetNumberOfRecordsUnpublishedArticles()
+}
+
 func (newsArticleService *newsArticleService) GetById(id int) (model.NewsArticle, error) {
 	return newsArticleService.INewsArticleRepository.GetById(id)
 }
 
-func (newsArticleService *newsArticleService) AddNewsArticle(newsArticle model.NewsArticle) string {
-	msg := ""
+func (newsArticleService *newsArticleService) AddNewsArticle(newsArticle model.NewsArticle) model.NewsArticle {
 	newsArticle.DateTime = time.Now()
-	err := newsArticleService.INewsArticleRepository.Create(newsArticle)
-	if err != nil {
-		msg = err.Error()
-	}
-	return msg
+	createdArticle := newsArticleService.INewsArticleRepository.Create(newsArticle)
+	return createdArticle
 }
 
 func (newsArticleService *newsArticleService) EditNewsArticle(newsArticleDTO dto.NewsArticleDTO) string {
@@ -86,12 +95,14 @@ func (newsArticleService *newsArticleService) DeleteNewsArticle(id int) error {
 func (newsArticleService *newsArticleService) PublishNewsArticle(newsArticleDTO dto.NewsArticleDTO) string {
 	msg := ""
 	newsArticle, err := newsArticleService.INewsArticleRepository.GetById(newsArticleDTO.Id)
-	if err != nil {
-		return err.Error()
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		newsArticle = newsArticleService.AddNewsArticle(mapper.ToNewsArticle(newsArticleDTO))
+	} else {
+		newsArticle = mapper.ToNewsArticle(newsArticleDTO)
+		newsArticle.DateTime = time.Now()
 	}
 
-	newsArticle.UnpublishedContent = newsArticleDTO.UnpublishedContent
-	*newsArticle.PublishedContent = newsArticleDTO.UnpublishedContent
+	newsArticle.PublishedContent = newsArticleDTO.UnpublishedContent
 	err = newsArticleService.INewsArticleRepository.Update(newsArticle)
 	if err != nil {
 		msg = err.Error()

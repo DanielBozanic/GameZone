@@ -103,7 +103,7 @@ const ShoppingCart = () => {
 			(product) =>
 				product.Product.Product.Id !== productInCart.Product.Product.Id
 		);
-		if (newCart.length == 0) {
+		if (newCart.length === 0) {
 			setConfirmedCheckout(false);
 			setBuyerInfo(null);
 			setPaymentType(null);

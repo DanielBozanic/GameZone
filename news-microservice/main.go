@@ -50,6 +50,8 @@ func main() {
 
 	employeeProtectedNewsArticles := newsArticles.Group("/employeeProtected")
 	employeeProtectedNewsArticles.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
+	employeeProtectedNewsArticles.GET("/getUnpublishedArticles", newsArticleAPI.GetUnpublishedArticles)
+	employeeProtectedNewsArticles.GET("/getNumberOfRecordsUnpublishedArticles", newsArticleAPI.GetNumberOfRecordsUnpublishedArticles)
 	employeeProtectedNewsArticles.POST("/addNewsArticle", newsArticleAPI.AddNewsArticle)
 	employeeProtectedNewsArticles.PUT("/editNewsArticle", newsArticleAPI.EditNewsArticle)
 	employeeProtectedNewsArticles.DELETE("/deleteNewsArticle", newsArticleAPI.DeleteNewsArticle)

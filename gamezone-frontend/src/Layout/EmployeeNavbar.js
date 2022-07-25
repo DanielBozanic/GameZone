@@ -116,6 +116,25 @@ const EmployeeNavbar = () => {
 						</UncontrolledDropdown>
 					</NavItem>
 					<NavItem>
+						<UncontrolledDropdown inNavbar nav>
+							<DropdownToggle caret nav>
+								News
+							</DropdownToggle>
+							<DropdownMenu right>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/addNewsArticle">
+										Add news article
+									</Link>
+								</DropdownItem>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/">
+										View news
+									</Link>
+								</DropdownItem>
+							</DropdownMenu>
+						</UncontrolledDropdown>
+					</NavItem>
+					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>
 							Sign Out
 						</NavLink>

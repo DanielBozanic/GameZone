@@ -75,6 +75,7 @@ import VerifyAccount from "./Pages/AccountVerification/VerifyAccount";
 import SignIn from "./Pages/SignIn/SignIn";
 import CreateAdminAndEmployee from "./Pages/CreateAdminAndEmployee";
 import ShoppingCart from "./Pages/ShoppingCart";
+import NewsEditor from "./Pages/NewsEditor/NewsEditor";
 
 import * as role from "./Utils/Role";
 
@@ -164,6 +165,25 @@ function App() {
 							{UpdateProductRAM()}
 							{UpdateProductSSD()}
 							{UpdateProductVideoGame()}
+
+							<Route
+								path="/addNewsArticle"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/addNewsArticle"
+									element={<NewsEditor key="/addNewsArticle" />}
+								/>
+							</Route>
+							<Route
+								path="/editNewsArticle/:id"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/editNewsArticle/:id"
+									element={<NewsEditor key="/editNewsArticle/:id" />}
+								/>
+							</Route>
 						</Routes>
 					</div>
 					<Footer />

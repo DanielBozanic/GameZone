@@ -1,0 +1,86 @@
+.news-editor {
+	background: white;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.news-editor .ql-editor {
+	height: 700px;
+}
+
+.news-editor-card {
+	background: #343a40;
+	color: orange;
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+.input-field {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:focus {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:active {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field-error-msg {
+	font-weight: bold;
+	color: orange;
+	font-size: 80%;
+}
+
+.news-editor-btn {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid orange;
+	height: 40px;
+	margin-top: 10px;
+	margin-right: 5px;
+}
+
+.news-editor-btn:hover {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.news-editor-btn:focus {
+	background-color: orange;
+	color: #343a40;
+}
+
+.news-editor-btn:active {
+	background-color: orange;
+	color: #343a40;
+}
+
+.Toastify__toast--success {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
+}
+
+.Toastify__toast--error {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
+}
+
+.Toastify__close-button {
+	color: #343a40 !important;
+}

@@ -24,6 +24,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../../Assets/css/forms.css";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
 import * as graphicsCardAPI from "../../../APIs/ProductMicroservice/graphics_card_api";
+import * as productPurchaseAPI from "../../../APIs/ProductMicroservice/product_purchase_api";
 import * as helperFunctions from "../../../Utils/HelperFunctions";
 
 toast.configure();
@@ -95,6 +96,9 @@ const GraphicsCardForm = (props) => {
 					autoClose: 5000,
 					toastId: customId,
 				});
+				if (product.Product.Amount === 0 && data.Product.Amount > 0) {
+					notifyProductAvailability(product.Product.Id);
+				}
 			})
 			.catch((err) => {
 				toast.error(err.response.data, {
@@ -103,6 +107,12 @@ const GraphicsCardForm = (props) => {
 					toastId: customId,
 				});
 			});
+	};
+
+	const notifyProductAvailability = (productId) => {
+		axios.get(
+			`${productPurchaseAPI.NOTIFY_PRODUCT_AVAILABILITY}?productId=${productId}`
+		);
 	};
 
 	return (
