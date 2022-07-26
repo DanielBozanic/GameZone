@@ -54,6 +54,20 @@ def add_employee_and_admin():
         return resp
 
 
+def get_by_id():
+    args = request.args.to_dict()
+    user_id = args.get("userId")
+    user = services.user_service.get_by_id(user_id)
+    if not isinstance(user, str):
+        resp = jsonify(user=user.serialize())
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify(message=user)
+        resp.status_code = 400
+        return resp
+
+
 @utils.token_utils.authentification_required
 @utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def get_all_registered_users():

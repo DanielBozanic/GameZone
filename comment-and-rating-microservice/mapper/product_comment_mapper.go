@@ -9,8 +9,8 @@ import (
 func ToProductComment(productCommentDTO dto.ProductCommentDTO) (model.ProductComment) {
 	return model.ProductComment {
 		Id: productCommentDTO.Id,
-		ProductName: productCommentDTO.ProductName,
-		Username: productCommentDTO.Username,
+		ProductId: productCommentDTO.ProductId,
+		UserId: productCommentDTO.UserId,
 		Comment: productCommentDTO.Comment,
 		Rating: productCommentDTO.Rating,
 		Archived: productCommentDTO.Archived,
@@ -21,8 +21,8 @@ func ToProductComment(productCommentDTO dto.ProductCommentDTO) (model.ProductCom
 func ToProductCommentDTO(productComment model.ProductComment) dto.ProductCommentDTO {
 	return dto.ProductCommentDTO {
 		Id: productComment.Id,
-		ProductName: productComment.ProductName,
-		Username: productComment.Username,
+		ProductId: productComment.ProductId,
+		UserId: productComment.UserId,
 		Comment: productComment.Comment,
 		Rating: productComment.Rating,
 		Archived: productComment.Archived,

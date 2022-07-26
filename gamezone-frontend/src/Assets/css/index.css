@@ -54,3 +54,19 @@ body {
 	font-family: "Batman";
 	src: local("batmfa__"), url("../fonts/batmfa__.ttf") format("truetype");
 }
+
+.ql-font-monospace {
+	font-family: monospace;
+}
+.ql-font-helvetica {
+	font-family: helvetica;
+}
+.ql-font-georgia {
+	font-family: georgia;
+}
+.ql-font-courier-new {
+	font-family: courier-new;
+}
+.ql-font-comic-sans {
+	font-family: comic-sans;
+}

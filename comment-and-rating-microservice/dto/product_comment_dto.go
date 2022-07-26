@@ -7,7 +7,8 @@ import (
 
 type ProductCommentDTO struct {
 	Id        int
-	ProductName string
+	ProductId int
+	UserId    int
 	Username  string
 	Comment   string
 	Rating    model.Rating

@@ -18,10 +18,10 @@ type IProductPurchaseRepository interface {
 	GetUnpaidProductPurchase(productId int) (model.ProductPurchase, error)
 	AddPurchase(purchase model.ProductPurchase) error
 	UpdatePurchase(purchase model.ProductPurchase) error
-	GetUserEmailsByProductId(productId int) []string
-	GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error)
+	GetUserIdsByProductId(productId int) []int
+	GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error)
 	AddProductAlert(productAlert model.ProductAlert) error
-	RemoveProductAlertByEmailAndProductId(email string, productId int) error
+	RemoveProductAlertByUserIdAndProductId(userId int, productId int) error
 }
 
 func NewProductPurchaseRepository(DB *gorm.DB) IProductPurchaseRepository {
@@ -71,20 +71,20 @@ func (productPurchaseRepository *productPurchaseRepository) UpdatePurchase(purch
 	return result.Error
 }
 
-func (productPurchaseRepository *productPurchaseRepository) GetUserEmailsByProductId(productId int) []string {
-	var userEmails []string
+func (productPurchaseRepository *productPurchaseRepository) GetUserIdsByProductId(productId int) []int {
+	var userIds []int
 	productPurchaseRepository.Database.
 		Where("product_id = ?", productId).
 		Model(&model.ProductAlert{}).
-		Pluck("user_email", &userEmails)
-	return userEmails
+		Pluck("user_id", &userIds)
+	return userIds
 }
 
-func (productPurchaseRepository *productPurchaseRepository) GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error) {
+func (productPurchaseRepository *productPurchaseRepository) GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error) {
 	var productAlert model.ProductAlert
 	result := productPurchaseRepository.Database.
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
-		Where("user_email LIKE ? AND product_id = ?", email, productId).
+		Where("user_id = ? AND product_id = ?", userId, productId).
 		First(&productAlert)
 	return productAlert, result.Error
 }
@@ -94,9 +94,9 @@ func (productPurchaseRepository *productPurchaseRepository) AddProductAlert(prod
 	return result.Error
 }
 
-func (productPurchaseRepository *productPurchaseRepository)  RemoveProductAlertByEmailAndProductId(email string, productId int) error {
+func (productPurchaseRepository *productPurchaseRepository) RemoveProductAlertByUserIdAndProductId(userId int, productId int) error {
 	result := productPurchaseRepository.Database.
-		Where("user_email LIKE ? AND product_id = ?", email, productId).
+		Where("user_id = ? AND product_id = ?", userId, productId).
 		Delete(model.ProductAlert{})
 	return result.Error
 }

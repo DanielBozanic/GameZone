@@ -13,7 +13,7 @@ type newsSubscriptionRepository struct {
 type INewsSubscriptionRepository interface {
 	Create(newsSubscription model.NewsSubscription) error
 	Delete(newsSubscription model.NewsSubscription) error
-	IsUserSubscribed(email string) (model.NewsSubscription, error)
+	IsUserSubscribed(userId int) (model.NewsSubscription, error)
 }
 
 func NewNewsSubscriptionRepository(DB *gorm.DB) INewsSubscriptionRepository {
@@ -30,10 +30,10 @@ func (newsSubscriptionRepo *newsSubscriptionRepository) Delete(newsSubscription 
 	return result.Error
 }
 
-func (newsSubscriptionRepo *newsSubscriptionRepository) IsUserSubscribed(email string) (model.NewsSubscription, error) {
+func (newsSubscriptionRepo *newsSubscriptionRepository) IsUserSubscribed(userId int) (model.NewsSubscription, error) {
 	var newsSubscription model.NewsSubscription
 	result := newsSubscriptionRepo.Database.
-		Where("email LIKE ?", email).
+		Where("user_id = ?", userId).
 		First(&newsSubscription)
 	return newsSubscription, result.Error
 }

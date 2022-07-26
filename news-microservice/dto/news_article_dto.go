@@ -4,9 +4,11 @@ import "time"
 
 type NewsArticleDTO struct {
 	Id          int
-	Title       string
-	Description string
-	UnpublishedContent  string    
+	UnpublishedTitle       string
+	UnpublishedDescription string
+	UnpublishedContent  string
+	PublishedTitle       string
+	PublishedDescription string 
 	PublishedContent    string    
 	DateTime    time.Time
 	IsSent      *bool

@@ -20,7 +20,7 @@ func NewNewsSubscriptionAPI(newsSubscriptionService service.INewsSubscriptionSer
 
 func (newsSubscriptionApi *NewsSubscriptionAPI) Subscribe(c *gin.Context) {
 	userData := middleware.GetUserData(c)
-	msg := newsSubscriptionApi.INewsSubscriptionService.Subscribe(userData.Email)
+	msg := newsSubscriptionApi.INewsSubscriptionService.Subscribe(userData.Id)
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "You are subscribed.")
@@ -31,7 +31,7 @@ func (newsSubscriptionApi *NewsSubscriptionAPI) Subscribe(c *gin.Context) {
 
 func (newsSubscriptionApi *NewsSubscriptionAPI) Unsubscribe(c *gin.Context) {
 	userData := middleware.GetUserData(c)
-	msg := newsSubscriptionApi.INewsSubscriptionService.Unsubscribe(userData.Email)
+	msg := newsSubscriptionApi.INewsSubscriptionService.Unsubscribe(userData.Id)
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "You are unsubscribed.")
@@ -42,6 +42,6 @@ func (newsSubscriptionApi *NewsSubscriptionAPI) Unsubscribe(c *gin.Context) {
 
 func (newsSubscriptionApi *NewsSubscriptionAPI) IsUserSubscribed(c *gin.Context) {
 	userData := middleware.GetUserData(c)
-	isUserSubscribed := newsSubscriptionApi.INewsSubscriptionService.IsUserSubscribed(userData.Email)
+	isUserSubscribed := newsSubscriptionApi.INewsSubscriptionService.IsUserSubscribed(userData.Id)
 	c.JSON(http.StatusOK, isUserSubscribed)
 }

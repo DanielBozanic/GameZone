@@ -43,9 +43,9 @@ func main() {
 	productComments := api.Group("/productComments")
 	productComments.GET("", productCommentAPI.GetAll)
 	productComments.GET("/:id", productCommentAPI.GetById)
-	productComments.GET("/getByProductName/:productName", productCommentAPI.GetByProductName)
-	productComments.GET("/getByUsername/:username", productCommentAPI.GetByUsername)
-	productComments.GET("/getByProductNameAndUsername", productCommentAPI.GetByProductNameAndUsername)
+	productComments.GET("/getByProductId/:productId", productCommentAPI.GetByProductId)
+	productComments.GET("/getByUserId/:userId", productCommentAPI.GetByUserId)
+	productComments.GET("/getByProductAndUser", productCommentAPI.GetByProductAndUser)
 
 	userProtectedProductComments := productComments.Group("/userProtected")
 	userProtectedProductComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))

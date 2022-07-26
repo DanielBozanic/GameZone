@@ -42,18 +42,41 @@ func (productCommentApi *ProductCommentAPI) GetById(c *gin.Context) {
 	}
 }
 
-func (productCommentApi *ProductCommentAPI) GetByProductName(c *gin.Context) {
-	productComments := productCommentApi.IProductCommentService.GetByProductName(c.Param("productName"))
+func (productCommentApi *ProductCommentAPI) GetByProductId(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	productCommentDTOs := productCommentApi.IProductCommentService.GetByProductId(productId)
+	c.JSON(http.StatusOK, productCommentDTOs)
+}
+
+func (productCommentApi *ProductCommentAPI) GetByUserId(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	productComments := productCommentApi.IProductCommentService.GetByUserId(userId)
 	c.JSON(http.StatusOK, mapper.ToProductCommentDTOs(productComments))
 }
 
-func (productCommentApi *ProductCommentAPI) GetByUsername(c *gin.Context) {
-	productComments := productCommentApi.IProductCommentService.GetByUsername(c.Param("username"))
-	c.JSON(http.StatusOK, mapper.ToProductCommentDTOs(productComments))
-}
+func (productCommentApi *ProductCommentAPI) GetByProductAndUser(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
 
-func (productCommentApi *ProductCommentAPI) GetByProductNameAndUsername(c *gin.Context) {
-	productComment, err := productCommentApi.IProductCommentService.GetByProductNameAndUsername(c.Query("productName"), c.Query("username"))
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	productComment, err := productCommentApi.IProductCommentService.GetByProductAndUser(productId, userId)
 
 	if err == nil {
 		c.JSON(http.StatusOK, mapper.ToProductCommentDTO(productComment))
@@ -72,7 +95,7 @@ func (productCommentApi *ProductCommentAPI) AddComment(c *gin.Context) {
 
 	productComment := mapper.ToProductComment(productCommentDTO)
 	userData := middleware.GetUserData(c)
-	msg := productCommentApi.IProductCommentService.AddComment(productComment, userData.Username)
+	msg := productCommentApi.IProductCommentService.AddComment(productComment, userData.Id)
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "Comment and rating added successfully.")

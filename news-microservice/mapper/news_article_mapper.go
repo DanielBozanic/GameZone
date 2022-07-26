@@ -9,9 +9,11 @@ import (
 func ToNewsArticle(newsArticleDTO dto.NewsArticleDTO) (model.NewsArticle) {
 	return model.NewsArticle {
 		Id: newsArticleDTO.Id,
-		Title: newsArticleDTO.Title,
-		Description: newsArticleDTO.Description,
+		UnpublishedTitle: newsArticleDTO.UnpublishedTitle,
+		UnpublishedDescription: newsArticleDTO.UnpublishedDescription,
 		UnpublishedContent: newsArticleDTO.UnpublishedContent,
+		PublishedTitle: newsArticleDTO.PublishedTitle,
+		PublishedDescription: newsArticleDTO.PublishedDescription,
 		PublishedContent: newsArticleDTO.PublishedContent,
 		DateTime: newsArticleDTO.DateTime,
 		IsSent: newsArticleDTO.IsSent,
@@ -22,9 +24,11 @@ func ToNewsArticle(newsArticleDTO dto.NewsArticleDTO) (model.NewsArticle) {
 func ToNewsArticleDTO(newsArticle model.NewsArticle) dto.NewsArticleDTO {
 	return dto.NewsArticleDTO {
 		Id: newsArticle.Id,
-		Title: newsArticle.Title,
-		Description: newsArticle.Description,
+		UnpublishedTitle: newsArticle.UnpublishedTitle,
+		UnpublishedDescription: newsArticle.UnpublishedDescription,
 		UnpublishedContent: newsArticle.UnpublishedContent,
+		PublishedTitle: newsArticle.PublishedTitle,
+		PublishedDescription: newsArticle.PublishedDescription,
 		PublishedContent: newsArticle.PublishedContent,
 		DateTime: newsArticle.DateTime,
 		IsSent: newsArticle.IsSent,

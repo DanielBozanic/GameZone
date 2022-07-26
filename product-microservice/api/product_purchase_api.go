@@ -62,14 +62,14 @@ func (productPurchaseApi *ProductPurchaseAPI) ConfirmPurchase(c *gin.Context) {
 	}
 }
 
-func (productPurchaseApi *ProductPurchaseAPI) GetProductAlertByProductIdAndEmail(c *gin.Context) {
+func (productPurchaseApi *ProductPurchaseAPI) GetProductAlertByProductIdAndUserId(c *gin.Context) {
 	productId, err := strconv.Atoi(c.Query("productId"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	userData := middleware.GetUserData(c)
-	productAlert, err := productPurchaseApi.IProductPurchaseService.GetProductAlertByProductIdAndEmail(userData.Email, productId)
+	productAlert, err := productPurchaseApi.IProductPurchaseService.GetProductAlertByProductIdAndUserId(userData.Id, productId)
 
 	if err == nil {
 		c.JSON(http.StatusOK, productAlert)
@@ -86,7 +86,7 @@ func (productPurchaseApi *ProductPurchaseAPI) AddProductAlert(c *gin.Context) {
 	}
 
 	userData := middleware.GetUserData(c)
-	msg := productPurchaseApi.IProductPurchaseService.AddProductAlert(userData.Email, productId);
+	msg := productPurchaseApi.IProductPurchaseService.AddProductAlert(userData.Id, productId);
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "You will be notified via email when product is in stock.")

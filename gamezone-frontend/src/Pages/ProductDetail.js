@@ -60,7 +60,7 @@ const ProductDetail = (props) => {
 	const getProductAlertByProductIdAndEmail = () => {
 		axios
 			.get(
-				`${productPurchaseAPI.GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_EMAIL}?productId=${id}`
+				`${productPurchaseAPI.GET_PRODUCT_ALERT_BY_PRODUCT_ID_AND_USER_ID}?productId=${id}`
 			)
 			.then((res) => {
 				if (res.data.ProductId === Number(id)) {
@@ -163,6 +163,7 @@ const ProductDetail = (props) => {
 					toastId: customId,
 					autoClose: 5000,
 				});
+				getProductAlertByProductIdAndEmail();
 			})
 			.catch((err) => {
 				console.log(err);

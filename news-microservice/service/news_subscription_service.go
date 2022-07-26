@@ -13,23 +13,23 @@ type newsSubscriptionService struct {
 }
 
 type INewsSubscriptionService interface {
-	Subscribe(email string) string
-	Unsubscribe(email string) string
-	IsUserSubscribed(email string) bool
+	Subscribe(userId int) string
+	Unsubscribe(userId int) string
+	IsUserSubscribed(userId int) bool
 }
 
 func NewNewsSubscriptionService(newsSubscriptionRepository repository.INewsSubscriptionRepository) INewsSubscriptionService {
 	return &newsSubscriptionService{INewsSubscriptionRepository: newsSubscriptionRepository}
 }
 
-func (newsSubscriptionService *newsSubscriptionService) Subscribe(email string) string {
+func (newsSubscriptionService *newsSubscriptionService) Subscribe(userId int) string {
 	msg := ""
 	var newsSubscription model.NewsSubscription
-	_, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(email)
+	_, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(userId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "You are already subscribed to receive emails."
 	}
-	newsSubscription.Email = email
+	newsSubscription.UserId = userId
 	err = newsSubscriptionService.INewsSubscriptionRepository.Create(newsSubscription)
 	if err != nil {
 		msg = err.Error()
@@ -37,9 +37,9 @@ func (newsSubscriptionService *newsSubscriptionService) Subscribe(email string) 
 	return msg
 }
 
-func (newsSubscriptionService *newsSubscriptionService) Unsubscribe(email string) string {
+func (newsSubscriptionService *newsSubscriptionService) Unsubscribe(userId int) string {
 	msg := ""
-	newsSubscription, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(email)
+	newsSubscription, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(userId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "You are not subscribed to receive emails."
 	}
@@ -51,8 +51,8 @@ func (newsSubscriptionService *newsSubscriptionService) Unsubscribe(email string
 	return msg
 }
 
-func (newsSubscriptionService *newsSubscriptionService) IsUserSubscribed(email string) bool {
-	_, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(email)
+func (newsSubscriptionService *newsSubscriptionService) IsUserSubscribed(userId int) bool {
+	_, err := newsSubscriptionService.INewsSubscriptionRepository.IsUserSubscribed(userId)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return false
 	} else {

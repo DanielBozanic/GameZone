@@ -76,6 +76,7 @@ import SignIn from "./Pages/SignIn/SignIn";
 import CreateAdminAndEmployee from "./Pages/CreateAdminAndEmployee";
 import ShoppingCart from "./Pages/ShoppingCart";
 import NewsEditor from "./Pages/NewsEditor/NewsEditor";
+import NewsList from "./Pages/NewsList";
 
 import * as role from "./Utils/Role";
 
@@ -184,6 +185,7 @@ function App() {
 									element={<NewsEditor key="/editNewsArticle/:id" />}
 								/>
 							</Route>
+							<Route path="/viewNews" element={<NewsList />} />
 						</Routes>
 					</div>
 					<Footer />

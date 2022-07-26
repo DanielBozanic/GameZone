@@ -11,7 +11,7 @@ func ToNewsComment(newsCommentDTO dto.NewsCommentDTO) (model.NewsComment) {
 		Id: newsCommentDTO.Id,
 		NewsArticle: ToNewsArticle(newsCommentDTO.NewsArticle),
 		Comment: newsCommentDTO.Comment,
-		Username: newsCommentDTO.Username,
+		UserId: newsCommentDTO.UserId,
 		DateTime: newsCommentDTO.DateTime,
 		Archived: newsCommentDTO.Archived,
 	}
@@ -22,7 +22,7 @@ func ToNewsCommentDTO(newsComment model.NewsComment) dto.NewsCommentDTO {
 		Id: newsComment.Id,
 		NewsArticle: ToNewsArticleDTO(newsComment.NewsArticle),
 		Comment: newsComment.Comment,
-		Username: newsComment.Username,
+		UserId: newsComment.UserId,
 		DateTime: newsComment.DateTime,
 		Archived: newsComment.Archived,
 	}

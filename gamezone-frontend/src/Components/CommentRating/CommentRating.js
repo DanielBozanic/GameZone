@@ -35,21 +35,18 @@ const CommentRating = (props) => {
 
 	useEffect(() => {
 		getAll();
-		checkIfProductIsPaidFor();
 	}, []);
 
 	const getAll = () => {
 		axios
-			.get(
-				`${productCommentAPI.GET_BY_PRODUCT_NAME}/${props.product.Product.Name}`
-			)
+			.get(`${productCommentAPI.GET_BY_PRODUCT_ID}/${props.product.Product.Id}`)
 			.then((res) => {
 				if (authService.isUser()) {
 					const userReview = res.data.filter(
-						(review) => review.Username === authService.getUsername()
+						(review) => review.UserId === Number(authService.getId())
 					);
 					res.data = res.data.filter(
-						(review) => review.Username !== authService.getUsername()
+						(review) => review.UserId !== Number(authService.getId())
 					);
 					setReviews(res.data);
 					if (userReview[0] !== undefined) {
@@ -58,6 +55,7 @@ const CommentRating = (props) => {
 				} else {
 					setReviews(res.data);
 				}
+				checkIfProductIsPaidFor();
 			})
 			.catch((err) => {
 				console.log(err);

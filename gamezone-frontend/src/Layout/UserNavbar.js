@@ -22,6 +22,11 @@ const UserNavbar = () => {
 						</NavLink>
 					</NavItem>
 					<NavItem>
+						<NavLink>
+							<Link to="/viewNews">News</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>
 							Sign Out
 						</NavLink>

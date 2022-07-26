@@ -9,14 +9,14 @@ import (
 func ToNewsSubscription(newsSubscriptionDTO dto.NewsSubscriptionDTO) (model.NewsSubscription) {
 	return model.NewsSubscription {
 		Id: newsSubscriptionDTO.Id,
-		Email: newsSubscriptionDTO.Email,
+		UserId: newsSubscriptionDTO.UserId,
 	}
 }
 
 func ToNewsSubscriptionDTO(newsSubscription model.NewsSubscription) dto.NewsSubscriptionDTO {
 	return dto.NewsSubscriptionDTO {
 		Id: newsSubscription.Id,
-		Email: newsSubscription.Email,
+		UserId: newsSubscription.UserId,
 	}
 }
 

@@ -28,11 +28,30 @@ function redoChange() {
 	this.quill.history.redo();
 }
 
-const Size = Quill.import("formats/size");
-Size.whitelist = ["extra-small", "small", "medium", "large"];
+const Size = Quill.import("attributors/style/size");
+const ColorStyle = Quill.import("attributors/style/color");
+const Align = Quill.import("attributors/style/align");
+Size.whitelist = [
+	"2px",
+	"4px",
+	"6px",
+	"8px",
+	"10px",
+	"12px",
+	"14px",
+	"16px",
+	"18px",
+	"20px",
+	"22px",
+	"24px",
+	"48px",
+	"72px",
+];
 Quill.register(Size, true);
+Quill.register(ColorStyle, true);
+Quill.register(Align, true);
 
-const Font = Quill.import("formats/font");
+const Font = Quill.import("attributors/class/font");
 Font.whitelist = [
 	"arial",
 	"comic-sans",
@@ -82,7 +101,7 @@ export const formats = [
 export const NewsEditorToolbar = () => (
 	<div id="toolbar">
 		<span className="ql-formats">
-			<select className="ql-font" defaultValue="arial">
+			<select className="ql-font">
 				<option value="arial">Arial</option>
 				<option value="comic-sans">Comic Sans</option>
 				<option value="courier-new">Courier New</option>
@@ -90,13 +109,24 @@ export const NewsEditorToolbar = () => (
 				<option value="helvetica">Helvetica</option>
 				<option value="monospace">Monospace</option>
 			</select>
-			<select className="ql-size" defaultValue="medium">
-				<option value="extra-small">Size 1</option>
-				<option value="small">Size 2</option>
-				<option value="medium">Size 3</option>
-				<option value="large">Size 4</option>
+			<select className="ql-size">
+				<option selected>Default</option>
+				<option value="2px">2px</option>
+				<option value="4px">4px</option>
+				<option value="6px">6px</option>
+				<option value="8px">8px</option>
+				<option value="10px">10px</option>
+				<option value="12px">12px</option>
+				<option value="14px">14px</option>
+				<option value="16px">16px</option>
+				<option value="18px">18px</option>
+				<option value="20px">20px</option>
+				<option value="22px">22px</option>
+				<option value="24px">24px</option>
+				<option value="48px">48px</option>
+				<option value="72px">72px</option>
 			</select>
-			<select className="ql-header" defaultValue="3">
+			<select className="ql-header">
 				<option value="1">Heading</option>
 				<option value="2">Subheading</option>
 				<option value="3">Normal</option>
@@ -128,10 +158,8 @@ export const NewsEditorToolbar = () => (
 		<span className="ql-formats">
 			<button className="ql-link" />
 			<button className="ql-image" />
-			<button className="ql-video" />
 		</span>
 		<span className="ql-formats">
-			<button className="ql-formula" />
 			<button className="ql-code-block" />
 			<button className="ql-clean" />
 		</span>

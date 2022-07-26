@@ -82,7 +82,7 @@ const NewsEditor = () => {
 			axios
 				.post(newsArticleAPI.ADD_NEWS_ARTICLE, data)
 				.then((res) => {
-					toast.success(res.data, {
+					toast.success("News article added successfully", {
 						position: toast.POSITION.TOP_CENTER,
 						autoClose: 5000,
 						toastId: customId,
@@ -103,8 +103,8 @@ const NewsEditor = () => {
 
 	const edit = (data) => {
 		if (!isQuillEmpty()) {
-			newsArticle.Title = data.Title;
-			newsArticle.Description = data.Description;
+			newsArticle.UnpublishedTitle = data.UnpublishedTitle;
+			newsArticle.UnpublishedDescription = data.UnpublishedDescription;
 			newsArticle.UnpublishedContent = data.UnpublishedContent;
 			axios
 				.put(newsArticleAPI.EDIT_NEWS_ARTICLE, newsArticle)
@@ -131,8 +131,8 @@ const NewsEditor = () => {
 		if (!isQuillEmpty()) {
 			let publishData = data;
 			if (newsArticle !== null) {
-				newsArticle.Title = data.Title;
-				newsArticle.Description = data.Description;
+				newsArticle.UnpublishedTitle = data.UnpublishedTitle;
+				newsArticle.UnpublishedDescription = data.UnpublishedDescription;
 				newsArticle.UnpublishedContent = data.UnpublishedContent;
 				publishData = newsArticle;
 			}
@@ -144,7 +144,7 @@ const NewsEditor = () => {
 						autoClose: 5000,
 						toastId: customId,
 					});
-					// navigate to published articles
+					navigate("/viewNews");
 				})
 				.catch((err) => {
 					console.log(err);
@@ -187,15 +187,17 @@ const NewsEditor = () => {
 												<Input
 													className="input-field"
 													type="text"
-													name="Title"
+													name="UnpublishedTitle"
 													innerRef={register}
-													invalid={errors.Title?.message}
+													invalid={errors.UnpublishedTitle?.message}
 													defaultValue={
-														newsArticle !== null ? newsArticle.Title : null
+														newsArticle !== null
+															? newsArticle.UnpublishedTitle
+															: null
 													}
 												/>
 												<FormFeedback className="input-field-error-msg">
-													{errors.Title?.message}
+													{errors.UnpublishedTitle?.message}
 												</FormFeedback>
 											</FormGroup>
 										</Col>
@@ -208,17 +210,17 @@ const NewsEditor = () => {
 													className="input-field"
 													type="textarea"
 													style={{ height: "100px", resize: "none" }}
-													name="Description"
+													name="UnpublishedDescription"
 													innerRef={register}
-													invalid={errors.Description?.message}
+													invalid={errors.UnpublishedDescription?.message}
 													defaultValue={
 														newsArticle !== null
-															? newsArticle.Description
+															? newsArticle.UnpublishedDescription
 															: null
 													}
 												/>
 												<FormFeedback className="input-field-error-msg">
-													{errors.Description?.message}
+													{errors.UnpublishedDescription?.message}
 												</FormFeedback>
 											</FormGroup>
 										</Col>

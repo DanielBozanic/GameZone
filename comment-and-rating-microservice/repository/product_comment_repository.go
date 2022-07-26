@@ -13,9 +13,9 @@ type productCommentRepository struct {
 type IProductCommentRepository interface {
 	GetAll() []model.ProductComment
 	GetById(id int) (model.ProductComment, error)
-	GetByProductName(productName string) []model.ProductComment
-	GetByUsername(username string) []model.ProductComment
-	GetByProductNameAndUsername(productName string, username string) (model.ProductComment, error)
+	GetByProductId(productId int) []model.ProductComment
+	GetByUserId(userId int) []model.ProductComment
+	GetByProductAndUser(productId int, userId int) (model.ProductComment, error)
 	Create(productComment model.ProductComment) error
 	Update(productComment model.ProductComment) error
 }
@@ -40,26 +40,26 @@ func (productCommentRepo *productCommentRepository) GetById(id int) (model.Produ
 	return productComment, result.Error
 }
 
-func (productCommentRepo *productCommentRepository) GetByProductName(productName string) []model.ProductComment {
+func (productCommentRepo *productCommentRepository) GetByProductId(productId int) []model.ProductComment {
 	var productComments []model.ProductComment
 	productCommentRepo.Database.
-		Where("product_name LIKE ? AND archived = false", productName).
+		Where("product_id = ? AND archived = false", productId).
 		Find(&productComments)
 	return productComments
 }
 
-func (productCommentRepo *productCommentRepository) GetByUsername(username string) []model.ProductComment {
+func (productCommentRepo *productCommentRepository) GetByUserId(userId int) []model.ProductComment {
 	var productComments []model.ProductComment
 	productCommentRepo.Database.
-		Where("username LIKE ? AND archived = false", username).
+		Where("user_id = ? AND archived = false", userId).
 		Find(&productComments)
 	return productComments
 }
 
-func (productCommentRepo *productCommentRepository) GetByProductNameAndUsername(productName string, username string) (model.ProductComment, error) {
+func (productCommentRepo *productCommentRepository) GetByProductAndUser(productId int, userId int) (model.ProductComment, error) {
 	var productComment model.ProductComment
 	result := productCommentRepo.Database.
-		Where("product_name LIKE ? AND username LIKE ? AND archived = false", productName, username).
+		Where("product_id = ? AND user_id = ? AND archived = false", productId, userId).
 		First(&productComment)
 	return productComment, result.Error
 }

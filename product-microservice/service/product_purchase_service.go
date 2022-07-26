@@ -25,8 +25,8 @@ type IProductPurchaseService interface {
 	GetPurchaseHistory(userId int) []model.ProductPurchase
 	CheckIfProductIsPaidFor(productId int, userId int) bool
 	ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error
-	GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error)
-	AddProductAlert(userEmail string, productId int) string
+	GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error)
+	AddProductAlert(userId int, productId int) string
 	NotifyProductAvailability(productId int) (interface{}, error)
 }
 
@@ -63,12 +63,12 @@ func (productPurchaseService *productPurchaseService) ConfirmPurchase(productPur
 
 
 // Product alert related services
-func (productPurchaseService *productPurchaseService) GetProductAlertByProductIdAndEmail(email string, productId int) (model.ProductAlert, error) {
-	return productPurchaseService.IProductPurchaseRepository.GetProductAlertByProductIdAndEmail(email, productId)
+func (productPurchaseService *productPurchaseService) GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error) {
+	return productPurchaseService.IProductPurchaseRepository.GetProductAlertByProductIdAndUserId(userId, productId)
 }
 
-func (productPurchaseService *productPurchaseService) AddProductAlert(userEmail string, productId int) string {
-	_, err := productPurchaseService.IProductPurchaseRepository.GetProductAlertByProductIdAndEmail(userEmail, productId)
+func (productPurchaseService *productPurchaseService) AddProductAlert(userId int, productId int) string {
+	_, err := productPurchaseService.IProductPurchaseRepository.GetProductAlertByProductIdAndUserId(userId, productId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "You are already registered to receive emails for this product."
 	}
@@ -81,15 +81,30 @@ func (productPurchaseService *productPurchaseService) AddProductAlert(userEmail 
 	var productAlert model.ProductAlert
 	productAlert.Product = product
 	productAlert.ProductId = product.Id
-	productAlert.UserEmail = userEmail
+	productAlert.UserId = userId
 	productPurchaseService.IProductPurchaseRepository.AddProductAlert(productAlert)
 
 	return ""
 }
 
 func (productPurchaseService *productPurchaseService) NotifyProductAvailability(productId int) (interface{}, error) {
-	recipients := productPurchaseService.IProductPurchaseRepository.GetUserEmailsByProductId(productId)
+	userIds := productPurchaseService.IProductPurchaseRepository.GetUserIdsByProductId(productId)
 	product, _ := productPurchaseService.IProductRepository.GetProductById(productId)
+	recipients := []string{}
+	for _, userId := range userIds {
+		req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(userId), nil)
+		client := &http.Client{}
+		resp, err := client.Do(req)
+
+		var target map[string]interface{}
+		if err != nil {
+			continue
+		}
+		defer resp.Body.Close()
+		json.NewDecoder(resp.Body).Decode(&target)
+		email := target["user"].(map[string]interface{})["email"].(string)
+		recipients = append(recipients, email)
+	}
 	data := map[string]interface{}{
 		"subject": "Product in stock" ,
 		"recipients": recipients,
@@ -102,7 +117,7 @@ func (productPurchaseService *productPurchaseService) NotifyProductAvailability(
 		},
 	}
 	jsonData, _ := json.Marshal(data)
-
+	
 	req, err := http.NewRequest("POST", "http://localhost:5001/api/email/sendEmail", bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
@@ -115,8 +130,8 @@ func (productPurchaseService *productPurchaseService) NotifyProductAvailability(
     defer resp.Body.Close()
 	json.NewDecoder(resp.Body).Decode(target)
 
-	for _, recipient := range recipients {
-		productPurchaseService.IProductPurchaseRepository.RemoveProductAlertByEmailAndProductId(recipient, productId)
+	for _, userId := range userIds {
+		productPurchaseService.IProductPurchaseRepository.RemoveProductAlertByUserIdAndProductId(userId, productId)
 	}
 	return target, nil
 }

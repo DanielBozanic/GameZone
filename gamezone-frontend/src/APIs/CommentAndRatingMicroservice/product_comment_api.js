@@ -5,10 +5,9 @@ const userAndAdminProtected = api + "/userAndAdminProtected";
 
 export const GET_ALL = api;
 export const GET_BY_ID = api;
-export const GET_BY_PRODUCT_NAME = api + "/getByProductName";
-export const GET_BY_USERNAME = api + "/getByUsername";
-export const GET_BY_PRODUCT_NAME_AND_USERNAME =
-	api + "/getByProductNameAndUsername";
+export const GET_BY_PRODUCT_ID = api + "/getByProductId";
+export const GET_BY_USER_ID = api + "/getByUserId";
+export const GET_BY_PRODUCT_AND_USER = api + "/getByProductAndUser";
 
 export const ADD_COMMENT = userProtected + "/addComment";
 export const EDIT_COMMENT = userProtected + "/editComment";

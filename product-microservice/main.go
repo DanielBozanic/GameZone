@@ -86,7 +86,7 @@ func main() {
 	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
 	userProtectedProducts.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
 	userProtectedProducts.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
-	userProtectedProducts.GET("/getProductAlertByProductIdAndEmail", productPurchaseAPI.GetProductAlertByProductIdAndEmail)
+	userProtectedProducts.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
 	userProtectedProducts.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
 
 	employeeProtectedProductPurchases := productPurchases.Group("/employeeProtected")

@@ -14,9 +14,9 @@ type newsCommentRepository struct {
 type INewsCommentRepository interface {
 	GetAll() []model.NewsComment
 	GetById(id int) (model.NewsComment, error)
-	GetByUsername(username string) []model.NewsComment
+	GetByUserId(userId int) []model.NewsComment
 	GetByNewsArticle(newsArticleId int) []model.NewsComment
-	GetByUsernameAndNewsArticle(username string, newsArticleId int) []model.NewsComment
+	GetByUserIdAndNewsArticle(userId int, newsArticleId int) []model.NewsComment
 	Create(newsComment model.NewsComment) error
 	Update(newsComment model.NewsComment) error
 }
@@ -45,12 +45,12 @@ func (newsCommentRepo *newsCommentRepository) GetById(id int) (model.NewsComment
 	return newsComment, result.Error
 }
 
-func (newsCommentRepo *newsCommentRepository) GetByUsername(username string) []model.NewsComment {
+func (newsCommentRepo *newsCommentRepository) GetByUserId(userId int) []model.NewsComment {
 	var newsComments []model.NewsComment
 	newsCommentRepo.Database.
 		Preload(clause.Associations).Preload("NewsArticle." + clause.Associations).
 		Joins("JOIN news_articles ON news_articles.id = news_comments.news_article_id").
-		Where("news_articles.archived = false AND archived = false AND username LIKE ?", username).
+		Where("news_articles.archived = false AND archived = false AND user_id = ?", userId).
 		Find(&newsComments)
 	return newsComments
 }
@@ -65,12 +65,12 @@ func (newsCommentRepo *newsCommentRepository) GetByNewsArticle(newsArticleId int
 	return newsComments
 }
 
-func (newsCommentRepo *newsCommentRepository) GetByUsernameAndNewsArticle(username string, newsArticleId int) []model.NewsComment {
+func (newsCommentRepo *newsCommentRepository) GetByUserIdAndNewsArticle(userId int, newsArticleId int) []model.NewsComment {
 	var newsComments []model.NewsComment
 	newsCommentRepo.Database.
 		Preload(clause.Associations).Preload("NewsArticle." + clause.Associations).
 		Joins("JOIN news_articles ON news_articles.id = news_comments.news_article_id").
-		Where("news_articles.archived = false AND archived = false AND username LIKE ? AND news_articles.id = ?", username, newsArticleId).
+		Where("news_articles.archived = false AND archived = false AND user_id = ? AND news_articles.id = ?", userId, newsArticleId).
 		Find(&newsComments)
 	return newsComments
 }

@@ -48,8 +48,8 @@ func (newsCommentApi *NewsCommentAPI) GetByNewsArticle(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	newsComments := newsCommentApi.INewsCommentService.GetByNewsArticle(newsArticleId)
-	c.JSON(http.StatusOK, mapper.ToNewsCommentDTOs(newsComments))
+	newsCommentDTOs := newsCommentApi.INewsCommentService.GetByNewsArticle(newsArticleId)
+	c.JSON(http.StatusOK, newsCommentDTOs)
 }
 
 func (newsCommentApi *NewsCommentAPI) AddNewsComment(c *gin.Context) {
@@ -67,7 +67,7 @@ func (newsCommentApi *NewsCommentAPI) AddNewsComment(c *gin.Context) {
 	}
 
 	userData := middleware.GetUserData(c)
-	msg := newsCommentApi.INewsCommentService.AddNewsComment(newsComment, userData.Username)
+	msg := newsCommentApi.INewsCommentService.AddNewsComment(newsComment, userData.Id)
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "Article comment added.")

@@ -127,8 +127,8 @@ const EmployeeNavbar = () => {
 									</Link>
 								</DropdownItem>
 								<DropdownItem>
-									<Link className="drop-down-link" to="/">
-										View news
+									<Link className="drop-down-link" to="/viewNews">
+										News
 									</Link>
 								</DropdownItem>
 							</DropdownMenu>

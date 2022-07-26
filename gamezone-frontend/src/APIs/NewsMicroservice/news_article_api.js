@@ -7,6 +7,8 @@ export const GET_NUMBER_OF_RECORDS_PUBLISHED_ARTICLES =
 	api + "/getNumberOfRecordsPublishedArticles";
 export const GET_BY_ID = api;
 
+export const GET_ALL = employeeProtected;
+export const GET_NUMBER_OF_RECORDS = employeeProtected + "/getNumberOfRecords";
 export const GET_UNPUBLISHED_ARTICLES =
 	employeeProtected + "/getUnpublishedArticles";
 export const GET_NUMBER_OF_RECORDS_UNPUBLISHED_ARTICLES =

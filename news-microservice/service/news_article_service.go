@@ -102,6 +102,8 @@ func (newsArticleService *newsArticleService) PublishNewsArticle(newsArticleDTO 
 		newsArticle.DateTime = time.Now()
 	}
 
+	newsArticle.PublishedTitle = newsArticleDTO.UnpublishedTitle
+	newsArticle.PublishedDescription = newsArticleDTO.UnpublishedDescription
 	newsArticle.PublishedContent = newsArticleDTO.UnpublishedContent
 	err = newsArticleService.INewsArticleRepository.Update(newsArticle)
 	if err != nil {
