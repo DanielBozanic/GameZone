@@ -34,7 +34,7 @@
 	border: 2px solid orange;
 }
 
-.pagination {
+.news-pagination {
 	display: flex;
 	align-items: center;
 	justify-content: center;

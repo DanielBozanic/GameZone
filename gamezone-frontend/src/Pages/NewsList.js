@@ -17,7 +17,6 @@ import {
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import DOMPurify from "dompurify";
 import * as authService from "../Auth/AuthService";
 import * as newsArticleAPI from "../APIs/NewsMicroservice/news_article_api";
 
@@ -85,8 +84,25 @@ const NewsList = () => {
 			});
 	};
 
+	const moreDetails = (id) => {
+		navigate("/viewNews/" + id);
+	};
+
 	const editNewsArticle = (id) => {
 		navigate("/editNewsArticle/" + id);
+	};
+
+	const deleteNewsArticle = (id) => {
+		axios
+			.delete(`${newsArticleAPI.DELETE_NEWS_ARTICLE}/${id}`)
+			.then((res) => {
+				console.log(res);
+				getNewsArticles();
+				getPageCount();
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 	};
 
 	const handleClick = (e, index) => {
@@ -106,16 +122,11 @@ const NewsList = () => {
 										<CardHeader>
 											<Row>
 												<Col md="10">
-													{authService.isEmployee() && (
-														<CardTitle tag="h5">
-															{newsArticle.UnpublishedTitle}
-														</CardTitle>
-													)}
-													{!authService.isEmployee() && (
-														<CardTitle tag="h5">
-															{newsArticle.PublishedTitle}
-														</CardTitle>
-													)}
+													<CardTitle tag="h5">
+														{authService.isEmployee()
+															? newsArticle.UnpublishedTitle
+															: newsArticle.PublishedTitle}
+													</CardTitle>
 												</Col>
 												<Col md="2">
 													<CardTitle tag="h5">
@@ -129,27 +140,19 @@ const NewsList = () => {
 											(newsArticle.PublishedDescription !== null &&
 												newsArticle.PublishedDescription !== "")) && (
 											<CardBody>
-												{authService.isEmployee() && (
-													<CardText>
-														{newsArticle.UnpublishedDescription}
-													</CardText>
-												)}
-												{!authService.isEmployee() && (
-													<CardText>
-														{newsArticle.PublishedDescription}
-													</CardText>
-												)}
+												<CardText>
+													{authService.isEmployee()
+														? newsArticle.UnpublishedDescription
+														: newsArticle.PublishedDescription}
+												</CardText>
 											</CardBody>
 										)}
-										{/* <div
-											dangerouslySetInnerHTML={{
-												__html: DOMPurify.sanitize(
-													newsArticle.UnpublishedContent
-												),
-											}}
-										></div> */}
 										<CardFooter>
-											<Button className="news-list-buttons" type="button">
+											<Button
+												className="news-list-buttons"
+												type="button"
+												onClick={() => moreDetails(newsArticle.Id)}
+											>
 												More details
 											</Button>
 											{authService.isEmployee() && (
@@ -161,7 +164,11 @@ const NewsList = () => {
 													>
 														Edit
 													</Button>
-													<Button className="news-list-buttons" type="button">
+													<Button
+														className="news-list-buttons"
+														type="button"
+														onClick={() => deleteNewsArticle(newsArticle.Id)}
+													>
 														Delete
 													</Button>
 												</>
@@ -172,7 +179,7 @@ const NewsList = () => {
 							</Row>
 						);
 					})}
-					<Row className="pagination">
+					<Row className="news-pagination">
 						<Col>
 							<Pagination size="lg">
 								<PaginationItem disabled={currentPage <= 1}>

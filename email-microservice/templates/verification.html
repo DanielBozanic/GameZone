@@ -2,59 +2,48 @@
 <html lang="en">
 <head>
     <style>
-         html, body {
-            height: 100%;
-         }
-
          html {
-            display: table;
-            margin: auto;
-         }
-
-         body {
-            display: table-cell;
-            vertical-align: middle;
-            font-family: Arial;
-         }
-
-         .main-div {
+            height: 100%;
+            background: #343a40;
+            color: orange;
             border: 5px solid orange;
-            padding: 10px;
          }
 
-         hr {
-            height: 5px;
-            background: black;
+         a {
+            color: orange;
+         }
+
+         .bottom-div {
+            bottom: 0px;
+            position:absolute;
          }
    </style>
 </head>
 <body>
-    <div class = "main-div">
-        <h4>Hello {{name}} {{surname}}</h4>
-        <p>You can verify your account with this code <b>{{code}}</b> on the next link:
-            <a href = "http://localhost:3000/verify/{{email}}">Verify</a>
-        </p>
+    <h4>Hello {{name}} {{surname}}</h4>
+    <p>You can verify your account with this code <b>{{code}}</b> on the next link:
+        <a href = "http://localhost:3000/verify/{{email}}">Verify</a>
+    </p>
+    <p>
+        <b>Note: This code will expire in 10 minutes.</b>
+        <a href = "http://localhost:5000/api/users/getVerificationCode?email={{email}}">
+            Click here
+        </a>
+        to receive a new code
+    </p>
+    <br/>
+    <p>The GameZone Team</p>
+    <br/>
+    <div class = "bottom-div">
         <p>
-            <b>Note: This code will expire in 10 minutes.</b>
-            <a href = "http://localhost:5000/api/users/getVerificationCode?email={{email}}">
-                Click here
-            </a>
-            to receive a new code
-        </p>
+        This email is automatically generated do not reply.
         <br/>
-        <p>The GameZone Team</p>
+        Site: <a href = "http://localhost:3000">http://localhost:3000</a>
         <br/>
-        <hr />
-        <p>
-            This email is automatically generated do not reply.
-            <br/>
-            Site: <a href = "http://localhost:3000">http://localhost:3000</a>
-            <br/>
-            Copyright &copy; 2022 GameZone Inc. All rights reserved
-            <br/>
-            Novi Sad, Serbia
+        Copyright &copy; 2022 GameZone Inc. All rights reserved
+        <br/>
+        Novi Sad, Serbia
         </p>
-        <hr />
     </div>
 </body>
 </html>

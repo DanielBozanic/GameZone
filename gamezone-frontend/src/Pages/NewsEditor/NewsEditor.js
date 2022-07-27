@@ -23,6 +23,7 @@ import {
 	Input,
 	FormFeedback,
 } from "reactstrap";
+import DOMPurify from "dompurify";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import * as newsArticleAPI from "../../APIs/NewsMicroservice/news_article_api";
@@ -78,6 +79,7 @@ const NewsEditor = () => {
 	};
 
 	const add = (data) => {
+		data.UnpublishedContent = DOMPurify.sanitize(data.UnpublishedContent);
 		if (!isQuillEmpty()) {
 			axios
 				.post(newsArticleAPI.ADD_NEWS_ARTICLE, data)
@@ -105,7 +107,9 @@ const NewsEditor = () => {
 		if (!isQuillEmpty()) {
 			newsArticle.UnpublishedTitle = data.UnpublishedTitle;
 			newsArticle.UnpublishedDescription = data.UnpublishedDescription;
-			newsArticle.UnpublishedContent = data.UnpublishedContent;
+			newsArticle.UnpublishedContent = DOMPurify.sanitize(
+				data.UnpublishedContent
+			);
 			axios
 				.put(newsArticleAPI.EDIT_NEWS_ARTICLE, newsArticle)
 				.then((res) => {
@@ -133,7 +137,9 @@ const NewsEditor = () => {
 			if (newsArticle !== null) {
 				newsArticle.UnpublishedTitle = data.UnpublishedTitle;
 				newsArticle.UnpublishedDescription = data.UnpublishedDescription;
-				newsArticle.UnpublishedContent = data.UnpublishedContent;
+				newsArticle.UnpublishedContent = DOMPurify.sanitize(
+					data.UnpublishedContent
+				);
 				publishData = newsArticle;
 			}
 			axios

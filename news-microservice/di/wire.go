@@ -23,6 +23,6 @@ func InitNewsCommentAPI(db *gorm.DB) api.NewsCommentAPI {
 }
 
 func InitNewsSubscriptionAPI(db *gorm.DB) api.NewsSubscriptionAPI {
-	wire.Build(repository.NewNewsSubscriptionRepository, service.NewNewsSubscriptionService, api.NewNewsSubscriptionAPI)
+	wire.Build(repository.NewNewsSubscriptionRepository, repository.NewNewsArticleRepository, service.NewNewsSubscriptionService, api.NewNewsSubscriptionAPI)
 	return api.NewsSubscriptionAPI{}
 }

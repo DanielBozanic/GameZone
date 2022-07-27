@@ -78,8 +78,8 @@ const CommentRating = (props) => {
 	const post = (data) => {
 		if (currentUserReview === null) {
 			data.Rating = Number(rating);
-			data.ProductName = props.product.Product.Name;
-			data.Username = authService.getUsername();
+			data.ProductId = props.product.Product.Id;
+			data.UserId = authService.getId();
 			addComment(data);
 		} else {
 			currentUserReview.Rating = Number(rating);

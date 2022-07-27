@@ -70,3 +70,19 @@ body {
 .ql-font-comic-sans {
 	font-family: comic-sans;
 }
+
+.Toastify__toast--success {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
+}
+
+.Toastify__toast--error {
+	background-color: orange !important;
+	color: #343a40 !important;
+	font-weight: bold !important;
+}
+
+.Toastify__close-button {
+	color: #343a40 !important;
+}

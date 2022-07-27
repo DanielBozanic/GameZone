@@ -1,48 +1,39 @@
-.news-editor {
-	background: white;
-	margin-top: 15px;
-	margin-bottom: 15px;
+.news-comment-title {
+	font-family: "Batman";
 }
 
-.news-editor .ql-editor {
-	height: 700px;
-}
-
-.news-editor-card {
-	background: #343a40;
-	color: orange;
-	font-weight: bold;
-	margin-bottom: 15px;
-}
-
-.input-field {
+.news-comment-input,
+.news-comment-input:read-only {
 	background-color: #343a40;
 	color: orange;
-	font-weight: bold;
 	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
 }
 
-.input-field:focus {
+.news-comment-input:focus {
 	background-color: #343a40;
 	color: orange;
-	font-weight: bold;
 	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
 }
 
-.input-field:active {
+.news-comment-input:active {
 	background-color: #343a40;
 	color: orange;
-	font-weight: bold;
 	border: 2px solid orange;
+	height: 130px !important;
+	resize: none;
 }
 
-.input-field-error-msg {
+.news-comment-field-error-msg {
 	font-weight: bold;
 	color: orange;
 	font-size: 80%;
 }
 
-.news-editor-btn {
+.news-comment-btn {
 	background-color: #343a40;
 	color: orange;
 	font-weight: bold;
@@ -53,18 +44,18 @@
 	margin-right: 5px;
 }
 
-.news-editor-btn:hover {
+.news-comment-btn:hover {
 	background-color: orange;
 	color: #343a40;
 	transition: 0.7s;
 }
 
-.news-editor-btn:focus {
+.news-comment-btn:focus {
 	background-color: orange;
 	color: #343a40;
 }
 
-.news-editor-btn:active {
+.news-comment-btn:active {
 	background-color: orange;
 	color: #343a40;
 }

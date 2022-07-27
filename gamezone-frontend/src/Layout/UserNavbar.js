@@ -1,11 +1,75 @@
-import { Nav, NavbarToggler, Collapse, NavItem, NavLink } from "reactstrap";
-import { useState } from "react";
+import {
+	Nav,
+	NavbarToggler,
+	UncontrolledDropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+	Collapse,
+	NavItem,
+	NavLink,
+} from "reactstrap";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import * as authService from "../Auth/AuthService";
+import * as newsSubscriptionAPI from "../APIs/NewsMicroservice/news_subscription_api";
 
+toast.configure();
 const UserNavbar = () => {
+	const customId = "UserNavbar";
 	const [collapsed, setCollapsed] = useState(true);
 	const toggleNavbar = () => setCollapsed(!collapsed);
+	const [subscribed, setSubscribed] = useState(false);
+
+	useEffect(() => {
+		isUserSubscribed();
+	}, []);
+
+	const isUserSubscribed = () => {
+		axios
+			.get(`${newsSubscriptionAPI.IS_USER_SUBSCRIBED}`)
+			.then((res) => {
+				setSubscribed(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const subscribe = () => {
+		axios
+			.post(`${newsSubscriptionAPI.SUBSCRIBE}`)
+			.then((res) => {
+				setSubscribed(true);
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const unsubscribe = () => {
+		axios
+			.delete(`${newsSubscriptionAPI.UNSUBSCRIBE}`)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+				setSubscribed(false);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	const signOut = () => {
 		authService.removeToken();
@@ -22,9 +86,34 @@ const UserNavbar = () => {
 						</NavLink>
 					</NavItem>
 					<NavItem>
-						<NavLink>
-							<Link to="/viewNews">News</Link>
-						</NavLink>
+						<UncontrolledDropdown inNavbar nav>
+							<DropdownToggle caret nav>
+								News
+							</DropdownToggle>
+							<DropdownMenu right>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/viewNews">
+										News
+									</Link>
+								</DropdownItem>
+								<DropdownItem>
+									{!subscribed && (
+										<Link className="drop-down-link" to="#" onClick={subscribe}>
+											Subscribe
+										</Link>
+									)}
+									{subscribed && (
+										<Link
+											className="drop-down-link"
+											to="#"
+											onClick={unsubscribe}
+										>
+											Unsubscribe
+										</Link>
+									)}
+								</DropdownItem>
+							</DropdownMenu>
+						</UncontrolledDropdown>
 					</NavItem>
 					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>

@@ -18,6 +18,7 @@ type INewsArticleRepository interface {
 	GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle
 	GetNumberOfRecordsUnpublishedArticles() int64
 	GetById(id int) (model.NewsArticle, error)
+	GetUnsentPublishedArticles() []model.NewsArticle
 	Create(newsArticle model.NewsArticle) model.NewsArticle
 	Update(newsArticle model.NewsArticle) error
 }
@@ -32,6 +33,7 @@ func (newsArticleRepo *newsArticleRepository) GetAll(page int, pageSize int) []m
 	newsArticleRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Where("archived = false").
+		Order("date_time DESC").
 		Find(&newsArticles)
 	return newsArticles
 }
@@ -51,6 +53,7 @@ func (newsArticleRepo *newsArticleRepository) GetPublishedArticles(page int, pag
 	newsArticleRepo.Database.
 		Offset(offset).Limit(pageSize).
 		Where("archived = false AND published_content IS NOT NULL").
+		Order("date_time DESC").
 		Find(&newsArticles)
 	return newsArticles
 }
@@ -89,6 +92,14 @@ func (newsArticleRepo *newsArticleRepository) GetById(id int) (model.NewsArticle
 		Where("archived = false").
 		First(&newsArticle, id)
 	return newsArticle, result.Error
+}
+
+func (newsArticleRepo *newsArticleRepository) GetUnsentPublishedArticles() []model.NewsArticle {
+	var newsArticles []model.NewsArticle
+	newsArticleRepo.Database.
+		Where("archived = false AND published_title IS NOT NULL AND published_content IS NOT NULL AND is_sent = false").
+		Find(&newsArticles)
+	return newsArticles
 }
 
 func (newsArticleRepo *newsArticleRepository) Create(newsArticle model.NewsArticle) model.NewsArticle {

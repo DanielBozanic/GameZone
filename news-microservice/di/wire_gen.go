@@ -31,7 +31,8 @@ func InitNewsCommentAPI(db *gorm.DB) api.NewsCommentAPI {
 
 func InitNewsSubscriptionAPI(db *gorm.DB) api.NewsSubscriptionAPI {
 	iNewsSubscriptionRepository := repository.NewNewsSubscriptionRepository(db)
-	iNewsSubscriptionService := service.NewNewsSubscriptionService(iNewsSubscriptionRepository)
+	iNewsArticleRepository := repository.NewNewsArticleRepository(db)
+	iNewsSubscriptionService := service.NewNewsSubscriptionService(iNewsSubscriptionRepository, iNewsArticleRepository)
 	newsSubscriptionAPI := api.NewNewsSubscriptionAPI(iNewsSubscriptionService)
 	return newsSubscriptionAPI
 }

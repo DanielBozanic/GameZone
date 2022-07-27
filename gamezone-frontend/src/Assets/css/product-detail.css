@@ -148,13 +148,3 @@
 	background-color: orange;
 	color: #343a40;
 }
-
-.Toastify__toast--success {
-	background-color: orange !important;
-	color: #343a40 !important;
-	font-weight: bold !important;
-}
-
-.Toastify__close-button {
-	color: #343a40 !important;
-}

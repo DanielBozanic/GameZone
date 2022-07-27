@@ -29,7 +29,6 @@ function redoChange() {
 }
 
 const Size = Quill.import("attributors/style/size");
-const ColorStyle = Quill.import("attributors/style/color");
 const Align = Quill.import("attributors/style/align");
 Size.whitelist = [
 	"2px",
@@ -48,7 +47,6 @@ Size.whitelist = [
 	"72px",
 ];
 Quill.register(Size, true);
-Quill.register(ColorStyle, true);
 Quill.register(Align, true);
 
 const Font = Quill.import("attributors/class/font");
@@ -88,13 +86,11 @@ export const formats = [
 	"strike",
 	"script",
 	"blockquote",
-	"background",
 	"list",
 	"bullet",
 	"indent",
 	"link",
 	"image",
-	"color",
 	"code-block",
 ];
 
@@ -152,8 +148,6 @@ export const NewsEditorToolbar = () => (
 		</span>
 		<span className="ql-formats">
 			<select className="ql-align" />
-			<select className="ql-color" />
-			<select className="ql-background" />
 		</span>
 		<span className="ql-formats">
 			<button className="ql-link" />

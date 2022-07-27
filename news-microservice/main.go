@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/go-co-op/gocron"
 )
 
 func main() {
@@ -56,7 +57,7 @@ func main() {
 	employeeProtectedNewsArticles.GET("/getNumberOfRecordsUnpublishedArticles", newsArticleAPI.GetNumberOfRecordsUnpublishedArticles)
 	employeeProtectedNewsArticles.POST("/addNewsArticle", newsArticleAPI.AddNewsArticle)
 	employeeProtectedNewsArticles.PUT("/editNewsArticle", newsArticleAPI.EditNewsArticle)
-	employeeProtectedNewsArticles.DELETE("/deleteNewsArticle", newsArticleAPI.DeleteNewsArticle)
+	employeeProtectedNewsArticles.DELETE("/deleteNewsArticle/:id", newsArticleAPI.DeleteNewsArticle)
 	employeeProtectedNewsArticles.PUT("/publishNewsArticle", newsArticleAPI.PublishNewsArticle)
 
 	newsComments := api.Group("/newsComments")
@@ -65,7 +66,7 @@ func main() {
 	userProtectedNewsComments := newsComments.Group("/userProtected")
 	userProtectedNewsComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
 	userProtectedNewsComments.POST("/addNewsComment", newsCommentAPI.AddNewsComment)
-	userProtectedNewsComments.PUT("/editNewsCommment", newsCommentAPI.EditNewsCommment)
+	userProtectedNewsComments.PUT("/editNewsComment", newsCommentAPI.EditNewsCommment)
 
 	userAndAdminProtectedNewsComments := newsComments.Group("/userAndAdminProtected")
 	userAndAdminProtectedNewsComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
@@ -78,6 +79,10 @@ func main() {
 	userProtectedNewsSubscriptions.POST("/subscribe", newsSubscriptionAPI.Subscribe)
 	userProtectedNewsSubscriptions.DELETE("/unsubscribe", newsSubscriptionAPI.Unsubscribe)
 	userProtectedNewsSubscriptions.GET("/isUserSubscribed", newsSubscriptionAPI.IsUserSubscribed)
+
+	scheduler := gocron.NewScheduler(time.UTC)
+	scheduler.Every(7).Days().Do(newsSubscriptionAPI.INewsSubscriptionService.SendEmails)
+	scheduler.StartAsync()
 
 	err := r.Run(":7002")
 	if err != nil {
