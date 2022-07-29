@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"math/rand"
 	"net/http"
 	"product/dto"
 	"product/mapper"
@@ -22,9 +23,13 @@ type productPurchaseService struct {
 }
 
 type IProductPurchaseService interface {
-	GetPurchaseHistory(userId int) []model.ProductPurchase
+	GetPurchaseHistory(userId int, page int, pageSize int) []model.ProductPurchase
+	GetNumberOfRecordsPurchaseHistory(userId int) int64
 	CheckIfProductIsPaidFor(productId int, userId int) bool
 	ConfirmPurchase(productPurchaseDto dto.ProductPurchaseDTO, userId int) error
+	SendPurchaseConfirmationMail(productPurchaseDto dto.ProductPurchaseDTO, userId int) string
+	ConfirmPayment(productPurchaseDto dto.ProductPurchaseDTO) string
+	SendPurchasedDigitalVideoGames(productPurchaseDto dto.ProductPurchaseDTO) string
 	GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error)
 	AddProductAlert(userId int, productId int) string
 	NotifyProductAvailability(productId int) (interface{}, error)
@@ -42,8 +47,12 @@ func NewProductPurchaseService(
 }
 
 // Product purchasing related services
-func (productPurchaseService *productPurchaseService) GetPurchaseHistory(userId int) []model.ProductPurchase {
-	return productPurchaseService.IProductPurchaseRepository.GetPurchaseHistory(userId)
+func (productPurchaseService *productPurchaseService) GetPurchaseHistory(userId int, page int, pageSize int) []model.ProductPurchase {
+	return productPurchaseService.IProductPurchaseRepository.GetPurchaseHistory(userId, page, pageSize)
+}
+
+func (productPurchaseService *productPurchaseService) GetNumberOfRecordsPurchaseHistory(userId int) int64 {
+	return productPurchaseService.IProductPurchaseRepository.GetNumberOfRecordsPurchaseHistory(userId);
 }
 
 func (productPurchaseService *productPurchaseService) CheckIfProductIsPaidFor(productId int, userId int) bool {
@@ -61,6 +70,152 @@ func (productPurchaseService *productPurchaseService) ConfirmPurchase(productPur
 	return productPurchaseService.IProductPurchaseRepository.AddPurchase(productPurchase)
 }
 
+func (productPurchaseService *productPurchaseService) SendPurchaseConfirmationMail(productPurchaseDto dto.ProductPurchaseDTO, userId int) string {
+	recipients := []string{}
+	req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(userId), nil)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	var target map[string]interface{}
+	if err != nil {
+		return err.Error()
+	}
+	defer resp.Body.Close()
+	json.NewDecoder(resp.Body).Decode(&target)
+	email := target["user"].(map[string]interface{})["email"].(string)
+	recipients = append(recipients, email)
+
+	var data map[string]interface{}
+	if productPurchaseDto.TypeOfPayment == model.PAYMENT_SLIP {
+		data = map[string]interface{}{
+			"subject": "Purchase complete" ,
+			"recipients": recipients,
+			"content": map[string]interface{}{
+				"template": "product_purchase",
+				"params": map[string]interface{}{
+					"totalPrice": productPurchaseDto.TotalPrice,
+					"productPurchases": productPurchaseDto,
+				},
+			},
+			"attachment": map[string]interface{}{
+				"path": "/assets/images/payment_slip.png",
+				"name": "Payment_slip.png",
+				"fileType": "image/png",
+			},
+		}
+	} else {
+		data = map[string]interface{}{
+			"subject": "Purchase complete" ,
+			"recipients": recipients,
+			"content": map[string]interface{}{
+				"template": "product_purchase",
+				"params": map[string]interface{}{
+					"totalPrice": productPurchaseDto.TotalPrice,
+					"productPurchases": productPurchaseDto,
+				},
+			},
+		}
+	}
+	
+	jsonData, _ := json.Marshal(data)
+	req, err = http.NewRequest("POST", "http://localhost:5001/api/email/sendEmail", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+	client = &http.Client{}
+	resp, err = client.Do(req)
+
+	if err != nil {
+		return err.Error()
+	}
+	defer resp.Body.Close()
+	json.NewDecoder(resp.Body).Decode(&target)
+
+	return ""
+}
+
+func (productPurchaseService *productPurchaseService) ConfirmPayment(productPurchaseDto dto.ProductPurchaseDTO) string {
+	productPurchase, err := productPurchaseService.IProductPurchaseRepository.GetProductPurchaseById(productPurchaseDto.Id)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "Product purchase not found"
+	}
+	*productPurchase.IsPaidFor = true
+	productPurchaseService.IProductPurchaseRepository.UpdatePurchase(productPurchase)
+
+	for _, productPurchaseDetail := range productPurchase.ProductPurchaseDetail {
+		product, _ := productPurchaseService.IProductRepository.GetProductById(productPurchaseDetail.ProductId)
+		if product.Amount < productPurchaseDetail.ProductQuantity {
+			product.Amount = 0
+		} else {
+			product.Amount = product.Amount - productPurchaseDetail.ProductQuantity
+		}
+		productPurchaseService.IProductRepository.UpdateProduct(product)
+	}
+	return ""
+}
+
+func (productPurchaseService *productPurchaseService) SendPurchasedDigitalVideoGames(productPurchaseDto dto.ProductPurchaseDTO) string {
+	productPurchase, err := productPurchaseService.IProductPurchaseRepository.GetProductPurchaseById(productPurchaseDto.Id)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return "Product purchase not found"
+	}
+
+	recipients := []string{}
+	req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(productPurchase.UserId), nil)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+
+	var target map[string]interface{}
+	if err != nil {
+		return err.Error()
+	}
+	defer resp.Body.Close()
+	json.NewDecoder(resp.Body).Decode(&target)
+	email := target["user"].(map[string]interface{})["email"].(string)
+	recipients = append(recipients, email)
+
+	for _, productPurchaseDetail := range productPurchase.ProductPurchaseDetail {
+		product, _ := productPurchaseService.IProductRepository.GetProductById(productPurchaseDetail.ProductId)
+		if product.Type == model.VIDEO_GAME {
+			videoGame, _ := productPurchaseService.IVideoGameRepository.GetById(product.Id)
+			if *videoGame.Digital {
+				data := map[string]interface{}{
+					"subject": "Purchased digital video game" ,
+					"recipients": recipients,
+					"content": map[string]interface{}{
+						"template": "purchased_digital_video_game",
+						"params": map[string]interface{}{
+							"productName": product.Name,
+							"code": randomString(10),
+						},
+					},
+				}
+				jsonData, _ := json.Marshal(data)
+				req, err := http.NewRequest("POST", "http://localhost:5001/api/email/sendEmail", bytes.NewBuffer(jsonData))
+				req.Header.Set("Content-Type", "application/json")
+				client := &http.Client{}
+				resp, err := client.Do(req)
+			
+				var target interface{}
+				if err != nil {
+					return err.Error()
+				}
+				defer resp.Body.Close()
+				json.NewDecoder(resp.Body).Decode(&target)
+			}
+		}
+	}
+	return ""
+}
+
+func randomString(length int) string {
+	var seededRand *rand.Rand = rand.New(
+		rand.NewSource(time.Now().UnixNano()))
+	const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+  	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
 
 // Product alert related services
 func (productPurchaseService *productPurchaseService) GetProductAlertByProductIdAndUserId(userId int, productId int) (model.ProductAlert, error) {

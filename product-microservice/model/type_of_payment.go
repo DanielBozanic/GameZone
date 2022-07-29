@@ -3,7 +3,7 @@ package model
 type TypeOfPayment int
 
 const (
-	CASH_ON_DELIVERY Type = iota + 1
+	CASH_ON_DELIVERY TypeOfPayment = iota + 1
 	PAYMENT_SLIP
 )
 

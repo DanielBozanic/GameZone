@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <style>
-         html {
-            height: 100%;
-            background: #343a40;
-            color: orange;
-            border: 5px solid orange;
-         }
+    <head>
+        <style>
+             html {
+                height: 100%;
+                background: #343a40;
+                color: orange;
+                border: 5px solid orange;
+             }
 
-         a {
-            font-weight: bold;
-            color: orange;
-         }
+             a {
+                font-weight: bold;
+                color: orange;
+             }
 
-         .bottom-div {
-            bottom: 0px;
-            position:absolute;
-         }
-   </style>
-<body>
-    {{htmlNews | safe}}
-    <div class = "bottom-div">
-        <p>
-        This email is automatically generated do not reply.
-        <br/>
-        Site: <a href = "http://localhost:3000">http://localhost:3000</a>
-        <br/>
-        Copyright &copy; 2022 GameZone Inc. All rights reserved
-        <br/>
-        Novi Sad, Serbia
-        </p>
-    </div>
-</body>
+             .bottom-div {
+                bottom: 0px;
+                position:absolute;
+             }
+       </style>
+    <body>
+        {{htmlNews | safe}}
+        <div class = "bottom-div">
+            <p>
+            This email is automatically generated do not reply.
+            <br/>
+            Site: <a href = "http://localhost:3000">http://localhost:3000</a>
+            <br/>
+            Copyright &copy; 2022 GameZone Inc. All rights reserved
+            <br/>
+            Novi Sad, Serbia
+            </p>
+        </div>
+    </body>
 </html>

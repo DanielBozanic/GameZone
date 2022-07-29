@@ -39,18 +39,23 @@ func (newsCommentService *newsCommentService) GetById(id int) (model.NewsComment
 func (newsCommentService *newsCommentService) GetByNewsArticle(newsArticleId int) []dto.NewsCommentDTO {
 	newsCommentDTOs := []dto.NewsCommentDTO{}
 	newsComments := newsCommentService.INewsCommentRepository.GetByNewsArticle(newsArticleId)
-	for _, newsComment := range newsComments {
+	for index, newsComment := range newsComments {
 		req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(newsComment.UserId), nil)
 		client := &http.Client{}
 		resp, err := client.Do(req)
 
+		username := ""
 		var target map[string]interface{}
 		if err != nil {
-			continue
+			username = "Unknown user " + strconv.Itoa(index)
+		} else if resp.StatusCode != http.StatusOK {
+			username = "Unknown user " + strconv.Itoa(index)
+			defer resp.Body.Close()
+		} else {
+			json.NewDecoder(resp.Body).Decode(&target)
+			username = target["user"].(map[string]interface{})["user_name"].(string)
+			defer resp.Body.Close()
 		}
-		defer resp.Body.Close()
-		json.NewDecoder(resp.Body).Decode(&target)
-		username := target["user"].(map[string]interface{})["user_name"].(string)
 		newsCommentDTO := mapper.ToNewsCommentDTO(newsComment)
 		newsCommentDTO.Username = username
 		newsCommentDTOs = append(newsCommentDTOs, newsCommentDTO)

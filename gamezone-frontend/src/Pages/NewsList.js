@@ -122,7 +122,10 @@ const NewsList = () => {
 										<CardHeader>
 											<Row>
 												<Col md="10">
-													<CardTitle tag="h5">
+													<CardTitle
+														className="news-article-card-title"
+														tag="h5"
+													>
 														{authService.isEmployee()
 															? newsArticle.UnpublishedTitle
 															: newsArticle.PublishedTitle}
@@ -130,7 +133,9 @@ const NewsList = () => {
 												</Col>
 												<Col md="2">
 													<CardTitle tag="h5">
-														{newsArticle.DateTime.toString().split("T")[0]}
+														{new Date(
+															newsArticle.DateTime
+														).toLocaleDateString()}
 													</CardTitle>
 												</Col>
 											</Row>

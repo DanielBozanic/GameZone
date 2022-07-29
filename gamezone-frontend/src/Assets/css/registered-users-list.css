@@ -1,17 +1,18 @@
-.news-list-row {
-	margin-top: 20px;
+.registered-users-row {
+	margin: auto;
+	padding: 10px;
 }
 
-.news-article-card {
+.registered-user-card {
 	background: #343a40;
 	color: orange;
 }
 
-.news-article-card-title {
+.registered-user-card-title {
 	font-family: "Batman";
 }
 
-.news-list-buttons {
+.registered-user-buttons {
 	background-color: orange;
 	color: #343a40;
 	font-weight: bold;
@@ -19,31 +20,30 @@
 	border: 2px solid #343a40;
 }
 
-.news-list-buttons:hover {
+.registered-user-buttons:hover {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 	transition: 0.7s;
 }
 
-.news-list-buttons:focus {
+.registered-user-buttons:focus {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 }
 
-.news-list-buttons:active {
+.registered-user-buttons:active {
 	background-color: #343a40;
 	color: orange;
 	border: 2px solid orange;
 }
 
-.news-pagination {
+.registered-users-pagination {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	flex: 1;
-	padding-top: 20px;
 }
 
 .page-link {
@@ -82,4 +82,12 @@
 	background-color: orange;
 	color: #343a40;
 	font-weight: bold;
+}
+
+.registered-users-pagination-padding {
+	padding-top: 520px;
+}
+
+.registered-users-pagination-padding-normal {
+	padding-top: 120px;
 }

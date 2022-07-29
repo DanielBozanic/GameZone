@@ -12,7 +12,8 @@ type productPurchaseRepository struct {
 }
 
 type IProductPurchaseRepository interface {
-	GetPurchaseHistory(userId int) []model.ProductPurchase
+	GetPurchaseHistory(userId int, page int, pageSize int) []model.ProductPurchase
+	GetNumberOfRecordsPurchaseHistory(userId int) int64
 	GetProductPurchaseById(purchaseid int) (model.ProductPurchase, error)
 	GetPaidProductPurchase(productId int, userId int) (model.ProductPurchase, error)
 	GetUnpaidProductPurchase(productId int) (model.ProductPurchase, error)
@@ -28,17 +29,32 @@ func NewProductPurchaseRepository(DB *gorm.DB) IProductPurchaseRepository {
 	return &productPurchaseRepository{Database: DB}
 }
 
-func (productPurchaseRepository *productPurchaseRepository) GetPurchaseHistory(userId int) []model.ProductPurchase {
+func (productPurchaseRepository *productPurchaseRepository) GetPurchaseHistory(userId int, page int, pageSize int) []model.ProductPurchase {
 	var purchaseHistory []model.ProductPurchase
+	offset := (page - 1) * pageSize
 	productPurchaseRepository.Database.
+		Offset(offset).Limit(pageSize).
+		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
 		Where("user_id = ?", userId).
+		Order("purchase_date DESC").
 		Find(&purchaseHistory)
 	return purchaseHistory
+}
+
+func (productPurchaseRepository *productPurchaseRepository) GetNumberOfRecordsPurchaseHistory(userId int) int64 {
+	var count int64
+	productPurchaseRepository.Database.
+		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
+		Where("user_id = ?", userId).
+		Model(&model.ProductPurchase{}).
+		Count(&count)
+	return count
 }
 
 func (productPurchaseRepository *productPurchaseRepository) GetProductPurchaseById(purchaseId int) (model.ProductPurchase, error) {
 	var productPurchase model.ProductPurchase
 	result := productPurchaseRepository.Database.
+		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
 		First(&productPurchase, purchaseId)
 	return productPurchase, result.Error
 }

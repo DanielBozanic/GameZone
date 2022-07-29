@@ -185,10 +185,7 @@ const ProductDetail = (props) => {
 								/>
 								<CardBody>
 									<CardTitle tag="h5">{product.Product.Name}</CardTitle>
-									<CardText>
-										{product.Product.Price}
-										RSD
-									</CardText>
+									<CardText>{product.Product.Price} RSD</CardText>
 									<CardText>{available}</CardText>
 								</CardBody>
 							</Card>

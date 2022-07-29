@@ -139,6 +139,7 @@ const ShoppingCart = () => {
 		axios
 			.post(productPurchaseAPI.CONFIRM_PURCHASE, finalPurchase)
 			.then((res) => {
+				sendPurchaseConfirmationMail(finalPurchase);
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
 					toastId: customId,
@@ -150,6 +151,13 @@ const ShoppingCart = () => {
 			.catch((err) => {
 				console.log(err);
 			});
+	};
+
+	const sendPurchaseConfirmationMail = (finalPurchase) => {
+		axios.post(
+			`${productPurchaseAPI.SEND_PURCHASE_CONFIRMATION_MAIL}`,
+			finalPurchase
+		);
 	};
 
 	return (

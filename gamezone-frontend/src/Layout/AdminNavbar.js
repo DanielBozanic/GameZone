@@ -1,4 +1,14 @@
-import { Nav, NavbarToggler, Collapse, NavItem, NavLink } from "reactstrap";
+import {
+	Nav,
+	NavbarToggler,
+	UncontrolledDropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+	Collapse,
+	NavItem,
+	NavLink,
+} from "reactstrap";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import * as authService from "../Auth/AuthService";
@@ -17,9 +27,23 @@ const AdminNavbar = () => {
 			<Collapse isOpen={!collapsed} navbar>
 				<Nav className="me-auto" navbar>
 					<NavItem>
-						<NavLink>
-							<Link to="/createAdminAndEmployee">Add employee/admin</Link>
-						</NavLink>
+						<UncontrolledDropdown inNavbar nav>
+							<DropdownToggle caret nav>
+								User management
+							</DropdownToggle>
+							<DropdownMenu right>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/createAdminAndEmployee">
+										Add employee/admin
+									</Link>
+								</DropdownItem>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/registeredUsers">
+										View registered users
+									</Link>
+								</DropdownItem>
+							</DropdownMenu>
+						</UncontrolledDropdown>
 					</NavItem>
 					<NavItem>
 						<NavLink>

@@ -27,25 +27,11 @@ def send_email():
     )
     template = env.get_template(str(request.json["content"]["template"]) + ".html")
     msg.html = template.render(request.json["content"]["params"])
+    if "attachment" in request.json.keys() is not None:
+        with app.open_resource(os.path.abspath(os.path.dirname(__file__) + request.json["attachment"]["path"])) as fp:
+            msg.attach(request.json["attachment"]["name"], request.json["attachment"]["fileType"], fp.read())
     mail.send(msg)
     return jsonify(status_code=200, content={"message": "Email has been sent"})
-
-
-@app.route("/api/email/sendEmails", methods=['POST'])
-def send_emails():
-    with mail.connect() as conn:
-        for email in request.json["emails"]:
-            msg = Message(subject=email["subject"],
-                          sender=app.config['MAIL_USERNAME'],
-                          recipients=email["recipients"])
-            env = Environment(
-                loader=FileSystemLoader(os.path.abspath(os.path.dirname(__file__)) + "/templates"),
-                autoescape=select_autoescape()
-            )
-            template = env.get_template(str(email["content"]["template"]) + ".html")
-            msg.html = template.render(email["content"]["params"])
-            conn.send(msg)
-    return jsonify(status_code=200, content={"message": "Emails has been sent"})
 
 
 if __name__ == '__main__':

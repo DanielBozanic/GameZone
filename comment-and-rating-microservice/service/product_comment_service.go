@@ -45,18 +45,23 @@ func (productCommentService *productCommentService) GetById(id int) (model.Produ
 func (productCommentService *productCommentService) GetByProductId(productId int) []dto.ProductCommentDTO {
     productCommentDTOs := []dto.ProductCommentDTO{}
 	productComments := productCommentService.IProductCommentRepository.GetByProductId(productId)
-	for _, productComment := range productComments {
+	for index, productComment := range productComments {
 		req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(productComment.UserId), nil)
 		client := &http.Client{}
 		resp, err := client.Do(req)
 
+		username := ""
 		var target map[string]interface{}
 		if err != nil {
-			continue
+			username = "Unknown user " + strconv.Itoa(index)
+		} else if resp.StatusCode != http.StatusOK {
+			username = "Unknown user " + strconv.Itoa(index)
+			defer resp.Body.Close()
+		} else {
+			json.NewDecoder(resp.Body).Decode(&target)
+			username = target["user"].(map[string]interface{})["user_name"].(string)
+			defer resp.Body.Close()
 		}
-		defer resp.Body.Close()
-		json.NewDecoder(resp.Body).Decode(&target)
-		username := target["user"].(map[string]interface{})["user_name"].(string)
 		productCommentDTO := mapper.ToProductCommentDTO(productComment)
 		productCommentDTO.Username = username
 		productCommentDTOs = append(productCommentDTOs, productCommentDTO)

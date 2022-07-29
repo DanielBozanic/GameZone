@@ -86,6 +86,13 @@ const UserNavbar = () => {
 						</NavLink>
 					</NavItem>
 					<NavItem>
+						<NavLink>
+							<Link to={`/purchaseHistory/${authService.getId()}`}>
+								Purchase history
+							</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<UncontrolledDropdown inNavbar nav>
 							<DropdownToggle caret nav>
 								News

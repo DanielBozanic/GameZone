@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+             html {
+                height: 100%;
+                background: #343a40;
+                color: orange;
+                border: 5px solid orange;
+             }
+
+             a {
+                font-weight: bold;
+                color: orange;
+             }
+
+             .bottom-div {
+                bottom: 0px;
+                position:absolute;
+             }
+
+             .product-purchase-table th {
+                border: 2px solid orange;
+                padding: 15px;
+             }
+             .product-purchase-table td {
+                border: 2px solid orange;
+                border-top: none;
+                padding: 15px;
+             }
+       </style>
+    <body>
+        <table class = "product-purchase-table">
+            <thead>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+            </thead>
+            <tbody>
+            {% for productPurchase in productPurchases.ProductPurchaseDetail %}
+                <tr>
+                    <td>{{ productPurchase.ProductName }}</td>
+                    <td>{{ productPurchase.ProductPrice }}</td>
+                    <td>{{ productPurchase.ProductQuantity }}</td>
+                    <td>{{ productPurchase.ProductPrice | float * productPurchase.ProductQuantity | int}} RSD</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <b>Total Price: {{totalPrice}} RSD</b>
+            </tfoot>
+        </table>
+        <br/>
+        <p>The GameZone Team</p>
+        <br/>
+        <div class = "bottom-div">
+            <p>
+            This email is automatically generated do not reply.
+            <br/>
+            Site: <a href = "http://localhost:3000">http://localhost:3000</a>
+            <br/>
+            Copyright &copy; 2022 GameZone Inc. All rights reserved
+            <br/>
+            Novi Sad, Serbia
+            </p>
+        </div>
+    </body>
+</html>

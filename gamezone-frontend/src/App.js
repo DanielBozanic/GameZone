@@ -78,6 +78,8 @@ import ShoppingCart from "./Pages/ShoppingCart";
 import NewsEditor from "./Pages/NewsEditor/NewsEditor";
 import NewsList from "./Pages/NewsList";
 import NewsDetail from "./Pages/NewsDetail";
+import RegisteredUsersList from "./Pages/RegisteredUsersList";
+import PurchaseHistory from "./Pages/PurchaseHistory";
 
 import * as role from "./Utils/Role";
 
@@ -188,6 +190,26 @@ function App() {
 							</Route>
 							<Route path="/viewNews" element={<NewsList />} />
 							<Route path="/viewNews/:id" element={<NewsDetail />} />
+							<Route
+								path="/registeredUsers"
+								element={<ProtectedRoute roles={[role.ROLE_ADMIN]} />}
+							>
+								<Route
+									path="/registeredUsers"
+									element={<RegisteredUsersList key="/registeredUsers" />}
+								/>
+							</Route>
+							<Route
+								path="/purchaseHistory/:id"
+								element={
+									<ProtectedRoute roles={[role.ROLE_ADMIN, role.ROLE_USER]} />
+								}
+							>
+								<Route
+									path="/purchaseHistory/:id"
+									element={<PurchaseHistory key="/purchaseHistory/:id" />}
+								/>
+							</Route>
 						</Routes>
 					</div>
 					<Footer />

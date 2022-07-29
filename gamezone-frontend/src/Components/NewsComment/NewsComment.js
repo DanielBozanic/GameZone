@@ -71,8 +71,6 @@ const NewsComment = (props) => {
 
 	const editComment = (data) => {
 		selectedComment.Comment = data.Comment;
-
-		console.log(selectedComment);
 		axios
 			.put(`${newsCommentAPI.EDIT_NEWS_COMMENT}`, selectedComment)
 			.then((res) => {

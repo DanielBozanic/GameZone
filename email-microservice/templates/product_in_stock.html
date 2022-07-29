@@ -1,40 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <style>
-         html {
-            height: 100%;
-            background: #343a40;
-            color: orange;
-            border: 5px solid orange;
-         }
+    <head>
+        <style>
+             html {
+                height: 100%;
+                background: #343a40;
+                color: orange;
+                border: 5px solid orange;
+             }
 
-         a {
-            font-weight: bold;
-            color: orange;
-         }
+             a {
+                font-weight: bold;
+                color: orange;
+             }
 
-         .bottom-div {
-            bottom: 0px;
-            position:absolute;
-         }
-   </style>
-<body>
-    <p>Product <a href = "http://localhost:3000{{productRoute}}">{{productName}}</a> is now in stock.</p>
-    <br/>
-    <br/>
-    <p>The GameZone Team</p>
-    <br/>
-    <div class = "bottom-div">
-        <p>
-        This email is automatically generated do not reply.
+             .bottom-div {
+                bottom: 0px;
+                position:absolute;
+             }
+       </style>
+    <body>
+        <p>Product <a href = "http://localhost:3000{{productRoute}}">{{productName}}</a> is now in stock.</p>
         <br/>
-        Site: <a href = "http://localhost:3000">http://localhost:3000</a>
+        <p>The GameZone Team</p>
         <br/>
-        Copyright &copy; 2022 GameZone Inc. All rights reserved
-        <br/>
-        Novi Sad, Serbia
-        </p>
-    </div>
-</body>
+        <div class = "bottom-div">
+            <p>
+            This email is automatically generated do not reply.
+            <br/>
+            Site: <a href = "http://localhost:3000">http://localhost:3000</a>
+            <br/>
+            Copyright &copy; 2022 GameZone Inc. All rights reserved
+            <br/>
+            Novi Sad, Serbia
+            </p>
+        </div>
+    </body>
 </html>

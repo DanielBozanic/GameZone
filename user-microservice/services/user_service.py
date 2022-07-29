@@ -126,9 +126,16 @@ def get_all():
     return User.query.all()
 
 
-def get_all_registered_users():
+def get_all_registered_users(page, page_size):
     return User.query \
-        .filter(("ROLE_USER" == User.role)).all()
+        .filter(("ROLE_USER" == User.role) & User.verified) \
+        .paginate(page, page_size)
+
+
+def get_number_of_records_registered_users():
+    return User.query \
+        .filter(("ROLE_USER" == User.role) & User.verified) \
+        .count()
 
 
 def get_by_id(user_id):

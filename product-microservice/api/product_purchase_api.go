@@ -22,14 +22,26 @@ func NewProductPurchaseAPI(productPurchaseService service.IProductPurchaseServic
 }
 
 func (productPurchaseApi *ProductPurchaseAPI) GetPurchaseHistory(c *gin.Context) {
-	userId, err := strconv.Atoi(c.Param("userId"))
+	userId, err := strconv.Atoi(c.Query("userId"))
+	page, err := strconv.Atoi(c.Query("page"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	productPurchases := productPurchaseApi.IProductPurchaseService.GetPurchaseHistory(userId)
+	productPurchases := productPurchaseApi.IProductPurchaseService.GetPurchaseHistory(userId, page, pageSize)
 	c.JSON(http.StatusOK, mapper.ToProductPurchaseDTOs(productPurchases))
+}
+
+func (productPurchaseApi *ProductPurchaseAPI) GetNumberOfRecordsPurchaseHistory(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Query("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	numberOfRecords := productPurchaseApi.IProductPurchaseService.GetNumberOfRecordsPurchaseHistory(userId)
+	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (productPurchaseApi *ProductPurchaseAPI) CheckIfProductIsPaidFor(c *gin.Context) {
@@ -59,6 +71,56 @@ func (productPurchaseApi *ProductPurchaseAPI) ConfirmPurchase(c *gin.Context) {
 		c.JSON(http.StatusOK, "Purchase successful")
 	} else  {
 		c.JSON(http.StatusBadRequest, error.Error())
+	}
+}
+
+func (productPurchaseApi *ProductPurchaseAPI) SendPurchaseConfirmationMail(c *gin.Context) {
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	userData := middleware.GetUserData(c)
+	msg := productPurchaseApi.IProductPurchaseService.SendPurchaseConfirmationMail(productPurchaseDTO, userData.Id)
+	if msg == "" {
+		c.Status(200)
+	} else  {
+		c.JSON(http.StatusBadRequest, msg)
+	}
+}
+
+
+func (productPurchaseApi *ProductPurchaseAPI) ConfirmPayment(c *gin.Context) {
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	msg := productPurchaseApi.IProductPurchaseService.ConfirmPayment(productPurchaseDTO)
+	if msg == "" {
+		c.JSON(http.StatusOK, "Purchase is paid")
+	} else  {
+		c.JSON(http.StatusBadRequest, msg)
+	}
+}
+
+func (productPurchaseApi *ProductPurchaseAPI) SendPurchasedDigitalVideoGames(c *gin.Context) {
+	var productPurchaseDTO dto.ProductPurchaseDTO
+	err := c.BindJSON(&productPurchaseDTO)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	msg := productPurchaseApi.IProductPurchaseService.SendPurchasedDigitalVideoGames(productPurchaseDTO)
+	if msg == "" {
+		c.Status(200)
+	} else  {
+		c.JSON(http.StatusBadRequest, msg)
 	}
 }
 

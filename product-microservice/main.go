@@ -86,6 +86,7 @@ func main() {
 	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
 	userProtectedProducts.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
 	userProtectedProducts.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
+	userProtectedProducts.POST("/sendPurchaseConfirmationMail", productPurchaseAPI.SendPurchaseConfirmationMail)
 	userProtectedProducts.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
 	userProtectedProducts.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
 
@@ -95,7 +96,13 @@ func main() {
 
 	adminAndUserProtectedProductPurchases := productPurchases.Group("/adminAndUserProtected")
 	adminAndUserProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
-	adminAndUserProtectedProductPurchases.GET("/getPurchaseHistory/:userId", productPurchaseAPI.GetPurchaseHistory)
+	adminAndUserProtectedProductPurchases.GET("/getPurchaseHistory", productPurchaseAPI.GetPurchaseHistory)
+	adminAndUserProtectedProductPurchases.GET("/getNumberOfRecordsPurchaseHistory", productPurchaseAPI.GetNumberOfRecordsPurchaseHistory)
+
+	adminProtectedProductPurchases := productPurchases.Group("/adminProtected")
+	adminProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN"}))
+	adminProtectedProductPurchases.PUT("/confirmPayment", productPurchaseAPI.ConfirmPayment)
+	adminProtectedProductPurchases.POST("/sendPurchasedDigitalVideoGames", productPurchaseAPI.SendPurchasedDigitalVideoGames)
 	
 	// Video game API
 	employeeProtectedVideoGames := videoGames.Group("/employeeProtected")
