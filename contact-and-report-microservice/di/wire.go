@@ -18,7 +18,7 @@ func InitReportAPI(db *gorm.DB) api.ReportAPI {
 }
 
 func InitBanAPI(db *gorm.DB) api.BanAPI {
-	wire.Build(repository.NewBanRepository, repository.NewReportRepository, service.NewBanService, api.NewBanAPI)
+	wire.Build(repository.NewBanRepository, service.NewBanService, api.NewBanAPI)
 	return api.BanAPI{}
 }
 

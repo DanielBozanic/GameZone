@@ -24,8 +24,8 @@ type IBanService interface {
 	SendEmailToBannedUser(ban model.Ban) string
 }
 
-func NewBanService(banRepository repository.IBanRepository, reportRepository repository.IReportRepository) IBanService {
-	return &banService{IBanRepository: banRepository, IReportRepository: reportRepository}
+func NewBanService(banRepository repository.IBanRepository) IBanService {
+	return &banService{IBanRepository: banRepository}
 }
 
 func (banService *banService) GetUserBanHistory(userId int) []model.Ban {
@@ -50,14 +50,6 @@ func (banService *banService) AddBan(ban model.Ban, reportId int) string {
 	if err != nil {
 		return err.Error()
 	}
-
-	report, err := banService.IReportRepository.GetById(reportId)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return err.Error()
-	}
-	*report.Answered = true
-
-	banService.IReportRepository.Update(report)
 	return ""
 }
 

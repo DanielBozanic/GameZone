@@ -50,10 +50,7 @@ func main() {
 
 	adminProtectedReports := reports.Group("/adminProtected")
 	adminProtectedReports.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
-	adminProtectedReports.GET("/getUnansweredReportsByUserId", reportAPI.GetUnansweredReportsByUserId)
-	adminProtectedReports.GET("/getNumberOfRecordsUnansweredReportsByUserId/:userId", reportAPI.GetNumberOfRecordsUnansweredReportsByUserId)
-	adminProtectedReports.GET("/getAnsweredReportsByUserId", reportAPI.GetAnsweredReportsByUserId)
-	adminProtectedReports.GET("/getNumberOfRecordsAnsweredReportsByUserId/:userId", reportAPI.GetNumberOfRecordsAnsweredReportsByUserId)
+	adminProtectedReports.GET("/getReportsByUserId/:userId", reportAPI.GetReportsByUserId)
 
 	bans := api.Group("/bans")
 
@@ -77,7 +74,7 @@ func main() {
 	userProtectedContacts.GET("/getAnsweredContactMessagesByUserId/:userId", contactAPI.GetAnsweredContactMessagesByUserId)
 	userProtectedContacts.POST("/sendContactMessage", contactAPI.SendContactMessage)
 
-	err := r.Run(":7002")
+	err := r.Run(":7003")
 	if err != nil {
 		panic(err)
 	}

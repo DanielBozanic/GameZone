@@ -24,8 +24,7 @@ func InitReportAPI(db *gorm.DB) api.ReportAPI {
 
 func InitBanAPI(db *gorm.DB) api.BanAPI {
 	iBanRepository := repository.NewBanRepository(db)
-	iReportRepository := repository.NewReportRepository(db)
-	iBanService := service.NewBanService(iBanRepository, iReportRepository)
+	iBanService := service.NewBanService(iBanRepository)
 	banAPI := api.NewBanAPI(iBanService)
 	return banAPI
 }

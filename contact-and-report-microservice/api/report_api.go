@@ -19,52 +19,15 @@ func NewReportAPI(reportService service.IReportService) ReportAPI {
 	return ReportAPI{IReportService: reportService}
 }
 
-func (reportApi *ReportAPI) GetUnansweredReportsByUserId(c *gin.Context) {
-	page, err := strconv.Atoi(c.Query("page"))
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-	userId, err := strconv.Atoi(c.Query("userId"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-	
-	reports := reportApi.IReportService.GetUnansweredReportsByUserId(page, pageSize, userId)
-	c.JSON(http.StatusOK, mapper.ToReportDTOs(reports))
-}
-
-func (reportApi *ReportAPI) GetNumberOfRecordsUnansweredReportsByUserId(c *gin.Context) {
+func (reportApi *ReportAPI) GetReportsByUserId(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("userId"))
     if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
     }
-
-	numberOfRecords := reportApi.IReportService.GetNumberOfRecordsUnansweredReportsByUserId(userId)
-	c.JSON(http.StatusOK, numberOfRecords)
-}
-
-func (reportApi *ReportAPI) GetAnsweredReportsByUserId(c *gin.Context) {
-	page, err := strconv.Atoi(c.Query("page"))
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-	userId, err := strconv.Atoi(c.Query("userId"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
 	
-	reports := reportApi.IReportService.GetAnsweredReportsByUserId(page, pageSize, userId)
+	reports := reportApi.IReportService.GetReportsByUserId(userId)
 	c.JSON(http.StatusOK, mapper.ToReportDTOs(reports))
-}
-
-func (reportApi *ReportAPI) GetNumberOfRecordsAnsweredReportsByUserId(c *gin.Context) {
-	userId, err := strconv.Atoi(c.Param("userId"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-
-	numberOfRecords := reportApi.IReportService.GetNumberOfRecordsAnsweredReportsByUserId(userId)
-	c.JSON(http.StatusOK, numberOfRecords)
 }
 
 func (reportApi *ReportAPI) AddReport(c *gin.Context) {
