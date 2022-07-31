@@ -137,18 +137,24 @@ func (productPurchaseService *productPurchaseService) ConfirmPayment(productPurc
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "Product purchase not found"
 	}
-	*productPurchase.IsPaidFor = true
-	productPurchaseService.IProductPurchaseRepository.UpdatePurchase(productPurchase)
 
+	updatedProducts := []model.Product{}
 	for _, productPurchaseDetail := range productPurchase.ProductPurchaseDetail {
 		product, _ := productPurchaseService.IProductRepository.GetProductById(productPurchaseDetail.ProductId)
 		if product.Amount < productPurchaseDetail.ProductQuantity {
-			product.Amount = 0
+			return "Insufficient quantity for " + product.Name
 		} else {
 			product.Amount = product.Amount - productPurchaseDetail.ProductQuantity
 		}
-		productPurchaseService.IProductRepository.UpdateProduct(product)
+		updatedProducts = append(updatedProducts, product)
 	}
+
+	for _, updatedProduct := range updatedProducts {
+		productPurchaseService.IProductRepository.UpdateProduct(updatedProduct)
+	}
+
+	*productPurchase.IsPaidFor = true
+	productPurchaseService.IProductPurchaseRepository.UpdatePurchase(productPurchase)
 	return ""
 }
 

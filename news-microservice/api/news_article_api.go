@@ -95,11 +95,6 @@ func (newsArticleApi *NewsArticleAPI) AddNewsArticle(c *gin.Context) {
 	}
 
 	newsArticle := mapper.ToNewsArticle(newsArticleDTO)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
 	createdArticle := newsArticleApi.INewsArticleService.AddNewsArticle(newsArticle)
 	c.JSON(http.StatusOK, createdArticle)
 }

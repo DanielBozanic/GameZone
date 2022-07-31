@@ -13,11 +13,16 @@ import {
 } from "reactstrap";
 import { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import * as authService from "../../Auth/AuthService";
 import * as productPurchaseAPI from "../../APIs/ProductMicroservice/product_purchase_api";
 import PurchaseDetail from "./PurchaseDetail";
 
+toast.configure();
 const Purchase = (props) => {
+	const customId = "Purchase";
+
 	const [isOpen, setIsOpen] = useState(false);
 	const toggleItem = () => setIsOpen(!isOpen);
 
@@ -29,7 +34,11 @@ const Purchase = (props) => {
 				props.getPurchaseHistory && props.getPurchaseHistory();
 			})
 			.catch((err) => {
-				console.log(err);
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: false,
+				});
 			});
 	};
 

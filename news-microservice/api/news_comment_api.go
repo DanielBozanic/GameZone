@@ -61,11 +61,6 @@ func (newsCommentApi *NewsCommentAPI) AddNewsComment(c *gin.Context) {
 	}
 
 	newsComment := mapper.ToNewsComment(newsCommentDTO)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
 	userData := middleware.GetUserData(c)
 	msg := newsCommentApi.INewsCommentService.AddNewsComment(newsComment, userData.Id)
 
