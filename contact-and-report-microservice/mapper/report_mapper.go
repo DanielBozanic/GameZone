@@ -13,7 +13,6 @@ func ToReport(reportDTO dto.ReportDTO) (model.Report) {
 		Reason: reportDTO.Reason,
 		ReasonDescription: reportDTO.ReasonDescription,
 		DateTime: reportDTO.DateTime,
-		Answered: reportDTO.Answered,
 	}
 }
 
@@ -24,7 +23,6 @@ func ToReportDTO(report model.Report) dto.ReportDTO {
 		Reason: report.Reason,
 		ReasonDescription: report.ReasonDescription,
 		DateTime: report.DateTime,
-		Answered: report.Answered,
 	}
 }
 

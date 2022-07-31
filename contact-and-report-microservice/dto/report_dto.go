@@ -11,5 +11,4 @@ type ReportDTO struct {
 	Reason            model.Reason
 	ReasonDescription string
 	DateTime          time.Time
-	Answered          *bool
 }

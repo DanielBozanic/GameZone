@@ -8,5 +8,4 @@ type Report struct {
 	Reason            Reason    `gorm:"not null"`
 	ReasonDescription string    `gorm:"type:BLOB;default:null"`
 	DateTime          time.Time `gorm:"not null"`
-	Answered          *bool     `gorm:"not null;default:false"`
 }
