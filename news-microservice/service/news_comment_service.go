@@ -19,6 +19,7 @@ type INewsCommentService interface {
 	GetAll() []model.NewsComment
 	GetById(id int) (model.NewsComment, error)
 	GetByNewsArticle(newsArticleId int) []dto.NewsCommentDTO
+	GetByUserId(userId int) []model.NewsComment
 	AddNewsComment(newsComment model.NewsComment, userId int) string
 	EditNewsCommment(newsCommentDTO dto.NewsCommentDTO) string
 	DeleteNewsComment(id int) error
@@ -61,6 +62,10 @@ func (newsCommentService *newsCommentService) GetByNewsArticle(newsArticleId int
 		newsCommentDTOs = append(newsCommentDTOs, newsCommentDTO)
 	}
 	return newsCommentDTOs
+}
+
+func (newsCommentService *newsCommentService) GetByUserId(userId int) []model.NewsComment {
+	return newsCommentService.INewsCommentRepository.GetByUserId(userId)
 }
 
 func (newsCommentService *newsCommentService) AddNewsComment(newsComment model.NewsComment, userId int) string {

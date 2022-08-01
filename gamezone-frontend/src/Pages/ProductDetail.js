@@ -16,7 +16,6 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "../Assets/css/product-detail.css";
 import AppNavbar from "../Layout/AppNavbar";
 import CommentRating from "../Components/CommentRating/CommentRating";
@@ -175,14 +174,10 @@ const ProductDetail = (props) => {
 			<AppNavbar />
 			{product !== null && (
 				<Container>
-					<Row className="product-detail-card">
+					<Row>
 						<Col style={{ marginTop: "10px", marginBottom: "10px" }} md={5}>
-							<Card className="product-detail-card-with-image">
-								<CardImg
-									className="product-detail-card-image"
-									src={product.Product.Image.Content}
-									alt="No image"
-								/>
+							<Card className="product-detail-card">
+								<CardImg src={product.Product.Image.Content} alt="No image" />
 								<CardBody>
 									<CardTitle tag="h5">{product.Product.Name}</CardTitle>
 									<CardText>{product.Product.Price} RSD</CardText>
@@ -193,25 +188,22 @@ const ProductDetail = (props) => {
 						{product !== null && (
 							<>
 								<Col>
-									<Card
-										style={{ marginTop: "10px" }}
-										className="product-detail-description-card"
-									>
+									<Card style={{ marginTop: "10px" }} className="card">
 										<CardTitle
-											className="product-detail-description-card-title"
+											className="title product-detail-description-title"
 											tag="h4"
 										>
 											Description
 										</CardTitle>
 										<CardBody>{product.Product.Description}</CardBody>
-										<CardFooter>
+										<CardFooter className="product-detail-description-card-footer">
 											More information on the manufacturer's website
 										</CardFooter>
 									</Card>
 									{!disableAddToCart && (
 										<>
 											<Input
-												className="amount-product-select"
+												className="input-field quantity-select"
 												type="select"
 												onChange={(e) => setQuantity(Number(e.target.value))}
 											>
@@ -223,7 +215,8 @@ const ProductDetail = (props) => {
 												<option>5</option>
 											</Input>
 											<Button
-												className="add-to-cart-btn"
+												style={{ marginTop: "10px" }}
+												className="my-button"
 												type="button"
 												onClick={addToCart}
 											>
@@ -234,7 +227,8 @@ const ProductDetail = (props) => {
 									{!disableNotify && (
 										<>
 											<Button
-												className="notify-btn"
+												style={{ marginTop: "10px" }}
+												className="my-button"
 												type="button"
 												onClick={addProductAlert}
 											>
@@ -246,14 +240,16 @@ const ProductDetail = (props) => {
 										authService.getRole() === role.ROLE_EMPLOYEE && (
 											<>
 												<Button
-													className="update-btn"
+													style={{ marginTop: "10px", marginRight: "10px" }}
+													className="my-button"
 													type="button"
 													onClick={updateProduct}
 												>
 													Update
 												</Button>
 												<Button
-													className="delete-btn"
+													style={{ marginTop: "10px", marginRight: "10px" }}
+													className="my-button"
 													type="button"
 													onClick={deleteProduct}
 												>
@@ -270,7 +266,7 @@ const ProductDetail = (props) => {
 							<Col>
 								<Card
 									style={{ marginTop: "20px", marginBottom: "10px" }}
-									className="product-detail-table-card"
+									className="card"
 								>
 									<Table className="product-detail-table">
 										<tr>

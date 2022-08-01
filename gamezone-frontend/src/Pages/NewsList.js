@@ -1,4 +1,3 @@
-import "../Assets/css/news-list.css";
 import {
 	Button,
 	CardText,
@@ -116,16 +115,13 @@ const NewsList = () => {
 				<Container>
 					{newsArticles.map((newsArticle) => {
 						return (
-							<Row className="news-list-row">
+							<Row>
 								<Col style={{ paddingTop: "5px" }}>
-									<Card className="news-article-card">
+									<Card className="card">
 										<CardHeader>
 											<Row>
 												<Col md="10">
-													<CardTitle
-														className="news-article-card-title"
-														tag="h5"
-													>
+													<CardTitle className="title" tag="h5">
 														{authService.isEmployee()
 															? newsArticle.UnpublishedTitle
 															: newsArticle.PublishedTitle}
@@ -154,7 +150,8 @@ const NewsList = () => {
 										)}
 										<CardFooter>
 											<Button
-												className="news-list-buttons"
+												style={{ marginRight: "5px" }}
+												className="my-button"
 												type="button"
 												onClick={() => moreDetails(newsArticle.Id)}
 											>
@@ -163,14 +160,16 @@ const NewsList = () => {
 											{authService.isEmployee() && (
 												<>
 													<Button
-														className="news-list-buttons"
+														style={{ marginRight: "5px" }}
+														className="my-button"
 														type="button"
 														onClick={() => editNewsArticle(newsArticle.Id)}
 													>
 														Edit
 													</Button>
 													<Button
-														className="news-list-buttons"
+														style={{ marginRight: "5px" }}
+														className="my-button"
 														type="button"
 														onClick={() => deleteNewsArticle(newsArticle.Id)}
 													>
@@ -184,7 +183,7 @@ const NewsList = () => {
 							</Row>
 						);
 					})}
-					<Row className="news-pagination">
+					<Row className="pagination">
 						<Col>
 							<Pagination size="lg">
 								<PaginationItem disabled={currentPage <= 1}>

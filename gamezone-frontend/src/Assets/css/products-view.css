@@ -1,8 +1,4 @@
-.card-row {
-	padding-top: 20px;
-}
-
-.card-with-image {
+.products-view-card {
 	width: 10vw;
 	min-width: 120px;
 	max-width: 160px;
@@ -10,64 +6,19 @@
 	color: orange;
 }
 
-.card-with-image:hover {
+.products-view-card:hover {
 	cursor: pointer;
 }
 
-.card-image {
+.products-view-card-image {
 	width: 100%;
 	height: auto;
 }
 
-.pagination {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex: 1;
-}
-
-.page-link {
-	background: #343a40;
-	color: orange;
-	border: 1px solid #343a40;
-	font-weight: bold;
-}
-
-.page-link:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.page-link:focus {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.page-link:active {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.page-item.disabled .page-link {
-	background: #343a40;
-	color: orange;
-	border: 1px solid #343a40;
-	font-weight: bold;
-}
-
-.page-item.active .page-link {
-	background-color: orange;
-	color: #343a40;
-	font-weight: bold;
-}
-
-.pagination-padding {
+.products-view-pagination-padding {
 	padding-top: 380px;
 }
 
-.pagination-padding-normal {
+.products-view-pagination-padding-normal {
 	padding-top: 20px;
 }

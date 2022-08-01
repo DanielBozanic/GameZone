@@ -31,9 +31,9 @@ func (banRepo *banRepository) GetAll() []model.Ban {
 
 func (banRepo *banRepository) GetUserBanHistory(userId int) []model.Ban {
 	var bans []model.Ban
-	currentDateTime := time.Now()
 	banRepo.Database.
-		Where("user_id = ? AND expiration_date < ?", userId, currentDateTime).
+		Where("user_id = ?", userId).
+		Order("expiration_date DESC").
 		Find(&bans)
 	return bans
 }

@@ -71,6 +71,7 @@ func main() {
 	userAndAdminProtectedNewsComments := newsComments.Group("/userAndAdminProtected")
 	userAndAdminProtectedNewsComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
 	userAndAdminProtectedNewsComments.DELETE("/deleteNewsComment/:id", newsCommentAPI.DeleteNewsComment)
+	userAndAdminProtectedNewsComments.GET("/getByUserId/:userId", newsCommentAPI.GetByUserId)
 
 	newsSubscriptions := api.Group("/newsSubscriptions")
 	

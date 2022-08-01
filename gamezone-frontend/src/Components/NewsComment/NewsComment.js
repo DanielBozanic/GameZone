@@ -14,7 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { newsCommentSchema } from "./NewsCommentSchema";
 import * as newsCommentAPI from "../../APIs/NewsMicroservice/news_comment_api";
 import * as authService from "../../Auth/AuthService";
-import "../../Assets/css/news-comment.css";
+import ReportModal from "../ReportModal/ReportModal";
 
 const NewsComment = (props) => {
 	const [newsComments, setNewsComments] = useState([]);
@@ -99,7 +99,7 @@ const NewsComment = (props) => {
 			{newsComments.length > 0 && (
 				<Row>
 					<Col>
-						<CardTitle className="news-comment-title" tag="h3">
+						<CardTitle className="title" tag="h3">
 							Comment section
 						</CardTitle>
 						{authService.isUser() && (
@@ -107,7 +107,8 @@ const NewsComment = (props) => {
 								<Col>
 									<Input
 										type="textarea"
-										className="news-comment-input"
+										className="input-field"
+										style={{ resize: "none", height: "120px" }}
 										name="Comment"
 										innerRef={newComment.register}
 										invalid={newComment.errors.Comment?.message}
@@ -116,7 +117,8 @@ const NewsComment = (props) => {
 										{newComment.errors.Comment?.message}
 									</FormFeedback>
 									<Button
-										className="news-comment-btn"
+										style={{ marginTop: "10px" }}
+										className="my-button"
 										type="button"
 										onClick={newComment.handleSubmit(addComment)}
 									>
@@ -144,7 +146,7 @@ const NewsComment = (props) => {
 															<>
 																<Input
 																	type="textarea"
-																	className="news-comment-input"
+																	className="input-field"
 																	name="Comment"
 																	defaultValue={
 																		currentUserComment !== null
@@ -174,7 +176,8 @@ const NewsComment = (props) => {
 													{selectedComment !== null &&
 														selectedComment.Id === currentUserComment.Id && (
 															<Button
-																className="news-comment-btn"
+																style={{ marginRight: "5px", marginTop: "5px" }}
+																className="my-button"
 																type="button"
 																onClick={existingComment.handleSubmit(
 																	editComment
@@ -186,7 +189,8 @@ const NewsComment = (props) => {
 													{(selectedComment === null ||
 														selectedComment.Id !== currentUserComment.Id) && (
 														<Button
-															className="news-comment-btn"
+															style={{ marginRight: "5px", marginTop: "5px" }}
+															className="my-button"
 															type="button"
 															onClick={() =>
 																setSelectedComment(currentUserComment)
@@ -197,7 +201,8 @@ const NewsComment = (props) => {
 													)}
 
 													<Button
-														className="news-comment-btn"
+														style={{ marginRight: "5px", marginTop: "5px" }}
+														className="my-button"
 														type="button"
 														onClick={() => deleteComment(currentUserComment.Id)}
 													>
@@ -229,19 +234,17 @@ const NewsComment = (props) => {
 												</Col>
 											</Row>
 											{(authService.isEmployee() || authService.isUser()) && (
-												<Row>
-													<Col>
-														<Button className="news-comment-btn" type="button">
-															Report
-														</Button>
-													</Col>
-												</Row>
+												<ReportModal
+													userId={newsComment.UserId}
+													username={newsComment.Username}
+												/>
 											)}
 											{authService.isAdmin() && (
 												<Row>
 													<Col>
 														<Button
-															className="news-comment-btn"
+															style={{ marginTop: "5px" }}
+															className="my-button"
 															type="button"
 															onClick={() => deleteComment(newsComment.Id)}
 														>

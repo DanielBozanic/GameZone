@@ -1,10 +1,8 @@
-.product-detail-card-with-image {
+.product-detail-card {
 	background: #343a40;
 	color: orange;
-}
-
-.product-detail-card-image {
-	height: auto;
+	margin-bottom: 0 !important;
+	margin-top: 0 !important;
 }
 
 .product-detail-description-card {
@@ -12,18 +10,29 @@
 	color: orange;
 }
 
-.product-detail-description-card-title {
-	font-family: "Batman";
+.product-detail-description-card-footer {
+	padding: 0.55rem 0.9rem !important;
+}
+
+.product-detail-description-title {
 	margin-left: 10px;
 	margin-top: 5px;
 }
 
-.product-detail-table-card {
-	background: #343a40;
-}
-
 .product-detail-table {
 	color: orange !important;
+}
+
+.product-detail-table td {
+	width: 60%;
+	border-top: none !important;
+	word-break: break-all;
+}
+
+.product-detail-table th {
+	width: 40%;
+	border-top: none !important;
+	word-break: break-all;
 }
 
 @media only screen and (max-width: 760px),
@@ -44,107 +53,4 @@
 		padding-right: 10px;
 		white-space: nowrap;
 	}
-}
-
-.product-detail-table td {
-	width: 60%;
-	border-top: none !important;
-	word-break: break-all;
-}
-
-.product-detail-table th {
-	width: 40%;
-	border-top: none !important;
-	word-break: break-all;
-}
-
-.amount-product-select {
-	margin-top: 10px;
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
-}
-
-.amount-product-select:focus {
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
-}
-
-.amount-product-select:active {
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
-}
-
-.add-to-cart-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-	width: 100%;
-	max-width: 200px;
-	margin-top: 15px;
-}
-
-.update-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-	width: 100%;
-	max-width: 200px;
-	margin-top: 15px;
-	margin-right: 10px;
-}
-
-.delete-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-	width: 100%;
-	max-width: 200px;
-	margin-top: 15px;
-}
-
-.notify-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-	width: 100%;
-	margin-top: 15px;
-}
-
-.add-to-cart-btn:hover:enabled,
-.delete-btn:hover,
-.update-btn:hover,
-.notify-btn:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.add-to-cart-btn:focus:enabled,
-.delete-btn:focus,
-.update-btn:focus,
-.notify-btn:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.add-to-cart-btn:active:enabled,
-.delete-btn:active,
-.update-btn:active,
-.notify-btn:active {
-	background-color: orange;
-	color: #343a40;
 }

@@ -12,7 +12,6 @@ import {
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import * as authService from "../Auth/AuthService";
 import * as newsSubscriptionAPI from "../APIs/NewsMicroservice/news_subscription_api";

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Fragment } from "react";
 import ProtectedRoute from "./Routes/ProtectedRoute";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import "./Assets/css/index.css";
 import "./Assets/fonts/batmfa__.ttf";
 import Header from "./Layout/Header";
@@ -80,6 +81,7 @@ import NewsList from "./Pages/NewsList";
 import NewsDetail from "./Pages/NewsDetail";
 import RegisteredUsersList from "./Pages/RegisteredUsersList";
 import PurchaseHistory from "./Pages/PurchaseHistory";
+import ManageUser from "./Pages/ManageUser/ManageUser";
 
 import * as role from "./Utils/Role";
 
@@ -208,6 +210,15 @@ function App() {
 								<Route
 									path="/purchaseHistory/:id"
 									element={<PurchaseHistory key="/purchaseHistory/:id" />}
+								/>
+							</Route>
+							<Route
+								path="/manageUser/:id"
+								element={<ProtectedRoute roles={[role.ROLE_ADMIN]} />}
+							>
+								<Route
+									path="/manageUser/:id"
+									element={<ManageUser key="/manageUser/:id" />}
 								/>
 							</Route>
 						</Routes>

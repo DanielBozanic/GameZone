@@ -14,7 +14,6 @@ import {
 } from "reactstrap";
 import { useState } from "react";
 import { saveAs } from "file-saver";
-import "../../Assets/css/checkout.css";
 import paymentSlipImage from "../../Assets/images/payment_slip.png";
 
 const ReviewCheckoutInfo = (props) => {
@@ -33,8 +32,8 @@ const ReviewCheckoutInfo = (props) => {
 		<>
 			<Row>
 				<Col>
-					<Card className="checkout-card">
-						<CardTitle className="checkout-card-title" tag="h2">
+					<Card className="card shopping-cart-card">
+						<CardTitle className="title" tag="h2">
 							Review checkout information
 						</CardTitle>
 						<CardBody>
@@ -69,7 +68,7 @@ const ReviewCheckoutInfo = (props) => {
 								<Col md="9">
 									<Button
 										type="button"
-										className="checkout-btn"
+										className="my-button"
 										onClick={onPurchaseComplete}
 									>
 										Confirm purchase
@@ -80,7 +79,7 @@ const ReviewCheckoutInfo = (props) => {
 										<Col md="3">
 											<Button
 												type="button"
-												className="checkout-btn"
+												className="my-button"
 												onClick={toggle}
 											>
 												View payment slip
@@ -94,14 +93,14 @@ const ReviewCheckoutInfo = (props) => {
 				</Col>
 			</Row>
 			<Modal size="lg" isOpen={modal} toggle={toggle}>
-				<ModalHeader className="payment-slip-modal-title" toggle={toggle}>
+				<ModalHeader className="title" toggle={toggle}>
 					Payment slip
 				</ModalHeader>
 				<ModalBody>
 					<CardImg src={paymentSlipImage} />
 				</ModalBody>
 				<ModalFooter>
-					<Button className="download-slip-btn" onClick={downloadSlip}>
+					<Button className="my-button" onClick={downloadSlip}>
 						Download
 					</Button>
 				</ModalFooter>

@@ -42,21 +42,15 @@ func (banApi *BanAPI) IsUserBanned(c *gin.Context) {
 }
 
 func (banApi *BanAPI) AddBan(c *gin.Context) {
-	reportId, err := strconv.Atoi(c.Param("reportId"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-
 	var banDTO dto.BanDTO
-	err = c.BindJSON(&banDTO)
+	err := c.BindJSON(&banDTO)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
 	ban := mapper.ToBan(banDTO)
-	msg := banApi.IBanService.AddBan(ban, reportId)
+	msg := banApi.IBanService.AddBan(ban)
 	if msg == "" {
 		c.JSON(http.StatusOK, "User is banned.")
 	} else {

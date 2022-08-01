@@ -9,22 +9,14 @@
              }
 
              a {
+                font-weight: bold;
                 color: orange;
              }
        </style>
-    </head>
     <body>
-        <h4>Hello {{name}} {{surname}}</h4>
-        <p>You can verify your account with this code <b>{{code}}</b> on the next link:
-            <a href = "http://localhost:3000/verify/{{email}}">Verify</a>
-        </p>
-        <p>
-            <b>Note: This code will expire in 10 minutes.</b>
-            <a href = "http://localhost:5000/api/users/getVerificationCode?email={{email}}">
-                Click here
-            </a>
-            to receive a new code
-        </p>
+        <p>Your account is banned until <b>{{expirationDate}}</b> due to multiple reports of <b>{{reason}}</b>.</p>
+        <br/>
+        <p>{{description}}</p>
         <br/>
         <div>
             <p>The GameZone Team</p>

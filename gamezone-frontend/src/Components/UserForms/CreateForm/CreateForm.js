@@ -1,6 +1,5 @@
 import { FormGroup, Label, Input, FormFeedback, Row, Col } from "reactstrap";
 import { useFormContext } from "react-hook-form";
-import "../../../Assets/css/forms.css";
 
 const CreateForm = () => {
 	const {

@@ -61,6 +61,7 @@ func (newsCommentRepo *newsCommentRepository) GetByNewsArticle(newsArticleId int
 		Preload(clause.Associations).Preload("NewsArticle." + clause.Associations).
 		Joins("JOIN news_articles ON news_articles.id = news_comments.news_article_id").
 		Where("news_articles.archived = false AND news_comments.archived = false AND news_articles.id = ?", newsArticleId).
+		Order("date_time DESC").
 		Find(&newsComments)
 	return newsComments
 }

@@ -36,16 +36,16 @@ const ProductsView = (props) => {
 		<>
 			{props.products.length > 0 && (
 				<Container>
-					<Row className="card-row">
+					<Row style={{ paddingTop: "20px" }}>
 						{props.products.map((product, index) =>
 							index < 4 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
 									<Card
-										className="card-with-image"
+										className="products-view-card"
 										onClick={() => viewProductDetails(product)}
 									>
 										<CardImg
-											className="card-image"
+											className="products-view-card-image"
 											alt="No image"
 											src={
 												product.Product === undefined
@@ -73,16 +73,16 @@ const ProductsView = (props) => {
 							)
 						)}
 					</Row>
-					<Row className="card-row">
+					<Row style={{ paddingTop: "20px" }}>
 						{props.products.map((product, index) =>
 							index > 3 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
 									<Card
-										className="card-with-image"
+										className="products-view-card"
 										onClick={() => viewProductDetails(product)}
 									>
 										<CardImg
-											className="card-image"
+											className="products-view-card-image"
 											alt="No image"
 											src={
 												product.Product === undefined
@@ -114,8 +114,8 @@ const ProductsView = (props) => {
 						className={cn(
 							"pagination",
 							props.products.length < 4
-								? "pagination-padding"
-								: "pagination-padding-normal"
+								? "products-view-pagination-padding"
+								: "products-view-pagination-padding-normal"
 						)}
 					>
 						<Col md="12">

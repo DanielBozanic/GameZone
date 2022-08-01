@@ -1,4 +1,3 @@
-import "../../Assets/css/purchase-history.css";
 import { Button, Table, Jumbotron, Collapse } from "reactstrap";
 
 const PurchaseDetail = (props) => {
@@ -10,7 +9,7 @@ const PurchaseDetail = (props) => {
 		<>
 			<Collapse isOpen={props.isOpen}>
 				<Jumbotron className="purchase-detail-jumbotron">
-					<Table className="purchase-detail-table">
+					<Table className="purchase-table">
 						<tbody>
 							<tr>
 								<th>Name</th>
@@ -36,7 +35,7 @@ const PurchaseDetail = (props) => {
 						<tfooter>
 							<Button
 								style={{ marginTop: "15px" }}
-								className="purchase-history-buttons"
+								className="my-button"
 								type="button"
 								onClick={onToggleItem}
 							>

@@ -19,6 +19,7 @@ import * as authService from "../../Auth/AuthService";
 import * as productCommentAPI from "../../APIs/CommentAndRatingMicroservice/product_comment_api";
 import * as productPurchaseAPI from "../../APIs/ProductMicroservice/product_purchase_api";
 import "../../Assets/css/comment-rating.css";
+import ReportModal from "../ReportModal/ReportModal";
 
 const CommentRating = (props) => {
 	const [reviews, setReviews] = useState([]);
@@ -134,9 +135,9 @@ const CommentRating = (props) => {
 				productIsPaidFor) && (
 				<Row>
 					<Col>
-						<Card className="review-card">
+						<Card className="card">
 							<CardBody>
-								<CardTitle className="review-title" tag="h3">
+								<CardTitle className="title" tag="h3">
 									Customer impressions
 								</CardTitle>
 								{(currentUserReview !== null ||
@@ -144,7 +145,9 @@ const CommentRating = (props) => {
 									<Row>
 										<Col>
 											<Row>
-												<Col style={{ marginBottom: "5px" }}>
+												<Col
+													style={{ marginBottom: "5px", fontWeight: "bold" }}
+												>
 													{currentUserReview !== null && (
 														<CardText>
 															{currentUserReview.Username} -{" "}
@@ -224,7 +227,7 @@ const CommentRating = (props) => {
 														<>
 															<Input
 																type="textarea"
-																className="review-input"
+																className="input-field"
 																name="Comment"
 																defaultValue={
 																	currentUserReview !== null
@@ -251,7 +254,8 @@ const CommentRating = (props) => {
 												<Col>
 													{(!readOnlyMode || currentUserReview === null) && (
 														<Button
-															className="comment-btn"
+															style={{ marginRight: "5px", marginTop: "5px" }}
+															className="my-button"
 															type="button"
 															onClick={handleSubmit(post)}
 														>
@@ -260,7 +264,8 @@ const CommentRating = (props) => {
 													)}
 													{readOnlyMode && currentUserReview !== null && (
 														<Button
-															className="comment-btn"
+															style={{ marginRight: "5px", marginTop: "5px" }}
+															className="my-button"
 															type="button"
 															onClick={() => setReadOnlyMode(false)}
 														>
@@ -269,7 +274,8 @@ const CommentRating = (props) => {
 													)}
 													{currentUserReview !== null && (
 														<Button
-															className="comment-btn"
+															style={{ marginRight: "5px", marginTop: "5px" }}
+															className="my-button"
 															type="button"
 															onClick={() =>
 																deleteComment(currentUserReview.Id)
@@ -295,7 +301,7 @@ const CommentRating = (props) => {
 																marginTop: "15px",
 															}}
 														>
-															<CardText>
+															<CardText style={{ fontWeight: "bold" }}>
 																{review.Username} - {review.Rating} ★
 															</CardText>
 														</Col>
@@ -309,19 +315,20 @@ const CommentRating = (props) => {
 													</Row>
 													{(authService.isEmployee() ||
 														authService.isUser()) && (
-														<Row>
-															<Col>
-																<Button className="comment-btn" type="button">
-																	Report
-																</Button>
-															</Col>
-														</Row>
+														<ReportModal
+															userId={review.UserId}
+															username={review.Username}
+														/>
 													)}
 													{authService.isAdmin() && (
 														<Row>
 															<Col>
 																<Button
-																	className="comment-btn"
+																	style={{
+																		marginRight: "5px",
+																		marginTop: "5px",
+																	}}
+																	className="my-button"
 																	type="button"
 																	onClick={() => deleteComment(review.Id)}
 																>

@@ -20,7 +20,7 @@ type banService struct {
 type IBanService interface {
 	GetUserBanHistory(userId int) []model.Ban
 	IsUserBanned(userId int) bool
-	AddBan(ban model.Ban, reportId int) string
+	AddBan(ban model.Ban) string
 	SendEmailToBannedUser(ban model.Ban) string
 }
 
@@ -40,7 +40,7 @@ func (banService *banService) IsUserBanned(userId int) bool {
 	return true
 }
 
-func (banService *banService) AddBan(ban model.Ban, reportId int) string {
+func (banService *banService) AddBan(ban model.Ban) string {
 	_, err := banService.IBanRepository.IsUserBanned(ban.UserId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "User is already banned"
@@ -69,12 +69,13 @@ func (banService *banService) SendEmailToBannedUser(ban model.Ban) string {
 	recipients = append(recipients, email)
 
 	data := map[string]interface{}{
-		"subject": "You have been banned" ,
+		"subject": "Account banned" ,
 		"recipients": recipients,
 		"content": map[string]interface{}{
 			"template": "banned_user",
 			"params": map[string]interface{}{
-				"reason": ban.Reason.String(),
+				"reason": ban.Reason,
+				"description": ban.Description,
 				"expirationDate": ban.ExpirationDate.Format("02-Jan-2006 15:04:05"),
 			},
 		},

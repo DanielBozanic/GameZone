@@ -44,6 +44,7 @@ func (productCommentRepo *productCommentRepository) GetByProductId(productId int
 	var productComments []model.ProductComment
 	productCommentRepo.Database.
 		Where("product_id = ? AND archived = false", productId).
+		Order("date_time DESC").
 		Find(&productComments)
 	return productComments
 }

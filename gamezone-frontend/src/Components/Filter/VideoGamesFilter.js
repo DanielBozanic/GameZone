@@ -81,13 +81,13 @@ const VideoGamesFilter = (props) => {
 	return (
 		<>
 			<Col md="2">
-				<Button className="filter-button" onClick={toggle}>
+				<Button className="my-button filter-button" onClick={toggle}>
 					Filter
 				</Button>
 			</Col>
 
 			<Modal isOpen={modal} toggle={toggle}>
-				<ModalHeader className="filter-modal-title" toggle={toggle}>
+				<ModalHeader className="title" toggle={toggle}>
 					Filter
 				</ModalHeader>
 				<ModalBody>
@@ -142,7 +142,7 @@ const VideoGamesFilter = (props) => {
 					</Form>
 				</ModalBody>
 				<ModalFooter>
-					<Button className="confirm-filter-btn" onClick={handleSubmit(filter)}>
+					<Button className="my-button" onClick={handleSubmit(filter)}>
 						Filter
 					</Button>
 				</ModalFooter>

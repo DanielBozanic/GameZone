@@ -11,7 +11,7 @@ func ToReport(reportDTO dto.ReportDTO) (model.Report) {
 		Id: reportDTO.Id,
 		UserId: reportDTO.UserId,
 		Reason: reportDTO.Reason,
-		ReasonDescription: reportDTO.ReasonDescription,
+		Description: reportDTO.Description,
 		DateTime: reportDTO.DateTime,
 	}
 }
@@ -21,7 +21,7 @@ func ToReportDTO(report model.Report) dto.ReportDTO {
 		Id: report.Id,
 		UserId: report.UserId,
 		Reason: report.Reason,
-		ReasonDescription: report.ReasonDescription,
+		Description: report.Description,
 		DateTime: report.DateTime,
 	}
 }

@@ -9,7 +9,6 @@ import {
 	Col,
 } from "reactstrap";
 import { useFormContext } from "react-hook-form";
-import "../../Assets/css/forms.css";
 
 const ProductForm = (props) => {
 	const {
@@ -193,7 +192,7 @@ const ProductForm = (props) => {
 				<Col>
 					<FormGroup>
 						<Button
-							className="form-btn"
+							className="my-button"
 							type="button"
 							onClick={handleClickFile}
 						>

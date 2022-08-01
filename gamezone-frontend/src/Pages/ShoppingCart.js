@@ -13,7 +13,6 @@ import {
 import axios from "axios";
 import "../Assets/css/shopping-cart.css";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import * as videoGameAPI from "../APIs/ProductMicroservice/video_game_api";
 import * as productPurchaseAPI from "../APIs/ProductMicroservice/product_purchase_api";
 import * as productType from "../Utils/ProductType";
@@ -166,11 +165,11 @@ const ShoppingCart = () => {
 			<Container>
 				<Row>
 					<Col style={{ paddingTop: "5px" }}>
-						<Card className="shopping-cart-card">
-							<CardTitle className="shopping-cart-card-title" tag="h2">
+						<Card className="card shopping-cart-card">
+							<CardTitle className="title" tag="h2">
 								My Cart
 							</CardTitle>
-							<Table className="shopping-cart-table">
+							<Table className="purchase-table">
 								<tr>
 									<th>Name</th>
 									<th>Price</th>
@@ -191,7 +190,7 @@ const ShoppingCart = () => {
 												</td>
 												<td>
 													<Input
-														className="amount-select"
+														className="input-field"
 														type="select"
 														onChange={(e) =>
 															updateProductPurchase(
@@ -211,7 +210,7 @@ const ShoppingCart = () => {
 												<td>
 													<Button
 														type="button"
-														className="remove-product-from-cart-btn"
+														className="my-button"
 														onClick={() => removeProductFromCart(productInCart)}
 													>
 														Remove
@@ -231,7 +230,7 @@ const ShoppingCart = () => {
 								<Col md={10}>
 									<Button
 										type="button"
-										className="checkout-btn"
+										className="my-button checkout-btn"
 										disabled={shoppingCart.length === 0 ? true : false}
 										onClick={checkout}
 									>

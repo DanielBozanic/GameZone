@@ -15,7 +15,6 @@ import DOMPurify from "dompurify";
 import * as authService from "../Auth/AuthService";
 import * as newsArticleAPI from "../APIs/NewsMicroservice/news_article_api";
 import NewsComment from "../Components/NewsComment/NewsComment";
-import "../Assets/css/news-detail.css";
 
 const NewsDetail = () => {
 	const [newsArticle, setNewsArticle] = useState(null);
@@ -42,11 +41,11 @@ const NewsDetail = () => {
 				<Container>
 					<Row style={{ marginTop: "10px", marginBottom: "10px" }}>
 						<Col>
-							<Card className="news-detail-card">
+							<Card className="card">
 								<CardHeader>
 									<Row>
 										<Col md="10">
-											<CardTitle className="news-detail-card-title" tag="h3">
+											<CardTitle className="title" tag="h3">
 												{authService.isEmployee()
 													? newsArticle.UnpublishedTitle
 													: newsArticle.PublishedTitle}

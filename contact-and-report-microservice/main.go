@@ -59,7 +59,7 @@ func main() {
 	adminProtectedBans := bans.Group("/adminProtected")
 	adminProtectedBans.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
 	adminProtectedBans.GET("/getUserBanHistory/:userId", banAPI.GetUserBanHistory)
-	adminProtectedBans.POST("/addBan/:reportId", banAPI.AddBan)
+	adminProtectedBans.POST("/addBan", banAPI.AddBan)
 	adminProtectedBans.POST("/sendEmailToBannedUser", banAPI.SendEmailToBannedUser)
 
 	contacts := api.Group("/contacts")

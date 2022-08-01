@@ -14,7 +14,6 @@ import {
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import * as authService from "../../Auth/AuthService";
 import * as productPurchaseAPI from "../../APIs/ProductMicroservice/product_purchase_api";
 import PurchaseDetail from "./PurchaseDetail";
@@ -50,15 +49,13 @@ const Purchase = (props) => {
 	};
 
 	return (
-		<Row className="purchase-history-row">
+		<Row>
 			<Col>
-				<Card className="purchase-history-card">
+				<Card className="card">
 					<CardHeader>
 						<Row>
 							<Col md="10">
-								<CardTitle className="purchase-history-card-title" tag="h5">
-									Purchase ID #{props.purchase.Id}
-								</CardTitle>
+								<CardTitle tag="h5">Purchase ID #{props.purchase.Id}</CardTitle>
 							</Col>
 							<Col md="2">
 								<CardTitle tag="h5">
@@ -112,7 +109,11 @@ const Purchase = (props) => {
 					<CardFooter>
 						<Row>
 							<Button
-								className="purchase-history-buttons"
+								style={{
+									marginRight: "5px",
+									marginLeft: "5px",
+								}}
+								className="my-button"
 								type="button"
 								onClick={toggleItem}
 							>
@@ -120,7 +121,7 @@ const Purchase = (props) => {
 							</Button>
 							{!props.purchase.IsPaidFor && authService.isAdmin() && (
 								<Button
-									className="purchase-history-buttons"
+									className="my-button"
 									type="button"
 									onClick={confirmPayment}
 								>

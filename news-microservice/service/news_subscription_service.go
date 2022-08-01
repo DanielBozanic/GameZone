@@ -89,31 +89,33 @@ func (newsSubscriptionService *newsSubscriptionService) SendEmails() {
 		recipients = append(recipients, email)
 	}
 
-	for _, unsentNewsArticle := range unsentNewsArticles {
-		data := map[string]interface{}{
-			"subject": unsentNewsArticle.PublishedTitle,
-			"recipients": recipients,
-			"content": map[string]interface{}{
-				"template": "news_subscription",
-				"params": map[string]interface{}{
-					"htmlNews": unsentNewsArticle.PublishedContent,
+	if len(recipients) > 0 {
+		for _, unsentNewsArticle := range unsentNewsArticles {
+			data := map[string]interface{}{
+				"subject": unsentNewsArticle.PublishedTitle,
+				"recipients": recipients,
+				"content": map[string]interface{}{
+					"template": "news_subscription",
+					"params": map[string]interface{}{
+						"htmlNews": unsentNewsArticle.PublishedContent,
+					},
 				},
-			},
-		}
-		jsonData, _ := json.Marshal(data)
+			}
+			jsonData, _ := json.Marshal(data)
 
-		req, err := http.NewRequest("POST", "http://localhost:5001/api/email/sendEmail", bytes.NewBuffer(jsonData))
-		req.Header.Set("Content-Type", "application/json")
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		if err != nil {
-			continue
-		}
+			req, err := http.NewRequest("POST", "http://localhost:5001/api/email/sendEmail", bytes.NewBuffer(jsonData))
+			req.Header.Set("Content-Type", "application/json")
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				continue
+			}
 
-		var target interface{}
-		defer resp.Body.Close()
-		json.NewDecoder(resp.Body).Decode(target)
-		*unsentNewsArticle.IsSent = true
-		newsSubscriptionService.INewsArticleRepository.Update(unsentNewsArticle)
+			var target interface{}
+			defer resp.Body.Close()
+			json.NewDecoder(resp.Body).Decode(target)
+			*unsentNewsArticle.IsSent = true
+			newsSubscriptionService.INewsArticleRepository.Update(unsentNewsArticle)
+		}
 	}
 }

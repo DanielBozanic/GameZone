@@ -13,7 +13,6 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { paymentTypeSchema } from "./PaymentTypeSchema";
-import "../../../Assets/css/checkout.css";
 
 const PaymentType = (props) => {
 	const {
@@ -31,17 +30,17 @@ const PaymentType = (props) => {
 		<>
 			<Row>
 				<Col>
-					<Card className="checkout-card">
-						<CardTitle className="checkout-card-title" tag="h2">
+					<Card className="card shopping-cart-card">
+						<CardTitle className="title" tag="h2">
 							Payment method
 						</CardTitle>
 						<CardBody>
-							<Form>
+							<Form className="form">
 								<Row>
 									<Col>
 										<FormGroup>
 											<Input
-												className="payment-method-type-select"
+												className="input-field"
 												name="paymentType"
 												type="select"
 												innerRef={register}
@@ -62,7 +61,7 @@ const PaymentType = (props) => {
 													</>
 												)}
 											</Input>
-											<FormFeedback className="checkout-error-msg">
+											<FormFeedback className="input-field-error-msg">
 												{errors.paymentType?.message}
 											</FormFeedback>
 										</FormGroup>
@@ -72,7 +71,7 @@ const PaymentType = (props) => {
 									<Col>
 										<Button
 											type="button"
-											className="next-step-checkout-btn"
+											className="my-button"
 											onClick={handleSubmit(paymentStepDone)}
 										>
 											Confirm

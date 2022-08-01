@@ -14,8 +14,6 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "../../Assets/css/forms.css";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
 
 const GetVerificationCode = () => {
@@ -47,7 +45,7 @@ const GetVerificationCode = () => {
 			<Row>
 				<Col md="10">
 					<Card className="form-card">
-						<CardTitle className="form-title" tag="h2">
+						<CardTitle className="title" tag="h2">
 							Get verification code
 						</CardTitle>
 						<CardBody>
@@ -68,7 +66,7 @@ const GetVerificationCode = () => {
 								<Row>
 									<Col>
 										<Button
-											className="confirm-form-btn"
+											className="my-button"
 											type="button"
 											onClick={handleSubmit(getVerificationCode)}
 										>

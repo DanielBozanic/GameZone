@@ -11,6 +11,7 @@ func ToBan(banDTO dto.BanDTO) (model.Ban) {
 		Id: banDTO.Id,
 		UserId: banDTO.UserId,
 		Reason: banDTO.Reason,
+		Description: banDTO.Description,
 		ExpirationDate: banDTO.ExpirationDate,
 	}
 }
@@ -20,6 +21,7 @@ func ToBanDTO(ban model.Ban) dto.BanDTO {
 		Id: ban.Id,
 		UserId: ban.UserId,
 		Reason: ban.Reason,
+		Description: ban.Description,
 		ExpirationDate: ban.ExpirationDate,
 	}
 }

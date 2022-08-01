@@ -52,6 +52,17 @@ func (newsCommentApi *NewsCommentAPI) GetByNewsArticle(c *gin.Context) {
 	c.JSON(http.StatusOK, newsCommentDTOs)
 }
 
+func (newsCommentApi *NewsCommentAPI) GetByUserId(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	newsComments := newsCommentApi.INewsCommentService.GetByUserId(userId)
+	c.JSON(http.StatusOK, mapper.ToNewsCommentDTOs(newsComments))
+}
+
 func (newsCommentApi *NewsCommentAPI) AddNewsComment(c *gin.Context) {
 	var newsCommentDTO dto.NewsCommentDTO
 	err := c.BindJSON(&newsCommentDTO)

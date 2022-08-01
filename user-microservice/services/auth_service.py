@@ -1,5 +1,6 @@
 from db.database import db
 from models.user import User
+import requests
 
 
 def login(data):
@@ -26,6 +27,16 @@ def login(data):
         return "Incorrect username/password"
 
     if not user.verified:
-        return "Your account is not verified, please check your email"
+        return "Your account is not verified."
+
+    try:
+        resp = requests.get(
+            'http://localhost:7003/api/contactAndReport/bans/isUserBanned/' + str(user.id),
+            headers={'Content-Type': 'application/json', 'Accept': 'application/json'}
+        )
+        if resp.status_code == 200 and resp.json():
+            return "Your account is banned"
+    except requests.exceptions.RequestException:
+        pass
 
     return user

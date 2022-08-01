@@ -86,3 +86,236 @@ body {
 .Toastify__close-button {
 	color: #343a40 !important;
 }
+
+.card {
+	background-color: #343a40;
+	color: orange;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.form-card {
+	margin-bottom: 1em;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 100px;
+	padding: 1em;
+	text-align: left;
+	border-collapse: collapse;
+	background-color: #343a40;
+	color: orange;
+}
+
+.title {
+	font-family: "Batman";
+}
+
+.my-button {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	font-family: "Batman";
+	border: 2px solid orange;
+}
+
+.my-button:enabled:hover {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.my-button:enabled:focus {
+	background-color: orange;
+	color: #343a40;
+}
+
+.my-button:enabled:active {
+	background-color: orange;
+	color: #343a40;
+}
+
+.modal-header {
+	border-bottom: none;
+}
+
+.modal-footer {
+	border-top: none;
+}
+
+.modal-content {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+}
+
+.close {
+	color: #343a40 !important;
+	background-color: orange !important;
+	font-weight: bold !important;
+	opacity: 100 !important;
+	padding-top: 2px !important;
+	padding-bottom: 6px !important;
+	padding-left: 9px !important;
+	padding-right: 8px !important;
+}
+
+.close:hover {
+	background-color: #343a40 !important;
+	color: orange !important;
+	transition: 0.7s;
+}
+
+.close:focus {
+	background-color: #343a40 !important;
+	color: orange !important;
+	transition: 0.7s;
+}
+
+.close span {
+	text-align: center;
+}
+
+.form {
+	padding: 1em;
+	border-collapse: collapse;
+	max-width: 90%;
+	font-weight: bold;
+}
+
+.input-field {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:focus {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field:active {
+	background-color: #343a40;
+	color: orange;
+	font-weight: bold;
+	border: 2px solid orange;
+}
+
+.input-field-error-msg {
+	font-weight: bold;
+	color: orange;
+	font-size: 80%;
+}
+
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
+	padding-top: 20px;
+}
+
+.page-link {
+	background: #343a40;
+	color: orange;
+	border: 1px solid #343a40;
+	font-weight: bold;
+}
+
+.page-link:hover {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.page-link:focus {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.page-link:active {
+	background-color: orange;
+	color: #343a40;
+	transition: 0.7s;
+}
+
+.page-item.disabled .page-link {
+	background: #343a40;
+	color: orange;
+	border: 1px solid #343a40;
+	font-weight: bold;
+}
+
+.page-item.active .page-link {
+	background-color: orange;
+	color: #343a40;
+	font-weight: bold;
+}
+
+.purchase-table {
+	color: orange !important;
+}
+
+.purchase-table tr {
+	border-bottom: 2px solid orange !important;
+}
+
+.purchase-table th {
+	border-top: none !important;
+	text-align: center;
+	vertical-align: middle;
+	word-break: break-all;
+}
+
+.purchase-table td {
+	border-top: none !important;
+	text-align: center;
+	vertical-align: middle;
+	word-break: break-all;
+}
+
+@media only screen and (max-width: 760px),
+	(min-device-width: 768px) and (max-device-width: 1024px) {
+	.purchase-table,
+	thead,
+	tbody,
+	tfoot,
+	th,
+	td,
+	tr {
+		display: block;
+	}
+	.purchase-table th {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	.purchase-table td:before {
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+
+	.purchase-table tbody td:nth-of-type(1):before {
+		content: "Name:";
+		font-weight: bold;
+	}
+	.purchase-table tbody td:nth-of-type(2):before {
+		content: "Price:";
+		font-weight: bold;
+	}
+	.purchase-table tbody td:nth-of-type(3):before {
+		content: "Quantity:";
+		font-weight: bold;
+	}
+	.purchase-table tbody td:nth-of-type(4):before {
+		content: "Amount:";
+		font-weight: bold;
+	}
+}

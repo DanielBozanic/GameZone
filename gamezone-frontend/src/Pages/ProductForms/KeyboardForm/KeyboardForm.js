@@ -20,8 +20,6 @@ import {
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "../../../Assets/css/forms.css";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
 import * as keyboardAPI from "../../../APIs/ProductMicroservice/keyboard_api";
 import * as productPurchaseAPI from "../../../APIs/ProductMicroservice/product_purchase_api";
@@ -124,7 +122,7 @@ const KeyboardForm = (props) => {
 			<Row>
 				<Col>
 					<Card className="form-card">
-						<CardTitle className="form-title" tag="h2">
+						<CardTitle className="title" tag="h2">
 							{props.title}
 						</CardTitle>
 						<CardBody>
@@ -271,7 +269,7 @@ const KeyboardForm = (props) => {
 										<Row>
 											<Col>
 												<Button
-													className="confirm-form-btn"
+													className="my-button"
 													type="button"
 													onClick={methods.handleSubmit(add)}
 												>
@@ -284,7 +282,7 @@ const KeyboardForm = (props) => {
 										<Row>
 											<Col>
 												<Button
-													className="confirm-form-btn"
+													className="my-button"
 													type="button"
 													onClick={methods.handleSubmit(update)}
 												>

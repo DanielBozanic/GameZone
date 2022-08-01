@@ -1,151 +1,21 @@
-.filter-modal-title {
-	font-family: "Batman";
-}
-
 .filter-button {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
 	width: 100%;
 	max-width: 100px;
-}
-
-.filter-button:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.filter-button:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.filter-button:active {
-	background-color: orange;
-	color: #343a40;
-}
-
-.modal-content {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-}
-
-.modal-header {
-	border-bottom: none;
-}
-
-.modal-footer {
-	border-top: none;
-}
-
-.close {
-	color: #343a40 !important;
-	background-color: orange !important;
-	font-weight: bold !important;
-	opacity: 100 !important;
-	padding-top: 2px !important;
-	padding-bottom: 6px !important;
-	padding-left: 9px !important;
-	padding-right: 8px !important;
-}
-
-.close:hover {
-	background-color: #343a40 !important;
-	color: orange !important;
-	transition: 0.7s;
-}
-
-.close:focus {
-	background-color: #343a40 !important;
-	color: orange !important;
-	transition: 0.7s;
-}
-
-.close span {
-	text-align: center;
-}
-
-.confirm-filter-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border-color: orange;
-	border: 2px solid orange;
-}
-
-.confirm-filter-btn:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.confirm-filter-btn:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.confirm-filter-btn:active {
-	background-color: orange;
-	color: #343a40;
 }
 
 .search-bar {
 	margin-top: 5px;
 	margin-bottom: 5px;
 	padding-right: 50px;
-	color: orange;
-	font-weight: bold;
-	background-color: #343a40;
-	border: 2px solid orange;
-}
-
-.search-bar:focus {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	border: 2px solid orange;
-}
-
-.search-bar:active {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	border: 2px solid orange;
 }
 
 .search-btn {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	background-color: #343a40;
-	color: orange;
-	border: 2px solid orange;
-	font-weight: bold;
-	font-family: "Batman";
 	width: 100%;
 	max-width: 100px;
-}
-
-.search-btn:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.search-btn:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.search-btn:active {
-	background-color: orange;
-	color: #343a40;
 }
 
 @media screen and (min-width: 768px) {

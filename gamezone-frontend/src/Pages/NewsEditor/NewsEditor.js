@@ -25,7 +25,6 @@ import {
 } from "reactstrap";
 import DOMPurify from "dompurify";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import * as newsArticleAPI from "../../APIs/NewsMicroservice/news_article_api";
 import axios from "axios";
 
@@ -183,9 +182,9 @@ const NewsEditor = () => {
 				</Row>
 				<Row>
 					<Col>
-						<Card className="news-editor-card">
+						<Card className="card">
 							<CardBody>
-								<Form>
+								<Form className="form">
 									<Row>
 										<Col>
 											<FormGroup>
@@ -236,7 +235,7 @@ const NewsEditor = () => {
 											<Col md="1">
 												<Button
 													type="button"
-													className="news-editor-btn"
+													className="my-button"
 													onClick={handleSubmit(add)}
 												>
 													Add
@@ -247,7 +246,7 @@ const NewsEditor = () => {
 											<Col md="1">
 												<Button
 													type="button"
-													className="news-editor-btn"
+													className="my-button"
 													onClick={handleSubmit(edit)}
 												>
 													Save
@@ -257,7 +256,7 @@ const NewsEditor = () => {
 										<Col md="1">
 											<Button
 												type="button"
-												className="news-editor-btn"
+												className="my-button"
 												onClick={handleSubmit(publishNewsArticle)}
 											>
 												Publish

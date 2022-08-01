@@ -1,4 +1,3 @@
-import "../Assets/css/purchase-history.css";
 import {
 	Row,
 	Col,
@@ -79,7 +78,7 @@ const PurchaseHistory = () => {
 							/>
 						);
 					})}
-					<Row className="purchase-history-pagination">
+					<Row className="pagination">
 						<Col>
 							<Pagination size="lg">
 								<PaginationItem disabled={currentPage <= 1}>

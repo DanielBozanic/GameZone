@@ -19,7 +19,7 @@ const Search = (props) => {
 				<Row>
 					<Col md="9" style={{ textAlign: "right" }}>
 						<Input
-							className="search-bar"
+							className="input-field search-bar"
 							name="searchTerm"
 							type="text"
 							value={searchTerm}
@@ -28,7 +28,7 @@ const Search = (props) => {
 						/>
 					</Col>
 					<Col md="3">
-						<Button className="search-btn" onClick={search}>
+						<Button className="my-button search-btn" onClick={search}>
 							Search
 						</Button>
 					</Col>

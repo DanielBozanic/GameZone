@@ -1,45 +1,3 @@
-.review-card {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	margin-bottom: 5px;
-}
-
-.review-title {
-	font-family: "Batman";
-}
-
-.review-input,
-.review-input:read-only {
-	background-color: #343a40;
-	color: orange;
-	border: 2px solid orange;
-	height: 130px !important;
-	resize: none;
-}
-
-.review-input:focus {
-	background-color: #343a40;
-	color: orange;
-	border: 2px solid orange;
-	height: 130px !important;
-	resize: none;
-}
-
-.review-input:active {
-	background-color: #343a40;
-	color: orange;
-	border: 2px solid orange;
-	height: 130px !important;
-	resize: none;
-}
-
-.input-field-error-msg {
-	font-weight: bold;
-	color: orange;
-	font-size: 80%;
-}
-
 .rating {
 	display: inline-block;
 	position: relative;
@@ -105,31 +63,4 @@
 .rating label input:focus:not(:checked) ~ .icon:last-child {
 	color: rgb(255, 128, 0);
 	text-shadow: 0 0 5px #09f;
-}
-
-.comment-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-	height: 40px;
-	margin-top: 10px;
-	margin-right: 5px;
-}
-
-.comment-btn:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.comment-btn:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.comment-btn:active {
-	background-color: orange;
-	color: #343a40;
 }

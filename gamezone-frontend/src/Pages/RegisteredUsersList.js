@@ -61,6 +61,10 @@ const RegisteredUsersList = () => {
 		navigate("/purchaseHistory/" + userId);
 	};
 
+	const manageUser = (userId) => {
+		navigate("/manageUser/" + userId);
+	};
+
 	const handleClick = (e, index) => {
 		e.preventDefault();
 		setCurrentPage(index);
@@ -80,14 +84,11 @@ const RegisteredUsersList = () => {
 											paddingBottom: "10px",
 										}}
 									>
-										<Card className="registered-user-card">
+										<Card className="card">
 											<CardHeader>
 												<Row>
 													<Col>
-														<CardTitle
-															className="registered-user-card-title"
-															tag="h5"
-														>
+														<CardTitle className="title" tag="h5">
 															{registeredUser.user_name}
 														</CardTitle>
 													</Col>
@@ -129,7 +130,8 @@ const RegisteredUsersList = () => {
 												<Row>
 													<Col>
 														<Button
-															className="registered-user-buttons"
+															className="my-button"
+															style={{ marginRight: "5px" }}
 															type="button"
 															onClick={() =>
 																viewPurchaseHistory(registeredUser.id)
@@ -138,10 +140,12 @@ const RegisteredUsersList = () => {
 															Purchase history
 														</Button>
 														<Button
-															className="registered-user-buttons"
+															style={{ marginRight: "5px" }}
+															className="my-button"
 															type="button"
+															onClick={() => manageUser(registeredUser.id)}
 														>
-															Report log
+															Manage
 														</Button>
 													</Col>
 												</Row>
@@ -154,7 +158,7 @@ const RegisteredUsersList = () => {
 					</Row>
 					<Row
 						className={cn(
-							"registered-users-pagination",
+							"pagination",
 							registeredUsers.length < 4
 								? "registered-users-pagination-padding"
 								: "registered-users-pagination-padding-normal"

@@ -1,153 +1,15 @@
 .shopping-cart-card {
-	background: #343a40;
-	color: orange;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	padding: 1em;
-}
-
-.shopping-cart-card-title {
-	font-family: "Batman";
-	font-weight: bold;
-}
-
-.shopping-cart-table {
-	color: orange !important;
-}
-
-.shopping-cart-table tr {
-	border-bottom: 2px solid orange !important;
-}
-
-.amount-select {
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
-}
-
-.amount-select:focus {
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
-}
-
-.amount-select:active {
-	background-color: #343a40;
-	border: 2px solid orange;
-	color: orange;
-	font-weight: bold;
 }
 
 .total-price-td {
 	font-weight: bold;
 }
 
-.shopping-cart-table th {
-	border-top: none !important;
-	text-align: center;
-	vertical-align: middle;
-	word-break: break-all;
-}
-
-.shopping-cart-table td {
-	border-top: none !important;
-	text-align: center;
-	vertical-align: middle;
-	word-break: break-all;
-}
-
-@media only screen and (max-width: 760px),
-	(min-device-width: 768px) and (max-device-width: 1024px) {
-	.shopping-cart-table,
-	thead,
-	tbody,
-	tfoot,
-	th,
-	td,
-	tr {
-		display: block;
-	}
-	.shopping-cart-table th {
-		position: absolute;
-		top: -9999px;
-		left: -9999px;
-	}
-
-	.shopping-cart-table td:before {
-		top: 6px;
-		left: 6px;
-		width: 45%;
-		padding-right: 10px;
-		white-space: nowrap;
-	}
-
-	.shopping-cart-table tbody td:nth-of-type(1):before {
-		content: "Name:";
-		font-weight: bold;
-	}
-	.shopping-cart-table tbody td:nth-of-type(2):before {
-		content: "Price:";
-		font-weight: bold;
-	}
-	.shopping-cart-table tbody td:nth-of-type(3):before {
-		content: "Quantity:";
-		font-weight: bold;
-	}
-	.shopping-cart-table tbody td:nth-of-type(4):before {
-		content: "Amount:";
-		font-weight: bold;
-	}
-}
-
-.remove-product-from-cart-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
-}
-
-.remove-product-from-cart-btn:hover {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.remove-product-from-cart-btn:focus {
-	background-color: orange;
-	color: #343a40;
-}
-
-.remove-product-from-cart-btn:active {
-	background-color: orange;
-	color: #343a40;
-}
-
 .checkout-btn {
-	background-color: #343a40;
-	color: orange;
-	font-weight: bold;
-	font-family: "Batman";
-	border: 2px solid orange;
 	width: 100%;
 	max-width: 200px;
 	margin-top: 5px;
-}
-
-.checkout-btn:hover:enabled {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.checkout-btn:focus:enabled {
-	background-color: orange;
-	color: #343a40;
-}
-
-.checkout-btn:active:enabled {
-	background-color: orange;
-	color: #343a40;
 }

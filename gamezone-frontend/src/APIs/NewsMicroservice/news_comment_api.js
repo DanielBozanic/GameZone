@@ -9,3 +9,4 @@ export const ADD_NEWS_COMMENT = userProtected + "/addNewsComment";
 export const EDIT_NEWS_COMMENT = userProtected + "/editNewsComment";
 
 export const DELETE_NEWS_COMMENT = userAndAdminProtected + "/deleteNewsComment";
+export const GET_BY_USER_ID = userAndAdminProtected + "/getByUserId";
