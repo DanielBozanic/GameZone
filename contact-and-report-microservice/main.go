@@ -64,14 +64,21 @@ func main() {
 
 	contacts := api.Group("/contacts")
 
+	employeeProtectedContacts := contacts.Group("/employeeProtected")
+	employeeProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
+	employeeProtectedContacts.GET("/getUnansweredContactMessages", contactAPI.GetUnansweredContactMessages)
+
+	adminProtectedContacts := contacts.Group("/adminProtected")
+	adminProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
+	adminProtectedContacts.GET("/getUnansweredContactMessagesByUserId/:userId", contactAPI.GetUnansweredContactMessagesByUserId)
+
 	adminAndEmployeeProtectedContacts := contacts.Group("/adminAndEmployeeProtected")
 	adminAndEmployeeProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN", "ROLE_EMPLOYEE" }))
-	adminAndEmployeeProtectedContacts.GET("/getUnansweredContactMessagesByUserId/:userId", contactAPI.GetUnansweredContactMessagesByUserId)
-	adminAndEmployeeProtectedContacts.PUT("/answerContactMessage", contactAPI.SendContactMessage)
+	adminAndEmployeeProtectedContacts.PUT("/answerContactMessage", contactAPI.AnswerContactMessage)
 
 	userProtectedContacts := contacts.Group("/userProtected")
 	userProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedContacts.GET("/getAnsweredContactMessagesByUserId/:userId", contactAPI.GetAnsweredContactMessagesByUserId)
+	userProtectedContacts.GET("/getContactMessagesByUserId/:userId", contactAPI.GetContactMessagesByUserId)
 	userProtectedContacts.POST("/sendContactMessage", contactAPI.SendContactMessage)
 
 	err := r.Run(":7003")

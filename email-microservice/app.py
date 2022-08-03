@@ -2,16 +2,20 @@ from flask import Flask
 from flask_mail import Mail, Message
 from flask import request, jsonify
 from jinja2 import Environment, FileSystemLoader, select_autoescape
+from dotenv import load_dotenv
 import os
+
+load_dotenv(os.path.abspath(os.path.dirname(__file__)) + "/env_vars.env")
 
 app = Flask(__name__)
 
-app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
+app.config['SECRET_KEY'] = 'secret'
+app.config['MAIL_SERVER'] = 'smtp.sendgrid.net'
 app.config['MAIL_PORT'] = 587
-app.config['MAIL_USERNAME'] = 'gamezoneofficial99@hotmail.com'
-app.config['MAIL_PASSWORD'] = 'PassWord_FOR_NTP!'
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_AUTH'] = True
+app.config['MAIL_USERNAME'] = 'apikey'
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
@@ -19,7 +23,7 @@ mail = Mail(app)
 @app.route("/api/email/sendEmail", methods=['POST'])
 def send_email():
     msg = Message(subject=request.json["subject"],
-                  sender=app.config['MAIL_USERNAME'],
+                  sender=app.config['MAIL_DEFAULT_SENDER'],
                   recipients=request.json["recipients"])
     env = Environment(
         loader=FileSystemLoader(os.path.abspath(os.path.dirname(__file__)) + "/templates"),

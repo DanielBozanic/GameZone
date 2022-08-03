@@ -20,6 +20,11 @@ func NewContactAPI(contactService service.IContactService) ContactAPI {
 	return ContactAPI{IContactService: contactService}
 }
 
+func (contactApi *ContactAPI) GetUnansweredContactMessages(c *gin.Context) {
+	contactMessages := contactApi.IContactService.GetUnansweredContactMessages()
+	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
+}
+
 func (contactApi *ContactAPI) GetUnansweredContactMessagesByUserId(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("userId"))
     if err != nil {
@@ -31,14 +36,14 @@ func (contactApi *ContactAPI) GetUnansweredContactMessagesByUserId(c *gin.Contex
 	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
 }
 
-func (contactApi *ContactAPI) GetAnsweredContactMessagesByUserId(c *gin.Context) {
+func (contactApi *ContactAPI) GetContactMessagesByUserId(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Param("userId"))
     if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
     }
 
-	contactMessages := contactApi.IContactService.GetAnsweredContactMessagesByUserId(userId)
+	contactMessages := contactApi.IContactService.GetContactMessagesByUserId(userId)
 	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
 }
 
@@ -52,7 +57,7 @@ func (contactApi *ContactAPI) SendContactMessage(c *gin.Context) {
 
 	contactMsg := mapper.ToContactMessage(contactMsgDTO)
 	userData := middleware.GetUserData(c)
-	msg := contactApi.IContactService.SendContactMessage(contactMsg, userData.Id)
+	msg := contactApi.IContactService.SendContactMessage(contactMsg, userData)
 	if msg == "" {
 		c.JSON(http.StatusOK, "Message sent successfully.")
 	} else  {

@@ -135,6 +135,11 @@ const EmployeeNavbar = () => {
 						</UncontrolledDropdown>
 					</NavItem>
 					<NavItem>
+						<NavLink>
+							<Link to="/contactMessages">Contact messages</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>
 							Sign Out
 						</NavLink>

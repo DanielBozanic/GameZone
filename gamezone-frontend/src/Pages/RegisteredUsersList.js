@@ -65,6 +65,10 @@ const RegisteredUsersList = () => {
 		navigate("/manageUser/" + userId);
 	};
 
+	const viewContactMessages = (userId) => {
+		navigate("/contactMessages/" + userId);
+	};
+
 	const handleClick = (e, index) => {
 		e.preventDefault();
 		setCurrentPage(index);
@@ -146,6 +150,16 @@ const RegisteredUsersList = () => {
 															onClick={() => manageUser(registeredUser.id)}
 														>
 															Manage
+														</Button>
+														<Button
+															style={{ marginRight: "5px" }}
+															className="my-button"
+															type="button"
+															onClick={() =>
+																viewContactMessages(registeredUser.id)
+															}
+														>
+															Contact messages
 														</Button>
 													</Col>
 												</Row>

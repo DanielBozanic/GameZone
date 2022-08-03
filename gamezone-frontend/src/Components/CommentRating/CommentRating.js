@@ -10,6 +10,7 @@ import {
 	Input,
 	Button,
 	FormFeedback,
+	Spinner,
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -27,6 +28,7 @@ const CommentRating = (props) => {
 	const [currentUserReview, setCurrentUserReview] = useState(null);
 	const [productIsPaidFor, setProductIsPaidFor] = useState(false);
 	const [readOnlyMode, setReadOnlyMode] = useState(true);
+	const [loading, setLoading] = useState(true);
 
 	const {
 		register,
@@ -56,6 +58,7 @@ const CommentRating = (props) => {
 				} else {
 					setReviews(res.data);
 				}
+				setLoading(false);
 				checkIfProductIsPaidFor();
 			})
 			.catch((err) => {
@@ -130,9 +133,7 @@ const CommentRating = (props) => {
 
 	return (
 		<>
-			{(reviews.length > 0 ||
-				currentUserReview !== null ||
-				productIsPaidFor) && (
+			{(reviews.length > 0 || loading) && (
 				<Row>
 					<Col>
 						<Card className="card">
@@ -289,7 +290,13 @@ const CommentRating = (props) => {
 										</Col>
 									</Row>
 								)}
-								{reviews.length > 0 &&
+								{loading && (
+									<div className="div-spinner">
+										<Spinner className="spinner" />
+									</div>
+								)}
+								{!loading &&
+									reviews.length > 0 &&
 									reviews.map((review) => {
 										return (
 											<Row>

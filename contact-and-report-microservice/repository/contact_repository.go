@@ -12,8 +12,9 @@ type contactRepository struct {
 
 type IContactRepository interface {
 	GetById(id int) (model.ContactMessage, error)
+	GetUnansweredContactMessages() []model.ContactMessage
 	GetUnansweredContactMessagesByUserId(userId int) []model.ContactMessage
-	GetAnsweredContactMessagesByUserId(userId int) []model.ContactMessage
+	GetContactMessagesByUserId(userId int) []model.ContactMessage
 	Create(contactMsg model.ContactMessage) error
 	Update(contactMsg model.ContactMessage) error
 }
@@ -30,24 +31,35 @@ func (contactRepo *contactRepository) GetById(id int) (model.ContactMessage, err
 	return contactMessage, result.Error
 }
 
-func (contactRepo *contactRepository) GetUnansweredContactMessagesByUserId(userId int) []model.ContactMessage {
+func (contactRepo *contactRepository) GetUnansweredContactMessages() []model.ContactMessage {
 	var contactMessages []model.ContactMessage
 	contactRepo.Database.
-		Where("user_id = ? AND answer IS NULL", userId).
+		Where("answer IS NULL").
+		Order("date_time DESC").
 		Find(&contactMessages)
 	return contactMessages
 }
 
-func (contactRepo *contactRepository) GetAnsweredContactMessagesByUserId(userId int) []model.ContactMessage {
+func (contactRepo *contactRepository) GetUnansweredContactMessagesByUserId(userId int) []model.ContactMessage {
 	var contactMessages []model.ContactMessage
 	contactRepo.Database.
-		Where("user_id = ? AND answer IS NOT NULL", userId).
+		Where("user_id = ? AND answer IS NULL", userId).
+		Order("date_time DESC").
+		Find(&contactMessages)
+	return contactMessages
+}
+
+func (contactRepo *contactRepository) GetContactMessagesByUserId(userId int) []model.ContactMessage {
+	var contactMessages []model.ContactMessage
+	contactRepo.Database.
+		Where("user_id = ?", userId).
+		Order("date_time DESC").
 		Find(&contactMessages)
 	return contactMessages
 }
 
 func (contactRepo *contactRepository) Create(contactMsg model.ContactMessage) error {
-	result := contactRepo.Database.Create(contactMsg)
+	result := contactRepo.Database.Create(&contactMsg)
 	return result.Error
 }
 

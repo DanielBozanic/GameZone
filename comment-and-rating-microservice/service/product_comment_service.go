@@ -5,10 +5,7 @@ import (
 	"comment-and-rating/mapper"
 	"comment-and-rating/model"
 	"comment-and-rating/repository"
-	"encoding/json"
 	"errors"
-	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/go-sql-driver/mysql"
@@ -22,10 +19,10 @@ type productCommentService struct {
 type IProductCommentService interface {
 	GetAll() []model.ProductComment
 	GetById(id int) (model.ProductComment, error)
-	GetByProductId(productId int) []dto.ProductCommentDTO
+	GetByProductId(productId int) []model.ProductComment
 	GetByUserId(userId int) []model.ProductComment
 	GetByProductAndUser(productId int, userId int) (model.ProductComment, error)
-	AddComment(productComment model.ProductComment, userId int) string
+	AddComment(productComment model.ProductComment, userData dto.UserData) string
 	EditComment(productCommentDTO dto.ProductCommentDTO) string
 	DeleteComment(id int) error
 }
@@ -42,31 +39,8 @@ func (productCommentService *productCommentService) GetById(id int) (model.Produ
 	return productCommentService.IProductCommentRepository.GetById(id)
 }
 
-func (productCommentService *productCommentService) GetByProductId(productId int) []dto.ProductCommentDTO {
-    productCommentDTOs := []dto.ProductCommentDTO{}
-	productComments := productCommentService.IProductCommentRepository.GetByProductId(productId)
-	for index, productComment := range productComments {
-		req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(productComment.UserId), nil)
-		client := &http.Client{}
-		resp, err := client.Do(req)
-
-		username := ""
-		var target map[string]interface{}
-		if err != nil {
-			username = "Unknown user " + strconv.Itoa(index)
-		} else if resp.StatusCode != http.StatusOK {
-			username = "Unknown user " + strconv.Itoa(index)
-			defer resp.Body.Close()
-		} else {
-			json.NewDecoder(resp.Body).Decode(&target)
-			username = target["user"].(map[string]interface{})["user_name"].(string)
-			defer resp.Body.Close()
-		}
-		productCommentDTO := mapper.ToProductCommentDTO(productComment)
-		productCommentDTO.Username = username
-		productCommentDTOs = append(productCommentDTOs, productCommentDTO)
-	}
-	return productCommentDTOs
+func (productCommentService *productCommentService) GetByProductId(productId int) []model.ProductComment {
+    return productCommentService.IProductCommentRepository.GetByProductId(productId)
 }
 
 func (productCommentService *productCommentService) GetByUserId(userId int) []model.ProductComment {
@@ -77,9 +51,10 @@ func (productCommentService *productCommentService) GetByProductAndUser(productI
 	return productCommentService.IProductCommentRepository.GetByProductAndUser(productId, userId)
 }
 
-func (productCommentService *productCommentService) AddComment(productComment model.ProductComment, userId int) string {
+func (productCommentService *productCommentService) AddComment(productComment model.ProductComment, userData dto.UserData) string {
 	msg := ""
-	productComment.UserId = userId
+	productComment.UserId = userData.Id
+	productComment.Username = userData.Username
 	productComment.DateTime = time.Now()
 	err := productCommentService.IProductCommentRepository.Create(productComment)
 	var mysqlErr *mysql.MySQLError
@@ -97,7 +72,6 @@ func (productCommentService *productCommentService) EditComment(productCommentDT
 	}
 
 	updatedProductComment := mapper.ToProductComment(productCommentDTO)
-	updatedProductComment.DateTime = time.Now()
 	err = productCommentService.IProductCommentRepository.Update(updatedProductComment)
 	if err != nil {
 		return err.Error()

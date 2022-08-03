@@ -122,8 +122,30 @@ const UserNavbar = () => {
 						</UncontrolledDropdown>
 					</NavItem>
 					<NavItem>
+						<UncontrolledDropdown inNavbar nav>
+							<DropdownToggle caret nav>
+								Contact Center
+							</DropdownToggle>
+							<DropdownMenu right>
+								<DropdownItem>
+									<Link className="drop-down-link" to="/contact">
+										Send contact message
+									</Link>
+								</DropdownItem>
+								<DropdownItem>
+									<Link
+										className="drop-down-link"
+										to={`/contactMessages/${authService.getId()}`}
+									>
+										Contact messages
+									</Link>
+								</DropdownItem>
+							</DropdownMenu>
+						</UncontrolledDropdown>
+					</NavItem>
+					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>
-							Sign Out
+							Sign out
 						</NavLink>
 					</NavItem>
 				</Nav>

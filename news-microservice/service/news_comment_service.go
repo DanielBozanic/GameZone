@@ -1,13 +1,10 @@
 package service
 
 import (
-	"encoding/json"
-	"net/http"
 	"news/dto"
 	"news/mapper"
 	"news/model"
 	"news/repository"
-	"strconv"
 	"time"
 )
 
@@ -18,9 +15,9 @@ type newsCommentService struct {
 type INewsCommentService interface {
 	GetAll() []model.NewsComment
 	GetById(id int) (model.NewsComment, error)
-	GetByNewsArticle(newsArticleId int) []dto.NewsCommentDTO
+	GetByNewsArticle(newsArticleId int) []model.NewsComment
 	GetByUserId(userId int) []model.NewsComment
-	AddNewsComment(newsComment model.NewsComment, userId int) string
+	AddNewsComment(newsComment model.NewsComment, userData dto.UserData) string
 	EditNewsCommment(newsCommentDTO dto.NewsCommentDTO) string
 	DeleteNewsComment(id int) error
 }
@@ -37,40 +34,18 @@ func (newsCommentService *newsCommentService) GetById(id int) (model.NewsComment
 	return newsCommentService.INewsCommentRepository.GetById(id)
 }
 
-func (newsCommentService *newsCommentService) GetByNewsArticle(newsArticleId int) []dto.NewsCommentDTO {
-	newsCommentDTOs := []dto.NewsCommentDTO{}
-	newsComments := newsCommentService.INewsCommentRepository.GetByNewsArticle(newsArticleId)
-	for index, newsComment := range newsComments {
-		req, err := http.NewRequest("GET", "http://localhost:5000/api/users/getById?userId=" +  strconv.Itoa(newsComment.UserId), nil)
-		client := &http.Client{}
-		resp, err := client.Do(req)
-
-		username := ""
-		var target map[string]interface{}
-		if err != nil {
-			username = "Unknown user " + strconv.Itoa(index)
-		} else if resp.StatusCode != http.StatusOK {
-			username = "Unknown user " + strconv.Itoa(index)
-			defer resp.Body.Close()
-		} else {
-			json.NewDecoder(resp.Body).Decode(&target)
-			username = target["user"].(map[string]interface{})["user_name"].(string)
-			defer resp.Body.Close()
-		}
-		newsCommentDTO := mapper.ToNewsCommentDTO(newsComment)
-		newsCommentDTO.Username = username
-		newsCommentDTOs = append(newsCommentDTOs, newsCommentDTO)
-	}
-	return newsCommentDTOs
+func (newsCommentService *newsCommentService) GetByNewsArticle(newsArticleId int) []model.NewsComment {
+	return newsCommentService.INewsCommentRepository.GetByNewsArticle(newsArticleId)
 }
 
 func (newsCommentService *newsCommentService) GetByUserId(userId int) []model.NewsComment {
 	return newsCommentService.INewsCommentRepository.GetByUserId(userId)
 }
 
-func (newsCommentService *newsCommentService) AddNewsComment(newsComment model.NewsComment, userId int) string {
+func (newsCommentService *newsCommentService) AddNewsComment(newsComment model.NewsComment, userData dto.UserData) string {
 	msg := ""
-	newsComment.UserId = userId
+	newsComment.UserId = userData.Id
+	newsComment.Username = userData.Username
 	newsComment.DateTime = time.Now()
 	err := newsCommentService.INewsCommentRepository.Create(newsComment)
 	if err != nil {
@@ -87,7 +62,6 @@ func (newsCommentService *newsCommentService) EditNewsCommment(newsCommentDTO dt
 	}
 
 	updatedNewsComment := mapper.ToNewsComment(newsCommentDTO)
-	updatedNewsComment.DateTime = time.Now()
 	err = newsCommentService.INewsCommentRepository.Update(updatedNewsComment)
 	if err != nil {
 		msg = err.Error()

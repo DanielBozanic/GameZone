@@ -153,6 +153,11 @@ const ManageUser = () => {
 										</CardText>
 									);
 								})}
+							{reports.length <= 0 && (
+								<CardTitle className="title" tag="h5">
+									User has not been reported
+								</CardTitle>
+							)}
 						</CardBody>
 					</Card>
 				</Col>
@@ -239,6 +244,11 @@ const ManageUser = () => {
 											</CardText>
 										);
 									})}
+							{productComments.length <= 0 && newsComments.length <= 0 && (
+								<CardTitle className="title" tag="h5">
+									User has not posted any comments
+								</CardTitle>
+							)}
 						</CardBody>
 					</Card>
 				</Col>
@@ -267,6 +277,11 @@ const ManageUser = () => {
 										</CardText>
 									);
 								})}
+							{banHistory.length <= 0 && (
+								<CardTitle className="title" tag="h5">
+									User has not been banned
+								</CardTitle>
+							)}
 						</CardBody>
 					</Card>
 				</Col>

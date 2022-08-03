@@ -82,6 +82,8 @@ import NewsDetail from "./Pages/NewsDetail";
 import RegisteredUsersList from "./Pages/RegisteredUsersList";
 import PurchaseHistory from "./Pages/PurchaseHistory";
 import ManageUser from "./Pages/ManageUser/ManageUser";
+import ContactForm from "./Pages/ContactForm/ContactForm";
+import ContactMessages from "./Pages/ContactMessages/ContactMessages";
 
 import * as role from "./Utils/Role";
 
@@ -219,6 +221,35 @@ function App() {
 								<Route
 									path="/manageUser/:id"
 									element={<ManageUser key="/manageUser/:id" />}
+								/>
+							</Route>
+							<Route
+								path="/contact"
+								element={<ProtectedRoute roles={[role.ROLE_USER]} />}
+							>
+								<Route
+									path="/contact"
+									element={<ContactForm key="/contact" />}
+								/>
+							</Route>
+							<Route
+								path="/contactMessages/:id"
+								element={
+									<ProtectedRoute roles={[role.ROLE_USER, role.ROLE_ADMIN]} />
+								}
+							>
+								<Route
+									path="/contactMessages/:id"
+									element={<ContactMessages key="/contactMessages/:id" />}
+								/>
+							</Route>
+							<Route
+								path="/contactMessages"
+								element={<ProtectedRoute roles={[role.ROLE_EMPLOYEE]} />}
+							>
+								<Route
+									path="/contactMessages"
+									element={<ContactMessages key="/contactMessages" />}
 								/>
 							</Route>
 						</Routes>

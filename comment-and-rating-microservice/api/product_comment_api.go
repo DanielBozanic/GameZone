@@ -49,8 +49,8 @@ func (productCommentApi *ProductCommentAPI) GetByProductId(c *gin.Context) {
 		return
 	}
 
-	productCommentDTOs := productCommentApi.IProductCommentService.GetByProductId(productId)
-	c.JSON(http.StatusOK, productCommentDTOs)
+	productComments := productCommentApi.IProductCommentService.GetByProductId(productId)
+	c.JSON(http.StatusOK, mapper.ToProductCommentDTOs(productComments))
 }
 
 func (productCommentApi *ProductCommentAPI) GetByUserId(c *gin.Context) {
@@ -95,7 +95,7 @@ func (productCommentApi *ProductCommentAPI) AddComment(c *gin.Context) {
 
 	productComment := mapper.ToProductComment(productCommentDTO)
 	userData := middleware.GetUserData(c)
-	msg := productCommentApi.IProductCommentService.AddComment(productComment, userData.Id)
+	msg := productCommentApi.IProductCommentService.AddComment(productComment, userData)
 
 	if msg == "" {
 		c.JSON(http.StatusOK, "Comment and rating added successfully.")

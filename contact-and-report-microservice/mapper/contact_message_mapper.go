@@ -10,7 +10,8 @@ func ToContactMessage(contactMessageDTO dto.ContactMessageDTO) (model.ContactMes
 	return model.ContactMessage {
 		Id: contactMessageDTO.Id,
 		UserId: contactMessageDTO.UserId,
-		UserQuestion: contactMessageDTO.UserQuestion,
+		Username: contactMessageDTO.Username,
+		Message: contactMessageDTO.Message,
 		Answer: contactMessageDTO.Answer,
 		DateTime: contactMessageDTO.DateTime,
 	}
@@ -20,7 +21,8 @@ func ToContactMessageDTO(contactMessage model.ContactMessage) dto.ContactMessage
 	return dto.ContactMessageDTO {
 		Id: contactMessage.Id,
 		UserId: contactMessage.UserId,
-		UserQuestion: contactMessage.UserQuestion,
+		Username: contactMessage.Username,
+		Message: contactMessage.Message,
 		Answer: contactMessage.Answer,
 		DateTime: contactMessage.DateTime,
 	}

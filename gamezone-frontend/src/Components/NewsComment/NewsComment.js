@@ -7,6 +7,7 @@ import {
 	Input,
 	Button,
 	FormFeedback,
+	Spinner,
 } from "reactstrap";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -20,6 +21,7 @@ const NewsComment = (props) => {
 	const [newsComments, setNewsComments] = useState([]);
 	const [currentUserComments, setCurrentUserComments] = useState([]);
 	const [selectedComment, setSelectedComment] = useState(null);
+	const [loading, setLoading] = useState(true);
 
 	const newComment = useForm({
 		resolver: yupResolver(newsCommentSchema),
@@ -48,6 +50,7 @@ const NewsComment = (props) => {
 					(review) => review.UserId !== Number(authService.getId())
 				);
 				setNewsComments(res.data);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -96,7 +99,12 @@ const NewsComment = (props) => {
 
 	return (
 		<>
-			{newsComments.length > 0 && (
+			{loading && (
+				<div className="div-spinner">
+					<Spinner className="spinner" />
+				</div>
+			)}
+			{!loading && newsComments.length > 0 && (
 				<Row>
 					<Col>
 						<CardTitle className="title" tag="h3">

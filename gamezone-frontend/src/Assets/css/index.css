@@ -178,7 +178,7 @@ body {
 .form {
 	padding: 1em;
 	border-collapse: collapse;
-	max-width: 90%;
+	max-width: 100%;
 	font-weight: bold;
 }
 
@@ -318,4 +318,19 @@ body {
 		content: "Amount:";
 		font-weight: bold;
 	}
+}
+
+.div-spinner {
+	margin: auto;
+	width: 50%;
+	padding: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.spinner {
+	color: orange;
+	width: 150px;
+	height: 150px;
 }

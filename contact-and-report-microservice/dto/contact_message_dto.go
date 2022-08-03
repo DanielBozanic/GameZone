@@ -5,7 +5,8 @@ import "time"
 type ContactMessageDTO struct {
 	Id           int
 	UserId       int
-	UserQuestion string
+	Username     string
+	Message      string
 	Answer       string
 	DateTime     time.Time
 }
