@@ -51,6 +51,11 @@ const AdminNavbar = () => {
 						</NavLink>
 					</NavItem>
 					<NavItem>
+						<NavLink>
+							<Link to="/businessReports">Business reports</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<NavLink href="/signIn" onClick={signOut}>
 							Sign Out
 						</NavLink>

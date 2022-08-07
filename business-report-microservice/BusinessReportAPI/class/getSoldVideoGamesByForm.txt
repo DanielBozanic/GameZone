@@ -1,0 +1,25 @@
+getSoldVideoGamesByForm
+	
+  | productDatabase queryResult dictionaryResult jsonResult|
+	
+  productDatabase := self getDatabase: 'product-db'.
+
+  queryResult := productDatabase basicExecuteSQLString: 
+		'SELECT video_games.digital, SUM(product_purchase_details.product_quantity) 
+		 FROM product_purchases 
+		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
+		 JOIN video_games ON product_purchase_details.product_id = video_games.product_id 
+		 WHERE product_purchases.is_paid_for = true 
+		 GROUP BY video_games.digital'.
+
+		
+   dictionaryResult := Dictionary new.
+   queryResult do: 
+		[ :each | 
+				(each at: 1) = 0 ifTrue: [dictionaryResult at: 'Physical' put: (each at: 2)]. 
+				(each at: 1) = 1 ifTrue: [dictionaryResult at: 'Digital' put: (each at: 2)].
+		].
+	
+	
+   jsonResult := NeoJSONWriter toString: dictionaryResult.
+   ^jsonResult

@@ -1,30 +1,19 @@
 getSoldVideoGamesByPlatform
 	
-   | login accessor collection numSoldVideoGamesByPlatform numSoldVideoGamesByPlatformJson|
+   | productDatabase queryResult dictionaryResult jsonResult|
 	
-   PharoDatabaseAccessor DefaultDriver: NativeMySQLDriver.
-   login := Login new
-	  database: MySQLPlatform new;
-	  username: 'testuser';
-	  password: 'PassWord_FOR_NTP!';
-	  host: 'localhost';
-	  port: '3306';
-	  databaseName: 'product-db';
-	  connectString: 'localhost:3306_product-db'.
+   productDatabase := self getDatabase: 'product-db'.
 
-   accessor := DatabaseAccessor forLogin: login.
-   accessor login.
-   accessor isLoggedIn.
-   collection := accessor basicExecuteSQLString: 
+   queryResult := productDatabase basicExecuteSQLString: 
 		'SELECT video_games.platform, SUM(product_purchase_details.product_quantity) 
 		 FROM product_purchases 
 		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
 		 JOIN video_games ON product_purchase_details.product_id = video_games.product_id 
 		 WHERE product_purchases.is_paid_for = true 
 		 GROUP BY video_games.platform'.
-
-   numSoldVideoGamesByPlatform := Dictionary new.
-   collection do: [ :each | numSoldVideoGamesByPlatform at: (each at: 1) put: (each at: 2) ].
+		
+   dictionaryResult := Dictionary new.
+   queryResult do: [ :each | dictionaryResult at: (each at: 1) put: (each at: 2) ].
 	
-   numSoldVideoGamesByPlatformJson := NeoJSONWriter toString: numSoldVideoGamesByPlatform.
-   ^numSoldVideoGamesByPlatformJson
+   jsonResult := NeoJSONWriter toString: dictionaryResult.
+   ^jsonResult

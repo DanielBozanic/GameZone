@@ -1,0 +1,18 @@
+getDatabase: databaseName
+
+  | login accessor|
+
+   PharoDatabaseAccessor DefaultDriver: NativeMySQLDriver.
+   login := Login new
+	  database: MySQLPlatform new;
+	  username: 'testuser';
+	  password: 'PassWord_FOR_NTP!';
+	  host: 'localhost';
+	  port: '3306';
+	  databaseName: databaseName;
+	  connectString: 'localhost:3306_', databaseName.
+
+   accessor := DatabaseAccessor forLogin: login.
+   accessor login.
+
+   ^accessor

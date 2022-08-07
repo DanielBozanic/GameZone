@@ -1,6 +1,8 @@
 build
 	Teapot stopAll.
 	Teapot on
+		GET: 'api/businessReports/getSoldVideoGamesByPlatform' -> [ :req | self getSoldVideoGamesByPlatform ];
+		GET: 'api/businessReports/getSoldVideoGamesByForm' -> [ :req | self getSoldVideoGamesByForm  ];
+		GET: 'api/businessReports/getProductsWithBiggestProfitLastThirtyDays' -> [ :req | self getProductsWithBiggestProfitLastThirtyDays ];
 		after: '/*' -> [:req :resp | resp headers at: 'Access-Control-Allow-Origin' put: '*'];
-		GET: '/api/businessReports/getSoldVideoGamesByPlatform' -> [ :req | self getSoldVideoGamesByPlatform ];
 		start.

@@ -84,6 +84,7 @@ import PurchaseHistory from "./Pages/PurchaseHistory";
 import ManageUser from "./Pages/ManageUser/ManageUser";
 import ContactForm from "./Pages/ContactForm/ContactForm";
 import ContactMessages from "./Pages/ContactMessages/ContactMessages";
+import BusinessReports from "./Pages/BusinessReports";
 
 import * as role from "./Utils/Role";
 
@@ -250,6 +251,15 @@ function App() {
 								<Route
 									path="/contactMessages"
 									element={<ContactMessages key="/contactMessages" />}
+								/>
+							</Route>
+							<Route
+								path="/businessReports"
+								element={<ProtectedRoute roles={[role.ROLE_ADMIN]} />}
+							>
+								<Route
+									path="/businessReports"
+									element={<BusinessReports key="/businessReports" />}
 								/>
 							</Route>
 						</Routes>

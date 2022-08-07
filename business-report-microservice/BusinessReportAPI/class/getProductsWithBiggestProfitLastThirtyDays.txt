@@ -1,0 +1,24 @@
+getProductsWithBiggestProfitLastThirtyDays
+	
+   | productDatabase queryResult dictionaryResult jsonResult|
+	
+   productDatabase := self getDatabase: 'product-db'.
+
+	queryResult := productDatabase basicExecuteSQLString: 
+		'SELECT 
+			product_purchase_details.product_name, 
+			SUM(product_purchase_details.product_price * product_purchase_details.product_quantity)
+		 FROM product_purchases 
+		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
+		 WHERE 
+			product_purchases.purchase_date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()
+		 	AND 
+			product_purchases.is_paid_for = true 
+		 GROUP BY product_purchase_details.product_name'.
+
+		
+   dictionaryResult := Dictionary new.
+   queryResult do: [ :each | dictionaryResult at: (each at: 1) put: (each at: 2) ].
+	
+   jsonResult := NeoJSONWriter toString: dictionaryResult.
+   ^jsonResult
