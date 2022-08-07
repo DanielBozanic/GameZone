@@ -25,6 +25,7 @@ import * as productType from "../Utils/ProductType";
 import * as authService from "../Auth/AuthService";
 import * as role from "../Utils/Role";
 import * as helperFunctions from "../Utils/HelperFunctions";
+import moment from "moment";
 
 toast.configure();
 const ProductDetail = (props) => {
@@ -169,6 +170,25 @@ const ProductDetail = (props) => {
 			});
 	};
 
+	const addProductOnMainPage = () => {
+		axios
+			.put(`${productAPI.ADD_PRODUCT_TO_MAIN_PAGE}/${product.Product.Id}`)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: false,
+				});
+			});
+	};
+
 	return (
 		<>
 			<AppNavbar />
@@ -177,7 +197,11 @@ const ProductDetail = (props) => {
 					<Row>
 						<Col style={{ marginTop: "10px", marginBottom: "10px" }} md={5}>
 							<Card className="product-detail-card">
-								<CardImg src={product.Product.Image.Content} alt="No image" />
+								<CardImg
+									className="product-detail-card-image"
+									src={product.Product.Image.Content}
+									alt="No image"
+								/>
 								<CardBody>
 									<CardTitle tag="h5">{product.Product.Name}</CardTitle>
 									<CardText>{product.Product.Price} RSD</CardText>
@@ -243,6 +267,14 @@ const ProductDetail = (props) => {
 													style={{ marginTop: "10px", marginRight: "10px" }}
 													className="my-button"
 													type="button"
+													onClick={addProductOnMainPage}
+												>
+													Put on main page
+												</Button>
+												<Button
+													style={{ marginTop: "10px", marginRight: "10px" }}
+													className="my-button"
+													type="button"
 													onClick={updateProduct}
 												>
 													Update
@@ -292,7 +324,11 @@ const ProductDetail = (props) => {
 														</tr>
 													);
 												} else if (
-													new Date(product[value]) !== "Invalid Date"
+													moment(
+														product[value],
+														"YYYY-MM-DDThh:mm:ssZ",
+														true
+													).isValid()
 												) {
 													return (
 														<tr key={idx}>

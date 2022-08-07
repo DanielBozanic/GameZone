@@ -287,29 +287,25 @@ const GraphicsCardForm = (props) => {
 									<Row>
 										<Col>
 											<FormGroup>
-												<Label>CUDA Stream Processors</Label>
+												<Label>Stream Processors</Label>
 												<Input
 													className="input-field"
 													type="number"
-													name="CUDAStreamProcessors"
+													name="StreamProcessors"
 													min="0"
 													invalid={
-														methods.formState.errors.CUDAStreamProcessors
-															?.message
+														methods.formState.errors.StreamProcessors?.message
 													}
 													innerRef={methods.register}
 													defaultValue={
 														product !== null &&
-														product.CUDAStreamProcessors !== null
-															? product.CUDAStreamProcessors
+														product.StreamProcessors !== null
+															? product.StreamProcessors
 															: ""
 													}
 												/>
 												<FormFeedback className="input-field-error-msg">
-													{
-														methods.formState.errors.CUDAStreamProcessors
-															?.message
-													}
+													{methods.formState.errors.StreamProcessors?.message}
 												</FormFeedback>
 											</FormGroup>
 										</Col>

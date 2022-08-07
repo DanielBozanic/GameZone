@@ -14,5 +14,6 @@ type Product struct {
 	Type Type `gorm:"not null"`
 	Image File `gorm:"foreignKey:ImageId"`
 	ImageId int
+	MainPage *bool `gorm:"type:boolean;default:false;not null"`
 	Archived *bool `gorm:"type:boolean;default:false;not null"`
 }

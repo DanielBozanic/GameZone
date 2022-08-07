@@ -73,10 +73,13 @@ func main() {
 	api.GET("/:id", productAPI.GetProductById)
 	api.GET("/searchByName", productAPI.SearchByName)
 	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
+	api.GET("/getMainPageProducts", productAPI.GetMainPageProducts)
 
 	employeeProtectedProducts := api.Group("/employeeProtected")
 	employeeProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
 
+	employeeProtectedProducts.PUT("/addProductToMainPage/:productId", productAPI.AddProductToMainPage)
+	employeeProtectedProducts.PUT("/removeProductFromMainPage/:productId", productAPI.RemoveProductFromMainPage)
 	employeeProtectedProducts.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
 
 	// Product purchase API

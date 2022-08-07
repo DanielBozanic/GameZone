@@ -5,6 +5,11 @@
 	margin-top: 0 !important;
 }
 
+.product-detail-card-image {
+	max-width: 450px;
+	max-height: 450px;
+}
+
 .product-detail-description-card {
 	background: #343a40;
 	color: orange;
@@ -24,7 +29,7 @@
 }
 
 .product-detail-table td {
-	width: 60%;
+	width: 100%;
 	border-top: none !important;
 	word-break: break-all;
 }

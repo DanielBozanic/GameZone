@@ -5,6 +5,11 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./Assets/css/index.css";
 import "./Assets/fonts/batmfa__.ttf";
+import "swiper/css/bundle";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import "./Assets/css/swiper.css";
 import Header from "./Layout/Header";
 import Footer from "./Layout/Footer";
 

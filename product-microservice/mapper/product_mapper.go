@@ -15,6 +15,7 @@ func ToProduct(productDTO dto.ProductDTO) (model.Product) {
 		Amount: productDTO.Amount,
 		Type: productDTO.Type,
 		Image: model.File(productDTO.Image),
+		MainPage: productDTO.MainPage,
 		Archived: productDTO.Archived,
 	}
 }
@@ -29,6 +30,7 @@ func ToProductDTO(product model.Product) dto.ProductDTO {
 		Amount: product.Amount,
 		Type: product.Type,
 		Image: dto.FileDTO(product.Image),
+		MainPage: product.MainPage,
 		Archived: product.Archived,
 	}
 }

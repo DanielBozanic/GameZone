@@ -35,6 +35,38 @@ func (productApi *ProductAPI) GetProductById(c *gin.Context) {
 	}
 }
 
+func (productApi *ProductAPI) AddProductToMainPage(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	msg := productApi.IProductService.AddProductToMainPage(productId)
+
+	if msg == "" {
+		c.JSON(http.StatusOK, "Product added to main page.")
+	} else  {
+		c.JSON(http.StatusBadRequest, msg)
+	} 
+}
+
+func (productApi *ProductAPI) RemoveProductFromMainPage(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	msg := productApi.IProductService.RemoveProductFromMainPage(productId)
+
+	if msg == "" {
+		c.Status(200)
+	} else  {
+		c.JSON(http.StatusBadRequest, msg)
+	} 
+}
+
 func (productApi *ProductAPI) DeleteProduct(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -71,4 +103,9 @@ func (productApi *ProductAPI) SearchByName(c *gin.Context) {
 func (productApi *ProductAPI) GetNumberOfRecordsSearch(c *gin.Context) {
 	numberOfRecords := productApi.IProductService.GetNumberOfRecordsSearch(c.Query("name"))
 	c.JSON(http.StatusOK, numberOfRecords)
+}
+
+func (productApi *ProductAPI) GetMainPageProducts(c *gin.Context) {
+	products := productApi.IProductService.GetMainPageProducts()
+	c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
 }

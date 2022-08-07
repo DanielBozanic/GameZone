@@ -15,6 +15,8 @@ type IProductRepository interface {
 	UpdateProduct(product model.Product) error
 	SearchByName(page int, pageSize int, name string) ([]model.Product, error)
 	GetNumberOfRecordsSearch(name string) int64
+	GetMainPageProducts() []model.Product
+	IsProductOnMainPage(productId int) (model.Product, error)
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
@@ -55,4 +57,23 @@ func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int6
 		Find(&products).
 		Count(&count)
 	return count
+}
+
+func (productRepo *productRepository) GetMainPageProducts() []model.Product {
+	var products []model.Product
+	productRepo.Database.
+		Preload("Image").
+		Where("main_page = true AND archived = false").
+		Find(&products).
+		Limit(9)
+	return products
+}
+
+func (productRepo *productRepository) IsProductOnMainPage(productId int) (model.Product, error) {
+	var product model.Product
+	result := productRepo.Database.
+		Preload("Image").
+		Where("id = ? AND main_page = true AND archived = false", productId).
+		First(&product)
+	return product, result.Error
 }

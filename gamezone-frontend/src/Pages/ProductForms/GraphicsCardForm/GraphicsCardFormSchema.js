@@ -20,15 +20,15 @@ export const graphicsCardFormSchema = yup.object({
 		.string()
 		.max(40, "Maximum number of characters allowed is 40"),
 	GPUSpeed: yup.string().max(20, "Maximum number of characters allowed is 20"),
-	CUDAStreamProcessors: yup
+	StreamProcessors: yup
 		.number()
-		.typeError("CUDA Stream Processors must be a number")
+		.typeError("Stream Processors must be a number")
 		.test(
 			"positive",
-			"CUDA Stream Processors must be a positive number",
+			"Stream Processors must be a positive number",
 			(value) => value >= 0
 		)
-		.integer("CUDA Stream Processors must be a non decimal value")
+		.integer("Stream Processors must be a non decimal value")
 		.nullable()
 		.transform((_, val) => (val !== "" ? Number(val) : null)),
 	Cooling: yup.string().max(20, "Maximum number of characters allowed is 20"),
