@@ -2,19 +2,20 @@ import * as productAPI from "../APIs/ProductMicroservice/product_api";
 import AppNavbar from "../Layout/AppNavbar";
 import Search from "../Components/Search";
 import ProductsView from "../Components/ProductsView";
-import { Row, Col, Container } from "reactstrap";
+import { Row, Col, Container, Card, CardHeader, CardTitle } from "reactstrap";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper";
-import ProductsMainModal from "../Components/ProductsMainModal";
-import * as authService from "../Auth/AuthService";
+import { Autoplay, Navigation } from "swiper";
 import * as helperFunctions from "../Utils/HelperFunctions";
+import * as authService from "../Auth/AuthService";
 
 const Main = () => {
 	const [products, setProducts] = useState([]);
 	const [mainPageProducts, setMainPageProducts] = useState([]);
+	const [popularProducts, setPopularProducts] = useState([]);
+	const [recommendedProducts, setRecommendedProducts] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageCount, setPageCount] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
@@ -34,6 +35,11 @@ const Main = () => {
 		} else {
 			setProducts([]);
 			getMainPageProducts();
+			if (authService.isUser()) {
+				getRecommendedProducts();
+			} else {
+				getPopularProducts();
+			}
 		}
 	}, [currentPage, searchTerm]);
 
@@ -73,6 +79,32 @@ const Main = () => {
 			});
 	};
 
+	const getPopularProducts = () => {
+		axios
+			.get(`${productAPI.GET_POPULAR_PRODUCTS}`)
+			.then((res) => {
+				setPopularProducts(res.data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const getRecommendedProducts = () => {
+		axios
+			.get(`${productAPI.GET_RECOMMENDED_PRODUCTS}`)
+			.then((res) => {
+				if (res.data.length > 0) {
+					setRecommendedProducts(res.data);
+				} else {
+					getPopularProducts();
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	const viewProductDetail = (product) => {
 		navigate(helperFunctions.getProductDetailRoute(product));
 	};
@@ -86,46 +118,89 @@ const Main = () => {
 		<>
 			<Container>
 				<Row style={{ display: "flex" }}>
-					{authService.isEmployee() && (
-						<Col md="2">
-							<ProductsMainModal />
-						</Col>
-					)}
 					<Search onSearchClick={onSearchClick} />
 				</Row>
 			</Container>
 			<AppNavbar />
-			{searchTerm === "" && mainPageProducts.length > 0 && (
+			{searchTerm === "" && (
 				<Container>
-					<Row className="swiper-row">
-						<Col>
-							<Swiper
-								slidesPerView={3}
-								spaceBetween={10}
-								autoplay={{
-									delay: 3500,
-									disableOnInteraction: false,
-								}}
-								pagination={{
-									clickable: true,
-								}}
-								navigation={true}
-								modules={[Autoplay, Pagination, Navigation]}
-								className="mySwiper"
-							>
-								{mainPageProducts.map((product) => {
-									return (
-										<SwiperSlide onClick={() => viewProductDetail(product)}>
-											<img src={product.Image.Content} />
-										</SwiperSlide>
-									);
-								})}
-							</Swiper>
-						</Col>
-					</Row>
+					{mainPageProducts.length > 0 && (
+						<Row className="swiper-row">
+							<Col>
+								<Card style={{ margin: "0" }}>
+									<CardHeader>
+										<CardTitle className="title" tag="h5">
+											Featuring
+										</CardTitle>
+									</CardHeader>
+								</Card>
+								<Swiper
+									slidesPerView={3}
+									autoplay={{
+										delay: 3500,
+										disableOnInteraction: false,
+									}}
+									navigation={true}
+									modules={[Autoplay, Navigation]}
+								>
+									{mainPageProducts.map((product) => {
+										return (
+											<SwiperSlide onClick={() => viewProductDetail(product)}>
+												<img src={product.Image.Content} />
+											</SwiperSlide>
+										);
+									})}
+								</Swiper>
+							</Col>
+						</Row>
+					)}
+					{popularProducts.length > 0 && (
+						<Row className="swiper-row">
+							<Col>
+								<Card style={{ margin: "0" }}>
+									<CardHeader>
+										<CardTitle className="title" tag="h5">
+											Popular
+										</CardTitle>
+									</CardHeader>
+								</Card>
+								<Swiper slidesPerView={3}>
+									{popularProducts.map((product) => {
+										return (
+											<SwiperSlide onClick={() => viewProductDetail(product)}>
+												<img src={product.Image.Content} />
+											</SwiperSlide>
+										);
+									})}
+								</Swiper>
+							</Col>
+						</Row>
+					)}
+					{recommendedProducts.length > 0 && (
+						<Row className="swiper-row">
+							<Col>
+								<Card style={{ margin: "0" }}>
+									<CardHeader>
+										<CardTitle className="title" tag="h5">
+											Because you like {recommendedProducts[0].Manufacturer}{" "}
+											products
+										</CardTitle>
+									</CardHeader>
+									<Swiper slidesPerView={3}>
+										{recommendedProducts.map((product) => {
+											return (
+												<SwiperSlide onClick={() => viewProductDetail(product)}>
+													<img src={product.Image.Content} />
+												</SwiperSlide>
+											);
+										})}
+									</Swiper>
+								</Card>
+							</Col>
+						</Row>
+					)}
 				</Container>
 			)}
-
 			<ProductsView
 				products={products}
 				currentPage={currentPage}

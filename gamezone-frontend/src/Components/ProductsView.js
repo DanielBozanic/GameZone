@@ -62,7 +62,7 @@ const ProductsView = (props) => {
 											<CardText>
 												{product.Product === undefined
 													? product.Price
-													: product.Product.Price}
+													: product.Product.Price}{" "}
 												RSD
 											</CardText>
 										</CardBody>

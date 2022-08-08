@@ -74,6 +74,7 @@ func main() {
 	api.GET("/searchByName", productAPI.SearchByName)
 	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
 	api.GET("/getMainPageProducts", productAPI.GetMainPageProducts)
+	api.GET("/getPopularProducts", productAPI.GetPopularProducts)
 
 	employeeProtectedProducts := api.Group("/employeeProtected")
 	employeeProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
@@ -82,16 +83,20 @@ func main() {
 	employeeProtectedProducts.PUT("/removeProductFromMainPage/:productId", productAPI.RemoveProductFromMainPage)
 	employeeProtectedProducts.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
 
+	userProtectedProducts := api.Group("/userProtected")
+	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER"}))
+	userProtectedProducts.GET("/getRecommendedProducts", productAPI.GetRecommendedProducts)
+
 	// Product purchase API
 	productPurchases := api.Group("/productPurchases")
 
-	userProtectedProducts := productPurchases.Group("/userProtected")
-	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedProducts.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
-	userProtectedProducts.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
-	userProtectedProducts.POST("/sendPurchaseConfirmationMail", productPurchaseAPI.SendPurchaseConfirmationMail)
-	userProtectedProducts.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
-	userProtectedProducts.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
+	userProtectedProductsPurchases := productPurchases.Group("/userProtected")
+	userProtectedProductsPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
+	userProtectedProductsPurchases.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
+	userProtectedProductsPurchases.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
+	userProtectedProductsPurchases.POST("/sendPurchaseConfirmationMail", productPurchaseAPI.SendPurchaseConfirmationMail)
+	userProtectedProductsPurchases.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
+	userProtectedProductsPurchases.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
 
 	employeeProtectedProductPurchases := productPurchases.Group("/employeeProtected")
 	employeeProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))

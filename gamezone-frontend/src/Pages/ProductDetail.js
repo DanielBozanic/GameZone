@@ -179,6 +179,27 @@ const ProductDetail = (props) => {
 					toastId: customId,
 					autoClose: 5000,
 				});
+				getProductById();
+			})
+			.catch((err) => {
+				toast.error(err.response.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: false,
+				});
+			});
+	};
+
+	const removeProductFromMainPage = () => {
+		axios
+			.put(`${productAPI.REMOVE_PRODUCT_FROM_MAIN_PAGE}/${product.Product.Id}`)
+			.then((res) => {
+				toast.success(res.data, {
+					position: toast.POSITION.TOP_CENTER,
+					toastId: customId,
+					autoClose: 5000,
+				});
+				getProductById();
 			})
 			.catch((err) => {
 				toast.error(err.response.data, {
@@ -219,7 +240,9 @@ const ProductDetail = (props) => {
 										>
 											Description
 										</CardTitle>
-										<CardBody>{product.Product.Description}</CardBody>
+										<CardBody style={{ whiteSpace: "pre-line" }}>
+											{product.Product.Description}
+										</CardBody>
 										<CardFooter className="product-detail-description-card-footer">
 											More information on the manufacturer's website
 										</CardFooter>
@@ -263,14 +286,26 @@ const ProductDetail = (props) => {
 									{authService.getToken() != null &&
 										authService.getRole() === role.ROLE_EMPLOYEE && (
 											<>
-												<Button
-													style={{ marginTop: "10px", marginRight: "10px" }}
-													className="my-button"
-													type="button"
-													onClick={addProductOnMainPage}
-												>
-													Put on main page
-												</Button>
+												{!product.Product.MainPage && (
+													<Button
+														style={{ marginTop: "10px", marginRight: "10px" }}
+														className="my-button"
+														type="button"
+														onClick={addProductOnMainPage}
+													>
+														Put on main page
+													</Button>
+												)}
+												{product.Product.MainPage && (
+													<Button
+														style={{ marginTop: "10px", marginRight: "10px" }}
+														className="my-button"
+														type="button"
+														onClick={removeProductFromMainPage}
+													>
+														Remove from main page
+													</Button>
+												)}
 												<Button
 													style={{ marginTop: "10px", marginRight: "10px" }}
 													className="my-button"

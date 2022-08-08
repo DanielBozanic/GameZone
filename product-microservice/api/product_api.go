@@ -2,6 +2,7 @@ package api
 
 import (
 	"product/mapper"
+	"product/middleware"
 	"product/service"
 	"strconv"
 
@@ -61,7 +62,7 @@ func (productApi *ProductAPI) RemoveProductFromMainPage(c *gin.Context) {
 	msg := productApi.IProductService.RemoveProductFromMainPage(productId)
 
 	if msg == "" {
-		c.Status(200)
+		c.JSON(http.StatusOK, "Product removed from main page.")
 	} else  {
 		c.JSON(http.StatusBadRequest, msg)
 	} 
@@ -107,5 +108,16 @@ func (productApi *ProductAPI) GetNumberOfRecordsSearch(c *gin.Context) {
 
 func (productApi *ProductAPI) GetMainPageProducts(c *gin.Context) {
 	products := productApi.IProductService.GetMainPageProducts()
+	c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
+}
+
+func (productApi *ProductAPI) GetPopularProducts(c *gin.Context) {
+	products := productApi.IProductService.GetPopularProducts()
+	c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
+}
+
+func (productApi *ProductAPI) GetRecommendedProducts(c *gin.Context) {
+	userData := middleware.GetUserData(c)
+	products := productApi.IProductService.GetRecommendedProducts(userData.Id)
 	c.JSON(http.StatusOK, mapper.ToProductDTOs(products))
 }

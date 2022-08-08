@@ -8,6 +8,10 @@
 	height: 100%;
 }
 
+:root {
+	--swiper-theme-color: orange;
+}
+
 .swiper-slide {
 	text-align: center;
 	font-size: 18px;

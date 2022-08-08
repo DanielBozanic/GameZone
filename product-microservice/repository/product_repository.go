@@ -4,6 +4,7 @@ import (
 	"product/model"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type productRepository struct {
@@ -17,6 +18,8 @@ type IProductRepository interface {
 	GetNumberOfRecordsSearch(name string) int64
 	GetMainPageProducts() []model.Product
 	IsProductOnMainPage(productId int) (model.Product, error)
+	GetPopularProducts() []model.Product
+	GetRecommendedProducts(userId int) []model.Product
 }
 
 func NewProductRepository(DB *gorm.DB) IProductRepository {
@@ -76,4 +79,59 @@ func (productRepo *productRepository) IsProductOnMainPage(productId int) (model.
 		Where("id = ? AND main_page = true AND archived = false", productId).
 		First(&product)
 	return product, result.Error
+}
+
+func (productRepo *productRepository) GetPopularProducts() []model.Product {
+	var productIds []int
+	productRepo.Database.
+		Model(model.ProductPurchase{}).
+		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
+		Select("product_purchase_details.product_id").
+		Joins("JOIN product_purchase_details ON product_purchase_details.product_purchase_id = product_purchases.id").
+		Joins("JOIN products ON product_purchase_details.product_id = products.id").
+		Where("product_purchases.is_paid_for = true").
+		Group("product_purchase_details.product_id").
+		Order("SUM(product_purchase_details.product_quantity) DESC").
+		Limit(3).
+		Find(&productIds)
+
+	var products []model.Product
+	productRepo.Database.
+		Model(model.Product{}).
+		Preload(clause.Associations).Preload("Image." + clause.Associations).
+		Where("id IN ?", productIds).
+		Find(&products)
+	return products
+}
+
+func (productRepo *productRepository) GetRecommendedProducts(userId int) []model.Product {
+	var productId int
+	productRepo.Database.
+		Model(model.ProductPurchase{}).
+		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
+		Select("product_purchase_details.product_id").
+		Joins("JOIN product_purchase_details ON product_purchase_details.product_purchase_id = product_purchases.id").
+		Joins("JOIN products ON product_purchase_details.product_id = products.id").
+		Where("product_purchases.is_paid_for = true AND product_purchases.user_id = ?", userId).
+		Group("product_purchase_details.product_id").
+		Order("SUM(product_purchase_details.product_quantity) DESC").
+		Limit(1).
+		Find(&productId)
+
+	var product model.Product
+	productRepo.Database.
+		Model(model.Product{}).
+		Preload(clause.Associations).Preload("Image." + clause.Associations).
+		Where("id = ?", productId).
+		Find(&product)
+
+	products := []model.Product{}
+	productRepo.Database.
+		Model(model.Product{}).
+		Preload(clause.Associations).Preload("Image." + clause.Associations).
+		Where("manufacturer LIKE ?", product.Manufacturer).
+		Order("RAND()").
+		Limit(3).
+		Find(&products)
+	return products
 }

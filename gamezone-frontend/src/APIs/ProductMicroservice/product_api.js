@@ -1,6 +1,7 @@
 const api = "http://localhost:7000/api/products";
 
 const employeeProtectedProducts = "/employeeProtected";
+const userProtected = "/userProtected";
 
 export const GET_PRODUCT_BY_ID = api;
 export const SEARCH_BY_NAME = api + "/searchByName";
@@ -13,3 +14,6 @@ export const ADD_PRODUCT_TO_MAIN_PAGE =
 export const REMOVE_PRODUCT_FROM_MAIN_PAGE =
 	api + employeeProtectedProducts + "/removeProductFromMainPage";
 export const GET_MAIN_PAGE_PRODUCTS = api + "/getMainPageProducts";
+export const GET_POPULAR_PRODUCTS = api + "/getPopularProducts";
+export const GET_RECOMMENDED_PRODUCTS =
+	api + userProtected + "/getRecommendedProducts";

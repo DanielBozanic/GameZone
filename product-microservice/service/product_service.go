@@ -21,12 +21,15 @@ type IProductService interface {
 	GetMainPageProducts() []model.Product
 	AddProductToMainPage(productId int) string
 	RemoveProductFromMainPage(productId int) string
+	GetPopularProducts() []model.Product
+	GetRecommendedProducts(userId int) []model.Product
 }
 
 func NewProductService(productRepository repository.IProductRepository, productPurchaseRepository repository.IProductPurchaseRepository) IProductService {
 	return &productService{IProductRepository: productRepository, IProductPurchaseRepository: productPurchaseRepository}
 }
 
+// General product related services
 func (productService *productService) GetProductById(id int) (model.Product, error) {
 	return productService.IProductRepository.GetProductById(id);
 }
@@ -56,6 +59,8 @@ func (productService *productService) DeleteProduct(id int) string {
 	return ""
 }
 
+
+// Main page related services
 func (productService *productService) GetMainPageProducts() []model.Product {
 	return productService.IProductRepository.GetMainPageProducts()
 }
@@ -92,4 +97,12 @@ func (productService *productService) RemoveProductFromMainPage(productId int) s
 	*product.MainPage = false  
 	err = productService.IProductRepository.UpdateProduct(product)
 	return msg
+}
+
+func (productService *productService) GetPopularProducts() []model.Product {
+	return productService.IProductRepository.GetPopularProducts();
+}
+
+func (productService *productService) GetRecommendedProducts(userId int) []model.Product {
+	return productService.IProductRepository.GetRecommendedProducts(userId)
 }
