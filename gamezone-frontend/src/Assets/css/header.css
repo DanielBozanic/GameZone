@@ -1,7 +1,5 @@
 .responsive-img-header {
-	width: 100%;
 	max-width: 250px;
-	height: auto;
 	border: 8px solid orange;
 }
 

@@ -8,3 +8,4 @@ export const ADD_EMPLOYEE_AND_ADMIN = api + "/addEmployeeAndAdmin";
 export const GET_ALL_REGISTERED_USERS = api + "/getAllRegisteredUsers";
 export const GET_NUMBER_OF_RECORDS_REGISTERED_USERS =
 	api + "/getNumberOfRecordsRegisteredUsers";
+export const UPDATE = api + "/update";

@@ -34,7 +34,7 @@ func main() {
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge: 12 * time.Hour,
-	  }))
+	  }), middleware.RequestCancelRecover())
 
 
 	productAPI := di.InitProductAPI(database)

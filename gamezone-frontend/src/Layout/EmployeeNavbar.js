@@ -28,6 +28,11 @@ const EmployeeNavbar = () => {
 			<Collapse isOpen={!collapsed} navbar>
 				<Nav className="me-auto" navbar>
 					<NavItem>
+						<NavLink>
+							<Link to="/profile">Profile</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<UncontrolledDropdown inNavbar nav>
 							<DropdownToggle caret nav>
 								Add new product

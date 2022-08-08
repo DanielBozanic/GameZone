@@ -142,7 +142,14 @@ func (productPurchaseService *productPurchaseService) ConfirmPayment(productPurc
 	for _, productPurchaseDetail := range productPurchase.ProductPurchaseDetail {
 		product, _ := productPurchaseService.IProductRepository.GetProductById(productPurchaseDetail.ProductId)
 		if product.Amount < productPurchaseDetail.ProductQuantity {
-			return "Insufficient quantity for " + product.Name
+			if product.Type == model.VIDEO_GAME {
+				videoGame, _ := productPurchaseService.IVideoGameRepository.GetById(product.Id)
+				if !*videoGame.Digital {
+					return "Insufficient quantity for " + product.Name
+				}
+			} else {
+				return "Insufficient quantity for " + product.Name
+			}
 		} else {
 			product.Amount = product.Amount - productPurchaseDetail.ProductQuantity
 		}

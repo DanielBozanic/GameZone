@@ -36,7 +36,7 @@ def verify_account():
         return resp
 
 
-@utils.token_utils.authentification_required
+@utils.token_utils.authorization_required
 @utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def add_employee_and_admin():
     msg = services.user_service.add_employee_and_admin(request.json)
@@ -68,7 +68,7 @@ def get_by_id():
         return resp
 
 
-@utils.token_utils.authentification_required
+@utils.token_utils.authorization_required
 @utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def get_all_registered_users():
     args = request.args.to_dict()
@@ -80,10 +80,23 @@ def get_all_registered_users():
     return resp
 
 
-@utils.token_utils.authentification_required
+@utils.token_utils.authorization_required
 @utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def get_number_of_records_registered_users():
     count = services.user_service.get_number_of_records_registered_users()
     resp = jsonify(count=count)
     resp.status_code = 200
     return resp
+
+
+@utils.token_utils.authentification_required
+def update():
+    msg = services.user_service.update(request.json)
+    if msg == "":
+        resp = jsonify(message="Update successful")
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify(message=msg)
+        resp.status_code = 400
+        return resp

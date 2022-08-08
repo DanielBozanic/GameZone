@@ -89,7 +89,7 @@ func (productRepo *productRepository) GetPopularProducts() []model.Product {
 		Select("product_purchase_details.product_id").
 		Joins("JOIN product_purchase_details ON product_purchase_details.product_purchase_id = product_purchases.id").
 		Joins("JOIN products ON product_purchase_details.product_id = products.id").
-		Where("product_purchases.is_paid_for = true").
+		Where("product_purchases.is_paid_for = true AND products.archived = false").
 		Group("product_purchase_details.product_id").
 		Order("SUM(product_purchase_details.product_quantity) DESC").
 		Limit(3).
@@ -99,7 +99,7 @@ func (productRepo *productRepository) GetPopularProducts() []model.Product {
 	productRepo.Database.
 		Model(model.Product{}).
 		Preload(clause.Associations).Preload("Image." + clause.Associations).
-		Where("id IN ?", productIds).
+		Where("id IN ? AND archived = false", productIds).
 		Find(&products)
 	return products
 }
@@ -108,12 +108,11 @@ func (productRepo *productRepository) GetRecommendedProducts(userId int) []model
 	var productId int
 	productRepo.Database.
 		Model(model.ProductPurchase{}).
-		Preload(clause.Associations).Preload("ProductPurchaseDetail." + clause.Associations).
 		Select("product_purchase_details.product_id").
 		Joins("JOIN product_purchase_details ON product_purchase_details.product_purchase_id = product_purchases.id").
 		Joins("JOIN products ON product_purchase_details.product_id = products.id").
 		Where("product_purchases.is_paid_for = true AND product_purchases.user_id = ?", userId).
-		Group("product_purchase_details.product_id").
+		Group("product_purchase_details.product_id AND products.archived = false").
 		Order("SUM(product_purchase_details.product_quantity) DESC").
 		Limit(1).
 		Find(&productId)
@@ -121,15 +120,14 @@ func (productRepo *productRepository) GetRecommendedProducts(userId int) []model
 	var product model.Product
 	productRepo.Database.
 		Model(model.Product{}).
-		Preload(clause.Associations).Preload("Image." + clause.Associations).
-		Where("id = ?", productId).
+		Where("id = ? AND archived = false", productId).
 		Find(&product)
 
 	products := []model.Product{}
 	productRepo.Database.
 		Model(model.Product{}).
 		Preload(clause.Associations).Preload("Image." + clause.Associations).
-		Where("manufacturer LIKE ?", product.Manufacturer).
+		Where("manufacturer LIKE ? AND archived = false", product.Manufacturer).
 		Order("RAND()").
 		Limit(3).
 		Find(&products)

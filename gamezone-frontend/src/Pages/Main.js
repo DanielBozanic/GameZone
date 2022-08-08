@@ -35,10 +35,9 @@ const Main = () => {
 		} else {
 			setProducts([]);
 			getMainPageProducts();
+			getPopularProducts();
 			if (authService.isUser()) {
 				getRecommendedProducts();
-			} else {
-				getPopularProducts();
 			}
 		}
 	}, [currentPage, searchTerm]);
@@ -94,11 +93,7 @@ const Main = () => {
 		axios
 			.get(`${productAPI.GET_RECOMMENDED_PRODUCTS}`)
 			.then((res) => {
-				if (res.data.length > 0) {
-					setRecommendedProducts(res.data);
-				} else {
-					getPopularProducts();
-				}
+				setRecommendedProducts(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -118,18 +113,41 @@ const Main = () => {
 		<>
 			<Container>
 				<Row style={{ display: "flex" }}>
-					<Search onSearchClick={onSearchClick} />
+					<Search onSearchClick={onSearchClick} searchPlaceholder={"Search"} />
 				</Row>
 			</Container>
 			<AppNavbar />
 			{searchTerm === "" && (
 				<Container>
+					{recommendedProducts.length > 0 && (
+						<Row className="swiper-row">
+							<Col>
+								<Card style={{ margin: "0" }}>
+									<CardHeader>
+										<CardTitle className="title" tag="h4">
+											Because you like {recommendedProducts[0].Manufacturer}{" "}
+											products
+										</CardTitle>
+									</CardHeader>
+									<Swiper slidesPerView={3}>
+										{recommendedProducts.map((product) => {
+											return (
+												<SwiperSlide onClick={() => viewProductDetail(product)}>
+													<img src={product.Image.Content} />
+												</SwiperSlide>
+											);
+										})}
+									</Swiper>
+								</Card>
+							</Col>
+						</Row>
+					)}
 					{mainPageProducts.length > 0 && (
 						<Row className="swiper-row">
 							<Col>
 								<Card style={{ margin: "0" }}>
 									<CardHeader>
-										<CardTitle className="title" tag="h5">
+										<CardTitle className="title" tag="h4">
 											Featuring
 										</CardTitle>
 									</CardHeader>
@@ -159,7 +177,7 @@ const Main = () => {
 							<Col>
 								<Card style={{ margin: "0" }}>
 									<CardHeader>
-										<CardTitle className="title" tag="h5">
+										<CardTitle className="title" tag="h4">
 											Popular
 										</CardTitle>
 									</CardHeader>
@@ -173,29 +191,6 @@ const Main = () => {
 										);
 									})}
 								</Swiper>
-							</Col>
-						</Row>
-					)}
-					{recommendedProducts.length > 0 && (
-						<Row className="swiper-row">
-							<Col>
-								<Card style={{ margin: "0" }}>
-									<CardHeader>
-										<CardTitle className="title" tag="h5">
-											Because you like {recommendedProducts[0].Manufacturer}{" "}
-											products
-										</CardTitle>
-									</CardHeader>
-									<Swiper slidesPerView={3}>
-										{recommendedProducts.map((product) => {
-											return (
-												<SwiperSlide onClick={() => viewProductDetail(product)}>
-													<img src={product.Image.Content} />
-												</SwiperSlide>
-											);
-										})}
-									</Swiper>
-								</Card>
 							</Col>
 						</Row>
 					)}

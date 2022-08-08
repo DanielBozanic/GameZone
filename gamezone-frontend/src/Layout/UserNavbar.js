@@ -79,20 +79,18 @@ const UserNavbar = () => {
 			<NavbarToggler onClick={toggleNavbar} className="mr-2" />
 			<Collapse isOpen={!collapsed} navbar>
 				<Nav className="me-auto" navbar>
-					<NavItem>
+					<NavItem className="item">
+						<NavLink>
+							<Link to="/profile">Profile</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem className="item">
 						<NavLink>
 							<Link to="/shoppingCart">Shopping Cart</Link>
 						</NavLink>
 					</NavItem>
 					<NavItem>
-						<NavLink>
-							<Link to={`/purchaseHistory/${authService.getId()}`}>
-								Purchase history
-							</Link>
-						</NavLink>
-					</NavItem>
-					<NavItem>
-						<UncontrolledDropdown inNavbar nav>
+						<UncontrolledDropdown className="item" inNavbar nav>
 							<DropdownToggle caret nav>
 								News
 							</DropdownToggle>

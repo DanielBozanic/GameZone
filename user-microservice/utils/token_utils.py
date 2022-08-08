@@ -35,6 +35,23 @@ def authentification_required(f):
 
         token = token.split(" ")[1]
         try:
+             jwt.decode(token, SECRET_KEY)
+        except:
+            return jsonify({"message": "Token is invalid!"}), 403
+
+        return f()
+    return decorated
+
+
+def authorization_required(f):
+    @wraps(f)
+    def decorated():
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'message': "Token is missing!"}), 403
+
+        token = token.split(" ")[1]
+        try:
             token = jwt.decode(token, SECRET_KEY)
         except:
             return jsonify({"message": "Token is invalid!"}), 403

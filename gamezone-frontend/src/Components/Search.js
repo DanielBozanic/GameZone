@@ -23,7 +23,7 @@ const Search = (props) => {
 							name="searchTerm"
 							type="text"
 							value={searchTerm}
-							placeholder="Search"
+							placeholder={props.searchPlaceholder}
 							onChange={(e) => setSearchTerm(e.target.value)}
 						/>
 					</Col>

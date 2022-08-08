@@ -164,4 +164,4 @@ def update(data):
         db.session.commit()
         return ""
     else:
-        return "A user with this email/username already exists!"
+        return "A user with this email already exists!"

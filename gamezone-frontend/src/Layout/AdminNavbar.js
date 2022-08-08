@@ -27,6 +27,11 @@ const AdminNavbar = () => {
 			<Collapse isOpen={!collapsed} navbar>
 				<Nav className="me-auto" navbar>
 					<NavItem>
+						<NavLink>
+							<Link to="/profile">Profile</Link>
+						</NavLink>
+					</NavItem>
+					<NavItem>
 						<UncontrolledDropdown inNavbar nav>
 							<DropdownToggle caret nav>
 								User management
@@ -47,12 +52,12 @@ const AdminNavbar = () => {
 					</NavItem>
 					<NavItem>
 						<NavLink>
-							<Link to="/viewNews">News</Link>
+							<Link to="/businessReports">Business reports</Link>
 						</NavLink>
 					</NavItem>
 					<NavItem>
 						<NavLink>
-							<Link to="/businessReports">Business reports</Link>
+							<Link to="/viewNews">News</Link>
 						</NavLink>
 					</NavItem>
 					<NavItem>

@@ -90,6 +90,7 @@ import ManageUser from "./Pages/ManageUser/ManageUser";
 import ContactForm from "./Pages/ContactForm/ContactForm";
 import ContactMessages from "./Pages/ContactMessages/ContactMessages";
 import BusinessReports from "./Pages/BusinessReports";
+import Profile from "./Pages/Profile/Profile";
 
 import * as role from "./Utils/Role";
 
@@ -266,6 +267,20 @@ function App() {
 									path="/businessReports"
 									element={<BusinessReports key="/businessReports" />}
 								/>
+							</Route>
+							<Route
+								path="/profile"
+								element={
+									<ProtectedRoute
+										roles={[
+											role.ROLE_USER,
+											role.ROLE_EMPLOYEE,
+											role.ROLE_ADMIN,
+										]}
+									/>
+								}
+							>
+								<Route path="/profile" element={<Profile key="/profile" />} />
 							</Route>
 						</Routes>
 					</div>

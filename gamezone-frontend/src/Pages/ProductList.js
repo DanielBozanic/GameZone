@@ -131,6 +131,7 @@ const ProductList = (props) => {
 					<Search
 						onSearchClick={onSearchClick}
 						clearSearchTerm={clearSearchTerm}
+						searchPlaceholder={props.searchPlaceholder}
 					/>
 				</Row>
 			</Container>
