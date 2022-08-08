@@ -79,18 +79,18 @@ const UserNavbar = () => {
 			<NavbarToggler onClick={toggleNavbar} className="mr-2" />
 			<Collapse isOpen={!collapsed} navbar>
 				<Nav className="me-auto" navbar>
-					<NavItem className="item">
+					<NavItem>
 						<NavLink>
 							<Link to="/profile">Profile</Link>
 						</NavLink>
 					</NavItem>
-					<NavItem className="item">
+					<NavItem>
 						<NavLink>
 							<Link to="/shoppingCart">Shopping Cart</Link>
 						</NavLink>
 					</NavItem>
 					<NavItem>
-						<UncontrolledDropdown className="item" inNavbar nav>
+						<UncontrolledDropdown inNavbar nav>
 							<DropdownToggle caret nav>
 								News
 							</DropdownToggle>

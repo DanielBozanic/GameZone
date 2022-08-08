@@ -9,3 +9,4 @@ export const GET_ALL_REGISTERED_USERS = api + "/getAllRegisteredUsers";
 export const GET_NUMBER_OF_RECORDS_REGISTERED_USERS =
 	api + "/getNumberOfRecordsRegisteredUsers";
 export const UPDATE = api + "/update";
+export const CHANGE_PASSWORD = api + "/changePassword";

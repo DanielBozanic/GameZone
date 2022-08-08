@@ -100,3 +100,16 @@ def update():
         resp = jsonify(message=msg)
         resp.status_code = 400
         return resp
+
+
+@utils.token_utils.authentification_required
+def change_password():
+    msg = services.user_service.change_password(request.json)
+    if msg == "":
+        resp = jsonify(message="Password changed")
+        resp.status_code = 200
+        return resp
+    else:
+        resp = jsonify(message=msg)
+        resp.status_code = 400
+        return resp

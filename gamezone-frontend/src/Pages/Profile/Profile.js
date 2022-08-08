@@ -19,7 +19,8 @@ import {
 } from "reactstrap";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { profileSchema } from "./ProfileSchema";
+import { updateSchema } from "./UpdateSchema";
+import { passwordSchema } from "./PasswordSchema";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
@@ -32,15 +33,17 @@ const Profile = () => {
 
 	const [user, setUser] = useState(null);
 	const [updateMode, setUpdateMode] = useState(false);
+	const [changePasswordMode, setChangePasswordMode] = useState(false);
 
 	const navigate = useNavigate();
 
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm({
-		resolver: yupResolver(profileSchema),
+	const updateForm = useForm({
+		resolver: yupResolver(updateSchema),
+		mode: "onChange",
+	});
+
+	const changePasswordForm = useForm({
+		resolver: yupResolver(passwordSchema),
 		mode: "onChange",
 	});
 
@@ -61,13 +64,34 @@ const Profile = () => {
 
 	const update = (data) => {
 		user.email = data.email;
-		user.password = data.password;
 		user.name = data.name;
 		user.surname = data.surname;
 		axios
 			.put(`${userAPI.UPDATE}`, user)
 			.then((_res) => {
 				setUpdateMode(false);
+				getUserById();
+			})
+			.catch((err) => {
+				toast.error(err.response.data.message, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: false,
+					toastId: customId,
+				});
+			});
+	};
+
+	const changePassword = (data) => {
+		user.password = data.password;
+		axios
+			.put(`${userAPI.CHANGE_PASSWORD}`, user)
+			.then((res) => {
+				toast.error(res.data.message, {
+					position: toast.POSITION.TOP_CENTER,
+					autoClose: 5000,
+					toastId: customId,
+				});
+				setChangePasswordMode(false);
 				getUserById();
 			})
 			.catch((err) => {
@@ -95,7 +119,7 @@ const Profile = () => {
 								</CardTitle>
 							</CardHeader>
 							<CardBody>
-								{!updateMode && (
+								{!updateMode && !changePasswordMode && (
 									<CardText>
 										<Row>
 											<Col>
@@ -123,86 +147,155 @@ const Profile = () => {
 										</Row>
 									</CardText>
 								)}
-								{updateMode && (
-									<Form className="form">
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Password</Label>
-													<Input
-														className="input-field"
-														type="password"
-														name="password"
-														invalid={errors.password?.message}
-														innerRef={register}
-														defaultValue={user.password}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{errors.password?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Email</Label>
-													<Input
-														className="input-field"
-														type="email"
-														placeholder="exmaple@email.com"
-														name="email"
-														invalid={errors.email?.message}
-														innerRef={register}
-														defaultValue={user.email}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{errors.email?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Name</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="name"
-														invalid={errors.name?.message}
-														innerRef={register}
-														defaultValue={user.name}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{errors.name?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Surname</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="surname"
-														invalid={errors.surname?.message}
-														innerRef={register}
-														defaultValue={user.surname}
-													/>
-													<FormFeedback className="input-field-error-msg">
-														{errors.surname?.message}
-													</FormFeedback>
-												</FormGroup>
-											</Col>
-										</Row>
-									</Form>
-								)}
-							</CardBody>
-							<CardFooter>
-								{!updateMode && (
+								<Form className="form">
+									{updateMode && (
+										<>
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Email</Label>
+														<Input
+															className="input-field"
+															type="email"
+															placeholder="exmaple@email.com"
+															name="email"
+															invalid={updateForm.errors.email?.message}
+															innerRef={updateForm.register}
+															defaultValue={user.email}
+														/>
+														<FormFeedback className="input-field-error-msg">
+															{updateForm.errors.email?.message}
+														</FormFeedback>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Name</Label>
+														<Input
+															className="input-field"
+															type="text"
+															name="name"
+															invalid={updateForm.errors.name?.message}
+															innerRef={updateForm.register}
+															defaultValue={user.name}
+														/>
+														<FormFeedback className="input-field-error-msg">
+															{updateForm.errors.name?.message}
+														</FormFeedback>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Surname</Label>
+														<Input
+															className="input-field"
+															type="text"
+															name="surname"
+															invalid={updateForm.errors.surname?.message}
+															innerRef={updateForm.register}
+															defaultValue={user.surname}
+														/>
+														<FormFeedback className="input-field-error-msg">
+															{updateForm.errors.surname?.message}
+														</FormFeedback>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<Button
+														style={{ marginRight: "5px" }}
+														className="my-button"
+														type="button"
+														onClick={updateForm.handleSubmit(update)}
+													>
+														Update
+													</Button>
+
+													<Button
+														className="my-button"
+														type="button"
+														onClick={() => setUpdateMode(false)}
+													>
+														Cancel
+													</Button>
+												</Col>
+											</Row>
+										</>
+									)}
+									{changePasswordMode && (
+										<>
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Password</Label>
+														<Input
+															className="input-field"
+															type="password"
+															name="password"
+															invalid={
+																changePasswordForm.errors.password?.message
+															}
+															innerRef={changePasswordForm.register}
+														/>
+														<FormFeedback className="input-field-error-msg">
+															{changePasswordForm.errors.password?.message}
+														</FormFeedback>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Confirm Password</Label>
+														<Input
+															className="input-field"
+															type="password"
+															name="confirmPassword"
+															invalid={
+																changePasswordForm.errors.confirmPassword
+																	?.message
+															}
+															innerRef={changePasswordForm.register}
+														/>
+														<FormFeedback className="input-field-error-msg">
+															{
+																changePasswordForm.errors.confirmPassword
+																	?.message
+															}
+														</FormFeedback>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<Button
+														style={{ marginRight: "5px" }}
+														className="my-button"
+														type="button"
+														onClick={changePasswordForm.handleSubmit(
+															changePassword
+														)}
+													>
+														Confirm
+													</Button>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={() => setChangePasswordMode(false)}
+													>
+														Cancel
+													</Button>
+												</Col>
+											</Row>
+										</>
+									)}
+								</Form>
+								{!updateMode && !changePasswordMode && (
 									<Button
 										style={{ marginRight: "5px" }}
 										className="my-button"
@@ -212,36 +305,33 @@ const Profile = () => {
 										Update
 									</Button>
 								)}
-								{updateMode && (
+								{!updateMode && !changePasswordMode && (
 									<Button
 										style={{ marginRight: "5px" }}
 										className="my-button"
 										type="button"
-										onClick={handleSubmit(update)}
+										onClick={() => setChangePasswordMode(true)}
 									>
-										Save
+										Change password
 									</Button>
 								)}
-								{updateMode && (
-									<Button
-										style={{ marginRight: "5px" }}
-										className="my-button"
-										type="button"
-										onClick={() => setUpdateMode(false)}
-									>
-										Cancel
-									</Button>
-								)}
-								{authService.isUser() && (
-									<Button
-										className="my-button"
-										type="button"
-										onClick={purchaseHistory}
-									>
-										Purchase history
-									</Button>
-								)}
-							</CardFooter>
+							</CardBody>
+							{authService.isUser() && (
+								<CardFooter>
+									<Row>
+										<Col>
+											<Button
+												style={{ marginTop: "5px" }}
+												className="my-button"
+												type="button"
+												onClick={purchaseHistory}
+											>
+												Purchase history
+											</Button>
+										</Col>
+									</Row>
+								</CardFooter>
+							)}
 						</Card>
 					)}
 				</Col>

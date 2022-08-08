@@ -159,9 +159,20 @@ def update(data):
         db.session.query(User). \
             filter(User.id == data["id"]). \
             update({'email': data["email"], "user_name": data["user_name"],
-                    "password": data["password"], "name": data["name"],
-                    "surname": data["surname"]})
+                    "name": data["name"], "surname": data["surname"]})
         db.session.commit()
         return ""
     else:
         return "A user with this email already exists!"
+
+
+def change_password(data):
+    user_db = get_by_id(data["id"])
+    if isinstance(user_db, str):
+        return "A user with id " + str(data["id"]) + " does not exist!"
+
+    db.session.query(User). \
+        filter(User.id == data["id"]). \
+        update({'password': data["password"]})
+    db.session.commit()
+    return ""

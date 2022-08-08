@@ -1,10 +1,6 @@
 import * as yup from "yup";
 
-export const profileSchema = yup.object().shape({
-	password: yup
-		.string()
-		.max(120, "Maximum number of characters allowed is 120")
-		.required("Password is required"),
+export const updateSchema = yup.object().shape({
 	email: yup
 		.string()
 		.email("Email format is invalid")
