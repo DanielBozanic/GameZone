@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/hdds";
+const api = "http://localhost:8000/api/products/hdds";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -12,7 +12,6 @@ export const GET_CAPACITIES = api + "/getCapacities";
 export const GET_FORMS = api + "/getForms";
 export const GET_DISK_SPEEDS = api + "/getDiskSpeeds";
 
-const employeeProtectedHdds = "/employeeProtected";
-export const CREATE = api + employeeProtectedHdds;
-export const UPDATE = api + employeeProtectedHdds;
-export const DELETE = api + employeeProtectedHdds;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

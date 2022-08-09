@@ -1,12 +1,9 @@
-const api = "http://localhost:7002/api/news/newsComments";
-
-const userProtected = api + "/userProtected";
-const userAndAdminProtected = api + "/userAndAdminProtected";
+const api = "http://localhost:8000/api/news/newsComments";
 
 export const GET_BY_NEWS_ARTICLE = api + "/getByNewsArticle";
 
-export const ADD_NEWS_COMMENT = userProtected + "/addNewsComment";
-export const EDIT_NEWS_COMMENT = userProtected + "/editNewsComment";
+export const ADD_NEWS_COMMENT = api + "/addNewsComment";
+export const EDIT_NEWS_COMMENT = api + "/editNewsComment";
 
-export const DELETE_NEWS_COMMENT = userAndAdminProtected + "/deleteNewsComment";
-export const GET_BY_USER_ID = userAndAdminProtected + "/getByUserId";
+export const DELETE_NEWS_COMMENT = api + "/deleteNewsComment";
+export const GET_BY_USER_ID = api + "/getByUserId";

@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/videoGames";
+const api = "http://localhost:8000/api/products/videoGames";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -10,7 +10,6 @@ export const GET_NUMBER_OF_RECORDS_FILTER = api + "/getNumberOfRecordsFilter";
 export const GET_PLATFORMS = api + "/getPlatforms";
 export const GET_GENRES = api + "/getGenres";
 
-const employeeProtectedVideoGames = "/employeeProtected";
-export const CREATE = api + employeeProtectedVideoGames;
-export const UPDATE = api + employeeProtectedVideoGames;
-export const DELETE = api + employeeProtectedVideoGames;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

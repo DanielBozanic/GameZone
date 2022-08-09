@@ -5,7 +5,6 @@ import (
 	"news/config"
 	"news/db"
 	"news/di"
-	"news/middleware"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -48,38 +47,24 @@ func main() {
 	newsArticles.GET("/getPublishedArticles", newsArticleAPI.GetPublishedArticles)
 	newsArticles.GET("/getNumberOfRecordsPublishedArticles", newsArticleAPI.GetNumberOfRecordsPublishedArticles)
 	newsArticles.GET("/:id", newsArticleAPI.GetById)
-
-	employeeProtectedNewsArticles := newsArticles.Group("/employeeProtected")
-	employeeProtectedNewsArticles.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedNewsArticles.GET("", newsArticleAPI.GetAll)
-	employeeProtectedNewsArticles.GET("/getNumberOfRecords", newsArticleAPI.GetNumberOfRecords)
-	employeeProtectedNewsArticles.GET("/getUnpublishedArticles", newsArticleAPI.GetUnpublishedArticles)
-	employeeProtectedNewsArticles.GET("/getNumberOfRecordsUnpublishedArticles", newsArticleAPI.GetNumberOfRecordsUnpublishedArticles)
-	employeeProtectedNewsArticles.POST("/addNewsArticle", newsArticleAPI.AddNewsArticle)
-	employeeProtectedNewsArticles.PUT("/editNewsArticle", newsArticleAPI.EditNewsArticle)
-	employeeProtectedNewsArticles.DELETE("/deleteNewsArticle/:id", newsArticleAPI.DeleteNewsArticle)
-	employeeProtectedNewsArticles.PUT("/publishNewsArticle", newsArticleAPI.PublishNewsArticle)
+	newsArticles.GET("", newsArticleAPI.GetAll)
+	newsArticles.GET("/getNumberOfRecords", newsArticleAPI.GetNumberOfRecords)
+	newsArticles.POST("/addNewsArticle", newsArticleAPI.AddNewsArticle)
+	newsArticles.PUT("/editNewsArticle", newsArticleAPI.EditNewsArticle)
+	newsArticles.DELETE("/deleteNewsArticle/:id", newsArticleAPI.DeleteNewsArticle)
+	newsArticles.PUT("/publishNewsArticle", newsArticleAPI.PublishNewsArticle)
 
 	newsComments := api.Group("/newsComments")
 	newsComments.GET("/getByNewsArticle/:newsArticleId", newsCommentAPI.GetByNewsArticle)
-
-	userProtectedNewsComments := newsComments.Group("/userProtected")
-	userProtectedNewsComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedNewsComments.POST("/addNewsComment", newsCommentAPI.AddNewsComment)
-	userProtectedNewsComments.PUT("/editNewsComment", newsCommentAPI.EditNewsCommment)
-
-	userAndAdminProtectedNewsComments := newsComments.Group("/userAndAdminProtected")
-	userAndAdminProtectedNewsComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
-	userAndAdminProtectedNewsComments.DELETE("/deleteNewsComment/:id", newsCommentAPI.DeleteNewsComment)
-	userAndAdminProtectedNewsComments.GET("/getByUserId/:userId", newsCommentAPI.GetByUserId)
+	newsComments.POST("/addNewsComment", newsCommentAPI.AddNewsComment)
+	newsComments.PUT("/editNewsComment", newsCommentAPI.EditNewsCommment)
+	newsComments.DELETE("/deleteNewsComment/:id", newsCommentAPI.DeleteNewsComment)
+	newsComments.GET("/getByUserId/:userId", newsCommentAPI.GetByUserId)
 
 	newsSubscriptions := api.Group("/newsSubscriptions")
-	
-	userProtectedNewsSubscriptions := newsSubscriptions.Group("/userProtected")
-	userProtectedNewsSubscriptions.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedNewsSubscriptions.POST("/subscribe", newsSubscriptionAPI.Subscribe)
-	userProtectedNewsSubscriptions.DELETE("/unsubscribe", newsSubscriptionAPI.Unsubscribe)
-	userProtectedNewsSubscriptions.GET("/isUserSubscribed", newsSubscriptionAPI.IsUserSubscribed)
+	newsSubscriptions.POST("/subscribe", newsSubscriptionAPI.Subscribe)
+	newsSubscriptions.DELETE("/unsubscribe", newsSubscriptionAPI.Unsubscribe)
+	newsSubscriptions.GET("/isUserSubscribed", newsSubscriptionAPI.IsUserSubscribed)
 
 	scheduler := gocron.NewScheduler(time.UTC)
 	scheduler.Every(7).Days().Do(newsSubscriptionAPI.INewsSubscriptionService.SendEmails)

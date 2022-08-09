@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/ssds";
+const api = "http://localhost:8000/api/products/ssds";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -13,7 +13,6 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_MAX_SEQUENTIAL_READS = api + "/getMaxSequentialReads";
 export const GET_MAX_SEQUENTIAL_WRITES = api + "/getMaxSequentialWrites";
 
-const employeeProtectedSsds = "/employeeProtected";
-export const CREATE = api + employeeProtectedSsds;
-export const UPDATE = api + employeeProtectedSsds;
-export const DELETE = api + employeeProtectedSsds;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

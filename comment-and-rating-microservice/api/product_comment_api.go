@@ -64,27 +64,6 @@ func (productCommentApi *ProductCommentAPI) GetByUserId(c *gin.Context) {
 	c.JSON(http.StatusOK, mapper.ToProductCommentDTOs(productComments))
 }
 
-func (productCommentApi *ProductCommentAPI) GetByProductAndUser(c *gin.Context) {
-	productId, err := strconv.Atoi(c.Param("productId"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
-	userId, err := strconv.Atoi(c.Param("userId"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-	productComment, err := productCommentApi.IProductCommentService.GetByProductAndUser(productId, userId)
-
-	if err == nil {
-		c.JSON(http.StatusOK, mapper.ToProductCommentDTO(productComment))
-	} else  {
-		c.JSON(http.StatusBadRequest, err.Error())
-	}
-}
-
 func (productCommentApi *ProductCommentAPI) AddComment(c *gin.Context) {
 	var productCommentDTO dto.ProductCommentDTO
 	err := c.BindJSON(&productCommentDTO)

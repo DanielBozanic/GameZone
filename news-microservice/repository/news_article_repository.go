@@ -15,8 +15,6 @@ type INewsArticleRepository interface {
 	GetNumberOfRecords() int64
 	GetPublishedArticles(page int, pageSize int) []model.NewsArticle
 	GetNumberOfRecordsPublishedArticles() int64
-	GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle
-	GetNumberOfRecordsUnpublishedArticles() int64
 	GetById(id int) (model.NewsArticle, error)
 	GetUnsentPublishedArticles() []model.NewsArticle
 	Create(newsArticle model.NewsArticle) model.NewsArticle
@@ -62,25 +60,6 @@ func (newsArticleRepo *newsArticleRepository) GetNumberOfRecordsPublishedArticle
 	var count int64
 	newsArticleRepo.Database.
 		Where("archived = false AND published_content IS NOT NULL").
-		Model(&model.NewsArticle{}).
-		Count(&count)
-	return count
-}
-
-func (newsArticleRepo *newsArticleRepository) GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle {
-	var newsArticles []model.NewsArticle
-	offset := (page - 1) * pageSize
-	newsArticleRepo.Database.
-		Offset(offset).Limit(pageSize).
-		Where("archived = false AND published_content IS NULL").
-		Find(&newsArticles)
-	return newsArticles
-}
-
-func (newsArticleRepo *newsArticleRepository) GetNumberOfRecordsUnpublishedArticles() int64 {
-	var count int64
-	newsArticleRepo.Database.
-		Where("archived = false AND published_content IS NULL").
 		Model(&model.NewsArticle{}).
 		Count(&count)
 	return count

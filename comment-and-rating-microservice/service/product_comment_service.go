@@ -21,7 +21,6 @@ type IProductCommentService interface {
 	GetById(id int) (model.ProductComment, error)
 	GetByProductId(productId int) []model.ProductComment
 	GetByUserId(userId int) []model.ProductComment
-	GetByProductAndUser(productId int, userId int) (model.ProductComment, error)
 	AddComment(productComment model.ProductComment, userData dto.UserData) string
 	EditComment(productCommentDTO dto.ProductCommentDTO) string
 	DeleteComment(id int) error
@@ -45,10 +44,6 @@ func (productCommentService *productCommentService) GetByProductId(productId int
 
 func (productCommentService *productCommentService) GetByUserId(userId int) []model.ProductComment {
 	return productCommentService.IProductCommentRepository.GetByUserId(userId)
-}
-
-func (productCommentService *productCommentService) GetByProductAndUser(productId int, userId int) (model.ProductComment, error) {
-	return productCommentService.IProductCommentRepository.GetByProductAndUser(productId, userId)
 }
 
 func (productCommentService *productCommentService) AddComment(productComment model.ProductComment, userData dto.UserData) string {

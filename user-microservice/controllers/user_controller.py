@@ -1,6 +1,5 @@
 from flask import request, jsonify
 import services.user_service
-import utils.token_utils
 
 
 def register():
@@ -36,8 +35,6 @@ def verify_account():
         return resp
 
 
-@utils.token_utils.authorization_required
-@utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def add_employee_and_admin():
     msg = services.user_service.add_employee_and_admin(request.json)
     if msg == "":
@@ -68,8 +65,6 @@ def get_by_id():
         return resp
 
 
-@utils.token_utils.authorization_required
-@utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def get_all_registered_users():
     args = request.args.to_dict()
     page = args.get("page")
@@ -80,8 +75,6 @@ def get_all_registered_users():
     return resp
 
 
-@utils.token_utils.authorization_required
-@utils.token_utils.roles_required(roles=["ROLE_ADMIN"])
 def get_number_of_records_registered_users():
     count = services.user_service.get_number_of_records_registered_users()
     resp = jsonify(count=count)
@@ -89,7 +82,6 @@ def get_number_of_records_registered_users():
     return resp
 
 
-@utils.token_utils.authentification_required
 def update():
     msg = services.user_service.update(request.json)
     if msg == "":
@@ -102,7 +94,6 @@ def update():
         return resp
 
 
-@utils.token_utils.authentification_required
 def change_password():
     msg = services.user_service.change_password(request.json)
     if msg == "":

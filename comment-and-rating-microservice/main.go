@@ -4,7 +4,6 @@ import (
 	"comment-and-rating/config"
 	"comment-and-rating/db"
 	"comment-and-rating/di"
-	"comment-and-rating/middleware"
 	"log"
 	"time"
 
@@ -44,17 +43,10 @@ func main() {
 	productComments.GET("", productCommentAPI.GetAll)
 	productComments.GET("/:id", productCommentAPI.GetById)
 	productComments.GET("/getByProductId/:productId", productCommentAPI.GetByProductId)
-	productComments.GET("/getByProductAndUser", productCommentAPI.GetByProductAndUser)
-
-	userProtectedProductComments := productComments.Group("/userProtected")
-	userProtectedProductComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedProductComments.POST("/addComment", productCommentAPI.AddComment)
-	userProtectedProductComments.PUT("/editComment", productCommentAPI.EditComment)
-	
-	userAndAdminProtectedProductComments := productComments.Group("/userAndAdminProtected")
-	userAndAdminProtectedProductComments.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
-	userAndAdminProtectedProductComments.DELETE("/deleteComment/:id", productCommentAPI.DeleteComment)
-	userAndAdminProtectedProductComments.GET("/getByUserId/:userId", productCommentAPI.GetByUserId)
+	productComments.POST("/addComment", productCommentAPI.AddComment)
+	productComments.PUT("/editComment", productCommentAPI.EditComment)
+	productComments.DELETE("/deleteComment/:id", productCommentAPI.DeleteComment)
+	productComments.GET("/getByUserId/:userId", productCommentAPI.GetByUserId)
 	
 	err := r.Run(":7001")
 	if err != nil {

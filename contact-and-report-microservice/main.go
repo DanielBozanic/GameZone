@@ -4,7 +4,6 @@ import (
 	"contact-and-report/config"
 	"contact-and-report/db"
 	"contact-and-report/di"
-	"contact-and-report/middleware"
 	"log"
 	"time"
 
@@ -43,43 +42,22 @@ func main() {
 	api := r.Group("/api/contactAndReport")
 
 	reports := api.Group("/reports")
-
-	userAndEmployeeProtectedReports := reports.Group("/userAndEmployeeProtected")
-	userAndEmployeeProtectedReports.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_EMPLOYEE" }))
-	userAndEmployeeProtectedReports.POST("/addReport", reportAPI.AddReport)
-
-	adminProtectedReports := reports.Group("/adminProtected")
-	adminProtectedReports.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
-	adminProtectedReports.GET("/getReportsByUserId/:userId", reportAPI.GetReportsByUserId)
+	reports.POST("/addReport", reportAPI.AddReport)
+	reports.GET("/getReportsByUserId/:userId", reportAPI.GetReportsByUserId)
 
 	bans := api.Group("/bans")
 
 	bans.GET("/isUserBanned/:userId", banAPI.IsUserBanned)
-
-	adminProtectedBans := bans.Group("/adminProtected")
-	adminProtectedBans.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
-	adminProtectedBans.GET("/getUserBanHistory/:userId", banAPI.GetUserBanHistory)
-	adminProtectedBans.POST("/addBan", banAPI.AddBan)
-	adminProtectedBans.POST("/sendEmailToBannedUser", banAPI.SendEmailToBannedUser)
+	bans.GET("/getUserBanHistory/:userId", banAPI.GetUserBanHistory)
+	bans.POST("/addBan", banAPI.AddBan)
+	bans.POST("/sendEmailToBannedUser", banAPI.SendEmailToBannedUser)
 
 	contacts := api.Group("/contacts")
-
-	employeeProtectedContacts := contacts.Group("/employeeProtected")
-	employeeProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedContacts.GET("/getUnansweredContactMessages", contactAPI.GetUnansweredContactMessages)
-
-	adminProtectedContacts := contacts.Group("/adminProtected")
-	adminProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN" }))
-	adminProtectedContacts.GET("/getUnansweredContactMessagesByUserId/:userId", contactAPI.GetUnansweredContactMessagesByUserId)
-
-	adminAndEmployeeProtectedContacts := contacts.Group("/adminAndEmployeeProtected")
-	adminAndEmployeeProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN", "ROLE_EMPLOYEE" }))
-	adminAndEmployeeProtectedContacts.PUT("/answerContactMessage", contactAPI.AnswerContactMessage)
-
-	userProtectedContacts := contacts.Group("/userProtected")
-	userProtectedContacts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedContacts.GET("/getContactMessagesByUserId/:userId", contactAPI.GetContactMessagesByUserId)
-	userProtectedContacts.POST("/sendContactMessage", contactAPI.SendContactMessage)
+	contacts.GET("/getUnansweredContactMessages", contactAPI.GetUnansweredContactMessages)
+	contacts.GET("/getUnansweredContactMessagesByUserId/:userId", contactAPI.GetUnansweredContactMessagesByUserId)
+	contacts.PUT("/answerContactMessage", contactAPI.AnswerContactMessage)
+	contacts.GET("/getContactMessagesByUserId/:userId", contactAPI.GetContactMessagesByUserId)
+	contacts.POST("/sendContactMessage", contactAPI.SendContactMessage)
 
 	err := r.Run(":7003")
 	if err != nil {

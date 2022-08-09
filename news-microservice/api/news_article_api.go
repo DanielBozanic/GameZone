@@ -53,23 +53,6 @@ func (newsArticleApi *NewsArticleAPI) GetNumberOfRecordsPublishedArticles(c *gin
 	c.JSON(http.StatusOK, numberOfRecords)
 }
 
-func (newsArticleApi *NewsArticleAPI) GetUnpublishedArticles(c *gin.Context) {
-	page, err := strconv.Atoi(c.Query("page"))
-	pageSize, err := strconv.Atoi(c.Query("pageSize"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-	
-	newsArticles := newsArticleApi.INewsArticleService.GetUnpublishedArticles(page, pageSize)
-	c.JSON(http.StatusOK, mapper.ToNewsArticleDTOs(newsArticles))
-}
-
-func (newsArticleApi *NewsArticleAPI) GetNumberOfRecordsUnpublishedArticles(c *gin.Context) {
-	numberOfRecords := newsArticleApi.INewsArticleService.GetNumberOfRecordsUnpublishedArticles()
-	c.JSON(http.StatusOK, numberOfRecords)
-}
-
 func (newsArticleApi *NewsArticleAPI) GetById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

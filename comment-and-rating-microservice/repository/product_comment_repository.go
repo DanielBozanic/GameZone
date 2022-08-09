@@ -15,7 +15,6 @@ type IProductCommentRepository interface {
 	GetById(id int) (model.ProductComment, error)
 	GetByProductId(productId int) []model.ProductComment
 	GetByUserId(userId int) []model.ProductComment
-	GetByProductAndUser(productId int, userId int) (model.ProductComment, error)
 	Create(productComment model.ProductComment) error
 	Update(productComment model.ProductComment) error
 }
@@ -55,14 +54,6 @@ func (productCommentRepo *productCommentRepository) GetByUserId(userId int) []mo
 		Where("user_id = ? AND archived = false", userId).
 		Find(&productComments)
 	return productComments
-}
-
-func (productCommentRepo *productCommentRepository) GetByProductAndUser(productId int, userId int) (model.ProductComment, error) {
-	var productComment model.ProductComment
-	result := productCommentRepo.Database.
-		Where("product_id = ? AND user_id = ? AND archived = false", productId, userId).
-		First(&productComment)
-	return productComment, result.Error
 }
 
 func (productCommentRepo *productCommentRepository) Create(productComment model.ProductComment) error {

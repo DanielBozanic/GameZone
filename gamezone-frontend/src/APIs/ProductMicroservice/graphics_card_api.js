@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/graphicsCards";
+const api = "http://localhost:8000/api/products/graphicsCards";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -13,7 +13,6 @@ export const GET_MEMORY_SIZES = api + "/getMemorySizes";
 export const GET_MEMORY_TYPES = api + "/getMemoryTypes";
 export const GET_MODEL_NAMES = api + "/getModelNames";
 
-const employeeProtectedGraphicsCards = "/employeeProtected";
-export const CREATE = api + employeeProtectedGraphicsCards;
-export const UPDATE = api + employeeProtectedGraphicsCards;
-export const DELETE = api + employeeProtectedGraphicsCards;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

@@ -1,16 +1,10 @@
-const api = "http://localhost:7003/api/contactAndReport/contacts";
-
-const adminProtected = api + "/adminProtected";
-const employeeProtected = api + "/employeeProtected";
-const adminAndEmployeeProtected = api + "/adminAndEmployeeProtected";
-const userProtected = api + "/userProtected";
+const api = "http://localhost:8000/api/contactAndReport/contacts";
 
 export const GET_UNANSWERED_CONTACT_MESSAGES =
-	employeeProtected + "/getUnansweredContactMessages";
+	api + "/getUnansweredContactMessages";
 export const GET_UNANSWERED_CONTACT_MESSAGES_BY_USER_ID =
-	adminProtected + "/getUnansweredContactMessagesByUserId";
-export const ANSWER_CONTACT_MESSAGE =
-	adminAndEmployeeProtected + "/answerContactMessage";
+	api + "/getUnansweredContactMessagesByUserId";
+export const ANSWER_CONTACT_MESSAGE = api + "/answerContactMessage";
 export const GET_CONTACT_MESSAGES_BY_USER_ID =
-	userProtected + "/getContactMessagesByUserId";
-export const SEND_CONTACT_MESSAGE = userProtected + "/sendContactMessage";
+	api + "/getContactMessagesByUserId";
+export const SEND_CONTACT_MESSAGE = api + "/sendContactMessage";

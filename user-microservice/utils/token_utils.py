@@ -28,7 +28,7 @@ def encode_auth_token(user):
 
 def authentification_required(f):
     @wraps(f)
-    def decorated():
+    def decorated(*args, **kwargs):
         token = request.headers.get('Authorization')
         if not token:
             return jsonify({'message': "Token is missing!"}), 403
@@ -39,34 +39,27 @@ def authentification_required(f):
         except:
             return jsonify({"message": "Token is invalid!"}), 403
 
-        return f()
+        return f(*args, **kwargs)
     return decorated
 
 
-def authorization_required(f):
-    @wraps(f)
-    def decorated():
-        token = request.headers.get('Authorization')
-        if not token:
-            return jsonify({'message': "Token is missing!"}), 403
-
-        token = token.split(" ")[1]
-        try:
-            token = jwt.decode(token, SECRET_KEY)
-        except:
-            return jsonify({"message": "Token is invalid!"}), 403
-
-        return f(token)
-    return decorated
-
-
-def roles_required(roles):
+def authorization_required(roles):
     def decorate(f):
         @wraps(f)
-        def wrapper(token):
+        def wrapper(*args, **kwargs):
+            token = request.headers.get('Authorization')
+            if not token:
+                return jsonify({'message': "Token is missing!"}), 403
+
+            token = token.split(" ")[1]
+            try:
+                token = jwt.decode(token, SECRET_KEY)
+            except:
+                return jsonify({"message": "Token is invalid!"}), 403
+
             if token['sub']['role'] not in roles:
                 return jsonify({"message": "Unauthorized!"}), 401
             else:
-                return f()
+                return f(*args, **kwargs)
         return wrapper
     return decorate

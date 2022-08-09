@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/motherboards";
+const api = "http://localhost:8000/api/products/motherboards";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -12,7 +12,6 @@ export const GET_SOCKETS = api + "/getSockets";
 export const GET_PROCESSOR_TYPES = api + "/getProcessorTypes";
 export const GET_FORM_FACTORS = api + "/getFormFactors";
 
-const employeeProtectedMotherboards = "/employeeProtected";
-export const CREATE = api + employeeProtectedMotherboards;
-export const UPDATE = api + employeeProtectedMotherboards;
-export const DELETE = api + employeeProtectedMotherboards;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

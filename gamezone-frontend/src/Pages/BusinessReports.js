@@ -9,7 +9,7 @@ Chart.register(...registerables);
 
 const BusinessReports = () => {
 	const [reportUrl, setReportUrl] = useState(
-		businessReportAPI.GET_PRODCUTS_WITH_BIGGEST_PROFIT_LAST_THIRTY_DAYS
+		businessReportAPI.GET_PRODUCTS_WITH_BIGGEST_PROFIT_LAST_THIRTY_DAYS
 	);
 	const [reportData, setReportData] = useState(null);
 	const [title, setTitle] = useState(
@@ -44,9 +44,7 @@ const BusinessReports = () => {
 	}, [reportUrl]);
 
 	const getReport = () => {
-		const instance = axios.create();
-		delete instance.defaults.headers.common["Authorization"];
-		instance
+		axios
 			.get(`${reportUrl}`)
 			.then((res) => {
 				setReportData({
@@ -85,7 +83,7 @@ const BusinessReports = () => {
 								<option hidden>Select business report</option>
 								<option
 									value={
-										businessReportAPI.GET_PRODCUTS_WITH_BIGGEST_PROFIT_LAST_THIRTY_DAYS
+										businessReportAPI.GET_PRODUCTS_WITH_BIGGEST_PROFIT_LAST_THIRTY_DAYS
 									}
 								>
 									Products with the biggest profit in last 30 days

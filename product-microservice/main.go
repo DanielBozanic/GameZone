@@ -75,50 +75,28 @@ func main() {
 	api.GET("/getNumberOfRecordsSearch", productAPI.GetNumberOfRecordsSearch)
 	api.GET("/getMainPageProducts", productAPI.GetMainPageProducts)
 	api.GET("/getPopularProducts", productAPI.GetPopularProducts)
-
-	employeeProtectedProducts := api.Group("/employeeProtected")
-	employeeProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
-
-	employeeProtectedProducts.PUT("/addProductToMainPage/:productId", productAPI.AddProductToMainPage)
-	employeeProtectedProducts.PUT("/removeProductFromMainPage/:productId", productAPI.RemoveProductFromMainPage)
-	employeeProtectedProducts.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
-
-	userProtectedProducts := api.Group("/userProtected")
-	userProtectedProducts.Use(middleware.AuthorizationRequired([]string { "ROLE_USER"}))
-	userProtectedProducts.GET("/getRecommendedProducts", productAPI.GetRecommendedProducts)
+	api.PUT("/addProductToMainPage/:productId", productAPI.AddProductToMainPage)
+	api.PUT("/removeProductFromMainPage/:productId", productAPI.RemoveProductFromMainPage)
+	api.DELETE("/deleteProduct/:id", productAPI.DeleteProduct)
+	api.GET("/getRecommendedProducts", productAPI.GetRecommendedProducts)
 
 	// Product purchase API
 	productPurchases := api.Group("/productPurchases")
-
-	userProtectedProductsPurchases := productPurchases.Group("/userProtected")
-	userProtectedProductsPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_USER" }))
-	userProtectedProductsPurchases.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
-	userProtectedProductsPurchases.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
-	userProtectedProductsPurchases.POST("/sendPurchaseConfirmationMail", productPurchaseAPI.SendPurchaseConfirmationMail)
-	userProtectedProductsPurchases.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
-	userProtectedProductsPurchases.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
-
-	employeeProtectedProductPurchases := productPurchases.Group("/employeeProtected")
-	employeeProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE"}))
-	employeeProtectedProductPurchases.GET("/notifyProductAvailability", productPurchaseAPI.NotifyProductAvailability)
-
-	adminAndUserProtectedProductPurchases := productPurchases.Group("/adminAndUserProtected")
-	adminAndUserProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_USER", "ROLE_ADMIN" }))
-	adminAndUserProtectedProductPurchases.GET("/getPurchaseHistory", productPurchaseAPI.GetPurchaseHistory)
-	adminAndUserProtectedProductPurchases.GET("/getNumberOfRecordsPurchaseHistory", productPurchaseAPI.GetNumberOfRecordsPurchaseHistory)
-
-	adminProtectedProductPurchases := productPurchases.Group("/adminProtected")
-	adminProtectedProductPurchases.Use(middleware.AuthorizationRequired([]string { "ROLE_ADMIN"}))
-	adminProtectedProductPurchases.PUT("/confirmPayment", productPurchaseAPI.ConfirmPayment)
-	adminProtectedProductPurchases.POST("/sendPurchasedDigitalVideoGames", productPurchaseAPI.SendPurchasedDigitalVideoGames)
+	productPurchases.GET("/checkIfProductIsPaidFor", productPurchaseAPI.CheckIfProductIsPaidFor)
+	productPurchases.POST("/confirmPurchase", productPurchaseAPI.ConfirmPurchase)
+	productPurchases.POST("/sendPurchaseConfirmationMail", productPurchaseAPI.SendPurchaseConfirmationMail)
+	productPurchases.GET("/getProductAlertByProductIdAndUserId", productPurchaseAPI.GetProductAlertByProductIdAndUserId)
+	productPurchases.POST("/addProductAlert", productPurchaseAPI.AddProductAlert)
+	productPurchases.GET("/notifyProductAvailability", productPurchaseAPI.NotifyProductAvailability)
+	productPurchases.GET("/getPurchaseHistory", productPurchaseAPI.GetPurchaseHistory)
+	productPurchases.GET("/getNumberOfRecordsPurchaseHistory", productPurchaseAPI.GetNumberOfRecordsPurchaseHistory)
+	productPurchases.PUT("/confirmPayment", productPurchaseAPI.ConfirmPayment)
+	productPurchases.POST("/sendPurchasedDigitalVideoGames", productPurchaseAPI.SendPurchasedDigitalVideoGames)
 	
 	// Video game API
-	employeeProtectedVideoGames := videoGames.Group("/employeeProtected")
-	employeeProtectedVideoGames.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedVideoGames.PUT("", videoGameAPI.Update)
-	employeeProtectedVideoGames.POST("", videoGameAPI.Create)
-	employeeProtectedVideoGames.DELETE("/:id", videoGameAPI.Delete)
-
+	videoGames.POST("", videoGameAPI.Create)
+	videoGames.PUT("", videoGameAPI.Update)
+	videoGames.DELETE("/:id", videoGameAPI.Delete)
 	videoGames.GET("", videoGameAPI.GetAll)
 	videoGames.GET("/getNumberOfRecords", videoGameAPI.GetNumberOfRecords)
 	videoGames.GET("/:id", videoGameAPI.GetByID)
@@ -130,12 +108,9 @@ func main() {
 	videoGames.GET("/getGenres", videoGameAPI.GetGenres)
 
 	// Console API
-	employeeProtectedConsoles := consoles.Group("/employeeProtected")
-	employeeProtectedConsoles.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedConsoles.POST("", consoleAPI.Create)
-	employeeProtectedConsoles.PUT("", consoleAPI.Update)
-	employeeProtectedConsoles.DELETE("/:id", consoleAPI.Delete)
-
+	consoles.POST("", consoleAPI.Create)
+	consoles.PUT("", consoleAPI.Update)
+	consoles.DELETE("/:id", consoleAPI.Delete)
 	consoles.GET("", consoleAPI.GetAll)
 	consoles.GET("/getNumberOfRecords", consoleAPI.GetNumberOfRecords)
 	consoles.GET("/:id", consoleAPI.GetByID)
@@ -146,12 +121,9 @@ func main() {
 	consoles.GET("/getPlatforms", consoleAPI.GetPlatforms)
 
 	// Graphics card API
-	employeeProtectedGraphicsCards := graphicsCards.Group("/employeeProtected")
-	employeeProtectedGraphicsCards.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedGraphicsCards.POST("", graphicsCardAPI.Create)
-	employeeProtectedGraphicsCards.PUT("", graphicsCardAPI.Update)
-	employeeProtectedGraphicsCards.DELETE("/:id", graphicsCardAPI.Delete)
-
+	graphicsCards.POST("", graphicsCardAPI.Create)
+	graphicsCards.PUT("", graphicsCardAPI.Update)
+	graphicsCards.DELETE("/:id", graphicsCardAPI.Delete)
 	graphicsCards.GET("", graphicsCardAPI.GetAll)
 	graphicsCards.GET("/getNumberOfRecords", graphicsCardAPI.GetNumberOfRecords)
 	graphicsCards.GET("/:id", graphicsCardAPI.GetByID)
@@ -166,12 +138,9 @@ func main() {
 	graphicsCards.GET("/getModelNames", graphicsCardAPI.GetModelNames)
 
 	// Processor API
-	employeeProtectedProcessors := processors.Group("/employeeProtected")
-	employeeProtectedProcessors.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedProcessors.POST("", processorAPI.Create)
-	employeeProtectedProcessors.PUT("", processorAPI.Update)
-	employeeProtectedProcessors.DELETE("/:id", processorAPI.Delete)
-
+	processors.POST("", processorAPI.Create)
+	processors.PUT("", processorAPI.Update)
+	processors.DELETE("/:id", processorAPI.Delete)
 	processors.GET("", processorAPI.GetAll)
 	processors.GET("/getNumberOfRecords", processorAPI.GetNumberOfRecords)
 	processors.GET("/:id", processorAPI.GetByID)
@@ -186,12 +155,9 @@ func main() {
 	processors.GET("/getThreads", processorAPI.GetThreads)
 
 	// Motherboard API
-	employeeProtectedMotherboards := motherboards.Group("/employeeProtected")
-	employeeProtectedMotherboards.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedMotherboards.POST("", motherboardAPI.Create)
-	employeeProtectedMotherboards.PUT("", motherboardAPI.Update)
-	employeeProtectedMotherboards.DELETE("/:id", motherboardAPI.Delete)
-
+	motherboards.POST("", motherboardAPI.Create)
+	motherboards.PUT("", motherboardAPI.Update)
+	motherboards.DELETE("/:id", motherboardAPI.Delete)
 	motherboards.GET("", motherboardAPI.GetAll)
 	motherboards.GET("/getNumberOfRecords", motherboardAPI.GetNumberOfRecords)
 	motherboards.GET("/:id", motherboardAPI.GetByID)
@@ -205,12 +171,9 @@ func main() {
 	motherboards.GET("/getFormFactors", motherboardAPI.GetFormFactors)
 
 	// RAM API
-	employeeProtectedRams := rams.Group("/employeeProtected")
-	employeeProtectedRams.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedRams.POST("", ramAPI.Create)
-	employeeProtectedRams.PUT("", ramAPI.Update)
-	employeeProtectedRams.DELETE("/:id", ramAPI.Delete)
-
+	rams.POST("", ramAPI.Create)
+	rams.PUT("", ramAPI.Update)
+	rams.DELETE("/:id", ramAPI.Delete)
 	rams.GET("", ramAPI.GetAll)
 	rams.GET("/getNumberOfRecords", ramAPI.GetNumberOfRecords)
 	rams.GET("/:id", ramAPI.GetByID)
@@ -224,12 +187,9 @@ func main() {
 	rams.GET("/getSpeeds", ramAPI.GetSpeeds)
 
 	// SSD API
-	employeeProtectedSsds := ssds.Group("/employeeProtected")
-	employeeProtectedSsds.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedSsds.POST("", solidStateDriveAPI.Create)
-	employeeProtectedSsds.PUT("", solidStateDriveAPI.Update)
-	employeeProtectedSsds.DELETE("/:id", solidStateDriveAPI.Delete)
-
+	ssds.POST("", solidStateDriveAPI.Create)
+	ssds.PUT("", solidStateDriveAPI.Update)
+	ssds.DELETE("/:id", solidStateDriveAPI.Delete)
 	ssds.GET("", solidStateDriveAPI.GetAll)
 	ssds.GET("/getNumberOfRecords", solidStateDriveAPI.GetNumberOfRecords)
 	ssds.GET("/:id", solidStateDriveAPI.GetByID)
@@ -244,12 +204,9 @@ func main() {
 	ssds.GET("/getMaxSequentialWrites", solidStateDriveAPI.GetMaxSequentialWrites)
 
 	// HDD API
-	employeeProtectedHdds := hdds.Group("/employeeProtected")
-	employeeProtectedHdds.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedHdds.POST("", hardDiskDriveAPI.Create)
-	employeeProtectedHdds.PUT("", hardDiskDriveAPI.Update)
-	employeeProtectedHdds.DELETE("/:id", hardDiskDriveAPI.Delete)
-
+	hdds.POST("", hardDiskDriveAPI.Create)
+	hdds.PUT("", hardDiskDriveAPI.Update)
+	hdds.DELETE("/:id", hardDiskDriveAPI.Delete)
 	hdds.GET("", hardDiskDriveAPI.GetAll)
 	hdds.GET("/getNumberOfRecords", hardDiskDriveAPI.GetNumberOfRecords)
 	hdds.GET("/:id", hardDiskDriveAPI.GetByID)
@@ -263,12 +220,9 @@ func main() {
 	hdds.GET("/getDiskSpeeds", hardDiskDriveAPI.GetDiskSpeeds)
 
 	// Monitor API
-	employeeProtectedMonitors := monitors.Group("/employeeProtected")
-	employeeProtectedMonitors.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedMonitors.POST("", monitorAPI.Create)
-	employeeProtectedMonitors.PUT("", monitorAPI.Update)
-	employeeProtectedMonitors.DELETE("/:id", monitorAPI.Delete)
-
+	monitors.POST("", monitorAPI.Create)
+	monitors.PUT("", monitorAPI.Update)
+	monitors.DELETE("/:id", monitorAPI.Delete)
 	monitors.GET("", monitorAPI.GetAll)
 	monitors.GET("/getNumberOfRecords", monitorAPI.GetNumberOfRecords)
 	monitors.GET("/:id", monitorAPI.GetByID)
@@ -282,12 +236,9 @@ func main() {
 	monitors.GET("/getRefreshRates", monitorAPI.GetRefreshRates)
 
 	// PSU API
-	employeeProtectedPsus := psus.Group("/employeeProtected")
-	employeeProtectedPsus.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedPsus.POST("", powerSupplyUnitAPI.Create)
-	employeeProtectedPsus.PUT("", powerSupplyUnitAPI.Update)
-	employeeProtectedPsus.DELETE("/:id", powerSupplyUnitAPI.Delete)
-
+	psus.POST("", powerSupplyUnitAPI.Create)
+	psus.PUT("", powerSupplyUnitAPI.Update)
+	psus.DELETE("/:id", powerSupplyUnitAPI.Delete)
 	psus.GET("", powerSupplyUnitAPI.GetAll)
 	psus.GET("/getNumberOfRecords", powerSupplyUnitAPI.GetNumberOfRecords)
 	psus.GET("/:id", powerSupplyUnitAPI.GetByID)
@@ -301,12 +252,9 @@ func main() {
 	psus.GET("/getFormFactors", powerSupplyUnitAPI.GetFormFactors)
 
 	// Keyboard API
-	employeeProtectedKeyboards := keyboards.Group("/employeeProtected")
-	employeeProtectedKeyboards.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedKeyboards.POST("", keyboardAPI.Create)
-	employeeProtectedKeyboards.PUT("", keyboardAPI.Update)
-	employeeProtectedKeyboards.DELETE("/:id", keyboardAPI.Delete)
-
+	keyboards.POST("", keyboardAPI.Create)
+	keyboards.PUT("", keyboardAPI.Update)
+	keyboards.DELETE("/:id", keyboardAPI.Delete)
 	keyboards.GET("", keyboardAPI.GetAll)
 	keyboards.GET("/getNumberOfRecords", keyboardAPI.GetNumberOfRecords)
 	keyboards.GET("/:id", keyboardAPI.GetByID)
@@ -319,12 +267,9 @@ func main() {
 	keyboards.GET("/getKeyTypes", keyboardAPI.GetKeyTypes)
 
 	// Mouse API
-	employeeProtectedMouses := mouses.Group("/employeeProtected")
-	employeeProtectedMouses.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedMouses.POST("", mouseAPI.Create)
-	employeeProtectedMouses.PUT("", mouseAPI.Update)
-	employeeProtectedMouses.DELETE("/:id", mouseAPI.Delete)
-
+	mouses.POST("", mouseAPI.Create)
+	mouses.PUT("", mouseAPI.Update)
+	mouses.DELETE("/:id", mouseAPI.Delete)
 	mouses.GET("", mouseAPI.GetAll)
 	mouses.GET("/getNumberOfRecords", mouseAPI.GetNumberOfRecords)
 	mouses.GET("/:id", mouseAPI.GetByID)
@@ -337,12 +282,9 @@ func main() {
 	mouses.GET("/getConnections", mouseAPI.GetConnections)
 
 	// Headphones API
-	employeeProtectedHeadphones := headphones.Group("/employeeProtected")
-	employeeProtectedHeadphones.Use(middleware.AuthorizationRequired([]string { "ROLE_EMPLOYEE" }))
-	employeeProtectedHeadphones.POST("", headphonesAPI.Create)
-	employeeProtectedHeadphones.PUT("", headphonesAPI.Update)
-	employeeProtectedHeadphones.DELETE("/:id", headphonesAPI.Delete)
-
+	headphones.POST("", headphonesAPI.Create)
+	headphones.PUT("", headphonesAPI.Update)
+	headphones.DELETE("/:id", headphonesAPI.Delete)
 	headphones.GET("", headphonesAPI.GetAll)
 	headphones.GET("/getNumberOfRecords", mouseAPI.GetNumberOfRecords)
 	headphones.GET("/:id", headphonesAPI.GetByID)

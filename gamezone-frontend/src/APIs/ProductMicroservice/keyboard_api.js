@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/keyboards";
+const api = "http://localhost:8000/api/products/keyboards";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -11,7 +11,6 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_KEYBOARD_CONNECTORS = api + "/getKeyboardConnectors";
 export const GET_KEY_TYPES = api + "/getKeyTypes";
 
-const employeeProtectedKeyboards = "/employeeProtected";
-export const CREATE = api + employeeProtectedKeyboards;
-export const UPDATE = api + employeeProtectedKeyboards;
-export const DELETE = api + employeeProtectedKeyboards;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

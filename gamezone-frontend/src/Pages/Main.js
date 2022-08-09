@@ -151,24 +151,24 @@ const Main = () => {
 											Featuring
 										</CardTitle>
 									</CardHeader>
+									<Swiper
+										slidesPerView={3}
+										autoplay={{
+											delay: 3500,
+											disableOnInteraction: false,
+										}}
+										navigation={true}
+										modules={[Autoplay, Navigation]}
+									>
+										{mainPageProducts.map((product) => {
+											return (
+												<SwiperSlide onClick={() => viewProductDetail(product)}>
+													<img src={product.Image.Content} />
+												</SwiperSlide>
+											);
+										})}
+									</Swiper>
 								</Card>
-								<Swiper
-									slidesPerView={3}
-									autoplay={{
-										delay: 3500,
-										disableOnInteraction: false,
-									}}
-									navigation={true}
-									modules={[Autoplay, Navigation]}
-								>
-									{mainPageProducts.map((product) => {
-										return (
-											<SwiperSlide onClick={() => viewProductDetail(product)}>
-												<img src={product.Image.Content} />
-											</SwiperSlide>
-										);
-									})}
-								</Swiper>
 							</Col>
 						</Row>
 					)}
@@ -181,16 +181,16 @@ const Main = () => {
 											Popular
 										</CardTitle>
 									</CardHeader>
+									<Swiper slidesPerView={3}>
+										{popularProducts.map((product) => {
+											return (
+												<SwiperSlide onClick={() => viewProductDetail(product)}>
+													<img src={product.Image.Content} />
+												</SwiperSlide>
+											);
+										})}
+									</Swiper>
 								</Card>
-								<Swiper slidesPerView={3}>
-									{popularProducts.map((product) => {
-										return (
-											<SwiperSlide onClick={() => viewProductDetail(product)}>
-												<img src={product.Image.Content} />
-											</SwiperSlide>
-										);
-									})}
-								</Swiper>
 							</Col>
 						</Row>
 					)}

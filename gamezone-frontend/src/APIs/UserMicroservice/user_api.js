@@ -1,4 +1,4 @@
-const api = "http://localhost:5000/api/users";
+const api = "http://localhost:8000/api/users";
 
 export const GET_USER_BY_ID = api + "/getById";
 export const REGISTER = api + "/register";

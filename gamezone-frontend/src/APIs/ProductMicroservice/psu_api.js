@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/psus";
+const api = "http://localhost:8000/api/products/psus";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -12,7 +12,6 @@ export const GET_POWERS = api + "/getPowers";
 export const GET_TYPES = api + "/getTypes";
 export const GET_FORM_FACTORS = api + "/getFormFactors";
 
-const employeeProtectedPsus = "/employeeProtected";
-export const CREATE = api + employeeProtectedPsus;
-export const UPDATE = api + employeeProtectedPsus;
-export const DELETE = api + employeeProtectedPsus;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;

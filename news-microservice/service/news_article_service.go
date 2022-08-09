@@ -20,8 +20,6 @@ type INewsArticleService interface {
 	GetNumberOfRecords() int64
 	GetPublishedArticles(page int, pageSize int) []model.NewsArticle
 	GetNumberOfRecordsPublishedArticles() int64
-	GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle
-	GetNumberOfRecordsUnpublishedArticles() int64
 	GetById(id int) (model.NewsArticle, error)
 	AddNewsArticle(newsArticle model.NewsArticle) model.NewsArticle
 	EditNewsArticle(newsArticleDTO dto.NewsArticleDTO) string
@@ -47,14 +45,6 @@ func (newsArticleService *newsArticleService) GetPublishedArticles(page int, pag
 
 func (newsArticleService *newsArticleService) GetNumberOfRecordsPublishedArticles() int64 {
 	return newsArticleService.INewsArticleRepository.GetNumberOfRecordsPublishedArticles()
-}
-
-func (newsArticleService *newsArticleService) GetUnpublishedArticles(page int, pageSize int) []model.NewsArticle {
-	return newsArticleService.INewsArticleRepository.GetUnpublishedArticles(page, pageSize);
-}
-
-func (newsArticleService *newsArticleService) GetNumberOfRecordsUnpublishedArticles() int64 {
-	return newsArticleService.INewsArticleRepository.GetNumberOfRecordsUnpublishedArticles()
 }
 
 func (newsArticleService *newsArticleService) GetById(id int) (model.NewsArticle, error) {

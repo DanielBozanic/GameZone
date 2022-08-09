@@ -1,4 +1,4 @@
-const api = "http://localhost:7000/api/products/mouses";
+const api = "http://localhost:8000/api/products/mouses";
 
 export const GET_ALL = api;
 export const GET_NUMBER_OF_RECORDS = api + "/getNumberOfRecords";
@@ -11,7 +11,6 @@ export const GET_MANUFACTURERS = api + "/getManufacturers";
 export const GET_DPIS = api + "/getDpis";
 export const GET_CONNECTIONS = api + "/getConnections";
 
-const employeeProtectedMouses = "/employeeProtected";
-export const CREATE = api + employeeProtectedMouses;
-export const UPDATE = api + employeeProtectedMouses;
-export const DELETE = api + employeeProtectedMouses;
+export const CREATE = api;
+export const UPDATE = api;
+export const DELETE = api;
