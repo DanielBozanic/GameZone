@@ -14,7 +14,7 @@ def get_unanswered_contact_messages():
     return resp
 
 
-@token_utils.authorization_required(roles=[role.ROLE_EMPLOYEE])
+@token_utils.authorization_required(roles=[role.ROLE_ADMIN])
 def get_unanswered_contact_messages_by_user_id(userId):
     headers = request.headers
     r = requests.get(contact_api_routes.BASE + contact_api_routes.API +

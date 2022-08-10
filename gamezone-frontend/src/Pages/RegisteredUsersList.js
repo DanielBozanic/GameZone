@@ -13,6 +13,7 @@ import {
 	PaginationItem,
 	PaginationLink,
 	Label,
+	Spinner,
 } from "reactstrap";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ const RegisteredUsersList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageCount, setPageCount] = useState([]);
 	const pageSize = 10;
+	const [loading, setLoading] = useState(true);
 
 	const navigate = useNavigate();
 
@@ -40,6 +42,7 @@ const RegisteredUsersList = () => {
 			)
 			.then((res) => {
 				setRegisteredUsers(res.data.users);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -70,13 +73,19 @@ const RegisteredUsersList = () => {
 	};
 
 	const handleClick = (e, index) => {
+		setLoading(true);
 		e.preventDefault();
 		setCurrentPage(index);
 	};
 
 	return (
 		<>
-			{registeredUsers.length > 0 && (
+			{loading && (
+				<div className="div-spinner">
+					<Spinner className="spinner" />
+				</div>
+			)}
+			{!loading && registeredUsers.length > 0 && (
 				<>
 					<Row className="registered-users-row">
 						{registeredUsers.map((registeredUser) => {

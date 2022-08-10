@@ -14,7 +14,9 @@ import {
 	FormGroup,
 	Label,
 	Input,
+	Spinner,
 } from "reactstrap";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as userAPI from "../APIs/UserMicroservice/user_api";
@@ -23,6 +25,7 @@ import * as role from "../Utils/Role";
 toast.configure();
 const CreateAdminAndEmployee = () => {
 	const customId = "CreateAdminAndEmployeeForm";
+	const [loading, setLoading] = useState(false);
 
 	const methods = useForm({
 		resolver: yupResolver(createFormSchema),
@@ -30,6 +33,7 @@ const CreateAdminAndEmployee = () => {
 	});
 
 	const add = (data) => {
+		setLoading(true);
 		axios
 			.post(userAPI.ADD_EMPLOYEE_AND_ADMIN, data, {
 				headers: {
@@ -42,6 +46,7 @@ const CreateAdminAndEmployee = () => {
 					toastId: customId,
 					autoClose: 5000,
 				});
+				setLoading(false);
 				methods.reset();
 			})
 			.catch((err) => {
@@ -50,6 +55,7 @@ const CreateAdminAndEmployee = () => {
 					autoClose: false,
 					toastId: customId,
 				});
+				setLoading(false);
 			});
 	};
 
@@ -61,40 +67,47 @@ const CreateAdminAndEmployee = () => {
 						<CardTitle className="title" tag="h2">
 							Add employee/admin
 						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<CreateForm />
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Role</Label>
-												<Input
-													className="input-field"
-													name="role"
-													type="select"
-													innerRef={methods.register}
+						{loading && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loading && (
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<CreateForm />
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Role</Label>
+													<Input
+														className="input-field"
+														name="role"
+														type="select"
+														innerRef={methods.register}
+													>
+														<option value={role.ROLE_EMPLOYEE}>Employee</option>
+														<option value={role.ROLE_ADMIN}>Admin</option>
+													</Input>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<Button
+													className="my-button"
+													type="button"
+													onClick={methods.handleSubmit(add)}
 												>
-													<option value={role.ROLE_EMPLOYEE}>Employee</option>
-													<option value={role.ROLE_ADMIN}>Admin</option>
-												</Input>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<Button
-												className="my-button"
-												type="button"
-												onClick={methods.handleSubmit(add)}
-											>
-												Add
-											</Button>
-										</Col>
-									</Row>
-								</Form>
-							</FormProvider>
-						</CardBody>
+													Add
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</FormProvider>
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>

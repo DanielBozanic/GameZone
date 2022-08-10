@@ -12,8 +12,10 @@ import {
 	Container,
 	Row,
 	Col,
+	Spinner,
 } from "reactstrap";
 import axios from "axios";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
 
@@ -22,10 +24,12 @@ const VerifyAccount = () => {
 
 	const { email } = useParams();
 	const { register, handleSubmit } = useForm();
+	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
 
 	const verifyAccount = (data) => {
+		setLoading(true);
 		data.email = email;
 		axios
 			.put(`${userAPI.VERIFY_ACCOUNT}`, data)
@@ -43,6 +47,7 @@ const VerifyAccount = () => {
 					autoClose: false,
 					toastId: customId,
 				});
+				setLoading(false);
 			});
 	};
 
@@ -54,34 +59,41 @@ const VerifyAccount = () => {
 						<CardTitle className="title" tag="h2">
 							Verify account
 						</CardTitle>
-						<CardBody>
-							<Form className="form">
-								<Row>
-									<Col>
-										<FormGroup>
-											<Label>Code</Label>
-											<Input
-												className="input-field"
-												type="text"
-												name="code"
-												innerRef={register}
-											/>
-										</FormGroup>
-									</Col>
-								</Row>
-								<Row>
-									<Col>
-										<Button
-											className="my-button"
-											type="button"
-											onClick={handleSubmit(verifyAccount)}
-										>
-											Verify
-										</Button>
-									</Col>
-								</Row>
-							</Form>
-						</CardBody>
+						{loading && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loading && (
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Code</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="code"
+													innerRef={register}
+												/>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(verifyAccount)}
+											>
+												Verify
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>

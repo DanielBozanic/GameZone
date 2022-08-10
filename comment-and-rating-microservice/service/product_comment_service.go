@@ -8,7 +8,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/go-sql-driver/mysql"
+	"gorm.io/gorm"
 )
 
 
@@ -47,16 +47,15 @@ func (productCommentService *productCommentService) GetByUserId(userId int) []mo
 }
 
 func (productCommentService *productCommentService) AddComment(productComment model.ProductComment, userData dto.UserData) string {
-	msg := ""
+	_, err := productCommentService.IProductCommentRepository.CheckIfUserCommented(userData.Id)
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return "You already left a comment and rating on this product"
+	}
 	productComment.UserId = userData.Id
 	productComment.Username = userData.Username
 	productComment.DateTime = time.Now()
-	err := productCommentService.IProductCommentRepository.Create(productComment)
-	var mysqlErr *mysql.MySQLError
-	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1452 {
-		msg = "You already left a comment and rating on this product"
-	}
-	return msg
+	productCommentService.IProductCommentRepository.Create(productComment)
+	return ""
 }
 
 func (productCommentService *productCommentService) EditComment(productCommentDTO dto.ProductCommentDTO) string {

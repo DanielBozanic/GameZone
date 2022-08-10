@@ -7,7 +7,7 @@ news_comment_api_bp.route(news_comment_api_routes.GET_BY_NEWS_ARTICLE + "/<newsA
                           methods=['GET'])(get_by_news_article)
 news_comment_api_bp.route(news_comment_api_routes.ADD_NEWS_COMMENT, methods=['POST'])(add_news_comment)
 news_comment_api_bp.route(news_comment_api_routes.EDIT_NEWS_COMMENT, methods=['PUT'])(edit_news_comment)
-news_comment_api_bp.route(news_comment_api_routes.GET_BY_USER_ID + "/<id>",
+news_comment_api_bp.route(news_comment_api_routes.DELETE_NEWS_COMMENT + "/<id>",
                           methods=['DELETE'])(delete_news_comment)
 news_comment_api_bp.route(news_comment_api_routes.GET_BY_USER_ID + "/<userId>",
                           methods=['GET'])(get_by_user_id)

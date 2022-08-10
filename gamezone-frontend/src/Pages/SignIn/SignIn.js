@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { signInSchema } from "./SignInSchema";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
 	Button,
 	Form,
@@ -15,6 +16,7 @@ import {
 	Container,
 	Row,
 	Col,
+	Spinner,
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -32,10 +34,12 @@ const SignIn = () => {
 		resolver: yupResolver(signInSchema),
 		mode: "onChange",
 	});
+	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
 
 	const signIn = (data) => {
+		setLoading(true);
 		axios
 			.post(authAPI.LOGIN, data, {
 				headers: {
@@ -53,6 +57,7 @@ const SignIn = () => {
 					autoClose: false,
 					toastId: customId,
 				});
+				setLoading(false);
 			});
 	};
 
@@ -68,65 +73,72 @@ const SignIn = () => {
 						<CardTitle className="title" tag="h2">
 							Sign In
 						</CardTitle>
-						<CardBody>
-							<Form className="form">
-								<Row>
-									<Col>
-										<FormGroup>
-											<Label>Username</Label>
-											<Input
-												className="input-field"
-												type="text"
-												name="user_name"
-												invalid={errors.user_name?.message}
-												innerRef={register}
-											/>
-											<FormFeedback className="input-field-error-msg">
-												{errors.user_name?.message}
-											</FormFeedback>
-										</FormGroup>
-									</Col>
-								</Row>
-								<Row>
-									<Col>
-										<FormGroup>
-											<Label>Password</Label>
-											<Input
-												className="input-field"
-												type="password"
-												name="password"
-												invalid={errors.password?.message}
-												innerRef={register}
-											/>
-											<FormFeedback className="input-field-error-msg">
-												{errors.password?.message}
-											</FormFeedback>
-										</FormGroup>
-									</Col>
-								</Row>
-								<Row>
-									<Col md="4">
-										<Button
-											className="my-button"
-											type="button"
-											onClick={handleSubmit(signIn)}
-										>
-											Sign in
-										</Button>
-									</Col>
-									<Col md="4"></Col>
-									<Col md="4">
-										<Button
-											className="my-button"
-											type="button"
-											onClick={getVerificationCode}
-										>
-											Get verification code
-										</Button>
-									</Col>
-								</Row>
-							</Form>
-						</CardBody>
+						{loading && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loading && (
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Username</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="user_name"
+													invalid={errors.user_name?.message}
+													innerRef={register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{errors.user_name?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Password</Label>
+												<Input
+													className="input-field"
+													type="password"
+													name="password"
+													invalid={errors.password?.message}
+													innerRef={register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{errors.password?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col md="4">
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(signIn)}
+											>
+												Sign in
+											</Button>
+										</Col>
+										<Col md="4"></Col>
+										<Col md="4">
+											<Button
+												className="my-button"
+												type="button"
+												onClick={getVerificationCode}
+											>
+												Get verification code
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>

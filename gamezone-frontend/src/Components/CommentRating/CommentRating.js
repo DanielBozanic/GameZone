@@ -83,7 +83,6 @@ const CommentRating = (props) => {
 		if (currentUserReview === null) {
 			data.Rating = Number(rating);
 			data.ProductId = props.product.Product.Id;
-			data.UserId = authService.getId();
 			addComment(data);
 		} else {
 			currentUserReview.Rating = Number(rating);
@@ -133,7 +132,7 @@ const CommentRating = (props) => {
 
 	return (
 		<>
-			{(reviews.length > 0 || loading) && (
+			{(reviews.length > 0 || productIsPaidFor || loading) && (
 				<Row>
 					<Col>
 						<Card className="card">
@@ -224,7 +223,9 @@ const CommentRating = (props) => {
 											</Row>
 											<Row>
 												<Col>
-													{(!readOnlyMode || currentUserReview === null) && (
+													{(!readOnlyMode ||
+														(currentUserReview === null &&
+															reviews.length <= 0)) && (
 														<>
 															<Input
 																type="textarea"

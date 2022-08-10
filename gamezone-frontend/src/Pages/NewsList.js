@@ -12,6 +12,7 @@ import {
 	Pagination,
 	PaginationItem,
 	PaginationLink,
+	Spinner,
 } from "reactstrap";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -23,6 +24,7 @@ const NewsList = () => {
 	const [newsArticles, setNewsArticles] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageCount, setPageCount] = useState([]);
+	const [loading, setLoading] = useState(true);
 	const pageSize = 10;
 
 	useEffect(() => {
@@ -42,6 +44,7 @@ const NewsList = () => {
 			.get(`${newsArticleAPI.GET_ALL}?page=${currentPage}&pageSize=${pageSize}`)
 			.then((res) => {
 				setNewsArticles(res.data);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -66,6 +69,7 @@ const NewsList = () => {
 			)
 			.then((res) => {
 				setNewsArticles(res.data);
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -105,13 +109,19 @@ const NewsList = () => {
 	};
 
 	const handleClick = (e, index) => {
+		setLoading(true);
 		e.preventDefault();
 		setCurrentPage(index);
 	};
 
 	return (
 		<>
-			{newsArticles.length > 0 && (
+			{loading && (
+				<div className="div-spinner">
+					<Spinner className="spinner" />
+				</div>
+			)}
+			{!loading && newsArticles.length > 0 && (
 				<Container>
 					{newsArticles.map((newsArticle) => {
 						return (

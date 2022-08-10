@@ -45,6 +45,8 @@ const NewsComment = (props) => {
 				);
 				if (userComments.length > 0) {
 					setCurrentUserComments(userComments);
+				} else {
+					setCurrentUserComments([]);
 				}
 				res.data = res.data.filter(
 					(review) => review.UserId !== Number(authService.getId())
@@ -104,12 +106,15 @@ const NewsComment = (props) => {
 					<Spinner className="spinner" />
 				</div>
 			)}
-			{!loading && newsComments.length > 0 && (
+			{!loading && (
 				<Row>
 					<Col>
-						<CardTitle className="title" tag="h3">
-							Comment section
-						</CardTitle>
+						{newsComments.length > 0 ||
+							(authService.isUser() && (
+								<CardTitle className="title" tag="h3">
+									Comment section
+								</CardTitle>
+							))}
 						{authService.isUser() && (
 							<Row>
 								<Col>

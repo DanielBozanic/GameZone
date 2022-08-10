@@ -5,6 +5,7 @@ import {
 	Pagination,
 	PaginationItem,
 	PaginationLink,
+	Spinner,
 } from "reactstrap";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -18,6 +19,7 @@ const PurchaseHistory = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageCount, setPageCount] = useState([]);
 	const pageSize = 10;
+	const [loading, setLoading] = useState(true);
 
 	const { id } = useParams();
 
@@ -42,6 +44,7 @@ const PurchaseHistory = () => {
 			.then((res) => {
 				setPurchases(res.data);
 				getPageCount();
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -62,13 +65,19 @@ const PurchaseHistory = () => {
 	};
 
 	const handleClick = (e, index) => {
+		setLoading(true);
 		e.preventDefault();
 		setCurrentPage(index);
 	};
 
 	return (
 		<>
-			{purchases.length > 0 && (
+			{loading && (
+				<div className="div-spinner">
+					<Spinner className="spinner" />
+				</div>
+			)}
+			{!loading && purchases.length > 0 && (
 				<Container>
 					{purchases.map((purchase) => {
 						return (

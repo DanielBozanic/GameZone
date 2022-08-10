@@ -11,17 +11,23 @@ import {
 	Container,
 	Row,
 	Col,
+	Spinner,
 } from "reactstrap";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
 
 const GetVerificationCode = () => {
 	const customId = "GetVerificationCode";
+	const [loading, setLoading] = useState(false);
 
 	const { register, handleSubmit } = useForm();
+	const navigate = useNavigate();
 
 	const getVerificationCode = (data) => {
+		setLoading(true);
 		axios
 			.get(`${userAPI.GET_VERIFICATION_CODE}?email=${data.email}`)
 			.then((res) => {
@@ -30,6 +36,7 @@ const GetVerificationCode = () => {
 					autoClose: 5000,
 					toastId: customId,
 				});
+				navigate("/verify/" + data.email);
 			})
 			.catch((err) => {
 				toast.error(err.response.data.message, {
@@ -37,6 +44,7 @@ const GetVerificationCode = () => {
 					autoClose: false,
 					toastId: customId,
 				});
+				setLoading(false);
 			});
 	};
 
@@ -48,34 +56,41 @@ const GetVerificationCode = () => {
 						<CardTitle className="title" tag="h2">
 							Get verification code
 						</CardTitle>
-						<CardBody>
-							<Form className="form">
-								<Row>
-									<Col>
-										<FormGroup>
-											<Label>Email</Label>
-											<Input
-												className="input-field"
-												type="text"
-												name="email"
-												innerRef={register}
-											/>
-										</FormGroup>
-									</Col>
-								</Row>
-								<Row>
-									<Col>
-										<Button
-											className="my-button"
-											type="button"
-											onClick={handleSubmit(getVerificationCode)}
-										>
-											Submit
-										</Button>
-									</Col>
-								</Row>
-							</Form>
-						</CardBody>
+						{loading && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loading && (
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Email</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="email"
+													innerRef={register}
+												/>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(getVerificationCode)}
+											>
+												Submit
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>

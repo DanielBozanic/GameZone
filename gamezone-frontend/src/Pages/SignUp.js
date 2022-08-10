@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { createFormSchema } from "../Components/UserForms/CreateForm/CreateFormSchema";
 import CreateForm from "../Components/UserForms/CreateForm/CreateForm";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import {
 	Button,
 	Form,
@@ -12,6 +13,7 @@ import {
 	Container,
 	Row,
 	Col,
+	Spinner,
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -24,10 +26,12 @@ const SignUp = () => {
 		resolver: yupResolver(createFormSchema),
 		mode: "onChange",
 	});
+	const [loading, setLoading] = useState(false);
 
 	const navigate = useNavigate();
 
 	const signUp = (data) => {
+		setLoading(true);
 		axios
 			.post(userAPI.REGISTER, data, {
 				headers: {
@@ -49,6 +53,7 @@ const SignUp = () => {
 					autoClose: false,
 					toastId: customId,
 				});
+				setLoading(false);
 			});
 	};
 
@@ -64,24 +69,31 @@ const SignUp = () => {
 						<CardTitle className="title" tag="h2">
 							Sign Up
 						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<CreateForm />
-									<Row>
-										<Col>
-											<Button
-												className="my-button"
-												type="button"
-												onClick={methods.handleSubmit(signUp)}
-											>
-												Sign up
-											</Button>
-										</Col>
-									</Row>
-								</Form>
-							</FormProvider>
-						</CardBody>
+						{loading && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loading && (
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<CreateForm />
+										<Row>
+											<Col>
+												<Button
+													className="my-button"
+													type="button"
+													onClick={methods.handleSubmit(signUp)}
+												>
+													Sign up
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</FormProvider>
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>

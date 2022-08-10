@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
-import { CardBody, Card, Row, Col, Input } from "reactstrap";
+import {
+	CardBody,
+	Card,
+	Row,
+	Col,
+	Input,
+	Spinner,
+	CardTitle,
+} from "reactstrap";
 import { Chart, registerables } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
@@ -15,6 +23,7 @@ const BusinessReports = () => {
 	const [title, setTitle] = useState(
 		"Products with the biggest profit in last 30 days"
 	);
+	const [loading, setLoading] = useState(true);
 
 	const options = {
 		responsive: true,
@@ -57,6 +66,7 @@ const BusinessReports = () => {
 						},
 					],
 				});
+				setLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -64,6 +74,7 @@ const BusinessReports = () => {
 	};
 
 	const setupReport = (e) => {
+		setLoading(true);
 		const index = e.nativeEvent.target.selectedIndex;
 		setTitle(e.nativeEvent.target[index].text);
 		setReportUrl(e.target.value);
@@ -99,16 +110,34 @@ const BusinessReports = () => {
 							</Input>
 						</Col>
 					</Row>
-					{reportData !== null && (
-						<Row>
-							<Col>
-								<Bar
-									className="report-chart"
-									options={options}
-									data={reportData}
-								/>
-							</Col>
-						</Row>
+					{loading && (
+						<div className="div-spinner">
+							<Spinner className="spinner" />
+						</div>
+					)}
+					{!loading && reportData !== null && (
+						<>
+							{reportData.datasets[0].data.length > 0 && (
+								<Row>
+									<Col>
+										<Bar
+											className="report-chart"
+											options={options}
+											data={reportData}
+										/>
+									</Col>
+								</Row>
+							)}
+							{reportData.datasets[0].data.length <= 0 && (
+								<Row>
+									<Col>
+										<CardTitle className="title" tag="h5">
+											No data available
+										</CardTitle>
+									</Col>
+								</Row>
+							)}
+						</>
 					)}
 				</CardBody>
 			</Card>

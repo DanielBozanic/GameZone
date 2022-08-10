@@ -17,6 +17,7 @@ import {
 	FormGroup,
 	Input,
 	FormFeedback,
+	Spinner,
 } from "reactstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -40,6 +41,9 @@ const ManageUser = () => {
 	const [newsComments, setNewsComments] = useState([]);
 	const [reports, setReports] = useState([]);
 	const [banHistory, setBanHistory] = useState([]);
+	const [loadingComments, setLoadingComments] = useState(true);
+	const [loadingBanHistory, setLoadingBanHistory] = useState(true);
+	const [loadingReports, setLoadingReports] = useState(true);
 
 	const {
 		register,
@@ -63,6 +67,7 @@ const ManageUser = () => {
 			.get(`${productCommentAPI.GET_BY_USER_ID}/${id}`)
 			.then((res) => {
 				setProductComments(res.data);
+				setLoadingComments(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -74,6 +79,7 @@ const ManageUser = () => {
 			.get(`${newsCommentAPI.GET_BY_USER_ID}/${id}`)
 			.then((res) => {
 				setNewsComments(res.data);
+				setLoadingComments(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -85,6 +91,7 @@ const ManageUser = () => {
 			.get(`${reportAPI.GET_REPORTS_BY_USER_ID}/${id}`)
 			.then((res) => {
 				setReports(res.data);
+				setLoadingReports(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -96,6 +103,7 @@ const ManageUser = () => {
 			.get(`${banAPI.GET_USER_BAN_HISTORY}/${id}`)
 			.then((res) => {
 				setBanHistory(res.data);
+				setLoadingBanHistory(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -103,6 +111,7 @@ const ManageUser = () => {
 	};
 
 	const banUser = (data) => {
+		setLoadingBanHistory(true);
 		data.UserId = Number(id);
 		axios
 			.post(`${banAPI.ADD_BAN}`, data)
@@ -122,6 +131,7 @@ const ManageUser = () => {
 					toastId: customId,
 					autoClose: false,
 				});
+				setLoadingBanHistory(false);
 			});
 	};
 
@@ -139,26 +149,33 @@ const ManageUser = () => {
 								Reports Received By Other Users
 							</CardTitle>
 						</CardHeader>
-						<CardBody>
-							{reports.length > 0 &&
-								reports.map((report) => {
-									return (
-										<CardText>
-											<span style={{ fontWeight: "bold" }}>
-												[{new Date(report.DateTime).toLocaleDateString()}{" "}
-												{new Date(report.DateTime).toLocaleTimeString()}] [
-												{report.Reason}]
-											</span>
-											- {report.Description}
-										</CardText>
-									);
-								})}
-							{reports.length <= 0 && (
-								<CardTitle className="title" tag="h5">
-									User has not been reported
-								</CardTitle>
-							)}
-						</CardBody>
+						{loadingReports && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loadingReports && (
+							<CardBody>
+								{reports.length > 0 &&
+									reports.map((report) => {
+										return (
+											<CardText>
+												<span style={{ fontWeight: "bold" }}>
+													[{new Date(report.DateTime).toLocaleDateString()}{" "}
+													{new Date(report.DateTime).toLocaleTimeString()}] [
+													{report.Reason}]
+												</span>
+												- {report.Description}
+											</CardText>
+										);
+									})}
+								{reports.length <= 0 && (
+									<CardTitle className="title" tag="h5">
+										User has not been reported
+									</CardTitle>
+								)}
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 				<Col>
@@ -228,30 +245,38 @@ const ManageUser = () => {
 								Comment History
 							</CardTitle>
 						</CardHeader>
-						<CardBody>
-							{(productComments.length > 0 || newsComments.length > 0) &&
-								productComments
-									.concat(newsComments)
-									.sort((a, b) => (a.DateTime > b.DateTime ? -1 : 1))
-									.map((comment) => {
-										return (
-											<CardText>
-												<span style={{ fontWeight: "bold" }}>
-													[{new Date(comment.DateTime).toLocaleDateString()}{" "}
-													{new Date(comment.DateTime).toLocaleTimeString()}]
-												</span>{" "}
-												{comment.Comment}
-											</CardText>
-										);
-									})}
-							{productComments.length <= 0 && newsComments.length <= 0 && (
-								<CardTitle className="title" tag="h5">
-									User has not posted any comments
-								</CardTitle>
-							)}
-						</CardBody>
+						{loadingComments && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loadingComments && (
+							<CardBody>
+								{(productComments.length > 0 || newsComments.length > 0) &&
+									productComments
+										.concat(newsComments)
+										.sort((a, b) => (a.DateTime > b.DateTime ? -1 : 1))
+										.map((comment) => {
+											return (
+												<CardText>
+													<span style={{ fontWeight: "bold" }}>
+														[{new Date(comment.DateTime).toLocaleDateString()}{" "}
+														{new Date(comment.DateTime).toLocaleTimeString()}]
+													</span>{" "}
+													{comment.Comment}
+												</CardText>
+											);
+										})}
+								{productComments.length <= 0 && newsComments.length <= 0 && (
+									<CardTitle className="title" tag="h5">
+										User has not posted any comments
+									</CardTitle>
+								)}
+							</CardBody>
+						)}
 					</Card>
 				</Col>
+
 				<Col md="6">
 					<Card
 						style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -262,27 +287,35 @@ const ManageUser = () => {
 								Ban History
 							</CardTitle>
 						</CardHeader>
-						<CardBody>
-							{banHistory.length > 0 &&
-								banHistory.map((ban) => {
-									return (
-										<CardText>
-											Banned until{" "}
-											<span style={{ fontWeight: "bold" }}>
-												[{new Date(ban.ExpirationDate).toLocaleDateString()}{" "}
-												{new Date(ban.ExpirationDate).toLocaleTimeString()}]{" "}
-											</span>
-											for{" "}
-											<span style={{ fontWeight: "bold" }}>{ban.Reason}</span>.
-										</CardText>
-									);
-								})}
-							{banHistory.length <= 0 && (
-								<CardTitle className="title" tag="h5">
-									User has not been banned
-								</CardTitle>
-							)}
-						</CardBody>
+						{loadingBanHistory && (
+							<div className="div-spinner">
+								<Spinner className="spinner" />
+							</div>
+						)}
+						{!loadingBanHistory && (
+							<CardBody>
+								{banHistory.length > 0 &&
+									banHistory.map((ban) => {
+										return (
+											<CardText>
+												Banned until{" "}
+												<span style={{ fontWeight: "bold" }}>
+													[{new Date(ban.ExpirationDate).toLocaleDateString()}{" "}
+													{new Date(ban.ExpirationDate).toLocaleTimeString()}]{" "}
+												</span>
+												for{" "}
+												<span style={{ fontWeight: "bold" }}>{ban.Reason}</span>
+												.
+											</CardText>
+										);
+									})}
+								{banHistory.length <= 0 && (
+									<CardTitle className="title" tag="h5">
+										User has not been banned
+									</CardTitle>
+								)}
+							</CardBody>
+						)}
 					</Card>
 				</Col>
 			</Row>
