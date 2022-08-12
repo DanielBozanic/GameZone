@@ -18,16 +18,18 @@ def search_by_name():
     page_size = args.get("pageSize")
     name = args.get("name")
     r = requests.get(product_api_routes.BASE + product_api_routes.API +
-                        product_api_routes.SEARCH_BY_NAME
-                        + "?page={}&pageSize={}&name={}".format(page, page_size, name))
+                        product_api_routes.SEARCH_BY_NAME +
+                     "?page={}&pageSize={}&name={}".format(page, page_size, name))
     resp = jsonify(r.json())
     resp.status_code = r.status_code
     return resp
 
 
 def get_number_of_records_search():
+    args = request.args.to_dict()
+    name = args.get("name")
     r = requests.get(product_api_routes.BASE + product_api_routes.API +
-                        product_api_routes.GET_NUMBER_OF_RECORDS_SEARCH)
+                     product_api_routes.GET_NUMBER_OF_RECORDS_SEARCH + "?name={}".format(name))
     resp = jsonify(r.json())
     resp.status_code = r.status_code
     return resp
@@ -62,7 +64,7 @@ def add_product_to_main_page(productId):
 @token_utils.authorization_required(roles=[role.ROLE_EMPLOYEE])
 def remove_product_from_main_page(productId):
     headers = request.headers
-    r = requests.delete(product_api_routes.BASE + product_api_routes.API +
+    r = requests.put(product_api_routes.BASE + product_api_routes.API +
                            product_api_routes.REMOVE_PRODUCT_FROM_MAIN_PAGE + "/{}".format(productId), headers=headers)
     resp = jsonify(r.json())
     resp.status_code = r.status_code

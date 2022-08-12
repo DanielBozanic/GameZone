@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
 	return (
-		<Navbar className="footer" color="dark" expand="md" dark>
+		<Navbar className="footer" color="dark" expand="xl" dark>
 			<NavbarBrand>
 				<Link to="/">
 					<img src={logo} alt="Logo" className="responsive-img-footer" />

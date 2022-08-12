@@ -21,8 +21,8 @@ export const motherboardFormSchema = yup.object({
 		.max(400, "Maximum number of characters allowed is 400"),
 	StorageInterface: yup
 		.string()
-		.max(200, "Maximum number of characters allowed is 200"),
-	Audio: yup.string().max(200, "Maximum number of characters allowed is 200"),
+		.max(700, "Maximum number of characters allowed is 700"),
+	Audio: yup.string().max(700, "Maximum number of characters allowed is 700"),
 	USB: yup.string().max(600, "Maximum number of characters allowed is 600"),
 	BackPanelConnectors: yup
 		.string()

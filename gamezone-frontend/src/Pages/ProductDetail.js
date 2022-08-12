@@ -385,7 +385,9 @@ const ProductDetail = (props) => {
 																	.replace(/([A-Z][a-z])/g, " $1")
 																	.trim()}
 															</th>
-															<td>{product[value].toString()}</td>
+															<td style={{ wordBreak: "break-word" }}>
+																{product[value].toString()}
+															</td>
 														</tr>
 													);
 												}

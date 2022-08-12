@@ -23,7 +23,7 @@ const Header = () => {
 	};
 
 	return (
-		<Navbar className="header" color="dark" expand="md" dark>
+		<Navbar className="header" color="dark" expand="xl" dark>
 			<NavbarBrand>
 				<Link to="/">
 					<img src={logo} alt="Logo" className="responsive-img-header" />

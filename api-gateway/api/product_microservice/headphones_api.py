@@ -46,8 +46,10 @@ def search_by_name():
 
 
 def get_number_of_records_search():
+    args = request.args.to_dict()
+    name = args.get("name")
     r = requests.get(headphones_api_routes.BASE + headphones_api_routes.API +
-                        headphones_api_routes.GET_NUMBER_OF_RECORDS_SEARCH)
+                        headphones_api_routes.GET_NUMBER_OF_RECORDS_SEARCH + "?name={}".format(name))
     resp = jsonify(r.json())
     resp.status_code = r.status_code
     return resp

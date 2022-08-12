@@ -55,7 +55,6 @@ func (productRepo *productRepository) GetNumberOfRecordsSearch(name string) int6
 	var products []model.Product
 	var count int64
 	productRepo.Database.
-		Preload("Image").
 		Where("name LIKE ? AND archived = false", "%" + name + "%").
 		Find(&products).
 		Count(&count)

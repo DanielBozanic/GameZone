@@ -107,7 +107,7 @@ func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFi
 				filter.MemoryTypes,
 				len(filter.MemoryTypes) == 0,
 				filter.Speeds, 
-				len(filter.Speeds)).
+				len(filter.Speeds) == 0).
 		Find(&rams)
 	return rams, result.Error
 }
@@ -129,7 +129,7 @@ func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) 
 				filter.MemoryTypes,
 				len(filter.MemoryTypes) == 0,
 				filter.Speeds, 
-				len(filter.Speeds)).
+				len(filter.Speeds) == 0).
 		Find(&rams).
 		Count(&count)
 	return count

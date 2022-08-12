@@ -12,23 +12,21 @@ import {
 	PaginationItem,
 	PaginationLink,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 import cn from "classnames";
-import { useNavigate } from "react-router-dom";
 import * as helperFunctions from "../Utils/HelperFunctions";
 
 const ProductsView = (props) => {
-	const navigate = useNavigate();
-
 	const onHandleClick = (e, nextOrPrev) => {
 		props.handleClick && props.handleClick(e, nextOrPrev);
 	};
 
 	const viewProductDetails = (product) => {
 		if (product.Product !== undefined) {
-			navigate(window.location.pathname + "/" + product.Product.Id);
+			return window.location.pathname + "/" + product.Product.Id;
 		} else {
 			const route = helperFunctions.getProductDetailRoute(product);
-			navigate(route);
+			return route;
 		}
 	};
 
@@ -40,32 +38,34 @@ const ProductsView = (props) => {
 						{props.products.map((product, index) =>
 							index < 4 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card
-										className="products-view-card"
-										onClick={() => viewProductDetails(product)}
-									>
-										<CardImg
-											className="products-view-card-image"
-											alt="No image"
-											src={
-												product.Product === undefined
-													? product.Image.Content
-													: product.Product.Image.Content
-											}
-										/>
-										<CardBody>
-											<CardTitle tag="h5">
-												{product.Product === undefined
-													? product.Name
-													: product.Product.Name}
-											</CardTitle>
-											<CardText>
-												{product.Product === undefined
-													? product.Price
-													: product.Product.Price}{" "}
-												RSD
-											</CardText>
-										</CardBody>
+									<Card className="products-view-card">
+										<Link
+											to={viewProductDetails(product)}
+											style={{ textDecoration: "none", color: "inherit" }}
+										>
+											<CardImg
+												className="products-view-card-image"
+												alt="No image"
+												src={
+													product.Product === undefined
+														? product.Image.Content
+														: product.Product.Image.Content
+												}
+											/>
+											<CardBody className="products-view-card-body">
+												<CardTitle tag="h5">
+													{product.Product === undefined
+														? product.Name
+														: product.Product.Name}
+												</CardTitle>
+												<CardText>
+													{product.Product === undefined
+														? product.Price
+														: product.Product.Price}{" "}
+													RSD
+												</CardText>
+											</CardBody>
+										</Link>
 									</Card>
 								</Col>
 							) : (
@@ -77,32 +77,37 @@ const ProductsView = (props) => {
 						{props.products.map((product, index) =>
 							index > 3 ? (
 								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card
-										className="products-view-card"
-										onClick={() => viewProductDetails(product)}
-									>
-										<CardImg
-											className="products-view-card-image"
-											alt="No image"
-											src={
-												product.Product === undefined
-													? product.Image.Content
-													: product.Product.Image.Content
-											}
-										/>
-										<CardBody>
-											<CardTitle tag="h5">
-												{product.Product === undefined
-													? product.Name
-													: product.Product.Name}
-											</CardTitle>
-											<CardText>
-												{product.Product === undefined
-													? product.Price
-													: product.Product.Price}
-												RSD
-											</CardText>
-										</CardBody>
+									<Card className="products-view-card">
+										<Link
+											to={viewProductDetails(product)}
+											style={{ textDecoration: "none", color: "inherit" }}
+										>
+											<CardImg
+												className="products-view-card-image"
+												alt="No image"
+												src={
+													product.Product === undefined
+														? product.Image.Content
+														: product.Product.Image.Content
+												}
+											/>
+											<CardBody className="products-view-card-body">
+												<CardTitle
+													className="products-view-card-body-text"
+													tag="h5"
+												>
+													{product.Product === undefined
+														? product.Name
+														: product.Product.Name}
+												</CardTitle>
+												<CardText>
+													{product.Product === undefined
+														? product.Price
+														: product.Product.Price}{" "}
+													RSD
+												</CardText>
+											</CardBody>
+										</Link>
 									</Card>
 								</Col>
 							) : (

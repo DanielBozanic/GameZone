@@ -5,7 +5,6 @@ import ProductsView from "../Components/ProductsView";
 import { Row, Col, Container, Card, CardHeader, CardTitle } from "reactstrap";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper";
 import * as helperFunctions from "../Utils/HelperFunctions";
@@ -20,8 +19,6 @@ const Main = () => {
 	const [pageCount, setPageCount] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
 	const pageSize = 8;
-
-	const navigate = useNavigate();
 
 	const handleClick = (e, index) => {
 		e.preventDefault();
@@ -101,7 +98,7 @@ const Main = () => {
 	};
 
 	const viewProductDetail = (product) => {
-		navigate(helperFunctions.getProductDetailRoute(product));
+		return helperFunctions.getProductDetailRoute(product);
 	};
 
 	const onSearchClick = (st) => {
@@ -132,8 +129,16 @@ const Main = () => {
 									<Swiper slidesPerView={3}>
 										{recommendedProducts.map((product) => {
 											return (
-												<SwiperSlide onClick={() => viewProductDetail(product)}>
-													<img src={product.Image.Content} />
+												<SwiperSlide>
+													<a
+														className="main-page-product-link"
+														href={viewProductDetail(product)}
+													>
+														<img
+															className="main-page-product-image"
+															src={product.Image.Content}
+														/>
+													</a>
 												</SwiperSlide>
 											);
 										})}
@@ -162,8 +167,16 @@ const Main = () => {
 									>
 										{mainPageProducts.map((product) => {
 											return (
-												<SwiperSlide onClick={() => viewProductDetail(product)}>
-													<img src={product.Image.Content} />
+												<SwiperSlide>
+													<a
+														className="main-page-product-link"
+														href={viewProductDetail(product)}
+													>
+														<img
+															className="main-page-product-image"
+															src={product.Image.Content}
+														/>
+													</a>
 												</SwiperSlide>
 											);
 										})}
@@ -184,8 +197,16 @@ const Main = () => {
 									<Swiper slidesPerView={3}>
 										{popularProducts.map((product) => {
 											return (
-												<SwiperSlide onClick={() => viewProductDetail(product)}>
-													<img src={product.Image.Content} />
+												<SwiperSlide>
+													<a
+														className="main-page-product-link"
+														href={viewProductDetail(product)}
+													>
+														<img
+															className="main-page-product-image"
+															src={product.Image.Content}
+														/>
+													</a>
 												</SwiperSlide>
 											);
 										})}

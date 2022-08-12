@@ -19,7 +19,7 @@ const AppNavbar = () => {
 	const toggleNavbar = () => setCollapsed(!collapsed);
 
 	return (
-		<div className="navbar">
+		<div className="app-navbar">
 			<Navbar color="dark" expand="md" dark>
 				<NavbarToggler onClick={toggleNavbar} className="mr-2" />
 				<Collapse isOpen={!collapsed} navbar>

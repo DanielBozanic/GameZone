@@ -9,8 +9,8 @@ type Motherboard struct {
 	Chipset             *string `gorm:"type:varchar(30)"`
 	Memory              *string `gorm:"type:varchar(1000)"`
 	ExpansionSlots      *string `gorm:"type:varchar(400)"`
-	StorageInterface    *string `gorm:"type:varchar(200)"`
-	Audio               *string `gorm:"type:varchar(200)"`
+	StorageInterface    *string `gorm:"type:varchar(700)"`
+	Audio               *string `gorm:"type:varchar(700)"`
 	USB                 *string `gorm:"type:varchar(600)"`
 	BackPanelConnectors *string `gorm:"type:varchar(1000)"`
 	InternalConnectors  *string `gorm:"type:varchar(1000)"`

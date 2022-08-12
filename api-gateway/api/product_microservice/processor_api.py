@@ -43,8 +43,10 @@ def search_by_name():
 
 
 def get_number_of_records_search():
+    args = request.args.to_dict()
+    name = args.get("name")
     r = requests.get(processor_api_routes.BASE + processor_api_routes.API +
-                        processor_api_routes.GET_NUMBER_OF_RECORDS_SEARCH)
+                        processor_api_routes.GET_NUMBER_OF_RECORDS_SEARCH + "?name={}".format(name))
     resp = jsonify(r.json())
     resp.status_code = r.status_code
     return resp

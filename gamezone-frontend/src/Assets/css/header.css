@@ -6,3 +6,38 @@
 .responsive-img-header:hover {
 	border: 8px solid #343a40;
 }
+
+@media screen and (max-width: 1299px) {
+	.header .nav-item,
+	.header .drop-down-link {
+		font-size: 1rem !important;
+	}
+}
+
+@media screen and (min-width: 1300px) and (max-width: 1499px) {
+	.header .nav-item,
+	.header .drop-down-link {
+		font-size: 1.1rem !important;
+	}
+}
+
+@media screen and (min-width: 1500px) and (max-width: 1699px) {
+	.header .nav-item,
+	.header .drop-down-link {
+		font-size: 1.2rem !important;
+	}
+}
+
+@media screen and (min-width: 1700px) and (max-width: 1899px) {
+	.header .nav-item,
+	.header .drop-down-link {
+		font-size: 1.3rem !important;
+	}
+}
+
+@media screen and (min-width: 1900px) {
+	.header .nav-item,
+	.header .drop-down-link {
+		font-size: 1.4rem !important;
+	}
+}

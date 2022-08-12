@@ -31,13 +31,13 @@
 .product-detail-table td {
 	width: 100%;
 	border-top: none !important;
-	word-break: break-all;
+	overflow-wrap: break-word;
 }
 
 .product-detail-table th {
 	width: 40%;
 	border-top: none !important;
-	word-break: break-all;
+	overflow-wrap: break-word;
 }
 
 @media only screen and (max-width: 760px),

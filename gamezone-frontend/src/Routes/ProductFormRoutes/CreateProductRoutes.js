@@ -26,7 +26,7 @@ export const CreateProductVideoGame = () => (
 			element={
 				<VideoGameForm
 					key="/addNewVideoGame"
-					title={"Add new video game"}
+					title={"Add video game"}
 					addButton={true}
 				/>
 			}
@@ -44,7 +44,7 @@ export const CreateProductConsole = () => (
 			element={
 				<ConsoleForm
 					key="/addNewConsole"
-					title={"Add new console"}
+					title={"Add console"}
 					addButton={true}
 				/>
 			}
@@ -62,7 +62,7 @@ export const CreateProductGraphicsCard = () => (
 			element={
 				<GraphicsCardForm
 					key="/addNewGraphicsCard"
-					title={"Add new graphics card"}
+					title={"Add graphics card"}
 					addButton={true}
 				/>
 			}
@@ -80,7 +80,7 @@ export const CreateProductProcessor = () => (
 			element={
 				<ProcessorForm
 					key="/addNewProcessor"
-					title={"Add new processor"}
+					title={"Add processor"}
 					addButton={true}
 				/>
 			}
@@ -98,7 +98,7 @@ export const CreateProductMotherboard = () => (
 			element={
 				<MotherboardForm
 					key="/addNewMotherboard"
-					title={"Add new motherboard"}
+					title={"Add motherboard"}
 					addButton={true}
 				/>
 			}
@@ -113,9 +113,7 @@ export const CreateProductRAM = () => (
 	>
 		<Route
 			path="/addNewRam"
-			element={
-				<RAMForm key="/addNewRam" title={"Add new RAM"} addButton={true} />
-			}
+			element={<RAMForm key="/addNewRam" title={"Add RAM"} addButton={true} />}
 		/>
 	</Route>
 );
@@ -130,7 +128,7 @@ export const CreateProductSSD = () => (
 			element={
 				<SSDForm
 					key="/addNewSsd"
-					title={"Add new solid state drive"}
+					title={"Add solid state drive"}
 					addButton={true}
 				/>
 			}
@@ -148,7 +146,7 @@ export const CreateProductHDD = () => (
 			element={
 				<HDDForm
 					key="/addNewHdd"
-					title={"Add new hard disk drive"}
+					title={"Add hard disk drive"}
 					addButton={true}
 				/>
 			}
@@ -166,7 +164,7 @@ export const CreateProductMonitor = () => (
 			element={
 				<MonitorForm
 					key="/addNewMonitor"
-					title={"Add new monitor"}
+					title={"Add monitor"}
 					addButton={true}
 				/>
 			}
@@ -184,7 +182,7 @@ export const CreateProductPSU = () => (
 			element={
 				<PSUForm
 					key="/addNewPsu"
-					title={"Add new power supply unit"}
+					title={"Add power supply unit"}
 					addButton={true}
 				/>
 			}
@@ -202,7 +200,7 @@ export const CreateProductHeadphones = () => (
 			element={
 				<HeadphonesForm
 					key="/addNewHeadphones"
-					title={"Add new headphones"}
+					title={"Add headphones"}
 					addButton={true}
 				/>
 			}
@@ -220,7 +218,7 @@ export const CreateProductKeyboard = () => (
 			element={
 				<KeyboardForm
 					key="/addNewKeyboard"
-					title={"Add new keyboard"}
+					title={"Add keyboard"}
 					addButton={true}
 				/>
 			}
@@ -236,11 +234,7 @@ export const CreateProductMouse = () => (
 		<Route
 			path="/addNewMouse"
 			element={
-				<MouseForm
-					key="/addNewMouse"
-					title={"Add new mouse"}
-					addButton={true}
-				/>
+				<MouseForm key="/addNewMouse" title={"Add mouse"} addButton={true} />
 			}
 		/>
 	</Route>

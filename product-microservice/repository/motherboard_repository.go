@@ -106,8 +106,8 @@ func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, fil
 				len(filter.ProcessorTypes) == 0,
 				filter.Sockets,
 				len(filter.Sockets) == 0,
-				filter.FormFactor,
-				len(filter.FormFactor) == 0).
+				filter.FormFactors,
+				len(filter.FormFactors) == 0).
 		Find(&motherboards)
 	return motherboards, result.Error
 }
@@ -128,8 +128,8 @@ func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter fi
 				len(filter.ProcessorTypes) == 0,
 				filter.Sockets,
 				len(filter.Sockets) == 0,
-				filter.FormFactor,
-				len(filter.FormFactor) == 0).
+				filter.FormFactors,
+				len(filter.FormFactors) == 0).
 		Find(&motherboards).
 		Count(&count)
 	return count
