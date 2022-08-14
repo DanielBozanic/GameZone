@@ -18,17 +18,6 @@ export const mouseFormSchema = yup.object({
 	Acceleration: yup
 		.string()
 		.max(30, "Maximum number of characters allowed is 30"),
-	Buttons: yup
-		.number()
-		.typeError("Buttons must be a number")
-		.test(
-			"positive",
-			"Buttons must be a positive number",
-			(value) => value >= 0
-		)
-		.integer("Buttons must be a non decimal value")
-		.nullable()
-		.transform((_, val) => (val !== "" ? Number(val) : null)),
 	Weight: yup.string().max(20, "Maximum number of characters allowed is 20"),
 	Lifespan: yup.string().max(30, "Maximum number of characters allowed is 30"),
 });

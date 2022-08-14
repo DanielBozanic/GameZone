@@ -8,6 +8,7 @@ import {
 	Col,
 	Container,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -38,44 +39,54 @@ const NewsDetail = () => {
 	return (
 		<>
 			{newsArticle !== null && (
-				<Container>
-					<Row style={{ marginTop: "10px", marginBottom: "10px" }}>
-						<Col>
-							<Card className="card">
-								<CardHeader>
-									<Row>
-										<Col md="10">
-											<CardTitle className="title" tag="h3">
-												{authService.isEmployee()
-													? newsArticle.UnpublishedTitle
-													: newsArticle.PublishedTitle}
-											</CardTitle>
-										</Col>
-										<Col md="2">
-											<CardTitle tag="h5">
-												{newsArticle.DateTime.toString().split("T")[0]}
-											</CardTitle>
-										</Col>
-									</Row>
-								</CardHeader>
-								<CardBody>
-									<CardText>
-										<div
-											dangerouslySetInnerHTML={{
-												__html: DOMPurify.sanitize(
-													authService.isEmployee()
-														? newsArticle.UnpublishedContent
-														: newsArticle.PublishedContent
-												),
-											}}
-										></div>
-									</CardText>
-									<NewsComment newsArticle={newsArticle} />
-								</CardBody>
-							</Card>
-						</Col>
-					</Row>
-				</Container>
+				<>
+					<Helmet>
+						<title>
+							{authService.isEmployee()
+								? newsArticle.UnpublishedTitle
+								: newsArticle.PublishedTitle}{" "}
+							| GameZone
+						</title>
+					</Helmet>
+					<Container>
+						<Row style={{ marginTop: "10px", marginBottom: "10px" }}>
+							<Col>
+								<Card className="card">
+									<CardHeader>
+										<Row>
+											<Col md="10">
+												<CardTitle className="title" tag="h3">
+													{authService.isEmployee()
+														? newsArticle.UnpublishedTitle
+														: newsArticle.PublishedTitle}
+												</CardTitle>
+											</Col>
+											<Col md="2">
+												<CardTitle tag="h5">
+													{newsArticle.DateTime.toString().split("T")[0]}
+												</CardTitle>
+											</Col>
+										</Row>
+									</CardHeader>
+									<CardBody>
+										<CardText>
+											<div
+												dangerouslySetInnerHTML={{
+													__html: DOMPurify.sanitize(
+														authService.isEmployee()
+															? newsArticle.UnpublishedContent
+															: newsArticle.PublishedContent
+													),
+												}}
+											></div>
+										</CardText>
+										<NewsComment newsArticle={newsArticle} />
+									</CardBody>
+								</Card>
+							</Col>
+						</Row>
+					</Container>
+				</>
 			)}
 		</>
 	);

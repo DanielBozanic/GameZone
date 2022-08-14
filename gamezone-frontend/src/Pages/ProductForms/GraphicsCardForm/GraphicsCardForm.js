@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,373 +115,394 @@ const GraphicsCardForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Chip Manufacturer</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="ChipManufacturer"
-													invalid={
-														methods.formState.errors.ChipManufacturer?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.ChipManufacturer : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.ChipManufacturer?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Model Name</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="ModelName"
-													invalid={methods.formState.errors.ModelName?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.ModelName : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.ModelName?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Bus Width</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="BusWidth"
-													invalid={methods.formState.errors.BusWidth?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.BusWidth !== null
-															? product.BusWidth
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.BusWidth?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Memory Size</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="MemorySize"
-													invalid={methods.formState.errors.MemorySize?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.MemorySize !== null
-															? product.MemorySize
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.MemorySize?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Memory Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="MemoryType"
-													invalid={methods.formState.errors.MemoryType?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.MemoryType !== null
-															? product.MemoryType
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.MemoryType?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>PCI Interface</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="PCIInterface"
-													invalid={
-														methods.formState.errors.PCIInterface?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.PCIInterface !== null
-															? product.PCIInterface
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.PCIInterface?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>GPU Speed</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="GPUSpeed"
-													invalid={methods.formState.errors.GPUSpeed?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.GPUSpeed !== null
-															? product.GPUSpeed
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.GPUSpeed?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Stream Processors</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="StreamProcessors"
-													min="0"
-													invalid={
-														methods.formState.errors.StreamProcessors?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.StreamProcessors !== null
-															? product.StreamProcessors
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.StreamProcessors?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Cooling</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Cooling"
-													invalid={methods.formState.errors.Cooling?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Cooling !== null
-															? product.Cooling
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Cooling?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>HDMI</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="HDMI"
-													min="0"
-													invalid={methods.formState.errors.HDMI?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.HDMI !== null
-															? product.HDMI
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.HDMI?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Display Port</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="DisplayPort"
-													min="0"
-													invalid={
-														methods.formState.errors.DisplayPort?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.DisplayPort !== null
-															? product.DisplayPort
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.DisplayPort?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>TDP</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="TDP"
-													invalid={methods.formState.errors.TDP?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.TDP !== null
-															? product.TDP
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.TDP?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Power Connector</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="PowerConnector"
-													invalid={
-														methods.formState.errors.PowerConnector?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.PowerConnector !== null
-															? product.PowerConnector
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.PowerConnector?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Dimensions</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Dimensions"
-													invalid={methods.formState.errors.Dimensions?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Dimensions !== null
-															? product.Dimensions
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Dimensions?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Chip Manufacturer</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="ChipManufacturer"
+														invalid={
+															methods.formState.errors.ChipManufacturer?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.ChipManufacturer : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.ChipManufacturer?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Model Name</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="ModelName"
+														invalid={
+															methods.formState.errors.ModelName?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.ModelName : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.ModelName?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Bus Width</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="BusWidth"
+														invalid={methods.formState.errors.BusWidth?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.BusWidth !== null
+																? product.BusWidth
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.BusWidth?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Memory Size</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="MemorySize"
+														invalid={
+															methods.formState.errors.MemorySize?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.MemorySize !== null
+																? product.MemorySize
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.MemorySize?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Memory Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="MemoryType"
+														invalid={
+															methods.formState.errors.MemoryType?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.MemoryType !== null
+																? product.MemoryType
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.MemoryType?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>PCI Interface</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="PCIInterface"
+														invalid={
+															methods.formState.errors.PCIInterface?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.PCIInterface !== null
+																? product.PCIInterface
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.PCIInterface?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>GPU Speed</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="GPUSpeed"
+														invalid={methods.formState.errors.GPUSpeed?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.GPUSpeed !== null
+																? product.GPUSpeed
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.GPUSpeed?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Stream Processors</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="StreamProcessors"
+														min="0"
+														invalid={
+															methods.formState.errors.StreamProcessors?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.StreamProcessors !== null
+																? product.StreamProcessors
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.StreamProcessors?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Cooling</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Cooling"
+														invalid={methods.formState.errors.Cooling?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Cooling !== null
+																? product.Cooling
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Cooling?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>HDMI</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="HDMI"
+														min="0"
+														invalid={methods.formState.errors.HDMI?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.HDMI !== null
+																? product.HDMI
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.HDMI?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Display Port</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="DisplayPort"
+														min="0"
+														invalid={
+															methods.formState.errors.DisplayPort?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.DisplayPort !== null
+																? product.DisplayPort
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.DisplayPort?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>TDP</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="TDP"
+														invalid={methods.formState.errors.TDP?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.TDP !== null
+																? product.TDP
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.TDP?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Power Connector</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="PowerConnector"
+														invalid={
+															methods.formState.errors.PowerConnector?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.PowerConnector !== null
+																? product.PowerConnector
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.PowerConnector?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Dimensions</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Dimensions"
+														invalid={
+															methods.formState.errors.Dimensions?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Dimensions !== null
+																? product.Dimensions
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Dimensions?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

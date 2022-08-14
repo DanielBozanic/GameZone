@@ -7,11 +7,13 @@ import {
 	PaginationLink,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import * as authService from "../Auth/AuthService";
 import * as productPurchaseAPI from "../APIs/ProductMicroservice/product_purchase_api";
+import * as userAPI from "../APIs/UserMicroservice/user_api";
 import Purchase from "../Components/PurchaseHistory/Purchase";
 
 const PurchaseHistory = () => {
@@ -20,6 +22,7 @@ const PurchaseHistory = () => {
 	const [pageCount, setPageCount] = useState([]);
 	const pageSize = 10;
 	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState(null);
 
 	const { id } = useParams();
 
@@ -31,6 +34,7 @@ const PurchaseHistory = () => {
 			(authService.isUser() && Number(id) === Number(authService.getId()))
 		) {
 			getPurchaseHistory();
+			getUserById();
 		} else {
 			navigate(-1);
 		}
@@ -64,6 +68,20 @@ const PurchaseHistory = () => {
 			});
 	};
 
+	const getUserById = () => {
+		if (authService.isAdmin()) {
+			axios
+				.get(`${userAPI.GET_USER_BY_ID}?userId=${id}`)
+				.then((res) => {
+					setUser(res.data.user);
+					console.log(res.data.user);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
 	const handleClick = (e, index) => {
 		setLoading(true);
 		e.preventDefault();
@@ -72,6 +90,16 @@ const PurchaseHistory = () => {
 
 	return (
 		<>
+			{user === null && authService.isUser() && (
+				<Helmet>
+					<title>Purchase history | GameZone</title>
+				</Helmet>
+			)}
+			{user !== null && authService.isAdmin() && (
+				<Helmet>
+					<title>{user.user_name}'s purchase history | GameZone</title>
+				</Helmet>
+			)}
 			{loading && (
 				<div className="div-spinner">
 					<Spinner className="spinner" />

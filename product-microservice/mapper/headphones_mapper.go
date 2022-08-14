@@ -9,10 +9,9 @@ import (
 func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 	return model.Headphones {
 		Product: ToProduct(headphonesDTO.Product),
-		Wireless: headphonesDTO.Wireless,
-		VirtualSurroundEncoding: headphonesDTO.VirtualSurroundEncoding,
 		Sensitivity: headphonesDTO.Sensitivity,
 		ConnectionType: headphonesDTO.ConnectionType,
+		Connection: headphonesDTO.Connection,
 		DriverSize: headphonesDTO.DriverSize,
 		Microphone: headphonesDTO.Microphone,
 		Color: headphonesDTO.Color,
@@ -24,10 +23,9 @@ func ToHeadphones(headphonesDTO dto.HeadphonesDTO) (model.Headphones) {
 func ToHeadphonesDTO(headphone model.Headphones) dto.HeadphonesDTO {
 	return dto.HeadphonesDTO {
 		Product: ToProductDTO(headphone.Product),
-		Wireless: headphone.Wireless,
-		VirtualSurroundEncoding: headphone.VirtualSurroundEncoding,
 		Sensitivity: headphone.Sensitivity,
 		ConnectionType: headphone.ConnectionType,
+		Connection: headphone.Connection,
 		DriverSize: headphone.DriverSize,
 		Microphone: headphone.Microphone,
 		Color: headphone.Color,

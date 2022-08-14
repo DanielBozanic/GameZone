@@ -15,6 +15,7 @@ import {
 	Label,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import cn from "classnames";
@@ -80,6 +81,9 @@ const RegisteredUsersList = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Registered Users | GameZone</title>
+			</Helmet>
 			{loading && (
 				<div className="div-spinner">
 					<Spinner className="spinner" />

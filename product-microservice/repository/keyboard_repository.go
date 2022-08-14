@@ -39,6 +39,7 @@ func (keyboardRepo *keyboardRepository) GetAll(page int, pageSize int) []model.K
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&keyboards)
 	return keyboards
 }
@@ -46,7 +47,6 @@ func (keyboardRepo *keyboardRepository) GetAll(page int, pageSize int) []model.K
 func (keyboardRepo *keyboardRepository) GetNumberOfRecords() int64 {
 	var count int64
 	keyboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.archived = false").
 		Model(&model.Keyboard{}).
@@ -72,6 +72,7 @@ func (keyboardRepo *keyboardRepository) SearchByName(page int, pageSize int, nam
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&keyboards)
 	return keyboards, result.Error
 }
@@ -80,7 +81,6 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsSearch(name string) in
 	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&keyboards).
@@ -96,9 +96,9 @@ func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter fi
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(keyboard_connector IN ? OR ?) AND
-				(key_type IN ? OR ?) AND products.archived = false`,
+				(keyboards.wireless IN ? OR ?) AND 
+				(keyboards.keyboard_connector IN ? OR ?) AND
+				(keyboards.key_type IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Wireless,
@@ -107,6 +107,7 @@ func (keyboardRepo *keyboardRepository) Filter(page int, pageSize int, filter fi
 				len(filter.KeyboardConnectors) == 0,
 				filter.KeyTypes,
 				len(filter.KeyTypes) == 0).
+		Order("products.price").
 		Find(&keyboards)
 	return keyboards, result.Error
 }
@@ -115,12 +116,11 @@ func (keyboardRepo *keyboardRepository) GetNumberOfRecordsFilter(filter filter.K
 	var keyboards []model.Keyboard
 	var count int64
 	keyboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(keyboard_connector IN ? OR ?) AND
-				(key_type IN ? OR ?) AND products.archived = false`,
+				(keyboards.wireless IN ? OR ?) AND 
+				(keyboards.keyboard_connector IN ? OR ?) AND
+				(keyboards.key_type IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Wireless,
@@ -140,6 +140,7 @@ func (keyboardRepo *keyboardRepository) GetManufacturers() []string {
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Keyboard{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -149,24 +150,24 @@ func (keyboardRepo *keyboardRepository) GetManufacturers() []string {
 func (keyboardRepo *keyboardRepository) GetKeyboardConnectors() []string {
 	var keyboardConnectors []string
 	keyboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.archived = false").
+		Order("keyboards.keyboard_connector * 1 ASC, keyboards.keyboard_connector ASC").
 		Model(&model.Keyboard{}).
 		Distinct().
-		Pluck("keyboard_connector", &keyboardConnectors)
+		Pluck("keyboards.keyboard_connector", &keyboardConnectors)
 	return keyboardConnectors
 }
 
 func (keyboardRepo *keyboardRepository) GetKeyTypes() []string {
 	var keyTypes []string
 	keyboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = keyboards.product_id").
 		Where("products.archived = false").
+		Order("keyboards.key_type * 1 ASC, keyboards.key_type ASC").
 		Model(&model.Keyboard{}).
 		Distinct().
-		Pluck("key_type", &keyTypes)
+		Pluck("keyboards.key_type", &keyTypes)
 	return keyTypes
 }
 

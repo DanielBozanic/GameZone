@@ -15,6 +15,7 @@ import {
 	Col,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as userAPI from "../APIs/UserMicroservice/user_api";
@@ -62,42 +63,47 @@ const SignUp = () => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col md="10">
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							Sign Up
-						</CardTitle>
-						{loading && (
-							<div className="div-spinner">
-								<Spinner className="spinner" />
-							</div>
-						)}
-						{!loading && (
-							<CardBody>
-								<FormProvider {...methods}>
-									<Form className="form">
-										<CreateForm />
-										<Row>
-											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(signUp)}
-												>
-													Sign up
-												</Button>
-											</Col>
-										</Row>
-									</Form>
-								</FormProvider>
-							</CardBody>
-						)}
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+		<>
+			<Helmet>
+				<title>Sign Up | GameZone</title>
+			</Helmet>
+			<Container>
+				<Row>
+					<Col md="10">
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								Sign Up
+							</CardTitle>
+							{loading && (
+								<div className="div-spinner">
+									<Spinner className="spinner" />
+								</div>
+							)}
+							{!loading && (
+								<CardBody>
+									<FormProvider {...methods}>
+										<Form className="form">
+											<CreateForm />
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(signUp)}
+													>
+														Sign up
+													</Button>
+												</Col>
+											</Row>
+										</Form>
+									</FormProvider>
+								</CardBody>
+							)}
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

@@ -23,6 +23,7 @@ import {
 	Input,
 	FormFeedback,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import DOMPurify from "dompurify";
 import { toast } from "react-toastify";
 import * as newsArticleAPI from "../../APIs/NewsMicroservice/news_article_api";
@@ -165,6 +166,16 @@ const NewsEditor = () => {
 
 	return (
 		<>
+			{newsArticle === null && (
+				<Helmet>
+					<title>Add news article | GameZone</title>
+				</Helmet>
+			)}
+			{newsArticle !== null && (
+				<Helmet>
+					<title>Editing {newsArticle.UnpublishedTitle} | GameZone</title>
+				</Helmet>
+			)}
 			<Container>
 				<Row>
 					<Col>

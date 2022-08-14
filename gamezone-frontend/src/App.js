@@ -11,7 +11,6 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "./Assets/css/swiper.css";
 import Header from "./Layout/Header";
-import Footer from "./Layout/Footer";
 
 import {
 	ProductListVideoGames,
@@ -284,7 +283,6 @@ function App() {
 							</Route>
 						</Routes>
 					</div>
-					<Footer />
 				</Fragment>
 			</Router>
 		</div>

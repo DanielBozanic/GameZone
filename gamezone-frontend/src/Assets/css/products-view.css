@@ -5,10 +5,20 @@
 
 .products-view-card-body {
 	overflow-y: auto;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
 }
 
 .products-view-card-body-text {
 	word-break: break-word;
+}
+
+.products-view-card-footer-text {
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
 }
 
 .products-view-pagination-padding {
@@ -33,6 +43,11 @@
 
 	.products-view-card-body {
 		height: 140px;
+	}
+
+	.products-view-card-col {
+		flex: 0 0 33.333333%;
+		max-width: 33.333333%;
 	}
 }
 

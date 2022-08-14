@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -118,319 +119,318 @@ const MouseForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<div>
-												<Label>Wireless</Label>
-											</div>
-											<span>
-												<Label>Yes</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Wireless"
-													checked={
-														product === null || wireless !== null
-															? wireless
-															: product.Wireless
-													}
-													value={wireless}
-													innerRef={methods.register}
-													onChange={() => setWireless(true)}
-												/>
-											</span>
-											<span className="pl-5">
-												<Label>No</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Wireless"
-													checked={
-														product === null || wireless !== null
-															? !wireless
-															: !product.Wireless
-													}
-													value={wireless}
-													innerRef={methods.register}
-													onChange={() => setWireless(false)}
-												/>
-											</span>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Connection</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Connection"
-													invalid={methods.formState.errors.Connection?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.Connection : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Connection?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Sensor</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Sensor"
-													invalid={methods.formState.errors.Sensor?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Sensor !== null
-															? product.Sensor
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Sensor?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>DPI</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="DPI"
-													invalid={methods.formState.errors.DPI?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.DPI !== null
-															? product.DPI
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.DPI?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Polling Rate</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="PollingRate"
-													invalid={
-														methods.formState.errors.PollingRate?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.PollingRate !== null
-															? product.PollingRate
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.PollingRate?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Color</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Color"
-													invalid={methods.formState.errors.Color?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Color !== null
-															? product.Color
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Color?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Tracking Speed</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="TrackingSpeed"
-													invalid={
-														methods.formState.errors.TrackingSpeed?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.TrackingSpeed !== null
-															? product.TrackingSpeed
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.TrackingSpeed?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Acceleration</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Acceleration"
-													invalid={
-														methods.formState.errors.Acceleration?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Acceleration !== null
-															? product.Acceleration
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Acceleration?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Buttons</Label>
-												<Input
-													className="input-field"
-													type="number"
-													min="0"
-													name="Buttons"
-													invalid={methods.formState.errors.Buttons?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Buttons !== null
-															? product.Buttons
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Buttons?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Weight</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Weight"
-													invalid={methods.formState.errors.Weight?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Weight !== null
-															? product.Weight
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Weight?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Lifespan</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Lifespan"
-													invalid={methods.formState.errors.Lifespan?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Lifespan !== null
-															? product.Lifespan
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Lifespan?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<div>
+													<Label>Wireless</Label>
+												</div>
+												<span>
+													<Label>Yes</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Wireless"
+														checked={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														value={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														innerRef={methods.register}
+														onChange={() => setWireless(true)}
+													/>
+												</span>
+												<span className="pl-5">
+													<Label>No</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Wireless"
+														checked={
+															product === null || wireless !== null
+																? !wireless
+																: !product.Wireless
+														}
+														value={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														innerRef={methods.register}
+														onChange={() => setWireless(false)}
+													/>
+												</span>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Connection</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Connection"
+														invalid={
+															methods.formState.errors.Connection?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Connection : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Connection?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Sensor</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Sensor"
+														invalid={methods.formState.errors.Sensor?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Sensor !== null
+																? product.Sensor
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Sensor?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>DPI</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="DPI"
+														invalid={methods.formState.errors.DPI?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.DPI !== null
+																? product.DPI
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.DPI?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Polling Rate</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="PollingRate"
+														invalid={
+															methods.formState.errors.PollingRate?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.PollingRate !== null
+																? product.PollingRate
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.PollingRate?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Color</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Color"
+														invalid={methods.formState.errors.Color?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Color !== null
+																? product.Color
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Color?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Tracking Speed</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="TrackingSpeed"
+														invalid={
+															methods.formState.errors.TrackingSpeed?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.TrackingSpeed !== null
+																? product.TrackingSpeed
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.TrackingSpeed?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Acceleration</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Acceleration"
+														invalid={
+															methods.formState.errors.Acceleration?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Acceleration !== null
+																? product.Acceleration
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Acceleration?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Weight</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Weight"
+														invalid={methods.formState.errors.Weight?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Weight !== null
+																? product.Weight
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Weight?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Lifespan</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Lifespan"
+														invalid={methods.formState.errors.Lifespan?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Lifespan !== null
+																? product.Lifespan
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Lifespan?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

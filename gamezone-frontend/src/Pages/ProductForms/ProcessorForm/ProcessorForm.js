@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,234 +115,253 @@ const ProcessorForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Type"
-													invalid={methods.formState.errors.Type?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Type : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Type?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Socket</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Socket"
-													invalid={methods.formState.errors.Socket?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Socket : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Socket?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Number Of Cores</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="NumberOfCores"
-													min="1"
-													invalid={
-														methods.formState.errors.NumberOfCores?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.NumberOfCores !== null
-															? product.NumberOfCores
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.NumberOfCores?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Threads</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="Threads"
-													min="1"
-													invalid={methods.formState.errors.Threads?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Threads !== null
-															? product.Threads
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Threads?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>TDP</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="TDP"
-													invalid={methods.formState.errors.TDP?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.TDP !== null
-															? product.TDP
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.TDP?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Integrated Graphics</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="IntegratedGraphics"
-													invalid={
-														methods.formState.errors.IntegratedGraphics?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.IntegratedGraphics !== null
-															? product.IntegratedGraphics
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.IntegratedGraphics?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Base Clock Rate</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="BaseClockRate"
-													invalid={
-														methods.formState.errors.BaseClockRate?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.BaseClockRate !== null
-															? product.BaseClockRate
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.BaseClockRate?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Turbo Clock Rate</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="TurboClockRate"
-													invalid={
-														methods.formState.errors.TurboClockRate?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.TurboClockRate !== null
-															? product.TurboClockRate
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.TurboClockRate?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Type"
+														invalid={methods.formState.errors.Type?.message}
+														innerRef={methods.register}
+														defaultValue={product !== null ? product.Type : ""}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Type?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Socket</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Socket"
+														invalid={methods.formState.errors.Socket?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Socket : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Socket?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Number Of Cores</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="NumberOfCores"
+														min="1"
+														invalid={
+															methods.formState.errors.NumberOfCores?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.NumberOfCores !== null
+																? product.NumberOfCores
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.NumberOfCores?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Threads</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="Threads"
+														min="1"
+														invalid={methods.formState.errors.Threads?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Threads !== null
+																? product.Threads
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Threads?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>TDP</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="TDP"
+														invalid={methods.formState.errors.TDP?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.TDP !== null
+																? product.TDP
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.TDP?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Integrated Graphics</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="IntegratedGraphics"
+														invalid={
+															methods.formState.errors.IntegratedGraphics
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.IntegratedGraphics !== null
+																? product.IntegratedGraphics
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.IntegratedGraphics
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Base Clock Rate</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="BaseClockRate"
+														invalid={
+															methods.formState.errors.BaseClockRate?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.BaseClockRate !== null
+																? product.BaseClockRate
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.BaseClockRate?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Turbo Clock Rate</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="TurboClockRate"
+														invalid={
+															methods.formState.errors.TurboClockRate?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.TurboClockRate !== null
+																? product.TurboClockRate
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.TurboClockRate?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

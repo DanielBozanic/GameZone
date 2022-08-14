@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -118,186 +119,210 @@ const KeyboardForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<div>
-												<Label>Wireless</Label>
-											</div>
-											<span>
-												<Label>Yes</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Wireless"
-													checked={
-														product === null || wireless !== null
-															? wireless
-															: product.Wireless
-													}
-													value={wireless}
-													innerRef={methods.register}
-													onChange={() => setWireless(true)}
-												/>
-											</span>
-											<span className="pl-5">
-												<Label>No</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Wireless"
-													checked={
-														product === null || wireless !== null
-															? !wireless
-															: !product.Wireless
-													}
-													value={wireless}
-													innerRef={methods.register}
-													onChange={() => setWireless(false)}
-												/>
-											</span>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Keyboard Connector</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="KeyboardConnector"
-													invalid={
-														methods.formState.errors.KeyboardConnector?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.KeyboardConnector : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.KeyboardConnector?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Key Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="KeyType"
-													invalid={methods.formState.errors.KeyType?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.KeyType !== null
-															? product.KeyType
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.KeyType?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Letter Layout</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="LetterLayout"
-													invalid={
-														methods.formState.errors.LetterLayout?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.LetterLayout !== null
-															? product.LetterLayout
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.LetterLayout?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Keyboard Color</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="KeyboardColor"
-													invalid={
-														methods.formState.errors.KeyboardColor?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.KeyboardColor !== null
-															? product.KeyboardColor
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.KeyboardColor?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<div>
+													<Label>Wireless</Label>
+												</div>
+												<span>
+													<Label>Yes</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Wireless"
+														checked={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														value={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														innerRef={methods.register}
+														onChange={() => setWireless(true)}
+													/>
+												</span>
+												<span className="pl-5">
+													<Label>No</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Wireless"
+														checked={
+															product === null || wireless !== null
+																? !wireless
+																: !product.Wireless
+														}
+														value={
+															product === null || wireless !== null
+																? wireless
+																: product.Wireless
+														}
+														innerRef={methods.register}
+														onChange={() => setWireless(false)}
+													/>
+												</span>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Keyboard Connector</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="KeyboardConnector"
+														invalid={
+															methods.formState.errors.KeyboardConnector
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.KeyboardConnector : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.KeyboardConnector
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Key Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="KeyType"
+														invalid={methods.formState.errors.KeyType?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.KeyType !== null
+																? product.KeyType
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.KeyType?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Letter Layout</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="LetterLayout"
+														invalid={
+															methods.formState.errors.LetterLayout?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.LetterLayout !== null
+																? product.LetterLayout
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.LetterLayout?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Keyboard Color</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="KeyboardColor"
+														invalid={
+															methods.formState.errors.KeyboardColor?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.KeyboardColor !== null
+																? product.KeyboardColor
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.KeyboardColor?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

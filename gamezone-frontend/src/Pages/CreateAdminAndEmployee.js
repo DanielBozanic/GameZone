@@ -16,6 +16,7 @@ import {
 	Input,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -60,58 +61,65 @@ const CreateAdminAndEmployee = () => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col md="10">
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							Add employee/admin
-						</CardTitle>
-						{loading && (
-							<div className="div-spinner">
-								<Spinner className="spinner" />
-							</div>
-						)}
-						{!loading && (
-							<CardBody>
-								<FormProvider {...methods}>
-									<Form className="form">
-										<CreateForm />
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Role</Label>
-													<Input
-														className="input-field"
-														name="role"
-														type="select"
-														innerRef={methods.register}
+		<>
+			<Helmet>
+				<title>Add employee/admin | GameZone</title>
+			</Helmet>
+			<Container>
+				<Row>
+					<Col md="10">
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								Add employee/admin
+							</CardTitle>
+							{loading && (
+								<div className="div-spinner">
+									<Spinner className="spinner" />
+								</div>
+							)}
+							{!loading && (
+								<CardBody>
+									<FormProvider {...methods}>
+										<Form className="form">
+											<CreateForm />
+											<Row>
+												<Col>
+													<FormGroup>
+														<Label>Role</Label>
+														<Input
+															className="input-field"
+															name="role"
+															type="select"
+															innerRef={methods.register}
+														>
+															<option value={role.ROLE_EMPLOYEE}>
+																Employee
+															</option>
+															<option value={role.ROLE_ADMIN}>Admin</option>
+														</Input>
+													</FormGroup>
+												</Col>
+											</Row>
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
 													>
-														<option value={role.ROLE_EMPLOYEE}>Employee</option>
-														<option value={role.ROLE_ADMIN}>Admin</option>
-													</Input>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
-											</Col>
-										</Row>
-									</Form>
-								</FormProvider>
-							</CardBody>
-						)}
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										</Form>
+									</FormProvider>
+								</CardBody>
+							)}
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

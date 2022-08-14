@@ -40,6 +40,7 @@ func (ramRepo *ramRepository) GetAll(page int, pageSize int) []model.Ram {
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&rams)
 	return rams
 }
@@ -47,7 +48,6 @@ func (ramRepo *ramRepository) GetAll(page int, pageSize int) []model.Ram {
 func (ramRepo *ramRepository) GetNumberOfRecords() int64 {
 	var count int64
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
 		Model(&model.Ram{}).
@@ -73,6 +73,7 @@ func (ramRepo *ramRepository) SearchByName(page int, pageSize int, name string) 
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&rams)
 	return rams, result.Error
 }
@@ -81,7 +82,6 @@ func (ramRepo *ramRepository) GetNumberOfRecordsSearch(name string) int64 {
 	var rams []model.Ram
 	var count int64
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&rams).
@@ -97,9 +97,9 @@ func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFi
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(capacity IN ? OR ?) AND 
-				(memory_type IN ? OR ?) AND 
-				(speed IN ? OR ?) AND products.archived = false`,
+				(rams.capacity IN ? OR ?) AND 
+				(rams.memory_type IN ? OR ?) AND 
+				(rams.speed IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Capacities,
@@ -108,6 +108,7 @@ func (ramRepo *ramRepository) Filter(page int, pageSize int, filter filter.RAMFi
 				len(filter.MemoryTypes) == 0,
 				filter.Speeds, 
 				len(filter.Speeds) == 0).
+		Order("products.price").
 		Find(&rams)
 	return rams, result.Error
 }
@@ -116,12 +117,11 @@ func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) 
 	var rams []model.Ram
 	var count int64
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(capacity IN ? OR ?) AND 
-				(memory_type IN ? OR ?) AND 
-				(speed IN ? OR ?) AND products.archived = false`,
+				(rams.capacity IN ? OR ?) AND 
+				(rams.memory_type IN ? OR ?) AND 
+				(rams.speed IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Capacities,
@@ -138,9 +138,9 @@ func (ramRepo *ramRepository) GetNumberOfRecordsFilter(filter filter.RAMFilter) 
 func (ramRepo *ramRepository) GetManufacturers() []string {
 	var manufacturers []string
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Ram{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -150,24 +150,24 @@ func (ramRepo *ramRepository) GetManufacturers() []string {
 func (ramRepo *ramRepository) GetCapacities() []string {
 	var capacities []string
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
+		Order("rams.capacity * 1 ASC, rams.capacity ASC").
 		Model(&model.Ram{}).
 		Distinct().
-		Pluck("capacity", &capacities)
+		Pluck("rams.capacity", &capacities)
 	return capacities
 }
 
 func (ramRepo *ramRepository) GetMemoryTypes() []string {
 	var memoryTypes []string
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
+		Order("rams.memory_type * 1 ASC, rams.memory_type ASC").
 		Model(&model.Ram{}).
 		Distinct().
-		Pluck("memory_type", &memoryTypes)
+		Pluck("rams.memory_type", &memoryTypes)
 	return memoryTypes
 }
 
@@ -175,12 +175,12 @@ func (ramRepo *ramRepository) GetMemoryTypes() []string {
 func (ramRepo *ramRepository) GetSpeeds() []string {
 	var speeds []string
 	ramRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = rams.product_id").
 		Where("products.archived = false").
+		Order("rams.speed * 1 ASC, rams.speed ASC").
 		Model(&model.Ram{}).
 		Distinct().
-		Pluck("speed", &speeds)
+		Pluck("rams.speed", &speeds)
 	return speeds
 }
 

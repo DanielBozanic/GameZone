@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,359 +115,380 @@ const MotherboardForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Processor Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="ProcessorType"
-													invalid={
-														methods.formState.errors.ProcessorType?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.ProcessorType : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.ProcessorType?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Socket</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Socket"
-													invalid={methods.formState.errors.Socket?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Socket : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Socket?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Supported Processors</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="SupportedProcessors"
-													invalid={
-														methods.formState.errors.SupportedProcessors
-															?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.SupportedProcessors !== null
-															? product.SupportedProcessors
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{
-														methods.formState.errors.SupportedProcessors
-															?.message
-													}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Chipset</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Chipset"
-													invalid={methods.formState.errors.Chipset?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Chipset !== null
-															? product.Chipset
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Chipset?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Memory</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="Memory"
-													invalid={methods.formState.errors.Memory?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Memory !== null
-															? product.Memory
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Memory?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Expansion Slots</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="ExpansionSlots"
-													invalid={
-														methods.formState.errors.ExpansionSlots?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.ExpansionSlots !== null
-															? product.ExpansionSlots
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.ExpansionSlots?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Storage Interface</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="StorageInterface"
-													invalid={
-														methods.formState.errors.StorageInterface?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.StorageInterface !== null
-															? product.StorageInterface
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.StorageInterface?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Audio</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="Audio"
-													invalid={methods.formState.errors.Audio?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Audio !== null
-															? product.Audio
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Audio?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>USB</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="USB"
-													invalid={methods.formState.errors.USB?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.USB !== null
-															? product.USB
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.USB?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Back Panel Connectors</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="BackPanelConnectors"
-													invalid={
-														methods.formState.errors.BackPanelConnectors
-															?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.BackPanelConnectors !== null
-															? product.BackPanelConnectors
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{
-														methods.formState.errors.BackPanelConnectors
-															?.message
-													}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Internal Connectors</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="InternalConnectors"
-													invalid={
-														methods.formState.errors.InternalConnectors?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.InternalConnectors !== null
-															? product.InternalConnectors
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.InternalConnectors?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>BIOS</Label>
-												<Input
-													className="input-field"
-													type="textarea"
-													name="BIOS"
-													invalid={methods.formState.errors.BIOS?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.BIOS !== null
-															? product.BIOS
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.BIOS?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Form Factor</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="FormFactor"
-													invalid={methods.formState.errors.FormFactor?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.FormFactor !== null
-															? product.FormFactor
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.FormFactor?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Processor Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="ProcessorType"
+														invalid={
+															methods.formState.errors.ProcessorType?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.ProcessorType : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.ProcessorType?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Socket</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Socket"
+														invalid={methods.formState.errors.Socket?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Socket : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Socket?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Supported Processors</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="SupportedProcessors"
+														invalid={
+															methods.formState.errors.SupportedProcessors
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.SupportedProcessors !== null
+																? product.SupportedProcessors
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.SupportedProcessors
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Chipset</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Chipset"
+														invalid={methods.formState.errors.Chipset?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Chipset !== null
+																? product.Chipset
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Chipset?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Memory</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="Memory"
+														invalid={methods.formState.errors.Memory?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Memory !== null
+																? product.Memory
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Memory?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Expansion Slots</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="ExpansionSlots"
+														invalid={
+															methods.formState.errors.ExpansionSlots?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.ExpansionSlots !== null
+																? product.ExpansionSlots
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.ExpansionSlots?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Storage Interface</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="StorageInterface"
+														invalid={
+															methods.formState.errors.StorageInterface?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.StorageInterface !== null
+																? product.StorageInterface
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.StorageInterface?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Audio</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="Audio"
+														invalid={methods.formState.errors.Audio?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Audio !== null
+																? product.Audio
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Audio?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>USB</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="USB"
+														invalid={methods.formState.errors.USB?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.USB !== null
+																? product.USB
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.USB?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Back Panel Connectors</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="BackPanelConnectors"
+														invalid={
+															methods.formState.errors.BackPanelConnectors
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.BackPanelConnectors !== null
+																? product.BackPanelConnectors
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.BackPanelConnectors
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Internal Connectors</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="InternalConnectors"
+														invalid={
+															methods.formState.errors.InternalConnectors
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.InternalConnectors !== null
+																? product.InternalConnectors
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.InternalConnectors
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>BIOS</Label>
+													<Input
+														className="input-field"
+														type="textarea"
+														name="BIOS"
+														invalid={methods.formState.errors.BIOS?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.BIOS !== null
+																? product.BIOS
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.BIOS?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Form Factor</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="FormFactor"
+														invalid={
+															methods.formState.errors.FormFactor?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.FormFactor !== null
+																? product.FormFactor
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.FormFactor?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

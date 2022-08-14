@@ -10,6 +10,7 @@ import {
 	Button,
 	Input,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import "../Assets/css/shopping-cart.css";
 import { toast } from "react-toastify";
@@ -125,6 +126,14 @@ const ShoppingCart = () => {
 				ProductName: productInCart.Product.Product.Name,
 				ProductPrice: productInCart.Product.Product.Price,
 				ProductQuantity: productInCart.Quantity,
+				VideoGamePlatform:
+					productInCart.Product.Platform !== undefined
+						? productInCart.Product.Platform
+						: null,
+				VideoGameDigital:
+					productInCart.Product.Digital !== undefined
+						? productInCart.Product.Digital
+						: null,
 			});
 		}
 		const finalPurchase = {
@@ -161,6 +170,9 @@ const ShoppingCart = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Shopping Cart | GameZone</title>
+			</Helmet>
 			<AppNavbar />
 			<Container>
 				<Row>

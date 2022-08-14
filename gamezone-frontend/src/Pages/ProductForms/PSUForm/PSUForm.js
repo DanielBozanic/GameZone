@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,113 +115,127 @@ const PSUForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Power</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Power"
-													invalid={methods.formState.errors.Power?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Power : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Power?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Type"
-													invalid={methods.formState.errors.Type?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Type : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Type?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Form Factor</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="FormFactor"
-													invalid={methods.formState.errors.FormFactor?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.FormFactor !== null
-															? product.FormFactor
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.FormFactor?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Power</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Power"
+														invalid={methods.formState.errors.Power?.message}
+														innerRef={methods.register}
+														defaultValue={product !== null ? product.Power : ""}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Power?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Type"
+														invalid={methods.formState.errors.Type?.message}
+														innerRef={methods.register}
+														defaultValue={product !== null ? product.Type : ""}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Type?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Form Factor</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="FormFactor"
+														invalid={
+															methods.formState.errors.FormFactor?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.FormFactor !== null
+																? product.FormFactor
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.FormFactor?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

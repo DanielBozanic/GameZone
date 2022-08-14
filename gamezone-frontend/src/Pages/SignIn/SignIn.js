@@ -18,6 +18,7 @@ import {
 	Col,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as authAPI from "../../APIs/UserMicroservice/auth_api";
@@ -66,83 +67,88 @@ const SignIn = () => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col md="10">
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							Sign In
-						</CardTitle>
-						{loading && (
-							<div className="div-spinner">
-								<Spinner className="spinner" />
-							</div>
-						)}
-						{!loading && (
-							<CardBody>
-								<Form className="form">
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Username</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="user_name"
-													invalid={errors.user_name?.message}
-													innerRef={register}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{errors.user_name?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Password</Label>
-												<Input
-													className="input-field"
-													type="password"
-													name="password"
-													invalid={errors.password?.message}
-													innerRef={register}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{errors.password?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col md="4">
-											<Button
-												className="my-button"
-												type="button"
-												onClick={handleSubmit(signIn)}
-											>
-												Sign in
-											</Button>
-										</Col>
-										<Col md="4"></Col>
-										<Col md="4">
-											<Button
-												className="my-button"
-												type="button"
-												onClick={getVerificationCode}
-											>
-												Get verification code
-											</Button>
-										</Col>
-									</Row>
-								</Form>
-							</CardBody>
-						)}
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+		<>
+			<Helmet>
+				<title>Sign In | GameZone</title>
+			</Helmet>
+			<Container>
+				<Row>
+					<Col md="10">
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								Sign In
+							</CardTitle>
+							{loading && (
+								<div className="div-spinner">
+									<Spinner className="spinner" />
+								</div>
+							)}
+							{!loading && (
+								<CardBody>
+									<Form className="form">
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Username</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="user_name"
+														invalid={errors.user_name?.message}
+														innerRef={register}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{errors.user_name?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Password</Label>
+													<Input
+														className="input-field"
+														type="password"
+														name="password"
+														invalid={errors.password?.message}
+														innerRef={register}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{errors.password?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col md="4">
+												<Button
+													className="my-button"
+													type="button"
+													onClick={handleSubmit(signIn)}
+												>
+													Sign in
+												</Button>
+											</Col>
+											<Col md="4"></Col>
+											<Col md="4">
+												<Button
+													className="my-button"
+													type="button"
+													onClick={getVerificationCode}
+												>
+													Get verification code
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</CardBody>
+							)}
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

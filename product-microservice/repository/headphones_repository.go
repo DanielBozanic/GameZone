@@ -38,6 +38,7 @@ func (headphonesRepo *headphonesRepository) GetAll(page int, pageSize int) []mod
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&headphones)
 	return headphones
 }
@@ -45,7 +46,6 @@ func (headphonesRepo *headphonesRepository) GetAll(page int, pageSize int) []mod
 func (headphonesRepo *headphonesRepository) GetNumberOfRecords() int64 {
 	var count int64
 	headphonesRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.archived = false").
 		Model(&model.Headphones{}).
@@ -71,6 +71,7 @@ func (headphonesRepo *headphonesRepository) SearchByName(page int, pageSize int,
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&headphones)
 	return headphones, result.Error
 }
@@ -79,7 +80,6 @@ func (headphonesRepo *headphonesRepository) GetNumberOfRecordsSearch(name string
 	var headphones []model.Headphones
 	var count int64
 	headphonesRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&headphones).
@@ -95,17 +95,13 @@ func (headphonesRepo *headphonesRepository) Filter(page int, pageSize int, filte
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(connection_type IN ? OR ?) AND
-				(microphone IN ? OR ?) AND products.archived = false`,
+				(headphones.connection_type IN ? OR ?) AND 
+				products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
-				filter.Wireless,
-				len(filter.Wireless) == 0,
 				filter.ConnectionTypes,
-				len(filter.ConnectionTypes) == 0,
-				filter.Microphone,
-				len(filter.Microphone) == 0).
+				len(filter.ConnectionTypes) == 0).
+		Order("products.price").
 		Find(&headphones)
 	return headphones, result.Error
 }
@@ -114,20 +110,14 @@ func (headphonesRepo *headphonesRepository) GetNumberOfRecordsFilter(filter filt
 	var headphones []model.Headphones
 	var count int64
 	headphonesRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(connection_type IN ? OR ?) AND
-				(microphone IN ? OR ?) AND products.archived = false`,
+				(headphones.connection_type IN ? OR ?) AND 
+				products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
-				filter.Wireless,
-				len(filter.Wireless) == 0,
 				filter.ConnectionTypes,
-				len(filter.ConnectionTypes) == 0,
-				filter.Microphone,
-				len(filter.Microphone) == 0).
+				len(filter.ConnectionTypes) == 0).
 		Find(&headphones).
 		Count(&count)
 	return count
@@ -136,9 +126,9 @@ func (headphonesRepo *headphonesRepository) GetNumberOfRecordsFilter(filter filt
 func (headphonesRepo *headphonesRepository) GetManufacturers() []string {
 	var manufacturers []string
 	headphonesRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Headphones{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -148,12 +138,12 @@ func (headphonesRepo *headphonesRepository) GetManufacturers() []string {
 func (headphonesRepo *headphonesRepository) GetConnectionTypes() []string {
 	var connectionTypes []string
 	headphonesRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = headphones.product_id").
 		Where("products.archived = false").
+		Order("headphones.connection_type * 1 ASC, headphones.connection_type ASC").
 		Model(&model.Headphones{}).
 		Distinct().
-		Pluck("connection_type", &connectionTypes)
+		Pluck("headphones.connection_type", &connectionTypes)
 	return connectionTypes
 }
 

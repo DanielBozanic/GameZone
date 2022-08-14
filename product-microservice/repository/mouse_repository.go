@@ -39,6 +39,7 @@ func (mouseRepo *mouseRepository) GetAll(page int, pageSize int) []model.Mouse {
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&mice)
 	return mice
 }
@@ -46,7 +47,6 @@ func (mouseRepo *mouseRepository) GetAll(page int, pageSize int) []model.Mouse {
 func (mouseRepo *mouseRepository) GetNumberOfRecords() int64 {
 	var count int64
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.archived = false").
 		Model(&model.Mouse{}).
@@ -72,6 +72,7 @@ func (mouseRepo *mouseRepository) SearchByName(page int, pageSize int, name stri
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&mice)
 	return mice, result.Error
 }
@@ -80,7 +81,6 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsSearch(name string) int64 {
 	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&mice).
@@ -96,9 +96,9 @@ func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.M
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(dpi IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(connection IN ? OR ?) AND products.archived = false`,
+				(mice.dpi IN ? OR ?) AND 
+				(mice.wireless IN ? OR ?) AND 
+				(mice.connection IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.DPIs,
@@ -107,6 +107,7 @@ func (mouseRepo *mouseRepository) Filter(page int, pageSize int, filter filter.M
 				len(filter.Wireless) == 0,
 				filter.Connections,
 				len(filter.Connections) == 0).
+		Order("products.price").
 		Find(&mice)
 	return mice, result.Error
 }
@@ -115,12 +116,11 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFi
 	var mice []model.Mouse
 	var count int64
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(dpi IN ? OR ?) AND 
-				(wireless IN ? OR ?) AND 
-				(connection IN ? OR ?) AND products.archived = false`,
+				(mice.dpi IN ? OR ?) AND 
+				(mice.wireless IN ? OR ?) AND 
+				(mice.connection IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.DPIs,
@@ -137,9 +137,9 @@ func (mouseRepo *mouseRepository) GetNumberOfRecordsFilter(filter filter.MouseFi
 func (mouseRepo *mouseRepository) GetManufacturers() []string {
 	var manufacturers []string
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Mouse{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -149,24 +149,24 @@ func (mouseRepo *mouseRepository) GetManufacturers() []string {
 func (mouseRepo *mouseRepository) GetDPIs() []string {
 	var dpis []string
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.archived = false").
+		Order("mice.dpi * 1 ASC, mice.dpi ASC").
 		Model(&model.Mouse{}).
 		Distinct().
-		Pluck("dpi", &dpis)
+		Pluck("mice.dpi", &dpis)
 	return dpis
 }
 
 func (mouseRepo *mouseRepository) GetConnections() []string {
 	var connections []string
 	mouseRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = mice.product_id").
 		Where("products.archived = false").
+		Order("mice.connection * 1 ASC, mice.connection ASC").
 		Model(&model.Mouse{}).
 		Distinct().
-		Pluck("connection", &connections)
+		Pluck("mice.connection", &connections)
 	return connections
 }
 

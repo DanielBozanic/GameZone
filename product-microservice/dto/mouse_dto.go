@@ -10,7 +10,6 @@ type MouseDTO struct {
 	Color         *string
 	TrackingSpeed *string
 	Acceleration  *string
-	Buttons       *uint
 	Weight        *string
 	Lifespan      *string
 }

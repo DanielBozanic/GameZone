@@ -12,6 +12,7 @@ import {
 	CardBody,
 	Button,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -54,50 +55,55 @@ const ContactForm = () => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col md="10">
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							Contact
-						</CardTitle>
-						<CardBody>
-							<Form className="form">
-								<Row>
-									<Col>
-										<FormGroup>
-											<Label>Message</Label>
-											<Input
-												style={{ height: "450px", resize: "none" }}
-												className="input-field"
-												type="textarea"
-												name="Message"
-												invalid={errors.Message?.message}
-												innerRef={register}
-											/>
-											<FormFeedback className="input-field-error-msg">
-												{errors.Message?.message}
-											</FormFeedback>
-										</FormGroup>
-									</Col>
-								</Row>
-								<Row>
-									<Col>
-										<Button
-											className="my-button"
-											type="button"
-											onClick={handleSubmit(sendMessage)}
-										>
-											Send
-										</Button>
-									</Col>
-								</Row>
-							</Form>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+		<>
+			<Helmet>
+				<title>Contact | GameZone</title>
+			</Helmet>
+			<Container>
+				<Row>
+					<Col md="10">
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								Contact
+							</CardTitle>
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Message</Label>
+												<Input
+													style={{ height: "450px", resize: "none" }}
+													className="input-field"
+													type="textarea"
+													name="Message"
+													invalid={errors.Message?.message}
+													innerRef={register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{errors.Message?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(sendMessage)}
+											>
+												Send
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

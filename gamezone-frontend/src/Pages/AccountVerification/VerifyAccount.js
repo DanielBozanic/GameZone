@@ -14,6 +14,7 @@ import {
 	Col,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -52,52 +53,57 @@ const VerifyAccount = () => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col md="10">
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							Verify account
-						</CardTitle>
-						{loading && (
-							<div className="div-spinner">
-								<Spinner className="spinner" />
-							</div>
-						)}
-						{!loading && (
-							<CardBody>
-								<Form className="form">
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Code</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="code"
-													innerRef={register}
-												/>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<Button
-												className="my-button"
-												type="button"
-												onClick={handleSubmit(verifyAccount)}
-											>
-												Verify
-											</Button>
-										</Col>
-									</Row>
-								</Form>
-							</CardBody>
-						)}
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+		<>
+			<Helmet>
+				<title>Verify Account | GameZone</title>
+			</Helmet>
+			<Container>
+				<Row>
+					<Col md="10">
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								Verify account
+							</CardTitle>
+							{loading && (
+								<div className="div-spinner">
+									<Spinner className="spinner" />
+								</div>
+							)}
+							{!loading && (
+								<CardBody>
+									<Form className="form">
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Code</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="code"
+														innerRef={register}
+													/>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<Button
+													className="my-button"
+													type="button"
+													onClick={handleSubmit(verifyAccount)}
+												>
+													Verify
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</CardBody>
+							)}
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

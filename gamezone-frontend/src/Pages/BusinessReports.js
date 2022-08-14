@@ -8,6 +8,7 @@ import {
 	Spinner,
 	CardTitle,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { Chart, registerables } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import axios from "axios";
@@ -82,6 +83,9 @@ const BusinessReports = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Business Reports | GameZone</title>
+			</Helmet>
 			<Card className="card business-report-card">
 				<CardBody>
 					<Row>

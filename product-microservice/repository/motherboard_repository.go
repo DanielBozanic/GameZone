@@ -40,6 +40,7 @@ func (motherboardRepo *motherboardRepository) GetAll(page int, pageSize int) []m
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&motherboards)
 	return motherboards
 }
@@ -47,7 +48,6 @@ func (motherboardRepo *motherboardRepository) GetAll(page int, pageSize int) []m
 func (motherboardRepo *motherboardRepository) GetNumberOfRecords() int64 {
 	var count int64
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
 		Model(&model.Motherboard{}).
@@ -73,6 +73,7 @@ func (motherboardRepo *motherboardRepository) SearchByName(page int, pageSize in
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&motherboards)
 	return motherboards, result.Error
 }
@@ -81,7 +82,6 @@ func (motherboardRepo *motherboardRepository) GetNumberOfRecordsSearch(name stri
 	var motherboards []model.Motherboard
 	var count int64
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&motherboards).
@@ -97,9 +97,9 @@ func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, fil
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(processor_type IN ? OR ?) AND 
-				(socket IN ? OR ?) AND 
-				(form_factor IN ? OR ?) AND products.archived = false`,
+				(motherboards.processor_type IN ? OR ?) AND 
+				(motherboards.socket IN ? OR ?) AND 
+				(motherboards.form_factor IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.ProcessorTypes,
@@ -108,6 +108,7 @@ func (motherboardRepo *motherboardRepository) Filter(page int, pageSize int, fil
 				len(filter.Sockets) == 0,
 				filter.FormFactors,
 				len(filter.FormFactors) == 0).
+		Order("products.price").
 		Find(&motherboards)
 	return motherboards, result.Error
 }
@@ -116,12 +117,11 @@ func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter fi
 	var motherboards []model.Motherboard
 	var count int64
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(processor_type IN ? OR ?) AND 
-				(socket IN ? OR ?) AND 
-				(form_factor IN ? OR ?) AND products.archived = false`,
+				(motherboards.processor_type IN ? OR ?) AND 
+				(motherboards.socket IN ? OR ?) AND 
+				(motherboards.form_factor IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.ProcessorTypes,
@@ -138,9 +138,9 @@ func (motherboardRepo *motherboardRepository) GetNumberOfRecordsFilter(filter fi
 func (motherboardRepo *motherboardRepository) GetManufacturers() []string {
 	var manufacturers []string
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Motherboard{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -150,24 +150,24 @@ func (motherboardRepo *motherboardRepository) GetManufacturers() []string {
 func (motherboardRepo *motherboardRepository) GetProcessorTypes() []string {
 	var processorTypes []string
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
+		Order("motherboards.processor_type * 1 ASC, motherboards.processor_type ASC").
 		Model(&model.Motherboard{}).
 		Distinct().
-		Pluck("processor_type", &processorTypes)
+		Pluck("motherboards.processor_type", &processorTypes)
 	return processorTypes
 }
 
 func (motherboardRepo *motherboardRepository) GetSockets() []string {
 	var sockets []string
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
+		Order("motherboards.socket * 1 ASC, motherboards.socket ASC").
 		Model(&model.Motherboard{}).
 		Distinct().
-		Pluck("socket", &sockets)
+		Pluck("motherboards.socket", &sockets)
 	return sockets
 }
 
@@ -175,12 +175,12 @@ func (motherboardRepo *motherboardRepository) GetSockets() []string {
 func (motherboardRepo *motherboardRepository) GetFormFactors() []string {
 	var formFactors []string
 	motherboardRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = motherboards.product_id").
 		Where("products.archived = false").
+		Order("motherboards.form_factor * 1 ASC, motherboards.form_factor ASC").
 		Model(&model.Motherboard{}).
 		Distinct().
-		Pluck("form_factor", &formFactors)
+		Pluck("motherboards.form_factor", &formFactors)
 	return formFactors
 }
 

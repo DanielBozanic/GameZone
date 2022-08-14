@@ -47,6 +47,7 @@ func (productRepo *productRepository) SearchByName(page int, pageSize int, name 
 		Offset(offset).Limit(pageSize).
 		Preload("Image").
 		Where("name LIKE ? AND archived = false", "%" + name + "%").
+		Order("price").
 		Find(&products)
 	return products, result.Error
 }

@@ -7,6 +7,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper";
+import { Helmet } from "react-helmet";
 import * as helperFunctions from "../Utils/HelperFunctions";
 import * as authService from "../Auth/AuthService";
 
@@ -18,7 +19,7 @@ const Main = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [pageCount, setPageCount] = useState([]);
 	const [searchTerm, setSearchTerm] = useState("");
-	const pageSize = 8;
+	const pageSize = 12;
 
 	const handleClick = (e, index) => {
 		e.preventDefault();
@@ -108,6 +109,9 @@ const Main = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>Home | GameZone</title>
+			</Helmet>
 			<Container>
 				<Row style={{ display: "flex" }}>
 					<Search onSearchClick={onSearchClick} searchPlaceholder={"Search"} />

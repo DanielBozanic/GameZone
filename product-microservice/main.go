@@ -286,7 +286,7 @@ func main() {
 	headphones.PUT("", headphonesAPI.Update)
 	headphones.DELETE("/:id", headphonesAPI.Delete)
 	headphones.GET("", headphonesAPI.GetAll)
-	headphones.GET("/getNumberOfRecords", mouseAPI.GetNumberOfRecords)
+	headphones.GET("/getNumberOfRecords", headphonesAPI.GetNumberOfRecords)
 	headphones.GET("/:id", headphonesAPI.GetByID)
 	headphones.GET("/searchByName", headphonesAPI.SearchByName)
 	headphones.GET("/getNumberOfRecordsSearch", headphonesAPI.GetNumberOfRecordsSearch)

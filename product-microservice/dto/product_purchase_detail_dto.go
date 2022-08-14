@@ -9,4 +9,6 @@ type ProductPurchaseDetailDTO struct {
 	ProductName  string
 	ProductPrice decimal.Decimal
 	ProductQuantity uint
+	VideoGamePlatform string
+	VideoGameDigital *bool
 }

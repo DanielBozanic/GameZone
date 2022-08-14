@@ -43,6 +43,7 @@ export const ProductListVideoGames = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={videoGameAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={VideoGameFilter}
 				searchPlaceholder={"Search video games"}
+				title={"Video games"}
 			/>
 		}
 	/>
@@ -62,6 +63,7 @@ export const ProductListConsoles = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={consoleAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={ConsoleFilter}
 				searchPlaceholder={"Search consoles"}
+				title={"Consoles"}
 			/>
 		}
 	/>
@@ -85,6 +87,7 @@ export const ProductListGraphicsCards = () => (
 				}
 				filter={GraphicsCardFilter}
 				searchPlaceholder={"Search graphics cards"}
+				title={"Graphics cards"}
 			/>
 		}
 	/>
@@ -104,6 +107,7 @@ export const ProductListRAMS = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={ramAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={RAMFilter}
 				searchPlaceholder={"Search RAMs"}
+				title={"RAMs"}
 			/>
 		}
 	/>
@@ -127,6 +131,7 @@ export const ProductListMotherboards = () => (
 				}
 				filter={MotherboardFilter}
 				searchPlaceholder={"Search motherboards"}
+				title={"Motherboards"}
 			/>
 		}
 	/>
@@ -146,6 +151,7 @@ export const ProductListProcessors = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={processorAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={ProcessorFilter}
 				searchPlaceholder={"Search processors"}
+				title={"Processors"}
 			/>
 		}
 	/>
@@ -165,6 +171,7 @@ export const ProductListHDDS = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={hddAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={HDDFilter}
 				searchPlaceholder={"Search hard disk drives"}
+				title={"HDDs"}
 			/>
 		}
 	/>
@@ -184,6 +191,7 @@ export const ProductListSSDS = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={ssdAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={SSDFilter}
 				searchPlaceholder={"Search solid state drives"}
+				title={"SSDs"}
 			/>
 		}
 	/>
@@ -203,6 +211,7 @@ export const ProductListMonitors = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={monitorAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={MonitorFilter}
 				searchPlaceholder={"Search monitors"}
+				title={"Monitors"}
 			/>
 		}
 	/>
@@ -222,6 +231,7 @@ export const ProductListPSUS = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={psuAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={PSUFilter}
 				searchPlaceholder={"Search power supply units"}
+				title={"Power supply units"}
 			/>
 		}
 	/>
@@ -245,6 +255,7 @@ export const ProductListHeadphones = () => (
 				}
 				filter={HeadphonesFilter}
 				searchPlaceholder={"Search headphones"}
+				title={"Headphones"}
 			/>
 		}
 	/>
@@ -264,6 +275,7 @@ export const ProductListKeyboards = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={keyboardAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={KeyboardFilter}
 				searchPlaceholder={"Search keyboards"}
+				title={"Keyboards"}
 			/>
 		}
 	/>
@@ -283,6 +295,7 @@ export const ProductListMice = () => (
 				GET_NUMBER_OF_RECORDS_SEARCH={mouseAPI.GET_NUMBER_OF_RECORDS_SEARCH}
 				filter={MouseFilter}
 				searchPlaceholder={"Search mice"}
+				title={"Mice"}
 			/>
 		}
 	/>

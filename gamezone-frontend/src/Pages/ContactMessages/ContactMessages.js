@@ -13,6 +13,7 @@ import {
 	FormFeedback,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { ScrollMenu } from "react-horizontal-scrolling-menu";
 import "../../Assets/css/contact-messages.css";
 import axios from "axios";
@@ -23,6 +24,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { contactMessagesSchema } from "./ContactMessagesSchema";
 import { toast } from "react-toastify";
 import * as contactAPI from "../../APIs/ContactAndReportMicroservice/contact_api";
+import * as userAPI from "../../APIs/UserMicroservice/user_api";
 import * as authService from "../../Auth/AuthService";
 
 toast.configure();
@@ -33,6 +35,7 @@ const ContactMessages = () => {
 	const [contactMessages, setContactMessages] = useState([]);
 	const [selectedMessage, setSelectedMessage] = useState(null);
 	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState(null);
 
 	const {
 		register,
@@ -46,6 +49,7 @@ const ContactMessages = () => {
 	useEffect(() => {
 		if (authService.isAdmin()) {
 			getUnansweredMessagesByUserId();
+			getUserById();
 		} else if (authService.isEmployee()) {
 			getUnansweredMessages();
 		} else if (authService.isUser()) {
@@ -115,12 +119,33 @@ const ContactMessages = () => {
 			});
 	};
 
+	const getUserById = () => {
+		axios
+			.get(`${userAPI.GET_USER_BY_ID}?userId=${id}`)
+			.then((res) => {
+				setUser(res.data.user);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	const handleSelectedCard = (sm) => {
 		setSelectedMessage(sm);
 	};
 
 	return (
 		<>
+			{authService.isAdmin() && user !== null && (
+				<Helmet>
+					<title>{user.user_name}'s contact messages | GameZone</title>
+				</Helmet>
+			)}
+			{!authService.isAdmin() && (
+				<Helmet>
+					<title>Contact Messages | GameZone</title>
+				</Helmet>
+			)}
 			{loading && (
 				<div className="div-spinner">
 					<Spinner className="spinner" />

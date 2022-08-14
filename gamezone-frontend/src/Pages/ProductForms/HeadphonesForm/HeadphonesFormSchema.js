@@ -5,9 +5,9 @@ export const headphonesFormSchema = yup.object({
 		.string()
 		.max(40, "Maximum number of characters allowed is 40")
 		.required("Connection Type is required"),
-	VirtualSurroundEncoding: yup
+	Connection: yup
 		.string()
-		.max(30, "Maximum number of characters allowed is 30"),
+		.max(70, "Maximum number of characters allowed is 70"),
 	Sensitivity: yup
 		.string()
 		.max(30, "Maximum number of characters allowed is 30"),

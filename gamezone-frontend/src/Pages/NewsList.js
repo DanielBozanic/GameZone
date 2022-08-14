@@ -14,6 +14,7 @@ import {
 	PaginationLink,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -116,6 +117,9 @@ const NewsList = () => {
 
 	return (
 		<>
+			<Helmet>
+				<title>News | GameZone</title>
+			</Helmet>
 			{loading && (
 				<div className="div-spinner">
 					<Spinner className="spinner" />

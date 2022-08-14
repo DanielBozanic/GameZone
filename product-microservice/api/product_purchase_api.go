@@ -85,7 +85,7 @@ func (productPurchaseApi *ProductPurchaseAPI) SendPurchaseConfirmationMail(c *gi
 	userData := middleware.GetUserData(c)
 	msg := productPurchaseApi.IProductPurchaseService.SendPurchaseConfirmationMail(productPurchaseDTO, userData.Id)
 	if msg == "" {
-		c.Status(200)
+		c.JSON(http.StatusOK, msg)
 	} else  {
 		c.JSON(http.StatusBadRequest, msg)
 	}
@@ -118,7 +118,7 @@ func (productPurchaseApi *ProductPurchaseAPI) SendPurchasedDigitalVideoGames(c *
 
 	msg := productPurchaseApi.IProductPurchaseService.SendPurchasedDigitalVideoGames(productPurchaseDTO)
 	if msg == "" {
-		c.Status(200)
+		c.JSON(http.StatusOK, msg)
 	} else  {
 		c.JSON(http.StatusBadRequest, msg)
 	}

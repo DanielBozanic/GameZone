@@ -5,12 +5,11 @@ getSoldVideoGamesByPlatform
    productDatabase := self getDatabase: 'product-db'.
 
    queryResult := productDatabase basicExecuteSQLString: 
-		'SELECT video_games.platform, SUM(product_purchase_details.product_quantity) 
+		'SELECT product_purchase_details.video_game_platform, SUM(product_purchase_details.product_quantity) 
 		 FROM product_purchases 
 		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
-		 JOIN video_games ON product_purchase_details.product_id = video_games.product_id 
 		 WHERE product_purchases.is_paid_for = true 
-		 GROUP BY video_games.platform'.
+		 GROUP BY product_purchase_details.video_game_platform'.
 		
    dictionaryResult := Dictionary new.
    queryResult do: [ :each | dictionaryResult at: (each at: 1) put: (each at: 2) ].

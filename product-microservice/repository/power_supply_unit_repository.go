@@ -40,6 +40,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll(page int, pageSize 
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&powerSupplyUnits)
 	return powerSupplyUnits
 }
@@ -47,7 +48,6 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetAll(page int, pageSize 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecords() int64 {
 	var count int64
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
 		Model(&model.PowerSupplyUnit{}).
@@ -73,6 +73,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) SearchByName(page int, pag
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&powerSupplyUnits)
 	return powerSupplyUnits, result.Error
 }
@@ -81,7 +82,6 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsSearch(n
 	var psus []model.PowerSupplyUnit
 	var count int64
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&psus).
@@ -97,9 +97,9 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) Filter(page int, pageSize 
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(power IN ? OR ?) AND 
-				(type IN ? OR ?) AND 
-				(form_factor IN ? OR ?) AND products.archived = false`,
+				(power_supply_units.power IN ? OR ?) AND 
+				(power_supply_units.type IN ? OR ?) AND 
+				(power_supply_units.form_factor IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Powers,
@@ -108,6 +108,7 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) Filter(page int, pageSize 
 				len(filter.Types) == 0,
 				filter.FormFactors,
 				len(filter.FormFactors) == 0).
+		Order("products.price").
 		Find(&psus)
 	return psus, result.Error
 }
@@ -116,12 +117,11 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsFilter(f
 	var psus []model.PowerSupplyUnit
 	var count int64
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(power IN ? OR ?) AND 
-				(type IN ? OR ?) AND 
-				(form_factor IN ? OR ?) AND products.archived = false`,
+				(power_supply_units.power IN ? OR ?) AND 
+				(power_supply_units.type IN ? OR ?) AND 
+				(power_supply_units.form_factor IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Powers,
@@ -138,9 +138,9 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetNumberOfRecordsFilter(f
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetManufacturers() []string {
 	var manufacturers []string
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.PowerSupplyUnit{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -150,36 +150,36 @@ func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetManufacturers() []strin
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetPowers() []string {
 	var powers []string
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
+		Order("power_supply_units.power * 1 ASC, power_supply_units.power ASC").
 		Model(&model.PowerSupplyUnit{}).
 		Distinct().
-		Pluck("power", &powers)
+		Pluck("power_supply_units.power", &powers)
 	return powers
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetTypes() []string {
 	var types []string
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
+		Order("power_supply_units.type * 1 ASC, power_supply_units.type ASC").
 		Model(&model.PowerSupplyUnit{}).
 		Distinct().
-		Pluck("type", &types)
+		Pluck("power_supply_units.type", &types)
 	return types
 }
 
 func (powerSupplyUnitRepo *powerSupplyUnitRepository) GetFormFactors() []string {
 	var formFactors []string
 	powerSupplyUnitRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = power_supply_units.product_id").
 		Where("products.archived = false").
+		Order("power_supply_units.form_factor * 1 ASC, power_supply_units.form_factor ASC").
 		Model(&model.PowerSupplyUnit{}).
 		Distinct().
-		Pluck("form_factor", &formFactors)
+		Pluck("power_supply_units.form_factor", &formFactors)
 	return formFactors
 }
 

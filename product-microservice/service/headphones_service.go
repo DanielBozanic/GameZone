@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"product/dto"
 	"product/dto/filter"
 	"product/mapper"
@@ -93,7 +92,6 @@ func (headphonesService *headphonesService) Update(headphonesDTO dto.HeadphonesD
 	updatedHeadphones.ProductId = headphones.Product.Id
 	updatedHeadphones.Product.Image.Id = headphones.Product.Image.Id
 	updatedHeadphones.Product.ImageId = headphones.Product.Image.Id
-	fmt.Println(updatedHeadphones.Wireless)
 	err = headphonesService.IHeadphonesRepository.Update(updatedHeadphones)
 	var mysqlErr *mysql.MySQLError
 	if errors.As(err, &mysqlErr) && mysqlErr.Number == 1062 {

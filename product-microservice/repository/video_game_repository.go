@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"fmt"
 	"product/dto/filter"
 	"product/model"
 
@@ -39,6 +38,7 @@ func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) ([]mode
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&games)
 	return games
 }
@@ -46,7 +46,6 @@ func (videoGameRepo *videoGameRepository) GetAll(page int, pageSize int) ([]mode
 func (videoGameRepo *videoGameRepository) GetNumberOfRecords() int64 {
 	var count int64
 	videoGameRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.archived = false").
 		Model(&model.VideoGame{}).
@@ -72,6 +71,7 @@ func (videoGameRepo *videoGameRepository) SearchByName(page int, pageSize int, n
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&games)
 	return games, result.Error
 }
@@ -80,7 +80,6 @@ func (videoGameRepo *videoGameRepository) GetNumberOfRecordsSearch(name string) 
 	var games []model.VideoGame
 	var count int64
 	videoGameRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&games).
@@ -95,11 +94,12 @@ func (videoGameRepo *videoGameRepository) Filter(page int, pageSize int, filter 
 		Offset(offset).Limit(pageSize).
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
-		Where("(platform IN ? OR ?) AND (genre IN ? OR ?) AND products.archived = false", 
+		Where("(video_games.platform IN ? OR ?) AND (video_games.genre IN ? OR ?) AND products.archived = false", 
 			filter.Platforms, 
 			len(filter.Platforms) == 0, 
 			filter.Genres, 
 			len(filter.Genres) == 0).
+		Order("products.price").
 		Find(&games)
 	return games, result.Error
 }
@@ -108,40 +108,38 @@ func (videoGameRepo *videoGameRepository) GetNumberOfRecordsFilter(filter filter
 	var games []model.VideoGame
 	var count int64
 	videoGameRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
-		Where("(platform IN ? OR ?) AND (genre IN ? OR ?) AND products.archived = false", 
+		Where("(video_games.platform IN ? OR ?) AND (video_games.genre IN ? OR ?) AND products.archived = false", 
 			filter.Platforms, 
 			len(filter.Platforms) == 0, 
 			filter.Genres, 
 			len(filter.Genres) == 0).
 		Find(&games).
 		Count(&count)
-	fmt.Printf("%d", uint64(count))
 	return count
 }
 
 func (videoGameRepo *videoGameRepository) GetPlatforms() []string {
 	var platforms []string
 	videoGameRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.archived = false").
+		Order("video_games.platform * 1 ASC, video_games.platform ASC").
 		Model(&model.VideoGame{}).
 		Distinct().
-		Pluck("platform", &platforms)
+		Pluck("video_games.platform", &platforms)
 	return platforms
 }
 
 func (videoGameRepo *videoGameRepository) GetGenres() []string {
 	var genres []string
 	videoGameRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = video_games.product_id").
 		Where("products.archived = false").
+		Order("video_games.genre * 1 ASC, video_games.genre ASC").
 		Model(&model.VideoGame{}).
 		Distinct().
-		Pluck("genre", &genres)
+		Pluck("video_games.genre", &genres)
 	return genres
 }
 

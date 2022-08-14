@@ -4,6 +4,7 @@ import Search from "../Components/Search";
 import { Row, Container } from "reactstrap";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 const ProductList = (props) => {
 	const [products, setProducts] = useState([]);
@@ -13,7 +14,7 @@ const ProductList = (props) => {
 	const [showFilter, setShowFilter] = useState(true);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [clearSearchTerm, setClearSearchTerm] = useState(false);
-	const pageSize = 8;
+	const pageSize = 12;
 
 	const handleClick = (e, index) => {
 		e.preventDefault();
@@ -123,6 +124,9 @@ const ProductList = (props) => {
 
 	return (
 		<>
+			<Helmet>
+				<title>{props.title} | GameZone</title>
+			</Helmet>
 			<Container>
 				<Row style={{ display: "flex" }}>
 					{showFilter && props.filter && (

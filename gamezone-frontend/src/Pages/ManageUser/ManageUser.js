@@ -19,12 +19,14 @@ import {
 	FormFeedback,
 	Spinner,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as productCommentAPI from "../../APIs/CommentAndRatingMicroservice/product_comment_api";
 import * as newsCommentAPI from "../../APIs/NewsMicroservice/news_comment_api";
 import * as reportAPI from "../../APIs/ContactAndReportMicroservice/report_api";
 import * as banAPI from "../../APIs/ContactAndReportMicroservice/ban_api";
+import * as userAPI from "../../APIs/UserMicroservice/user_api";
 
 toast.configure();
 const ManageUser = () => {
@@ -44,6 +46,7 @@ const ManageUser = () => {
 	const [loadingComments, setLoadingComments] = useState(true);
 	const [loadingBanHistory, setLoadingBanHistory] = useState(true);
 	const [loadingReports, setLoadingReports] = useState(true);
+	const [user, setUser] = useState(null);
 
 	const {
 		register,
@@ -56,11 +59,23 @@ const ManageUser = () => {
 	});
 
 	useEffect(() => {
+		getUserById();
 		getProductCommentsByUserId();
 		getNewsCommentsByUserId();
 		getReportsByUserId();
 		getBanHistory();
 	}, []);
+
+	const getUserById = () => {
+		axios
+			.get(`${userAPI.GET_USER_BY_ID}?userId=${id}`)
+			.then((res) => {
+				setUser(res.data.user);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
 
 	const getProductCommentsByUserId = () => {
 		axios
@@ -141,6 +156,11 @@ const ManageUser = () => {
 
 	return (
 		<>
+			{user !== null && (
+				<Helmet>
+					<title>Manage {user.user_name} | GameZone</title>
+				</Helmet>
+			)}
 			<Row style={{ margin: "auto", padding: "5px" }}>
 				<Col>
 					<Card style={{ height: "534px" }} className="card">

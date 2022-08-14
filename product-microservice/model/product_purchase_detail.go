@@ -9,4 +9,6 @@ type ProductPurchaseDetail struct {
 	ProductName  string `gorm:"type:varchar(100);not null"`
 	ProductPrice decimal.Decimal `gorm:"type:numeric;not null"`
 	ProductQuantity uint `gorm:"not null"`
+	VideoGamePlatform string `gorm:"type:varchar(40);default:null"`
+	VideoGameDigital *bool `gorm:"type:boolean;default:null"`
 }

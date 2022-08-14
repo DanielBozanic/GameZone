@@ -11,7 +11,6 @@ type Mouse struct {
 	Color         *string `gorm:"type:varchar(20)"`
 	TrackingSpeed *string `gorm:"type:varchar(30)"`
 	Acceleration  *string `gorm:"type:varchar(30)"`
-	Buttons       *uint
 	Weight        *string `gorm:"type:varchar(20)"`
 	Lifespan      *string `gorm:"type:varchar(30)"`
 }

@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,187 +115,211 @@ const SSDForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Capacity</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Capacity"
-													invalid={methods.formState.errors.Capacity?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.Capacity : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Capacity?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Form</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Form"
-													invalid={methods.formState.errors.Form?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Form : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Form?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Interface</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Interface"
-													invalid={methods.formState.errors.Interface?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Interface !== null
-															? product.Interface
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Interface?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Max Sequential Read</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="MaxSequentialRead"
-													invalid={
-														methods.formState.errors.MaxSequentialRead?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.MaxSequentialRead !== null
-															? product.MaxSequentialRead
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.MaxSequentialRead?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Max Sequential Write</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="MaxSequentialWrite"
-													invalid={
-														methods.formState.errors.MaxSequentialWrite?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null &&
-														product.MaxSequentialWrite !== null
-															? product.MaxSequentialWrite
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.MaxSequentialWrite?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Dimensions</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Dimensions"
-													invalid={methods.formState.errors.Dimensions?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Dimensions !== null
-															? product.Dimensions
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Dimensions?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Capacity</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Capacity"
+														invalid={methods.formState.errors.Capacity?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Capacity : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Capacity?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Form</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Form"
+														invalid={methods.formState.errors.Form?.message}
+														innerRef={methods.register}
+														defaultValue={product !== null ? product.Form : ""}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Form?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Interface</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Interface"
+														invalid={
+															methods.formState.errors.Interface?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Interface !== null
+																? product.Interface
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Interface?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Max Sequential Read</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="MaxSequentialRead"
+														invalid={
+															methods.formState.errors.MaxSequentialRead
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.MaxSequentialRead !== null
+																? product.MaxSequentialRead
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.MaxSequentialRead
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Max Sequential Write</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="MaxSequentialWrite"
+														invalid={
+															methods.formState.errors.MaxSequentialWrite
+																?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null &&
+															product.MaxSequentialWrite !== null
+																? product.MaxSequentialWrite
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{
+															methods.formState.errors.MaxSequentialWrite
+																?.message
+														}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Dimensions</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Dimensions"
+														invalid={
+															methods.formState.errors.Dimensions?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Dimensions !== null
+																? product.Dimensions
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Dimensions?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

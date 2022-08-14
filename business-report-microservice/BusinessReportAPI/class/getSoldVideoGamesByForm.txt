@@ -1,16 +1,15 @@
 getSoldVideoGamesByForm
 	
-  | productDatabase queryResult dictionaryResult jsonResult|
+   | productDatabase queryResult dictionaryResult jsonResult|
 	
-  productDatabase := self getDatabase: 'product-db'.
+	productDatabase := self getDatabase: 'product-db'.
 
-  queryResult := productDatabase basicExecuteSQLString: 
-		'SELECT video_games.digital, SUM(product_purchase_details.product_quantity) 
+	queryResult := productDatabase basicExecuteSQLString: 
+		'SELECT product_purchase_details.video_game_digital, SUM(product_purchase_details.product_quantity) 
 		 FROM product_purchases 
 		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
-		 JOIN video_games ON product_purchase_details.product_id = video_games.product_id 
 		 WHERE product_purchases.is_paid_for = true 
-		 GROUP BY video_games.digital'.
+		 GROUP BY product_purchase_details.video_game_digital'.
 
 		
    dictionaryResult := Dictionary new.

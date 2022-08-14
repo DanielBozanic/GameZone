@@ -70,7 +70,7 @@ func (processorService *processorService) GetManufacturers() []string {
 }
 
 func (processorService *processorService) GetTypes() []string {
-	return processorService.IProcessorRepository.GetManufacturers()
+	return processorService.IProcessorRepository.GetTypes()
 }
 
 func (processorService *processorService) GetSockets() []string {

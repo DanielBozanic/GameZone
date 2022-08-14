@@ -14,6 +14,8 @@ func ToProductPurchaseDetail(productPurchaseDetailDTO dto.ProductPurchaseDetailD
 			ProductName: productPurchaseDetailDTO.ProductName,
 			ProductPrice: productPurchaseDetailDTO.ProductPrice,
 			ProductQuantity: productPurchaseDetailDTO.ProductQuantity,
+			VideoGamePlatform: productPurchaseDetailDTO.VideoGamePlatform,
+			VideoGameDigital: productPurchaseDetailDTO.VideoGameDigital,
 		}
 }
 
@@ -25,6 +27,8 @@ func ToProductPurchaseDetailDTO(productPurchaseDetail model.ProductPurchaseDetai
 		ProductName: productPurchaseDetail.ProductName,
 		ProductPrice: productPurchaseDetail.ProductPrice,
 		ProductQuantity: productPurchaseDetail.ProductQuantity,
+		VideoGamePlatform: productPurchaseDetail.VideoGamePlatform,
+		VideoGameDigital: productPurchaseDetail.VideoGameDigital,
 	}
 }
 

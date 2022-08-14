@@ -7,7 +7,7 @@ from utils.routes.contact_and_report_microservice import contact_api_routes
 @token_utils.authorization_required(roles=[role.ROLE_EMPLOYEE])
 def get_unanswered_contact_messages():
     headers = request.headers
-    r = requests.post(contact_api_routes.BASE + contact_api_routes.API +
+    r = requests.get(contact_api_routes.BASE + contact_api_routes.API +
                          contact_api_routes.GET_UNANSWERED_CONTACT_MESSAGES, headers=headers)
     resp = jsonify(r.json())
     resp.status_code = r.status_code

@@ -41,13 +41,18 @@ func (processorRepo *processorRepository) GetAll(page int, pageSize int) []model
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&processors)
 	return processors
 }
 
 func (processorRepo *processorRepository) GetNumberOfRecords() int64 {
 	var count int64
-	processorRepo.Database.Model(&model.Processor{}).Count(&count)
+	processorRepo.Database.
+		Model(&model.Processor{}).
+		Joins("JOIN products ON products.id = processors.product_id").
+		Where("products.archived = false").
+		Count(&count)
 	return count
 }
 
@@ -69,6 +74,7 @@ func (processorRepo *processorRepository) SearchByName(page int, pageSize int, n
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&processors)
 	return processors, result.Error
 }
@@ -77,7 +83,6 @@ func (processorRepo *processorRepository) GetNumberOfRecordsSearch(name string) 
 	var processors []model.Processor
 	var count int64
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&processors).
@@ -93,10 +98,10 @@ func (processorRepo *processorRepository) Filter(page int, pageSize int, filter 
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(type IN ? OR ?) AND 
-				(socket IN ? OR ?) AND 
-				(number_of_cores IN ? OR ?) AND 
-				(threads IN ? OR ?) AND products.archived = false`,
+				(processors.type IN ? OR ?) AND 
+				(processors.socket IN ? OR ?) AND 
+				(processors.number_of_cores IN ? OR ?) AND 
+				(processors.threads IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Types,
@@ -107,6 +112,7 @@ func (processorRepo *processorRepository) Filter(page int, pageSize int, filter 
 				len(filter.NumberOfCores) == 0,
 				filter.Threads,
 				len(filter.Threads) == 0).
+		Order("products.price").
 		Find(&processors)
 	return processors, result.Error
 }
@@ -115,13 +121,12 @@ func (processorRepo *processorRepository) GetNumberOfRecordsFilter(filter filter
 	var processors []model.Processor
 	var count int64
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where(`(products.manufacturer IN ? OR ?) AND 
-				(type IN ? OR ?) AND 
-				(socket IN ? OR ?) AND 
-				(number_of_cores IN ? OR ?) AND 
-				(threads IN ? OR ?) AND products.archived = false`,
+				(processors.type IN ? OR ?) AND 
+				(processors.socket IN ? OR ?) AND 
+				(processors.number_of_cores IN ? OR ?) AND 
+				(processors.threads IN ? OR ?) AND products.archived = false`,
 				filter.Manufacturers,
 				len(filter.Manufacturers) == 0,
 				filter.Types,
@@ -140,9 +145,9 @@ func (processorRepo *processorRepository) GetNumberOfRecordsFilter(filter filter
 func (processorRepo *processorRepository) GetManufacturers() []string {
 	var manufacturers []string
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("products.manufacturer * 1 ASC, products.manufacturer ASC").
 		Model(&model.Processor{}).
 		Distinct().
 		Pluck("products.manufacturer", &manufacturers)
@@ -152,24 +157,24 @@ func (processorRepo *processorRepository) GetManufacturers() []string {
 func (processorRepo *processorRepository) GetTypes() []string {
 	var types []string
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("processors.type * 1 ASC, processors.type ASC").
 		Model(&model.Processor{}).
 		Distinct().
-		Pluck("type", &types)
+		Pluck("processors.type", &types)
 	return types
 }
 
 func (processorRepo *processorRepository) GetSockets() []string {
 	var sockets []string
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("processors.socket").
 		Model(&model.Processor{}).
 		Distinct().
-		Pluck("socket", &sockets)
+		Pluck("processors.socket", &sockets)
 	return sockets
 }
 
@@ -177,24 +182,24 @@ func (processorRepo *processorRepository) GetSockets() []string {
 func (processorRepo *processorRepository) GetNumberOfCores() []uint {
 	var numberOfCores []uint
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("processors.number_of_cores * 1 ASC, processors.number_of_cores ASC").
 		Model(&model.Processor{}).
 		Distinct().
-		Pluck("number_of_cores", &numberOfCores)
+		Pluck("processors.number_of_cores", &numberOfCores)
 	return numberOfCores
 }
 
 func (processorRepo *processorRepository) GetThreads() []uint {
 	var threads []uint
 	processorRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = processors.product_id").
 		Where("products.archived = false").
+		Order("processors.threads * 1 ASC, processors.threads ASC").
 		Model(&model.Processor{}).
 		Distinct().
-		Pluck("threads", &threads)
+		Pluck("processors.threads", &threads)
 	return threads
 }
 

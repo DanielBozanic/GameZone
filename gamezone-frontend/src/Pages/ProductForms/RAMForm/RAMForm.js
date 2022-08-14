@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -114,161 +115,175 @@ const RAMForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Memory Type</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="MemoryType"
-													invalid={methods.formState.errors.MemoryType?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.MemoryType : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.MemoryType?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Capacity</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Capacity"
-													invalid={methods.formState.errors.Capacity?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.Capacity : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Capacity?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Speed</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Speed"
-													invalid={methods.formState.errors.Speed?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Speeed !== null
-															? product.Speed
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Speed?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Voltage</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Voltage"
-													invalid={methods.formState.errors.Voltage?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Voltage !== null
-															? product.Voltage
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Voltage?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Latency</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Latency"
-													invalid={methods.formState.errors.Latency?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.Latency !== null
-															? product.Latency
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Latency?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Memory Type</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="MemoryType"
+														invalid={
+															methods.formState.errors.MemoryType?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.MemoryType : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.MemoryType?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<FormGroup>
+													<Label>Capacity</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Capacity"
+														invalid={methods.formState.errors.Capacity?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Capacity : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Capacity?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Speed</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Speed"
+														invalid={methods.formState.errors.Speed?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Speeed !== null
+																? product.Speed
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Speed?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Voltage</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Voltage"
+														invalid={methods.formState.errors.Voltage?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Voltage !== null
+																? product.Voltage
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Voltage?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Latency</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Latency"
+														invalid={methods.formState.errors.Latency?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.Latency !== null
+																? product.Latency
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Latency?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

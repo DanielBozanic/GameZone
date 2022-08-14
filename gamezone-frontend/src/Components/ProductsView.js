@@ -11,6 +11,7 @@ import {
 	Pagination,
 	PaginationItem,
 	PaginationLink,
+	CardFooter,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import cn from "classnames";
@@ -34,86 +35,42 @@ const ProductsView = (props) => {
 		<>
 			{props.products.length > 0 && (
 				<Container>
-					<Row style={{ paddingTop: "20px" }}>
-						{props.products.map((product, index) =>
-							index < 4 ? (
-								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card className="products-view-card">
-										<Link
-											to={viewProductDetails(product)}
-											style={{ textDecoration: "none", color: "inherit" }}
-										>
-											<CardImg
-												className="products-view-card-image"
-												alt="No image"
-												src={
-													product.Product === undefined
-														? product.Image.Content
-														: product.Product.Image.Content
-												}
-											/>
-											<CardBody className="products-view-card-body">
-												<CardTitle tag="h5">
-													{product.Product === undefined
-														? product.Name
-														: product.Product.Name}
-												</CardTitle>
-												<CardText>
-													{product.Product === undefined
-														? product.Price
-														: product.Product.Price}{" "}
-													RSD
-												</CardText>
-											</CardBody>
-										</Link>
-									</Card>
-								</Col>
-							) : (
-								""
-							)
-						)}
-					</Row>
-					<Row style={{ paddingTop: "20px" }}>
-						{props.products.map((product, index) =>
-							index > 3 ? (
-								<Col style={{ paddingTop: "5px" }} md={3}>
-									<Card className="products-view-card">
-										<Link
-											to={viewProductDetails(product)}
-											style={{ textDecoration: "none", color: "inherit" }}
-										>
-											<CardImg
-												className="products-view-card-image"
-												alt="No image"
-												src={
-													product.Product === undefined
-														? product.Image.Content
-														: product.Product.Image.Content
-												}
-											/>
-											<CardBody className="products-view-card-body">
-												<CardTitle
-													className="products-view-card-body-text"
-													tag="h5"
-												>
-													{product.Product === undefined
-														? product.Name
-														: product.Product.Name}
-												</CardTitle>
-												<CardText>
-													{product.Product === undefined
-														? product.Price
-														: product.Product.Price}{" "}
-													RSD
-												</CardText>
-											</CardBody>
-										</Link>
-									</Card>
-								</Col>
-							) : (
-								""
-							)
-						)}
+					<Row style={{ marginTop: "20px" }}>
+						{props.products.map((product) => (
+							<Col className="products-view-card-col" md="3">
+								<Card className="products-view-card">
+									<Link
+										to={viewProductDetails(product)}
+										style={{ textDecoration: "none", color: "inherit" }}
+									>
+										<CardImg
+											className="products-view-card-image"
+											alt="No image"
+											src={
+												product.Product === undefined
+													? product.Image.Content
+													: product.Product.Image.Content
+											}
+										/>
+										<CardBody className="products-view-card-body">
+											<CardTitle tag="h5">
+												{product.Product === undefined
+													? product.Name
+													: product.Product.Name}
+											</CardTitle>
+										</CardBody>
+										<CardFooter className="products-view-card-footer">
+											<CardText className="products-view-card-footer-text">
+												{product.Product === undefined
+													? product.Price
+													: product.Product.Price}{" "}
+												RSD
+											</CardText>
+										</CardFooter>
+									</Link>
+								</Card>
+							</Col>
+						))}
 					</Row>
 					<Row
 						className={cn(

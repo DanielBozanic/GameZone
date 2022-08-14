@@ -18,6 +18,7 @@ import {
 	Row,
 	Col,
 } from "reactstrap";
+import { Helmet } from "react-helmet";
 import axios from "axios";
 import { toast } from "react-toastify";
 import ProductForm from "../../../Components/ProductForm/ProductForm";
@@ -122,185 +123,207 @@ const VideoGameForm = (props) => {
 	};
 
 	return (
-		<Container>
-			<Row>
-				<Col>
-					<Card className="form-card">
-						<CardTitle className="title" tag="h2">
-							{props.title}
-						</CardTitle>
-						<CardBody>
-							<FormProvider {...methods}>
-								<Form className="form">
-									<ProductForm
-										product={product}
-										isDigital={isDigital}
-										fileName={fileName}
-										setFileName={setFileName}
-										setBase64Image={setBase64Image}
-									/>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Platform</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Platform"
-													invalid={methods.formState.errors.Platform?.message}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null ? product.Platform : ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Platform?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<div>
-												<Label>Digital</Label>
-											</div>
-											<span>
-												<Label>Yes</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Digital"
-													checked={
-														product === null || digital !== null
-															? digital
-															: product.Digital
-													}
-													value={digital}
-													innerRef={methods.register}
-													onChange={() => {
-														setIsDigital(true);
-														setDigital(true);
-													}}
-												/>
-											</span>
-											<span className="pl-5">
-												<Label>No</Label>
-												<Input
-													className="ml-2"
-													type="radio"
-													name="Digital"
-													checked={
-														product === null || digital !== null
-															? !digital
-															: !product.Digital
-													}
-													value={digital}
-													innerRef={methods.register}
-													onChange={() => {
-														setIsDigital(false);
-														setDigital(false);
-													}}
-												/>
-											</span>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Rating</Label>
-												<Input
-													className="input-field"
-													type="number"
-													name="Rating"
-													min="1"
-													invalid={methods.formState.errors.Rating?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Rating : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Rating?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Genre</Label>
-												<Input
-													className="input-field"
-													type="text"
-													name="Genre"
-													invalid={methods.formState.errors.Genre?.message}
-													innerRef={methods.register}
-													defaultValue={product !== null ? product.Genre : ""}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.Genre?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									<Row>
-										<Col>
-											<FormGroup>
-												<Label>Release Date</Label>
-												<Input
-													className="input-field"
-													type="date"
-													name="ReleaseDate"
-													invalid={
-														methods.formState.errors.ReleaseDate?.message
-													}
-													innerRef={methods.register}
-													defaultValue={
-														product !== null && product.ReleaseDate !== null
-															? product.ReleaseDate.toLocaleString().substring(
-																	0,
-																	10
-															  )
-															: ""
-													}
-												/>
-												<FormFeedback className="input-field-error-msg">
-													{methods.formState.errors.ReleaseDate?.message}
-												</FormFeedback>
-											</FormGroup>
-										</Col>
-									</Row>
-									{props.addButton && (
+		<>
+			{product === null && props.addButton && (
+				<Helmet>
+					<title>{props.title} | GameZone</title>
+				</Helmet>
+			)}
+			{product !== null && props.updateButton && (
+				<Helmet>
+					<title>Updating {product.Product.Name} | GameZone</title>
+				</Helmet>
+			)}
+			<Container>
+				<Row>
+					<Col>
+						<Card className="form-card">
+							<CardTitle className="title" tag="h2">
+								{props.title}
+							</CardTitle>
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<ProductForm
+											product={product}
+											isDigital={isDigital}
+											fileName={fileName}
+											setFileName={setFileName}
+											setBase64Image={setBase64Image}
+										/>
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(add)}
-												>
-													Add
-												</Button>
+												<FormGroup>
+													<Label>Platform</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Platform"
+														invalid={methods.formState.errors.Platform?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Platform : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Platform?.message}
+													</FormFeedback>
+												</FormGroup>
 											</Col>
 										</Row>
-									)}
-									{props.updateButton && (
 										<Row>
 											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={methods.handleSubmit(update)}
-												>
-													Update
-												</Button>
+												<div>
+													<Label>Digital</Label>
+												</div>
+												<span>
+													<Label>Yes</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Digital"
+														checked={
+															product === null || digital !== null
+																? digital
+																: product.Digital
+														}
+														value={
+															product === null || digital !== null
+																? digital
+																: product.Digital
+														}
+														innerRef={methods.register}
+														onChange={() => {
+															setIsDigital(true);
+															setDigital(true);
+														}}
+													/>
+												</span>
+												<span className="pl-5">
+													<Label>No</Label>
+													<Input
+														className="ml-2"
+														type="radio"
+														name="Digital"
+														checked={
+															product === null || digital !== null
+																? !digital
+																: !product.Digital
+														}
+														value={
+															product === null || digital !== null
+																? digital
+																: product.Digital
+														}
+														innerRef={methods.register}
+														onChange={() => {
+															setIsDigital(false);
+															setDigital(false);
+														}}
+													/>
+												</span>
 											</Col>
 										</Row>
-									)}
-								</Form>
-							</FormProvider>
-						</CardBody>
-					</Card>
-				</Col>
-			</Row>
-		</Container>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Rating</Label>
+													<Input
+														className="input-field"
+														type="number"
+														name="Rating"
+														min="1"
+														invalid={methods.formState.errors.Rating?.message}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null ? product.Rating : ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Rating?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Genre</Label>
+													<Input
+														className="input-field"
+														type="text"
+														name="Genre"
+														invalid={methods.formState.errors.Genre?.message}
+														innerRef={methods.register}
+														defaultValue={product !== null ? product.Genre : ""}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.Genre?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Release Date</Label>
+													<Input
+														className="input-field"
+														type="date"
+														name="ReleaseDate"
+														invalid={
+															methods.formState.errors.ReleaseDate?.message
+														}
+														innerRef={methods.register}
+														defaultValue={
+															product !== null && product.ReleaseDate !== null
+																? product.ReleaseDate.toLocaleString().substring(
+																		0,
+																		10
+																  )
+																: ""
+														}
+													/>
+													<FormFeedback className="input-field-error-msg">
+														{methods.formState.errors.ReleaseDate?.message}
+													</FormFeedback>
+												</FormGroup>
+											</Col>
+										</Row>
+										{props.addButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(add)}
+													>
+														Add
+													</Button>
+												</Col>
+											</Row>
+										)}
+										{props.updateButton && (
+											<Row>
+												<Col>
+													<Button
+														className="my-button"
+														type="button"
+														onClick={methods.handleSubmit(update)}
+													>
+														Update
+													</Button>
+												</Col>
+											</Row>
+										)}
+									</Form>
+								</FormProvider>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

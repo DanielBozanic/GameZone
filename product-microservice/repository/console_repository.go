@@ -37,6 +37,7 @@ func (consoleRepo *consoleRepository) GetAll(page int, pageSize int) []model.Con
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.archived = false").
+		Order("products.price").
 		Find(&consoles)
 	return consoles
 }
@@ -44,7 +45,6 @@ func (consoleRepo *consoleRepository) GetAll(page int, pageSize int) []model.Con
 func (consoleRepo *consoleRepository) GetNumberOfRecords() int64 {
 	var count int64
 	consoleRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.archived = false").
 		Model(&model.Console{}).
@@ -70,6 +70,7 @@ func (consoleRepo *consoleRepository) SearchByName(page int, pageSize int, name 
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
+		Order("products.price").
 		Find(&consoles)
 	return consoles, result.Error
 }
@@ -78,7 +79,6 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsSearch(name string) int6
 	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.name LIKE ? AND products.archived = false", "%" + name + "%").
 		Find(&consoles).
@@ -93,9 +93,10 @@ func (consoleRepo *consoleRepository) Filter(page int, pageSize int, filter filt
 		Offset(offset).Limit(pageSize).
 		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where(`(platform IN ? OR ?) AND products.archived = false`,
+		Where(`(consoles.platform IN ? OR ?) AND products.archived = false`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
+		Order("products.price").
 		Find(&consoles)
 	return consoles, result.Error
 }
@@ -104,9 +105,8 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 	var consoles []model.Console
 	var count int64
 	consoleRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
-		Where(`(platform IN ? OR ?) AND products.archived = false`,
+		Where(`(consoles.platform IN ? OR ?) AND products.archived = false`,
 				filter.Platforms,
 				len(filter.Platforms) == 0).
 		Find(&consoles).
@@ -117,12 +117,12 @@ func (consoleRepo *consoleRepository) GetNumberOfRecordsFilter(filter filter.Con
 func (consoleRepo *consoleRepository) GetPlatforms() []string {
 	var platforms []string
 	consoleRepo.Database.
-		Preload(clause.Associations).Preload("Product." + clause.Associations).
 		Joins("JOIN products ON products.id = consoles.product_id").
 		Where("products.archived = false").
+		Order("consoles.platform * 1 ASC, consoles.platform ASC").
 		Model(&model.Console{}).
 		Distinct().
-		Pluck("platform", &platforms)
+		Pluck("consoles.platform", &platforms)
 	return platforms
 }
 

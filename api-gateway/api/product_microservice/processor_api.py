@@ -17,8 +17,11 @@ def get_all():
 
 
 def get_number_of_records():
-    return requests.get(processor_api_routes.BASE + processor_api_routes.API +
+    r = requests.get(processor_api_routes.BASE + processor_api_routes.API +
                         processor_api_routes.GET_NUMBER_OF_RECORDS)
+    resp = jsonify(r.json())
+    resp.status_code = r.status_code
+    return resp
 
 
 def get_by_id(id):
