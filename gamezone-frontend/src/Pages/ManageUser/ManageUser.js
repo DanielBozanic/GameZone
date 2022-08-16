@@ -184,7 +184,7 @@ const ManageUser = () => {
 													[{new Date(report.DateTime).toLocaleDateString()}{" "}
 													{new Date(report.DateTime).toLocaleTimeString()}] [
 													{report.Reason}]
-												</span>
+												</span>{" "}
 												- {report.Description}
 											</CardText>
 										);
@@ -279,6 +279,9 @@ const ManageUser = () => {
 										.map((comment) => {
 											return (
 												<CardText>
+													<div style={{ fontWeight: "bold" }}>
+														{comment.Archived ? "DELETED" : ""}
+													</div>
 													<span style={{ fontWeight: "bold" }}>
 														[{new Date(comment.DateTime).toLocaleDateString()}{" "}
 														{new Date(comment.DateTime).toLocaleTimeString()}]

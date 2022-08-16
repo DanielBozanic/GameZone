@@ -15,9 +15,9 @@ type contactService struct {
 }
 
 type IContactService interface {
-	GetUnansweredContactMessages() []model.ContactMessage 
-	GetUnansweredContactMessagesByUserId(userId int) []model.ContactMessage
+	GetContactMessages() []model.ContactMessage 
 	GetContactMessagesByUserId(userId int) []model.ContactMessage
+	GetNumberOfUnansweredContactMessagesByUserId(userId int) int64
 	SendContactMessage(contactMsg model.ContactMessage, userData dto.UserData) string
 	AnswerContactMessage(contactMsgDTO dto.ContactMessageDTO) string
 }
@@ -26,16 +26,16 @@ func NewContactService(contactRepository repository.IContactRepository) IContact
 	return &contactService{IContactRepository: contactRepository}
 }
 
-func (contactService *contactService) GetUnansweredContactMessages() []model.ContactMessage {
-	return contactService.IContactRepository.GetUnansweredContactMessages()
-}
-
-func (contactService *contactService) GetUnansweredContactMessagesByUserId(userId int) []model.ContactMessage {
-	return contactService.IContactRepository.GetUnansweredContactMessagesByUserId(userId)
+func (contactService *contactService) GetContactMessages() []model.ContactMessage {
+	return contactService.IContactRepository.GetContactMessages()
 }
 
 func (contactService *contactService) GetContactMessagesByUserId(userId int) []model.ContactMessage {
 	return contactService.IContactRepository.GetContactMessagesByUserId(userId)
+}
+
+func (contactService *contactService) GetNumberOfUnansweredContactMessagesByUserId(userId int) int64 {
+	return contactService.IContactRepository.GetNumberOfUnansweredContactMessagesByUserId(userId)
 }
 
 func (contactService *contactService) SendContactMessage(contactMsg model.ContactMessage, userData dto.UserData) string {

@@ -20,19 +20,8 @@ func NewContactAPI(contactService service.IContactService) ContactAPI {
 	return ContactAPI{IContactService: contactService}
 }
 
-func (contactApi *ContactAPI) GetUnansweredContactMessages(c *gin.Context) {
-	contactMessages := contactApi.IContactService.GetUnansweredContactMessages()
-	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
-}
-
-func (contactApi *ContactAPI) GetUnansweredContactMessagesByUserId(c *gin.Context) {
-	userId, err := strconv.Atoi(c.Param("userId"))
-    if err != nil {
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-    }
-
-	contactMessages := contactApi.IContactService.GetUnansweredContactMessagesByUserId(userId)
+func (contactApi *ContactAPI) GetContactMessages(c *gin.Context) {
+	contactMessages := contactApi.IContactService.GetContactMessages()
 	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
 }
 
@@ -45,6 +34,17 @@ func (contactApi *ContactAPI) GetContactMessagesByUserId(c *gin.Context) {
 
 	contactMessages := contactApi.IContactService.GetContactMessagesByUserId(userId)
 	c.JSON(http.StatusOK, mapper.ToContactMessageDTOs(contactMessages))
+}
+
+func (contactApi *ContactAPI) GetNumberOfUnansweredContactMessagesByUserId(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Param("userId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+    }
+
+	numberOfUnansweredMsgs := contactApi.IContactService.GetNumberOfUnansweredContactMessagesByUserId(userId)
+	c.JSON(http.StatusOK, numberOfUnansweredMsgs)
 }
 
 func (contactApi *ContactAPI) SendContactMessage(c *gin.Context) {

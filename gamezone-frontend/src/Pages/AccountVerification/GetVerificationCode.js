@@ -59,43 +59,37 @@ const GetVerificationCode = () => {
 					<Col md="10">
 						<Card className="form-card">
 							<CardTitle className="title" tag="h2">
-								Get verification code
+								Get verification code {loading && <Spinner />}
 							</CardTitle>
-							{loading && (
-								<div className="div-spinner">
-									<Spinner className="spinner" />
-								</div>
-							)}
-							{!loading && (
-								<CardBody>
-									<Form className="form">
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Email</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="email"
-														innerRef={register}
-													/>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={handleSubmit(getVerificationCode)}
-												>
-													Submit
-												</Button>
-											</Col>
-										</Row>
-									</Form>
-								</CardBody>
-							)}
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Email</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="email"
+													innerRef={register}
+												/>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(getVerificationCode)}
+												disabled={loading}
+											>
+												Submit
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
 						</Card>
 					</Col>
 				</Row>

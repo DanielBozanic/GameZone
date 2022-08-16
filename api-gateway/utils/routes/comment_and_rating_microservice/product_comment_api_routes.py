@@ -11,3 +11,4 @@ EDIT_COMMENT = "/editComment"
 
 GET_BY_USER_ID = "/getByUserId"
 DELETE_COMMENT = "/deleteComment"
+DELETE_COMMENTS_BY_PRODUCT_ID = "/deleteCommentsByProductId"

@@ -8,7 +8,10 @@ getSoldVideoGamesByPlatform
 		'SELECT product_purchase_details.video_game_platform, SUM(product_purchase_details.product_quantity) 
 		 FROM product_purchases 
 		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
-		 WHERE product_purchases.is_paid_for = true 
+		 WHERE 
+			product_purchases.is_paid_for = true 
+		 	AND 
+		 	product_purchase_details.video_game_platform IS NOT NULL
 		 GROUP BY product_purchase_details.video_game_platform'.
 		
    dictionaryResult := Dictionary new.

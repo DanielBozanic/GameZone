@@ -8,18 +8,16 @@ import {
 	Row,
 	Col,
 	Container,
-	Pagination,
-	PaginationItem,
-	PaginationLink,
 	CardFooter,
 } from "reactstrap";
+import Pagination from "react-js-pagination";
 import { Link } from "react-router-dom";
 import cn from "classnames";
 import * as helperFunctions from "../Utils/HelperFunctions";
 
 const ProductsView = (props) => {
-	const onHandleClick = (e, nextOrPrev) => {
-		props.handleClick && props.handleClick(e, nextOrPrev);
+	const onHandleClick = (nextOrPrev) => {
+		props.handleClick && props.handleClick(nextOrPrev);
 	};
 
 	const viewProductDetails = (product) => {
@@ -80,31 +78,17 @@ const ProductsView = (props) => {
 								: "products-view-pagination-padding-normal"
 						)}
 					>
-						<Col md="12">
-							<Pagination size="lg">
-								<PaginationItem disabled={props.currentPage <= 1}>
-									<PaginationLink
-										onClick={(e) => onHandleClick(e, props.currentPage - 1)}
-										previous
-									/>
-								</PaginationItem>
-
-								{[...Array(props.pageCount)].map((page, i) => (
-									<PaginationItem active={i === props.currentPage - 1} key={i}>
-										<PaginationLink onClick={(e) => onHandleClick(e, i + 1)}>
-											{i + 1}
-										</PaginationLink>
-									</PaginationItem>
-								))}
-								<PaginationItem
-									disabled={props.currentPage - 1 >= props.pageCount - 1}
-								>
-									<PaginationLink
-										onClick={(e) => onHandleClick(e, props.currentPage + 1)}
-										next
-									/>
-								</PaginationItem>
-							</Pagination>
+						<Col>
+							<Pagination
+								className="pagination"
+								activePage={props.currentPage}
+								itemsCountPerPage={props.pageSize}
+								totalItemsCount={props.numberOfRecords}
+								onChange={onHandleClick}
+								itemClass="page-item"
+								linkClass="page-link"
+								pageRangeDisplayed={5}
+							/>
 						</Col>
 					</Row>
 				</Container>

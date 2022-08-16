@@ -49,8 +49,7 @@ func (newsCommentRepo *newsCommentRepository) GetByUserId(userId int) []model.Ne
 	var newsComments []model.NewsComment
 	newsCommentRepo.Database.
 		Preload(clause.Associations).Preload("NewsArticle." + clause.Associations).
-		Joins("JOIN news_articles ON news_articles.id = news_comments.news_article_id").
-		Where("news_articles.archived = false AND news_comments.archived = false AND news_comments.user_id = ?", userId).
+		Where("news_comments.user_id = ?", userId).
 		Find(&newsComments)
 	return newsComments
 }

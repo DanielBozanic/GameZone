@@ -46,6 +46,7 @@ func main() {
 	productComments.POST("/addComment", productCommentAPI.AddComment)
 	productComments.PUT("/editComment", productCommentAPI.EditComment)
 	productComments.DELETE("/deleteComment/:id", productCommentAPI.DeleteComment)
+	productComments.DELETE("/deleteCommentsByProductId/:productId", productCommentAPI.DeleteCommentsByProductId)
 	productComments.GET("/getByUserId/:userId", productCommentAPI.GetByUserId)
 	
 	err := r.Run(":7001")

@@ -20,6 +20,7 @@ type INewsCommentService interface {
 	AddNewsComment(newsComment model.NewsComment, userData dto.UserData) string
 	EditNewsCommment(newsCommentDTO dto.NewsCommentDTO) string
 	DeleteNewsComment(id int) error
+	DeleteNewsCommentsByNewsArticleId(newsArticleId int) error
 }
 
 func NewNewsCommentService(newsCommentRepository repository.INewsCommentRepository) INewsCommentService {
@@ -76,4 +77,16 @@ func (newsCommentService *newsCommentService) DeleteNewsComment(id int) error {
 	}
 	*newsComment.Archived = true
 	return newsCommentService.INewsCommentRepository.Update(newsComment)
+}
+
+func (newsCommentService *newsCommentService) DeleteNewsCommentsByNewsArticleId(newsArticleId int) error {
+	newsComments := newsCommentService.INewsCommentRepository.GetByNewsArticle(newsArticleId)
+	for _, newsComment := range newsComments {
+		*newsComment.Archived = true
+		err := newsCommentService.INewsCommentRepository.Update(newsComment)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

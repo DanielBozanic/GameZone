@@ -48,42 +48,30 @@ const ContactMessages = () => {
 
 	useEffect(() => {
 		if (authService.isAdmin()) {
-			getUnansweredMessagesByUserId();
+			getContactMessagesByUserId();
 			getUserById();
-		} else if (authService.isEmployee()) {
-			getUnansweredMessages();
 		} else if (authService.isUser()) {
 			getContactMessagesByUserId();
+		} else if (authService.isEmployee()) {
+			getContactMessages();
 		}
 	}, []);
-
-	const getUnansweredMessagesByUserId = () => {
-		axios
-			.get(`${contactAPI.GET_UNANSWERED_CONTACT_MESSAGES_BY_USER_ID}/${id}`)
-			.then((res) => {
-				setContactMessages(res.data);
-				setLoading(false);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-
-	const getUnansweredMessages = () => {
-		axios
-			.get(`${contactAPI.GET_UNANSWERED_CONTACT_MESSAGES}`)
-			.then((res) => {
-				setContactMessages(res.data);
-				setLoading(false);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
 
 	const getContactMessagesByUserId = () => {
 		axios
 			.get(`${contactAPI.GET_CONTACT_MESSAGES_BY_USER_ID}/${id}`)
+			.then((res) => {
+				setContactMessages(res.data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const getContactMessages = () => {
+		axios
+			.get(`${contactAPI.GET_CONTACT_MESSAGES}`)
 			.then((res) => {
 				setContactMessages(res.data);
 				setLoading(false);
@@ -104,9 +92,9 @@ const ContactMessages = () => {
 					toastId: customId,
 				});
 				if (authService.isAdmin()) {
-					getUnansweredMessagesByUserId();
+					getContactMessagesByUserId();
 				} else if (authService.isEmployee()) {
-					getUnansweredMessages();
+					getContactMessages();
 				}
 				setSelectedMessage(null);
 			})
@@ -171,7 +159,7 @@ const ContactMessages = () => {
 										<Row>
 											<Col>
 												<span style={{ fontWeight: "bold" }}>
-													[
+													{contactMessage.Subject} {"\t"}[
 													{new Date(
 														contactMessage.DateTime
 													).toLocaleDateString()}{" "}
@@ -181,25 +169,34 @@ const ContactMessages = () => {
 													]
 												</span>
 											</Col>
+										</Row>
+										<Row>
 											{authService.isEmployee() && (
 												<Col>
 													<span style={{ fontWeight: "bold" }}>
-														{contactMessage.Username}
+														Sent by {contactMessage.Username}
 													</span>
 												</Col>
 											)}
 										</Row>
 									</CardHeader>
 									<CardBody>
-										<CardText>{contactMessage.Message}</CardText>
+										<CardText style={{ whiteSpace: "pre-line" }}>
+											{contactMessage.Message}
+										</CardText>
 									</CardBody>
 									<CardFooter>
+										{!authService.isUser() && contactMessage.Answer === "" && (
+											<span style={{ marginLeft: "5px", fontWeight: "bold" }}>
+												Unanswered
+											</span>
+										)}
 										{authService.isUser() && contactMessage.Answer === "" && (
 											<span style={{ marginLeft: "5px", fontWeight: "bold" }}>
 												Answer pending
 											</span>
 										)}
-										{authService.isUser() && contactMessage.Answer !== "" && (
+										{contactMessage.Answer !== "" && (
 											<span style={{ marginLeft: "5px", fontWeight: "bold" }}>
 												Message answered
 											</span>
@@ -212,23 +209,9 @@ const ContactMessages = () => {
 					<Container>
 						<Row className="answer-card-row">
 							<Col>
-								{contactMessages.length <= 0 &&
-									(authService.isEmployee() || authService.isAdmin()) && (
-										<Card>
-											<CardBody>
-												<Container>
-													<Row>
-														<Col>
-															<CardTitle className="title " tag="h2">
-																No messages to answer
-															</CardTitle>
-														</Col>
-													</Row>
-												</Container>
-											</CardBody>
-										</Card>
-									)}
 								{selectedMessage !== null &&
+									(selectedMessage.Answer === "" ||
+										selectedMessage.Answer === null) &&
 									(authService.isEmployee() || authService.isAdmin()) && (
 										<Card className="card">
 											<CardBody>
@@ -261,14 +244,18 @@ const ContactMessages = () => {
 											</CardBody>
 										</Card>
 									)}
-								{contactMessages.length <= 0 && authService.isUser() && (
+								{contactMessages.length <= 0 && (
 									<Card>
 										<CardBody>
 											<Container>
 												<Row>
 													<Col>
 														<CardTitle className="title " tag="h2">
-															You have not sent any messages
+															{authService.isUser() &&
+																"You have not sent any messages"}
+															{(authService.isEmployee() ||
+																authService.isAdmin()) &&
+																"There are currently no contact messages"}
 														</CardTitle>
 													</Col>
 												</Row>
@@ -278,8 +265,7 @@ const ContactMessages = () => {
 								)}
 								{selectedMessage !== null &&
 									selectedMessage.Answer !== null &&
-									selectedMessage.Answer !== "" &&
-									authService.isUser() && (
+									selectedMessage.Answer !== "" && (
 										<Card className="card">
 											<CardHeader>
 												<CardTitle className="title" tag="h5">
@@ -289,7 +275,9 @@ const ContactMessages = () => {
 											<CardBody>
 												<Row>
 													<Col>
-														<CardText>{selectedMessage.Answer}</CardText>
+														<CardText style={{ whiteSpace: "pre-line" }}>
+															{selectedMessage.Answer}
+														</CardText>
 													</Col>
 												</Row>
 											</CardBody>

@@ -60,6 +60,17 @@ def delete_comment(id):
     return resp
 
 
+@token_utils.authorization_required(roles=[role.ROLE_EMPLOYEE])
+def delete_comments_by_product_id(productId):
+    headers = request.headers
+    r = requests.delete(product_comment_api_routes.BASE + product_comment_api_routes.API +
+                        product_comment_api_routes.DELETE_COMMENTS_BY_PRODUCT_ID + "/{}".format(productId),
+                        headers=headers)
+    resp = jsonify(r.json())
+    resp.status_code = r.status_code
+    return resp
+
+
 @token_utils.authorization_required(roles=[role.ROLE_USER, role.ROLE_ADMIN])
 def get_by_user_id(userId):
     headers = request.headers

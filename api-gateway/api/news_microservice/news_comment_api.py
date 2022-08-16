@@ -44,6 +44,17 @@ def delete_news_comment(id):
     return resp
 
 
+@token_utils.authorization_required(roles=[role.ROLE_EMPLOYEE])
+def delete_news_comments_by_news_article_id(newsArticleId):
+    headers = request.headers
+    r = requests.delete(news_comment_api_routes.BASE + news_comment_api_routes.API +
+                        news_comment_api_routes.DELETE_NEWS_COMMENTS_BY_NEWS_ARTICLE_ID +
+                        "/{}".format(newsArticleId), headers=headers)
+    resp = jsonify(r.json())
+    resp.status_code = r.status_code
+    return resp
+
+
 @token_utils.authorization_required(roles=[role.ROLE_USER, role.ROLE_ADMIN])
 def get_by_user_id(userId):
     headers = request.headers

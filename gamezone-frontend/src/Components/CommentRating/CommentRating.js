@@ -223,9 +223,7 @@ const CommentRating = (props) => {
 											</Row>
 											<Row>
 												<Col>
-													{(!readOnlyMode ||
-														(currentUserReview === null &&
-															reviews.length <= 0)) && (
+													{(!readOnlyMode || currentUserReview === null) && (
 														<>
 															<Input
 																type="textarea"

@@ -53,10 +53,10 @@ func main() {
 	bans.POST("/sendEmailToBannedUser", banAPI.SendEmailToBannedUser)
 
 	contacts := api.Group("/contacts")
-	contacts.GET("/getUnansweredContactMessages", contactAPI.GetUnansweredContactMessages)
-	contacts.GET("/getUnansweredContactMessagesByUserId/:userId", contactAPI.GetUnansweredContactMessagesByUserId)
-	contacts.PUT("/answerContactMessage", contactAPI.AnswerContactMessage)
+	contacts.GET("/getContactMessages", contactAPI.GetContactMessages)
 	contacts.GET("/getContactMessagesByUserId/:userId", contactAPI.GetContactMessagesByUserId)
+	contacts.GET("/getNumberOfUnansweredContactMessagesByUserId/:userId", contactAPI.GetNumberOfUnansweredContactMessagesByUserId)
+	contacts.PUT("/answerContactMessage", contactAPI.AnswerContactMessage)
 	contacts.POST("/sendContactMessage", contactAPI.SendContactMessage)
 
 	err := r.Run(":7003")

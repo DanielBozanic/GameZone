@@ -158,22 +158,22 @@ const ProductForm = (props) => {
 				<Row>
 					<Col>
 						<FormGroup>
-							<Label>Amount</Label>
+							<Label>Quantity</Label>
 							<Input
 								className="input-field"
 								type="number"
-								name="Product.Amount"
+								name="Product.Quantity"
 								min="0"
 								invalid={
-									errors.Product?.Amount && errors.Product?.Amount.message
+									errors.Product?.Quantity && errors.Product?.Quantity.message
 								}
 								innerRef={register}
 								defaultValue={
-									props.product !== null ? props.product.Product.Amount : ""
+									props.product !== null ? props.product.Product.Quantity : ""
 								}
 							/>
 							<FormFeedback className="input-field-error-msg">
-								{errors.Product?.Amount && errors.Product?.Amount.message}
+								{errors.Product?.Quantity && errors.Product?.Quantity.message}
 							</FormFeedback>
 						</FormGroup>
 					</Col>
@@ -183,7 +183,7 @@ const ProductForm = (props) => {
 				<Input
 					style={{ display: "none" }}
 					type="number"
-					name="Product.Amount"
+					name="Product.Quantity"
 					innerRef={register}
 					value={0}
 				/>

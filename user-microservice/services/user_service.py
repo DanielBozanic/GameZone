@@ -5,11 +5,13 @@ import requests
 import random
 import string
 import datetime
+from sqlalchemy import and_, or_
 
 
 def register(data):
-    user = User.query.filter((data['email'] == User.email) |
-                             (data['user_name'] == User.user_name)).first()
+    user = User.query.filter(or_(
+                                data['email'] == User.email,
+                                data['user_name'] == User.user_name)).first()
     if not user:
         try:
             new_user = User(
@@ -31,7 +33,7 @@ def register(data):
 
 
 def get_verification_code(email):
-    user = User.query.filter(User.email.like(email)).first()
+    user = User.query.filter(User.email == email).first()
     if not user:
         return "Cannot find any account associated with this email", 400
 
@@ -39,7 +41,7 @@ def get_verification_code(email):
         return "An account with this email has already been verified", 400
 
     exists = UserVerification.query \
-        .filter(UserVerification.email.like(email)).first()
+        .filter(UserVerification.email == email).first()
     if exists:
         db.session.query(UserVerification). \
             filter(UserVerification.id == exists.id).delete()
@@ -74,7 +76,7 @@ def get_verification_code(email):
 
 def verify_account(data):
     user = User.query \
-        .filter(User.email.like(data["email"])).first()
+        .filter(User.email == data["email"]).first()
     if not user:
         return "Cannot find any account associated with this email"
 
@@ -82,8 +84,8 @@ def verify_account(data):
         return "An account with this email has already been verified"
 
     user_verification = UserVerification.query\
-        .filter(UserVerification.email.like(data["email"])) \
-        .filter(UserVerification.code.like(data["code"])).first()
+        .filter(UserVerification.email == data["email"]) \
+        .filter(UserVerification.code == data["code"]).first()
     if not user_verification:
         return "Invalid code"
 
@@ -100,8 +102,11 @@ def verify_account(data):
 
 
 def add_employee_and_admin(data):
-    user = User.query.filter((data['email'] == User.email) |
-                             (data['user_name'] == User.user_name)).first()
+    user = User.query.filter(
+                            or_(
+                                data['email'] == User.email,
+                                data['user_name'] == User.user_name)
+                            ).first()
     if not user:
         try:
             new_user = User(
@@ -128,13 +133,42 @@ def get_all():
 
 def get_all_registered_users(page, page_size):
     return User.query \
-        .filter(("ROLE_USER" == User.role) & User.verified) \
+        .filter(
+            and_(
+                "ROLE_USER" == User.role,
+                User.verified)) \
         .paginate(page, page_size)
 
 
 def get_number_of_records_registered_users():
     return User.query \
-        .filter(("ROLE_USER" == User.role) & User.verified) \
+        .filter(
+            and_(
+                "ROLE_USER" == User.role,
+                User.verified
+                )) \
+        .count()
+
+
+def search_registered_users(page, page_size, search_term):
+    return User.query \
+        .filter(
+            and_(
+                "ROLE_USER" == User.role,
+                User.verified,
+                User.user_name.like("%" + str(search_term) + "%")
+                )) \
+        .paginate(page, page_size)
+
+
+def get_number_of_records_registered_users_search(search_term):
+    return User.query \
+        .filter(
+            and_(
+                "ROLE_USER" == User.role,
+                User.verified,
+                User.user_name.like("%" + str(search_term) + "%")
+                )) \
         .count()
 
 
@@ -152,8 +186,10 @@ def update(data):
 
     user_db = User.query\
         .filter(data["id"] != User.id)\
-        .filter((data['email'] == User.email) |
-                (data['user_name'] == User.user_name)).first()
+        .filter(or_(
+                data['email'] == User.email,
+                data['user_name'] == User.user_name)
+                ).first()
 
     if not user_db:
         db.session.query(User). \
@@ -169,7 +205,10 @@ def update(data):
 def change_password(data):
     user_db = get_by_id(data["id"])
     if isinstance(user_db, str):
-        return "A user with id " + str(data["id"]) + " does not exist!"
+        return user_db
+
+    if user_db.password != data['oldPassword']:
+        return "Old password is incorrect"
 
     db.session.query(User). \
         filter(User.id == data["id"]). \

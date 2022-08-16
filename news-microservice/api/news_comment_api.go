@@ -114,3 +114,18 @@ func (newsCommentApi *NewsCommentAPI) DeleteNewsComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, error.Error())
 	}
 }
+
+func (newsCommentApi *NewsCommentAPI) DeleteNewsCommentsByNewsArticleId(c *gin.Context) {
+	newsArticleId, err := strconv.Atoi(c.Param("newsArticleId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err = newsCommentApi.INewsCommentService.DeleteNewsCommentsByNewsArticleId(newsArticleId)
+	if err == nil {
+		c.JSON(http.StatusOK, "Article comments deleted.")
+	} else {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}

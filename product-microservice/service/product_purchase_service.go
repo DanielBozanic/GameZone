@@ -141,7 +141,7 @@ func (productPurchaseService *productPurchaseService) ConfirmPayment(productPurc
 	updatedProducts := []model.Product{}
 	for _, productPurchaseDetail := range productPurchase.ProductPurchaseDetail {
 		product, _ := productPurchaseService.IProductRepository.GetProductById(productPurchaseDetail.ProductId)
-		if product.Amount < productPurchaseDetail.ProductQuantity {
+		if product.Quantity < productPurchaseDetail.ProductQuantity {
 			if product.Type == model.VIDEO_GAME {
 				videoGame, _ := productPurchaseService.IVideoGameRepository.GetById(product.Id)
 				if !*videoGame.Digital {
@@ -151,7 +151,7 @@ func (productPurchaseService *productPurchaseService) ConfirmPayment(productPurc
 				return "Insufficient quantity for " + product.Name
 			}
 		} else {
-			product.Amount = product.Amount - productPurchaseDetail.ProductQuantity
+			product.Quantity = product.Quantity - productPurchaseDetail.ProductQuantity
 		}
 		updatedProducts = append(updatedProducts, product)
 	}

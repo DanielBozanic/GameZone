@@ -115,3 +115,19 @@ func (productCommentApi *ProductCommentAPI) DeleteComment(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, error.Error())
 	}
 }
+
+func (productCommentApi *ProductCommentAPI) DeleteCommentsByProductId(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	
+	err = productCommentApi.IProductCommentService.DeleteCommentsByProductId(productId)
+
+	if err == nil {
+		c.JSON(http.StatusOK, "Comment for product deleted.")
+	} else  {
+		c.JSON(http.StatusBadRequest, err.Error())
+	}
+}

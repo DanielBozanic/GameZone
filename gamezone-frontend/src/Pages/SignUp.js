@@ -72,33 +72,27 @@ const SignUp = () => {
 					<Col md="10">
 						<Card className="form-card">
 							<CardTitle className="title" tag="h2">
-								Sign Up
+								Sign Up {loading && <Spinner />}
 							</CardTitle>
-							{loading && (
-								<div className="div-spinner">
-									<Spinner className="spinner" />
-								</div>
-							)}
-							{!loading && (
-								<CardBody>
-									<FormProvider {...methods}>
-										<Form className="form">
-											<CreateForm />
-											<Row>
-												<Col>
-													<Button
-														className="my-button"
-														type="button"
-														onClick={methods.handleSubmit(signUp)}
-													>
-														Sign up
-													</Button>
-												</Col>
-											</Row>
-										</Form>
-									</FormProvider>
-								</CardBody>
-							)}
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<CreateForm />
+										<Row>
+											<Col>
+												<Button
+													className="my-button"
+													type="button"
+													onClick={methods.handleSubmit(signUp)}
+													disabled={loading}
+												>
+													Sign up
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</FormProvider>
+							</CardBody>
 						</Card>
 					</Col>
 				</Row>

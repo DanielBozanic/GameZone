@@ -59,6 +59,7 @@ func main() {
 	newsComments.POST("/addNewsComment", newsCommentAPI.AddNewsComment)
 	newsComments.PUT("/editNewsComment", newsCommentAPI.EditNewsCommment)
 	newsComments.DELETE("/deleteNewsComment/:id", newsCommentAPI.DeleteNewsComment)
+	newsComments.DELETE("/deleteNewsCommentsByNewsArticleId/:newsArticleId", newsCommentAPI.DeleteNewsCommentsByNewsArticleId)
 	newsComments.GET("/getByUserId/:userId", newsCommentAPI.GetByUserId)
 
 	newsSubscriptions := api.Group("/newsSubscriptions")

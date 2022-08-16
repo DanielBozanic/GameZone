@@ -12,10 +12,10 @@ const PurchaseDetail = (props) => {
 					<Table className="purchase-table">
 						<tbody>
 							<tr>
-								<th>Name</th>
-								<th>Price</th>
-								<th>Quantity</th>
-								<th>Amount</th>
+								<th className="col-6">Name</th>
+								<th className="col-2">Price</th>
+								<th className="col-2">Quantity</th>
+								<th className="col-2">Amount</th>
 							</tr>
 							{props.purchase.ProductPurchaseDetail.map((purchaseDetail) => {
 								return (

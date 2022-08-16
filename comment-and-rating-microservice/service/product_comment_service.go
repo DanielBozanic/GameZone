@@ -24,6 +24,7 @@ type IProductCommentService interface {
 	AddComment(productComment model.ProductComment, userData dto.UserData) string
 	EditComment(productCommentDTO dto.ProductCommentDTO) string
 	DeleteComment(id int) error
+	DeleteCommentsByProductId(productId int) error
 }
 
 func NewProductCommentService(productCommentRepository repository.IProductCommentRepository) IProductCommentService {
@@ -47,7 +48,7 @@ func (productCommentService *productCommentService) GetByUserId(userId int) []mo
 }
 
 func (productCommentService *productCommentService) AddComment(productComment model.ProductComment, userData dto.UserData) string {
-	_, err := productCommentService.IProductCommentRepository.CheckIfUserCommented(userData.Id)
+	_, err := productCommentService.IProductCommentRepository.CheckIfUserCommented(userData.Id, productComment.ProductId)
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return "You already left a comment and rating on this product"
 	}
@@ -80,4 +81,16 @@ func (productCommentService *productCommentService) DeleteComment(id int) error 
 	}
 	*productComment.Archived = true
 	return productCommentService.IProductCommentRepository.Update(productComment)
+}
+
+func (productCommentService *productCommentService) DeleteCommentsByProductId(productId int) error {
+	productComments := productCommentService.IProductCommentRepository.GetByProductId(productId)
+	for _, productComment := range productComments {
+		*productComment.Archived = true
+		err := productCommentService.IProductCommentRepository.Update(productComment)
+		if err != nil {
+			return err;
+		}
+	}
+	return nil;
 }

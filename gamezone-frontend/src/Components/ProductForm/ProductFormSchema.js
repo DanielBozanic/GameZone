@@ -23,16 +23,16 @@ export const productFormSchema = yup.object({
 			)
 			.required("Price is required")
 			.typeError("Price must be a number"),
-		Amount: yup
+		Quantity: yup
 			.number()
 			.test(
 				"positive",
-				"Amount must be a positive number",
+				"Quantity must be a positive number",
 				(value) => value >= 0
 			)
-			.required("Amount is required")
-			.typeError("Amount must be a number")
-			.integer("Amount must be a non decimal value"),
+			.required("Quantity is required")
+			.typeError("Quantity must be a number")
+			.integer("Quantity must be a non decimal value"),
 		Image: yup.object({
 			Name: yup.string().required("You need to provide an image"),
 			Type: yup.string().test("type", "File type must be an image", (value) => {

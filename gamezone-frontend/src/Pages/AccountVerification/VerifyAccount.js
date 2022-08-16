@@ -62,43 +62,37 @@ const VerifyAccount = () => {
 					<Col md="10">
 						<Card className="form-card">
 							<CardTitle className="title" tag="h2">
-								Verify account
+								Verify account {loading && <Spinner />}
 							</CardTitle>
-							{loading && (
-								<div className="div-spinner">
-									<Spinner className="spinner" />
-								</div>
-							)}
-							{!loading && (
-								<CardBody>
-									<Form className="form">
-										<Row>
-											<Col>
-												<FormGroup>
-													<Label>Code</Label>
-													<Input
-														className="input-field"
-														type="text"
-														name="code"
-														innerRef={register}
-													/>
-												</FormGroup>
-											</Col>
-										</Row>
-										<Row>
-											<Col>
-												<Button
-													className="my-button"
-													type="button"
-													onClick={handleSubmit(verifyAccount)}
-												>
-													Verify
-												</Button>
-											</Col>
-										</Row>
-									</Form>
-								</CardBody>
-							)}
+							<CardBody>
+								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Code</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="code"
+													innerRef={register}
+												/>
+											</FormGroup>
+										</Col>
+									</Row>
+									<Row>
+										<Col>
+											<Button
+												className="my-button"
+												type="button"
+												onClick={handleSubmit(verifyAccount)}
+												disabled={loading}
+											>
+												Verify
+											</Button>
+										</Col>
+									</Row>
+								</Form>
+							</CardBody>
 						</Card>
 					</Col>
 				</Row>

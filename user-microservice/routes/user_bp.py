@@ -9,5 +9,8 @@ user_bp.route('/addEmployeeAndAdmin', methods=['POST'])(add_employee_and_admin)
 user_bp.route('/getById', methods=['GET'])(get_by_id)
 user_bp.route('/getAllRegisteredUsers', methods=['GET'])(get_all_registered_users)
 user_bp.route('/getNumberOfRecordsRegisteredUsers', methods=['GET'])(get_number_of_records_registered_users)
+user_bp.route('/searchRegisteredUsers', methods=['GET'])(search_registered_users)
+user_bp.route('/getNumberOfRecordsRegisteredUsersSearch',
+              methods=['GET'])(get_number_of_records_registered_users_search)
 user_bp.route('/update', methods=['PUT'])(update)
 user_bp.route('/changePassword', methods=['PUT'])(change_password)

@@ -142,6 +142,7 @@ const NewsEditor = () => {
 				);
 				publishData = newsArticle;
 			}
+			console.log(publishData);
 			axios
 				.put(newsArticleAPI.PUBLISH_NEWS_ARTICLE, publishData)
 				.then((res) => {

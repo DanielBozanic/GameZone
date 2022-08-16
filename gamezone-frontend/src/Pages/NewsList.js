@@ -9,36 +9,32 @@ import {
 	Row,
 	Col,
 	Container,
-	Pagination,
-	PaginationItem,
-	PaginationLink,
 	Spinner,
 } from "reactstrap";
+import Pagination from "react-js-pagination";
 import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import * as authService from "../Auth/AuthService";
 import * as newsArticleAPI from "../APIs/NewsMicroservice/news_article_api";
+import * as newsCommentAPI from "../APIs/NewsMicroservice/news_comment_api";
 
 const NewsList = () => {
 	const [newsArticles, setNewsArticles] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [pageCount, setPageCount] = useState([]);
+	const [numberOfRecords, setNumberOfRecords] = useState(0);
 	const [loading, setLoading] = useState(true);
 	const pageSize = 10;
 
 	useEffect(() => {
 		if (authService.isEmployee()) {
 			getNewsArticles();
-			getPageCount();
+			getNumberOfRecords();
 		} else {
 			getPublishedNewsArticles();
-			getPublishedArticlesPageCount();
+			getNumberOfRecordsPublishedArticles();
 		}
 	}, [currentPage]);
-
-	const navigate = useNavigate();
 
 	const getNewsArticles = () => {
 		axios
@@ -52,11 +48,11 @@ const NewsList = () => {
 			});
 	};
 
-	const getPageCount = () => {
+	const getNumberOfRecords = () => {
 		axios
 			.get(`${newsArticleAPI.GET_NUMBER_OF_RECORDS}`)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -77,11 +73,11 @@ const NewsList = () => {
 			});
 	};
 
-	const getPublishedArticlesPageCount = () => {
+	const getNumberOfRecordsPublishedArticles = () => {
 		axios
 			.get(`${newsArticleAPI.GET_NUMBER_OF_RECORDS_PUBLISHED_ARTICLES}`)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -89,29 +85,36 @@ const NewsList = () => {
 	};
 
 	const moreDetails = (id) => {
-		navigate("/viewNews/" + id);
+		return "/viewNews/" + id;
 	};
 
 	const editNewsArticle = (id) => {
-		navigate("/editNewsArticle/" + id);
+		return "/editNewsArticle/" + id;
 	};
 
 	const deleteNewsArticle = (id) => {
 		axios
 			.delete(`${newsArticleAPI.DELETE_NEWS_ARTICLE}/${id}`)
-			.then((res) => {
-				console.log(res);
+			.then((_res) => {
+				deleteNewsCommentsByNewsArticleId(id);
 				getNewsArticles();
-				getPageCount();
+				getNumberOfRecords();
 			})
 			.catch((err) => {
 				console.error(err);
 			});
 	};
 
-	const handleClick = (e, index) => {
-		setLoading(true);
-		e.preventDefault();
+	const deleteNewsCommentsByNewsArticleId = (newsArticleId) => {
+		axios.delete(
+			`${newsCommentAPI.DELETE_NEWS_COMMENTS_BY_NEWS_ARTICLE_ID}/${newsArticleId}`
+		);
+	};
+
+	const handleClick = (index) => {
+		if (index !== currentPage) {
+			setLoading(true);
+		}
 		setCurrentPage(index);
 	};
 
@@ -163,24 +166,26 @@ const NewsList = () => {
 											</CardBody>
 										)}
 										<CardFooter>
-											<Button
-												style={{ marginRight: "5px" }}
-												className="my-button"
-												type="button"
-												onClick={() => moreDetails(newsArticle.Id)}
-											>
-												More details
-											</Button>
+											<a href={moreDetails(newsArticle.Id)}>
+												<Button
+													style={{ marginRight: "5px" }}
+													className="my-button"
+													type="button"
+												>
+													More details
+												</Button>
+											</a>
 											{authService.isEmployee() && (
 												<>
-													<Button
-														style={{ marginRight: "5px" }}
-														className="my-button"
-														type="button"
-														onClick={() => editNewsArticle(newsArticle.Id)}
-													>
-														Edit
-													</Button>
+													<a href={editNewsArticle(newsArticle.Id)}>
+														<Button
+															style={{ marginRight: "5px" }}
+															className="my-button"
+															type="button"
+														>
+															Edit
+														</Button>
+													</a>
 													<Button
 														style={{ marginRight: "5px" }}
 														className="my-button"
@@ -199,28 +204,16 @@ const NewsList = () => {
 					})}
 					<Row className="pagination">
 						<Col>
-							<Pagination size="lg">
-								<PaginationItem disabled={currentPage <= 1}>
-									<PaginationLink
-										onClick={(e) => handleClick(e, currentPage - 1)}
-										previous
-									/>
-								</PaginationItem>
-
-								{[...Array(pageCount)].map((page, i) => (
-									<PaginationItem active={i === currentPage - 1} key={i}>
-										<PaginationLink onClick={(e) => handleClick(e, i + 1)}>
-											{i + 1}
-										</PaginationLink>
-									</PaginationItem>
-								))}
-								<PaginationItem disabled={currentPage - 1 >= pageCount - 1}>
-									<PaginationLink
-										onClick={(e) => handleClick(e, currentPage + 1)}
-										next
-									/>
-								</PaginationItem>
-							</Pagination>
+							<Pagination
+								className="pagination"
+								activePage={currentPage}
+								itemsCountPerPage={pageSize}
+								totalItemsCount={numberOfRecords}
+								onChange={handleClick}
+								itemClass="page-item"
+								linkClass="page-link"
+								pageRangeDisplayed={5}
+							/>
 						</Col>
 					</Row>
 				</Container>

@@ -10,7 +10,9 @@ getProductsWithBiggestProfitLastThirtyDays
 			SUM(product_purchase_details.product_price * product_purchase_details.product_quantity)
 		 FROM product_purchases 
 		 JOIN product_purchase_details ON product_purchases.id = product_purchase_details.product_purchase_id 
-		 WHERE 
+		 WHERE
+			product_purchase_details.product_name IS NOT NULL
+			AND
 			product_purchases.purchase_date BETWEEN NOW() - INTERVAL 30 DAY AND NOW()
 		 	AND 
 			product_purchases.is_paid_for = true 

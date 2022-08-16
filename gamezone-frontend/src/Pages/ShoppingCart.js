@@ -21,6 +21,7 @@ import AppNavbar from "../Layout/AppNavbar";
 import BuyerInfo from "../Components/Checkout/BuyerInfo/BuyerInfo";
 import PaymentType from "../Components/Checkout/PaymentType/PaymentType";
 import ReviewCheckoutInfo from "../Components/Checkout/ReviewCheckoutInfo";
+import * as prodcutType from "../Utils/ProductType";
 
 toast.configure();
 const ShoppingCart = () => {
@@ -127,11 +128,11 @@ const ShoppingCart = () => {
 				ProductPrice: productInCart.Product.Product.Price,
 				ProductQuantity: productInCart.Quantity,
 				VideoGamePlatform:
-					productInCart.Product.Platform !== undefined
+					productInCart.Product.Product.Type === prodcutType.VIDEO_GAME
 						? productInCart.Product.Platform
 						: null,
 				VideoGameDigital:
-					productInCart.Product.Digital !== undefined
+					productInCart.Product.Product.Type === prodcutType.VIDEO_GAME
 						? productInCart.Product.Digital
 						: null,
 			});
@@ -183,10 +184,11 @@ const ShoppingCart = () => {
 							</CardTitle>
 							<Table className="purchase-table">
 								<tr>
-									<th>Name</th>
-									<th>Price</th>
-									<th>Quantity</th>
-									<th>Amount</th>
+									<th className="col-3">Name</th>
+									<th className="col-2">Price</th>
+									<th className="col-2">Quantity</th>
+									<th className="col-2">Amount</th>
+									<th className="col-3"></th>
 								</tr>
 								<tbody>
 									{shoppingCart.map((productInCart, idx) => {
@@ -201,32 +203,37 @@ const ShoppingCart = () => {
 													RSD
 												</td>
 												<td>
-													<Input
-														className="input-field"
-														type="select"
-														onChange={(e) =>
-															updateProductPurchase(
-																productInCart,
-																Number(e.target.value)
-															)
-														}
-													>
-														<option hidden>Select quantity</option>
-														<option>1</option>
-														<option>2</option>
-														<option>3</option>
-														<option>4</option>
-														<option>5</option>
-													</Input>
-												</td>
-												<td>
-													<Button
-														type="button"
-														className="my-button"
-														onClick={() => removeProductFromCart(productInCart)}
-													>
-														Remove
-													</Button>
+													<div className="container-table-footer">
+														<div className="container-table-footer-list">
+															<Input
+																className="input-field"
+																type="select"
+																onChange={(e) =>
+																	updateProductPurchase(
+																		productInCart,
+																		Number(e.target.value)
+																	)
+																}
+															>
+																<option hidden>Select quantity</option>
+																<option>1</option>
+																<option>2</option>
+																<option>3</option>
+																<option>4</option>
+																<option>5</option>
+															</Input>
+															<Button
+																style={{ marginTop: "5px" }}
+																type="button"
+																className="my-button"
+																onClick={() =>
+																	removeProductFromCart(productInCart)
+																}
+															>
+																Remove
+															</Button>
+														</div>
+													</div>
 												</td>
 											</tr>
 										);

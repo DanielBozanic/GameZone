@@ -70,51 +70,43 @@ const CreateAdminAndEmployee = () => {
 					<Col md="10">
 						<Card className="form-card">
 							<CardTitle className="title" tag="h2">
-								Add employee/admin
+								Add employee/admin {loading && <Spinner />}
 							</CardTitle>
-							{loading && (
-								<div className="div-spinner">
-									<Spinner className="spinner" />
-								</div>
-							)}
-							{!loading && (
-								<CardBody>
-									<FormProvider {...methods}>
-										<Form className="form">
-											<CreateForm />
-											<Row>
-												<Col>
-													<FormGroup>
-														<Label>Role</Label>
-														<Input
-															className="input-field"
-															name="role"
-															type="select"
-															innerRef={methods.register}
-														>
-															<option value={role.ROLE_EMPLOYEE}>
-																Employee
-															</option>
-															<option value={role.ROLE_ADMIN}>Admin</option>
-														</Input>
-													</FormGroup>
-												</Col>
-											</Row>
-											<Row>
-												<Col>
-													<Button
-														className="my-button"
-														type="button"
-														onClick={methods.handleSubmit(add)}
+							<CardBody>
+								<FormProvider {...methods}>
+									<Form className="form">
+										<CreateForm />
+										<Row>
+											<Col>
+												<FormGroup>
+													<Label>Role</Label>
+													<Input
+														className="input-field"
+														name="role"
+														type="select"
+														innerRef={methods.register}
 													>
-														Add
-													</Button>
-												</Col>
-											</Row>
-										</Form>
-									</FormProvider>
-								</CardBody>
-							)}
+														<option value={role.ROLE_EMPLOYEE}>Employee</option>
+														<option value={role.ROLE_ADMIN}>Admin</option>
+													</Input>
+												</FormGroup>
+											</Col>
+										</Row>
+										<Row>
+											<Col>
+												<Button
+													className="my-button"
+													type="button"
+													onClick={methods.handleSubmit(add)}
+													disabled={loading}
+												>
+													Add
+												</Button>
+											</Col>
+										</Row>
+									</Form>
+								</FormProvider>
+							</CardBody>
 						</Card>
 					</Col>
 				</Row>

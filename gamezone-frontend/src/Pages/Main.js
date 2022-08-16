@@ -17,19 +17,18 @@ const Main = () => {
 	const [popularProducts, setPopularProducts] = useState([]);
 	const [recommendedProducts, setRecommendedProducts] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [pageCount, setPageCount] = useState([]);
+	const [numberOfRecords, setNumberOfRecords] = useState(0);
 	const [searchTerm, setSearchTerm] = useState("");
 	const pageSize = 12;
 
-	const handleClick = (e, index) => {
-		e.preventDefault();
+	const handleClick = (index) => {
 		setCurrentPage(index);
 	};
 
 	useEffect(() => {
 		if (searchTerm !== "") {
 			getProductsSearch();
-			getPageCountSearch();
+			getNumberOfRecordsSearch();
 		} else {
 			setProducts([]);
 			getMainPageProducts();
@@ -54,11 +53,11 @@ const Main = () => {
 			});
 	};
 
-	const getPageCountSearch = () => {
+	const getNumberOfRecordsSearch = () => {
 		axios
 			.get(`${productAPI.GET_NUMBER_OF_RECORDS_SEARCH}?name=${searchTerm}`)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -224,7 +223,8 @@ const Main = () => {
 			<ProductsView
 				products={products}
 				currentPage={currentPage}
-				pageCount={pageCount}
+				pageSize={pageSize}
+				numberOfRecords={numberOfRecords}
 				handleClick={handleClick}
 			/>
 		</>

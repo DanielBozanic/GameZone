@@ -9,15 +9,14 @@ import { Helmet } from "react-helmet";
 const ProductList = (props) => {
 	const [products, setProducts] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [pageCount, setPageCount] = useState([]);
+	const [numberOfRecords, setNumberOfRecords] = useState(0);
 	const [filter, setFilter] = useState(null);
 	const [showFilter, setShowFilter] = useState(true);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [clearSearchTerm, setClearSearchTerm] = useState(false);
 	const pageSize = 12;
 
-	const handleClick = (e, index) => {
-		e.preventDefault();
+	const handleClick = (index) => {
 		setCurrentPage(index);
 	};
 
@@ -25,13 +24,13 @@ const ProductList = (props) => {
 		const pageSetup = () => {
 			if (filter !== null) {
 				getProductsFilter();
-				getPageCountFilter();
+				getNumberOfRecordsFilter();
 			} else if (searchTerm !== "") {
 				getProductsSearch();
-				getPageCountSearch();
+				getNumberOfRecordsSearch();
 			} else {
 				getProducts();
-				getPageCount();
+				getNumberOfRecords();
 				setShowFilter(true);
 			}
 		};
@@ -49,11 +48,11 @@ const ProductList = (props) => {
 			});
 	};
 
-	const getPageCount = () => {
+	const getNumberOfRecords = () => {
 		axios
 			.get(`${props.GET_NUMBER_OF_RECORDS}`)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -71,11 +70,11 @@ const ProductList = (props) => {
 			});
 	};
 
-	const getPageCountFilter = () => {
+	const getNumberOfRecordsFilter = () => {
 		axios
 			.post(`${props.GET_NUMBER_OF_RECORDS_FILTER}`, filter)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -95,11 +94,11 @@ const ProductList = (props) => {
 			});
 	};
 
-	const getPageCountSearch = () => {
+	const getNumberOfRecordsSearch = () => {
 		axios
 			.get(`${props.GET_NUMBER_OF_RECORDS_SEARCH}?name=${searchTerm}`)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -143,7 +142,8 @@ const ProductList = (props) => {
 			<ProductsView
 				products={products}
 				currentPage={currentPage}
-				pageCount={pageCount}
+				pageSize={pageSize}
+				numberOfRecords={numberOfRecords}
 				handleClick={handleClick}
 			/>
 		</>

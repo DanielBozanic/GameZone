@@ -63,22 +63,28 @@ const NewsDetail = () => {
 											</Col>
 											<Col md="2">
 												<CardTitle tag="h5">
-													{newsArticle.DateTime.toString().split("T")[0]}
+													{new Date(newsArticle.DateTime).toLocaleDateString()}
 												</CardTitle>
 											</Col>
 										</Row>
 									</CardHeader>
 									<CardBody>
 										<CardText>
-											<div
-												dangerouslySetInnerHTML={{
-													__html: DOMPurify.sanitize(
-														authService.isEmployee()
-															? newsArticle.UnpublishedContent
-															: newsArticle.PublishedContent
-													),
-												}}
-											></div>
+											<Container>
+												<Row>
+													<Col className="news-content">
+														<div
+															dangerouslySetInnerHTML={{
+																__html: DOMPurify.sanitize(
+																	authService.isEmployee()
+																		? newsArticle.UnpublishedContent
+																		: newsArticle.PublishedContent
+																),
+															}}
+														></div>
+													</Col>
+												</Row>
+											</Container>
 										</CardText>
 										<NewsComment newsArticle={newsArticle} />
 									</CardBody>

@@ -7,5 +7,5 @@ export const newsEditorSchema = yup.object().shape({
 		.required("Title is required"),
 	UnpublishedDescription: yup
 		.string()
-		.max(200, "Maximum number of characters allowed is 200"),
+		.max(500, "Maximum number of characters allowed is 500"),
 });

@@ -100,7 +100,7 @@ const HeadphonesForm = (props) => {
 					autoClose: 5000,
 					toastId: customId,
 				});
-				if (product.Product.Amount === 0 && data.Product.Amount > 0) {
+				if (product.Product.Quantity === 0 && data.product.Quantity > 0) {
 					notifyProductAvailability(product.Product.Id);
 				}
 			})

@@ -11,5 +11,7 @@ product_comment_api_bp.route(product_comment_api_routes.ADD_COMMENT, methods=['P
 product_comment_api_bp.route(product_comment_api_routes.EDIT_COMMENT, methods=['PUT'])(edit_comment)
 product_comment_api_bp.route(product_comment_api_routes.DELETE_COMMENT + "/<id>",
                              methods=['DELETE'])(delete_comment)
+product_comment_api_bp.route(product_comment_api_routes.DELETE_COMMENTS_BY_PRODUCT_ID + "/<productId>",
+                             methods=['DELETE'])(delete_comments_by_product_id)
 product_comment_api_bp.route(product_comment_api_routes.GET_BY_USER_ID + "/<userId>",
                              methods=['GET'])(get_by_user_id)

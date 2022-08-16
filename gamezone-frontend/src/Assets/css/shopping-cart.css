@@ -13,3 +13,14 @@
 	max-width: 200px;
 	margin-top: 5px;
 }
+
+.container-table-footer {
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.container-table-footer-list {
+	display: flex;
+	flex-direction: column;
+}

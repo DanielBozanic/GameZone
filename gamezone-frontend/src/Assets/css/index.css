@@ -203,6 +203,7 @@ body {
 
 .pagination {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
 	flex: 1;
@@ -210,6 +211,8 @@ body {
 }
 
 .page-link {
+	height: 40px;
+	width: 40px;
 	background: #343a40;
 	color: orange;
 	border: 1px solid #343a40;
@@ -217,33 +220,27 @@ body {
 }
 
 .page-link:hover {
+	height: 40px;
+	width: 40px;
 	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.page-link:focus {
-	background-color: orange;
-	color: #343a40;
-	transition: 0.7s;
-}
-
-.page-link:active {
-	background-color: orange;
+	border: 1px solid #343a40;
 	color: #343a40;
 	transition: 0.7s;
 }
 
 .page-item.disabled .page-link {
-	background: #343a40;
-	color: orange;
+	background: gray;
+	color: white;
 	border: 1px solid #343a40;
 	font-weight: bold;
 }
 
 .page-item.active .page-link {
+	height: 40px;
+	width: 40px;
 	background-color: orange;
 	color: #343a40;
+	border: 1px solid #343a40;
 	font-weight: bold;
 }
 
@@ -325,4 +322,11 @@ body {
 	color: orange;
 	width: 150px;
 	height: 150px;
+}
+
+.news-content img {
+	height: 100%;
+	max-width: 100%;
+	display: block;
+	margin: auto;
 }

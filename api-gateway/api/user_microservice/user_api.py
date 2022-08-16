@@ -75,6 +75,35 @@ def get_number_of_records_registered_users():
     return resp
 
 
+@token_utils.authorization_required(roles=[role.ROLE_ADMIN])
+def search_registered_users():
+    args = request.args.to_dict()
+    page = args.get("page")
+    page_size = args.get("pageSize")
+    search_term = args.get("searchTerm")
+    headers = request.headers
+    r = requests.get(user_api_routes.BASE + user_api_routes.API +
+                     user_api_routes.SEARCH_REGISTERED_USERS +
+                     "?page={}&pageSize={}&searchTerm={}".format(page, page_size, search_term),
+                     headers=headers)
+    resp = jsonify(r.json())
+    resp.status_code = r.status_code
+    return resp
+
+
+@token_utils.authorization_required(roles=[role.ROLE_ADMIN])
+def get_number_of_records_registered_users_search():
+    args = request.args.to_dict()
+    search_term = args.get("searchTerm")
+    headers = request.headers
+    r = requests.get(user_api_routes.BASE + user_api_routes.API +
+                     user_api_routes.GET_NUMBER_OF_RECORDS_REGISTERED_USERS_SEARCH +
+                     "?searchTerm={}".format(search_term), headers=headers)
+    resp = jsonify(r.json())
+    resp.status_code = r.status_code
+    return resp
+
+
 @token_utils.authentification_required
 def update():
     data = request.json

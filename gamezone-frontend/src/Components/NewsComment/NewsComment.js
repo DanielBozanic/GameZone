@@ -109,12 +109,11 @@ const NewsComment = (props) => {
 			{!loading && (
 				<Row>
 					<Col>
-						{newsComments.length > 0 ||
-							(authService.isUser() && (
-								<CardTitle className="title" tag="h3">
-									Comment section
-								</CardTitle>
-							))}
+						{(newsComments.length > 0 || authService.isUser()) && (
+							<CardTitle className="title" tag="h3">
+								Comment section
+							</CardTitle>
+						)}
 						{authService.isUser() && (
 							<Row>
 								<Col>

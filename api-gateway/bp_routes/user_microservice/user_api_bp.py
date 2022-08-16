@@ -11,5 +11,8 @@ user_api_bp.route(user_api_routes.GET_USER_BY_ID, methods=['GET'])(get_by_id)
 user_api_bp.route(user_api_routes.GET_ALL_REGISTERED_USERS, methods=['GET'])(get_all_registered_users)
 user_api_bp.route(user_api_routes.GET_NUMBER_OF_RECORDS_REGISTERED_USERS,
                   methods=['GET'])(get_number_of_records_registered_users)
+user_api_bp.route(user_api_routes.SEARCH_REGISTERED_USERS, methods=['GET'])(search_registered_users)
+user_api_bp.route(user_api_routes.GET_NUMBER_OF_RECORDS_REGISTERED_USERS_SEARCH,
+                  methods=['GET'])(get_number_of_records_registered_users_search)
 user_api_bp.route(user_api_routes.UPDATE, methods=['PUT'])(update)
 user_api_bp.route(user_api_routes.CHANGE_PASSWORD, methods=['PUT'])(change_password)

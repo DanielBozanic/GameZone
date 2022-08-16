@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import {
 	CardText,
 	CardTitle,
@@ -36,9 +35,8 @@ const Profile = () => {
 	const [user, setUser] = useState(null);
 	const [updateMode, setUpdateMode] = useState(false);
 	const [changePasswordMode, setChangePasswordMode] = useState(false);
-	const [loading, setLoading] = useState(true);
-
-	const navigate = useNavigate();
+	const [bigSpinnerLoading, setBigSpinnerLoading] = useState(true);
+	const [smallSpinnerLoading, setSmallSpinnerLoading] = useState(false);
 
 	const updateForm = useForm({
 		resolver: yupResolver(updateSchema),
@@ -59,7 +57,7 @@ const Profile = () => {
 			.get(`${userAPI.GET_USER_BY_ID}?userId=${Number(authService.getId())}`)
 			.then((res) => {
 				setUser(res.data.user);
-				setLoading(false);
+				setBigSpinnerLoading(false);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -67,13 +65,14 @@ const Profile = () => {
 	};
 
 	const update = (data) => {
-		setLoading(true);
+		setSmallSpinnerLoading(true);
 		user.email = data.email;
 		user.name = data.name;
 		user.surname = data.surname;
 		axios
 			.put(`${userAPI.UPDATE}`, user)
 			.then((_res) => {
+				setSmallSpinnerLoading(false);
 				setUpdateMode(false);
 				getUserById();
 			})
@@ -83,13 +82,14 @@ const Profile = () => {
 					autoClose: false,
 					toastId: customId,
 				});
-				setLoading(false);
+				setSmallSpinnerLoading(false);
 			});
 	};
 
 	const changePassword = (data) => {
-		setLoading(true);
-		user.password = data.password;
+		setSmallSpinnerLoading(true);
+		user.oldPassword = data.oldPassword;
+		user.password = data.newPassword;
 		axios
 			.put(`${userAPI.CHANGE_PASSWORD}`, user)
 			.then((res) => {
@@ -98,6 +98,7 @@ const Profile = () => {
 					autoClose: 5000,
 					toastId: customId,
 				});
+				setSmallSpinnerLoading(false);
 				setChangePasswordMode(false);
 				getUserById();
 			})
@@ -107,12 +108,12 @@ const Profile = () => {
 					autoClose: false,
 					toastId: customId,
 				});
-				setLoading(false);
+				setSmallSpinnerLoading(false);
 			});
 	};
 
 	const purchaseHistory = () => {
-		navigate("/purchaseHistory/" + authService.getId());
+		return "/purchaseHistory/" + authService.getId();
 	};
 
 	return (
@@ -124,16 +125,16 @@ const Profile = () => {
 				<Row>
 					<Col className="profile-card-col" md="8">
 						<Card className="card">
-							{loading && (
+							{bigSpinnerLoading && (
 								<div className="div-spinner">
 									<Spinner className="spinner" />
 								</div>
 							)}
-							{!loading && user !== null && (
+							{user !== null && (
 								<>
 									<CardHeader>
-										<CardTitle className="title" tag="h5">
-											{user.user_name}
+										<CardTitle className="title" tag="h2">
+											{user.user_name} {smallSpinnerLoading && <Spinner />}
 										</CardTitle>
 									</CardHeader>
 									<CardBody>
@@ -236,6 +237,7 @@ const Profile = () => {
 																className="my-button"
 																type="button"
 																onClick={updateForm.handleSubmit(update)}
+																disabled={smallSpinnerLoading}
 															>
 																Update
 															</Button>
@@ -244,6 +246,7 @@ const Profile = () => {
 																className="my-button"
 																type="button"
 																onClick={() => setUpdateMode(false)}
+																disabled={smallSpinnerLoading}
 															>
 																Cancel
 															</Button>
@@ -256,18 +259,45 @@ const Profile = () => {
 													<Row>
 														<Col>
 															<FormGroup>
-																<Label>Password</Label>
+																<Label>Old Password</Label>
 																<Input
 																	className="input-field"
 																	type="password"
-																	name="password"
+																	name="oldPassword"
 																	invalid={
-																		changePasswordForm.errors.password?.message
+																		changePasswordForm.errors.oldPassword
+																			?.message
 																	}
 																	innerRef={changePasswordForm.register}
 																/>
 																<FormFeedback className="input-field-error-msg">
-																	{changePasswordForm.errors.password?.message}
+																	{
+																		changePasswordForm.errors.oldPassword
+																			?.message
+																	}
+																</FormFeedback>
+															</FormGroup>
+														</Col>
+													</Row>
+													<Row>
+														<Col>
+															<FormGroup>
+																<Label>New Password</Label>
+																<Input
+																	className="input-field"
+																	type="password"
+																	name="newPassword"
+																	invalid={
+																		changePasswordForm.errors.newPassword
+																			?.message
+																	}
+																	innerRef={changePasswordForm.register}
+																/>
+																<FormFeedback className="input-field-error-msg">
+																	{
+																		changePasswordForm.errors.newPassword
+																			?.message
+																	}
 																</FormFeedback>
 															</FormGroup>
 														</Col>
@@ -304,6 +334,7 @@ const Profile = () => {
 																onClick={changePasswordForm.handleSubmit(
 																	changePassword
 																)}
+																disabled={smallSpinnerLoading}
 															>
 																Confirm
 															</Button>
@@ -311,6 +342,7 @@ const Profile = () => {
 																className="my-button"
 																type="button"
 																onClick={() => setChangePasswordMode(false)}
+																disabled={smallSpinnerLoading}
 															>
 																Cancel
 															</Button>
@@ -344,14 +376,15 @@ const Profile = () => {
 										<CardFooter>
 											<Row>
 												<Col>
-													<Button
-														style={{ marginTop: "5px" }}
-														className="my-button"
-														type="button"
-														onClick={purchaseHistory}
-													>
-														Purchase history
-													</Button>
+													<a href={purchaseHistory}>
+														<Button
+															style={{ marginTop: "5px" }}
+															className="my-button"
+															type="button"
+														>
+															Purchase history
+														</Button>
+													</a>
 												</Col>
 											</Row>
 										</CardFooter>

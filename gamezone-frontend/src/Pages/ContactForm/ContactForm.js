@@ -41,7 +41,7 @@ const ContactForm = () => {
 				toast.success(res.data, {
 					position: toast.POSITION.TOP_CENTER,
 					toastId: customId,
-					autoClose: false,
+					autoClose: 5000,
 				});
 				reset();
 			})
@@ -68,6 +68,23 @@ const ContactForm = () => {
 							</CardTitle>
 							<CardBody>
 								<Form className="form">
+									<Row>
+										<Col>
+											<FormGroup>
+												<Label>Subject</Label>
+												<Input
+													className="input-field"
+													type="text"
+													name="Subject"
+													invalid={errors.Subject?.message}
+													innerRef={register}
+												/>
+												<FormFeedback className="input-field-error-msg">
+													{errors.Subject?.message}
+												</FormFeedback>
+											</FormGroup>
+										</Col>
+									</Row>
 									<Row>
 										<Col>
 											<FormGroup>

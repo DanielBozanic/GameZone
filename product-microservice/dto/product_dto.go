@@ -13,7 +13,7 @@ type ProductDTO struct {
 	Description string
 	Manufacturer string
 	Price decimal.Decimal
-	Amount uint
+	Quantity uint
 	Type model.Type
 	Image FileDTO
 	MainPage *bool

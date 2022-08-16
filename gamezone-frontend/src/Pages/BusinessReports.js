@@ -37,13 +37,29 @@ const BusinessReports = () => {
 				text: title,
 				color: "white",
 			},
+			tooltip: {
+				callbacks: {
+					title: (context) => {
+						return context[0].label.replaceAll(",", " ");
+					},
+				},
+			},
 		},
 		scales: {
 			y: {
 				ticks: { color: "white" },
 			},
 			x: {
-				ticks: { color: "white" },
+				ticks: {
+					color: "white",
+					maxRotation: 90,
+					minRotation: 0,
+					callback: function (value) {
+						return this.getLabelForValue(value).length > 10
+							? this.getLabelForValue(value).substr(0, 10) + "..."
+							: this.getLabelForValue(value);
+					},
+				},
 			},
 		},
 		maintainAspectRatio: false,

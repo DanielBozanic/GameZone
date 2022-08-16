@@ -10,7 +10,7 @@ type Product struct {
 	Description string `gorm:"type:varchar(1500);not null"`
 	Manufacturer string `gorm:"type:varchar(40);not null"`
 	Price decimal.Decimal `gorm:"type:numeric;not null"`
-	Amount uint `gorm:"not null"`
+	Quantity uint `gorm:"not null"`
 	Type Type `gorm:"not null"`
 	Image File `gorm:"foreignKey:ImageId"`
 	ImageId int

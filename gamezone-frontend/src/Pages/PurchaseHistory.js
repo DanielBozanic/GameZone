@@ -2,11 +2,12 @@ import {
 	Row,
 	Col,
 	Container,
-	Pagination,
-	PaginationItem,
-	PaginationLink,
 	Spinner,
+	Card,
+	CardTitle,
+	CardBody,
 } from "reactstrap";
+import Pagination from "react-js-pagination";
 import { Helmet } from "react-helmet";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,7 +20,7 @@ import Purchase from "../Components/PurchaseHistory/Purchase";
 const PurchaseHistory = () => {
 	const [purchases, setPurchases] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [pageCount, setPageCount] = useState([]);
+	const [numberOfRecords, setNumberOfRecords] = useState(0);
 	const pageSize = 10;
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState(null);
@@ -47,7 +48,7 @@ const PurchaseHistory = () => {
 			)
 			.then((res) => {
 				setPurchases(res.data);
-				getPageCount();
+				getNumberOfRecords();
 				setLoading(false);
 			})
 			.catch((err) => {
@@ -55,13 +56,13 @@ const PurchaseHistory = () => {
 			});
 	};
 
-	const getPageCount = () => {
+	const getNumberOfRecords = () => {
 		axios
 			.get(
 				`${productPurchaseAPI.GET_NUMBER_OF_RECORDS_PURCHASE_HISTORY}?userId=${id}`
 			)
 			.then((res) => {
-				setPageCount(Math.ceil(Number(res.data) / pageSize));
+				setNumberOfRecords(res.data);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -82,9 +83,10 @@ const PurchaseHistory = () => {
 		}
 	};
 
-	const handleClick = (e, index) => {
-		setLoading(true);
-		e.preventDefault();
+	const handleClick = (index) => {
+		if (index !== currentPage) {
+			setLoading(true);
+		}
 		setCurrentPage(index);
 	};
 
@@ -105,6 +107,46 @@ const PurchaseHistory = () => {
 					<Spinner className="spinner" />
 				</div>
 			)}
+			<Container>
+				<Row>
+					<Col>
+						{!loading && purchases.length <= 0 && authService.isUser() && (
+							<Card className="card">
+								<CardBody>
+									<Container>
+										<Row>
+											<Col>
+												<CardTitle className="title " tag="h2">
+													You have no purchases.
+												</CardTitle>
+											</Col>
+										</Row>
+									</Container>
+								</CardBody>
+							</Card>
+						)}
+						{!loading &&
+							purchases.length <= 0 &&
+							user !== null &&
+							authService.isAdmin() && (
+								<Card className="card">
+									<CardBody>
+										<Container>
+											<Row>
+												<Col>
+													<CardTitle className="title " tag="h2">
+														{user.user_name} has no purchases.
+													</CardTitle>
+												</Col>
+											</Row>
+										</Container>
+									</CardBody>
+								</Card>
+							)}
+					</Col>
+				</Row>
+			</Container>
+
 			{!loading && purchases.length > 0 && (
 				<Container>
 					{purchases.map((purchase) => {
@@ -117,28 +159,16 @@ const PurchaseHistory = () => {
 					})}
 					<Row className="pagination">
 						<Col>
-							<Pagination size="lg">
-								<PaginationItem disabled={currentPage <= 1}>
-									<PaginationLink
-										onClick={(e) => handleClick(e, currentPage - 1)}
-										previous
-									/>
-								</PaginationItem>
-
-								{[...Array(pageCount)].map((page, i) => (
-									<PaginationItem active={i === currentPage - 1} key={i}>
-										<PaginationLink onClick={(e) => handleClick(e, i + 1)}>
-											{i + 1}
-										</PaginationLink>
-									</PaginationItem>
-								))}
-								<PaginationItem disabled={currentPage - 1 >= pageCount - 1}>
-									<PaginationLink
-										onClick={(e) => handleClick(e, currentPage + 1)}
-										next
-									/>
-								</PaginationItem>
-							</Pagination>
+							<Pagination
+								className="pagination"
+								activePage={currentPage}
+								itemsCountPerPage={pageSize}
+								totalItemsCount={numberOfRecords}
+								onChange={handleClick}
+								itemClass="page-item"
+								linkClass="page-link"
+								pageRangeDisplayed={5}
+							/>
 						</Col>
 					</Row>
 				</Container>

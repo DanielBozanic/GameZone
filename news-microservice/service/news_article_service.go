@@ -65,7 +65,6 @@ func (newsArticleService *newsArticleService) EditNewsArticle(newsArticleDTO dto
 	}
 
 	updatedNewsArticle := mapper.ToNewsArticle(newsArticleDTO)
-	updatedNewsArticle.DateTime = time.Now()
 	err = newsArticleService.INewsArticleRepository.Update(updatedNewsArticle)
 	if err != nil {
 		msg = err.Error()
@@ -87,13 +86,13 @@ func (newsArticleService *newsArticleService) PublishNewsArticle(newsArticleDTO 
 	newsArticle, err := newsArticleService.INewsArticleRepository.GetById(newsArticleDTO.Id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		newsArticle = newsArticleService.AddNewsArticle(mapper.ToNewsArticle(newsArticleDTO))
+		newsArticle.PublishedDescription = newsArticleDTO.UnpublishedDescription
 	} else {
 		newsArticle = mapper.ToNewsArticle(newsArticleDTO)
-		newsArticle.DateTime = time.Now()
+		*newsArticle.PublishedDescription = *newsArticleDTO.UnpublishedDescription
 	}
 
 	newsArticle.PublishedTitle = newsArticleDTO.UnpublishedTitle
-	newsArticle.PublishedDescription = newsArticleDTO.UnpublishedDescription
 	newsArticle.PublishedContent = newsArticleDTO.UnpublishedContent
 	err = newsArticleService.INewsArticleRepository.Update(newsArticle)
 	if err != nil {
