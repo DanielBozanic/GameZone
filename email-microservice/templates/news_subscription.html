@@ -17,10 +17,16 @@
             .ql-font-comic-sans {
                 font-family: comic-sans;
              }
+            .news-content img {
+	            height: 100%;
+	            max-width: 100%;
+	            display: block;
+	            margin: auto;
+             }
        </style>
     </head>
     <body>
-        {{htmlNews | safe}}
+        <div class = "news-content">{{htmlNews | safe}}</div>
         <br/>
         <div>
             <p>

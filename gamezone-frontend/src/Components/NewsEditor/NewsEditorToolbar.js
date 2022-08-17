@@ -24,8 +24,17 @@ const CustomRedo = () => (
 function undoChange() {
 	this.quill.history.undo();
 }
+
 function redoChange() {
 	this.quill.history.redo();
+}
+
+function imageHandler() {
+	const range = this.quill.getSelection();
+	const value = prompt("Please copy paste the image url here.");
+	if (value) {
+		this.quill.insertEmbed(range.index, "image", value, Quill.sources.USER);
+	}
 }
 
 const Size = Quill.import("attributors/style/size");
@@ -66,6 +75,7 @@ export const modules = {
 		handlers: {
 			undo: undoChange,
 			redo: redoChange,
+			image: imageHandler,
 		},
 	},
 	history: {
