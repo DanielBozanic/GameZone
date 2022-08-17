@@ -5,4 +5,4 @@ CREATE DATABASE IF NOT EXISTS `news-db`;
 CREATE DATABASE IF NOT EXISTS `users-db`;
 
 CREATE USER IF NOT EXISTS 'testuser'@'localhost' IDENTIFIED BY 'PassWord_FOR_NTP!';
-GRANT ALL on *.*  to 'testuser'@'%';
+GRANT ALL ON *.*  TO 'testuser'@'localhost';
