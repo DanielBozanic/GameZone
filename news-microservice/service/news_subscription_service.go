@@ -92,7 +92,9 @@ func (newsSubscriptionService *newsSubscriptionService) SendEmails() string {
 	if len(recipients) > 0 {
 		newsArticlesForSending := ""
 		for _, unsentNewsArticle := range unsentNewsArticles {
-			newsArticlesForSending += unsentNewsArticle.PublishedContent + `<br/><hr/>`
+			newsArticlesForSending += `<h2 style="text-align: center;">` + 
+				unsentNewsArticle.PublishedTitle + `</h2>` + 
+				unsentNewsArticle.PublishedContent + `<br/><hr/>`
 		}
 
 		data := map[string]interface{}{

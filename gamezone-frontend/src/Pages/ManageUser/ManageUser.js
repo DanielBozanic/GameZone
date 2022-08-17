@@ -163,7 +163,7 @@ const ManageUser = () => {
 			)}
 			<Row style={{ margin: "auto", padding: "5px" }}>
 				<Col>
-					<Card style={{ height: "534px" }} className="card">
+					<Card style={{ overflowY: "auto", height: "550px" }} className="card">
 						<CardHeader>
 							<CardTitle className="title" tag="h5">
 								Reports Received By Other Users
@@ -257,7 +257,12 @@ const ManageUser = () => {
 			<Row style={{ margin: "auto", padding: "5px" }}>
 				<Col md="6">
 					<Card
-						style={{ marginTop: "10px", marginBottom: "10px" }}
+						style={{
+							marginTop: "10px",
+							marginBottom: "10px",
+							maxHeight: "550px",
+							overflowY: "auto",
+						}}
 						className="card"
 					>
 						<CardHeader>
@@ -302,7 +307,12 @@ const ManageUser = () => {
 
 				<Col md="6">
 					<Card
-						style={{ marginTop: "10px", marginBottom: "10px" }}
+						style={{
+							marginTop: "10px",
+							marginBottom: "10px",
+							maxHeight: "550px",
+							overflowY: "auto",
+						}}
 						className="card"
 					>
 						<CardHeader>

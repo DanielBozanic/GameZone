@@ -31,7 +31,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `contact_messages` WRITE;
 /*!40000 ALTER TABLE `contact_messages` DISABLE KEYS */;
-INSERT INTO `contact_messages` VALUES (1,4,'dan','Nintendo switch lite availability','Hi,\n\nI would like to purchase the nintendo switch lite before halloween for my son, so I was wondering when will it be available for purchase.\n\nSincerely,\nDaniel',NULL,'2022-08-16 20:31:31.025'),(2,4,'dan','Working hours during holidays','Hi,\nWill GameZone be open on the 5th of January?\n\nSincerely,\nDaniel','Hi, Daniel\n\nGameZone will be working on the 5th of January from 8:00 - 15:00.\n\nHave a good day.\nJack','2022-01-02 10:15:00.025');
+INSERT INTO `contact_messages` VALUES (1,4,'dan','Nintendo switch lite availability','Hi,\n\nI would like to purchase the nintendo switch lite before halloween for my son, so I was wondering when will it be available for purchase.\n\nSincerely,\nDaniel',NULL,'2022-08-16 20:31:31.025'),(2,4,'dan','Working hours during holidays','Hi,\nWill GameZone be open on the 5th of January?\n\nSincerely,\nDaniel','Hi Daniel,\n\nGameZone will be working on the 5th of January from 8:00 - 15:00.\n\nHave a good day.\nJack','2022-01-02 10:15:00.025'),(3,4,'dan','Elden Ring PC Deluxe Edition','Hi,\n\nI\'ve seen that you have only the standard version of Elden Ring for purchase, so I\'m interested to know when or if at all you will have Elden Ring PC Deluxe Edition available for purchase.\n\nDaniel','Hi Daniel,\n\nYou can purchase Elden Ring PC Deluxe Edition starting 30th of February.\n','2022-02-26 14:32:53.635'),(5,4,'dan','Halloween product discounts','Hi, \n\nAre there gonna be any Halloween product discounts?\n\nDaniel','Hi Daniel, \n\nAll products from 31st of October to 5th of November will be 30% off.','2021-10-27 12:10:53.635');
 /*!40000 ALTER TABLE `contact_messages` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-16 23:33:39
+-- Dump completed on 2022-08-17 14:53:23

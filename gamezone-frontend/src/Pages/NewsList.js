@@ -24,7 +24,7 @@ const NewsList = () => {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [numberOfRecords, setNumberOfRecords] = useState(0);
 	const [loading, setLoading] = useState(true);
-	const pageSize = 10;
+	const pageSize = 8;
 
 	useEffect(() => {
 		if (authService.isEmployee()) {
