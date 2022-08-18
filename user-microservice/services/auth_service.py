@@ -15,7 +15,7 @@ def login(data):
             name="admin",
             surname="admin",
             role="ROLE_ADMIN",
-            active=True
+            verified=True
         )
         db.session.add(admin)
         db.session.commit()
@@ -36,7 +36,7 @@ def login(data):
         )
         if resp.status_code == 200 and resp.json():
             return "Your account is banned"
-    except requests.exceptions.RequestException:
-        pass
+    except requests.exceptions.RequestException as err:
+        print(err)
 
     return user

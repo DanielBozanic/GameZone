@@ -384,7 +384,9 @@ const ProductDetail = (props) => {
 																	.replace(/([A-Z][a-z])/g, " $1")
 																	.trim()}
 															</th>
-															<td>{product[value].toString().split("T")[0]}</td>
+															<td>
+																{new Date(product[value]).toLocaleDateString()}
+															</td>
 														</tr>
 													);
 												} else {
