@@ -21,7 +21,6 @@ import AppNavbar from "../Layout/AppNavbar";
 import BuyerInfo from "../Components/Checkout/BuyerInfo/BuyerInfo";
 import PaymentType from "../Components/Checkout/PaymentType/PaymentType";
 import ReviewCheckoutInfo from "../Components/Checkout/ReviewCheckoutInfo";
-import * as prodcutType from "../Utils/ProductType";
 
 toast.configure();
 const ShoppingCart = () => {
@@ -128,11 +127,11 @@ const ShoppingCart = () => {
 				ProductPrice: productInCart.Product.Product.Price,
 				ProductQuantity: productInCart.Quantity,
 				VideoGamePlatform:
-					productInCart.Product.Product.Type === prodcutType.VIDEO_GAME
+					productInCart.Product.Product.Type === productType.VIDEO_GAME
 						? productInCart.Product.Platform
 						: null,
 				VideoGameDigital:
-					productInCart.Product.Product.Type === prodcutType.VIDEO_GAME
+					productInCart.Product.Product.Type === productType.VIDEO_GAME
 						? productInCart.Product.Digital
 						: null,
 			});

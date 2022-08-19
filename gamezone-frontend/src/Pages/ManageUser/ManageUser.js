@@ -27,6 +27,7 @@ import * as newsCommentAPI from "../../APIs/NewsMicroservice/news_comment_api";
 import * as reportAPI from "../../APIs/ContactAndReportMicroservice/report_api";
 import * as banAPI from "../../APIs/ContactAndReportMicroservice/ban_api";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
+import "../../Assets/css/manage-user.css";
 
 toast.configure();
 const ManageUser = () => {
@@ -163,7 +164,7 @@ const ManageUser = () => {
 			)}
 			<Row style={{ margin: "auto", padding: "5px" }}>
 				<Col>
-					<Card style={{ overflowY: "auto", height: "550px" }} className="card">
+					<Card className="card">
 						<CardHeader>
 							<CardTitle className="title" tag="h5">
 								Reports Received By Other Users
@@ -175,7 +176,7 @@ const ManageUser = () => {
 							</div>
 						)}
 						{!loadingReports && (
-							<CardBody>
+							<CardBody className="reports-card-body">
 								{reports.length > 0 &&
 									reports.map((report) => {
 										return (
@@ -199,7 +200,7 @@ const ManageUser = () => {
 					</Card>
 				</Col>
 				<Col>
-					<Card className="card">
+					<Card>
 						<CardBody>
 							<Form className="form">
 								<FormGroup>
@@ -218,8 +219,7 @@ const ManageUser = () => {
 								<FormGroup>
 									<Label>Ban Description</Label>
 									<Input
-										style={{ height: "200px", resize: "none" }}
-										className="input-field"
+										className="input-field ban-description-text-area"
 										type="textarea"
 										name="Description"
 										innerRef={register}
@@ -260,8 +260,6 @@ const ManageUser = () => {
 						style={{
 							marginTop: "10px",
 							marginBottom: "10px",
-							maxHeight: "550px",
-							overflowY: "auto",
 						}}
 						className="card"
 					>
@@ -276,7 +274,7 @@ const ManageUser = () => {
 							</div>
 						)}
 						{!loadingComments && (
-							<CardBody>
+							<CardBody className="comments-card-body">
 								{(productComments.length > 0 || newsComments.length > 0) &&
 									productComments
 										.concat(newsComments)
@@ -310,8 +308,6 @@ const ManageUser = () => {
 						style={{
 							marginTop: "10px",
 							marginBottom: "10px",
-							maxHeight: "550px",
-							overflowY: "auto",
 						}}
 						className="card"
 					>
@@ -326,7 +322,7 @@ const ManageUser = () => {
 							</div>
 						)}
 						{!loadingBanHistory && (
-							<CardBody>
+							<CardBody className="bans-card-body">
 								{banHistory.length > 0 &&
 									banHistory.map((ban) => {
 										return (

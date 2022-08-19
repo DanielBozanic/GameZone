@@ -53,7 +53,7 @@ const AdminNavbar = () => {
 										</DropdownItem>
 										<DropdownItem>
 											<Link className="drop-down-link" to="/registeredUsers">
-												View registered users
+												Registered users
 											</Link>
 										</DropdownItem>
 									</DropdownMenu>

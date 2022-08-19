@@ -1,0 +1,22 @@
+.ban-description-text-area {
+	height: 200px !important;
+	resize: none !important;
+}
+
+.reports-card-body {
+	overflow-y: auto;
+	height: 472px;
+	max-width: 1230px;
+}
+
+.comments-card-body {
+	overflow-y: auto;
+	max-height: 550px;
+	max-width: 1230px;
+}
+
+.bans-card-body {
+	overflow-y: auto;
+	max-height: 550px;
+	max-width: 1230px;
+}

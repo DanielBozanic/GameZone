@@ -134,10 +134,12 @@ const RegisteredUsersList = () => {
 	};
 
 	const onSearchClick = (st) => {
-		setSearchTerm(st);
-		setRegisteredUsers([]);
-		setLoading(true);
-		setCurrentPage(1);
+		if (st !== searchTerm) {
+			setSearchTerm(st);
+			setRegisteredUsers([]);
+			setLoading(true);
+			setCurrentPage(1);
+		}
 	};
 
 	return (
