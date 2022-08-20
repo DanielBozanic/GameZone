@@ -31,7 +31,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `news_comments` WRITE;
 /*!40000 ALTER TABLE `news_comments` DISABLE KEYS */;
-INSERT INTO `news_comments` VALUES (1,5,'My grandmother can write a better aritcle, this sucks.',5,'uros','2022-08-15 20:38:01.603',1),(2,5,'Awesome article, a joy to read!',4,'dan','2022-08-17 14:24:02.009',0),(3,5,'I really hope Starfield is good as that claim it is. After this we really need to Bethesda to release ES6, it\'s been 10 years since the last new entry.',6,'mare','2022-08-17 14:25:50.236',0),(4,5,'The visuals are so unappealing. Dated graphics, choppy framerate. Ugly colors. Environments don\'t feel atmospheric. Even Fallout 3 looks better than this with mods.',34,'wumpa','2022-08-17 14:27:12.661',0);
+INSERT INTO `news_comments` VALUES (1,5,'My grandmother can write a better aritcle, this sucks.',5,'uros','2022-08-15 20:38:01.603',0),(2,5,'Awesome article, a joy to read!',4,'dan','2022-08-17 14:24:02.009',0),(3,5,'I really hope Starfield is good as that claim it is. After this we really need to Bethesda to release ES6, it\'s been 10 years since the last new entry.',6,'mare','2022-08-17 14:25:50.236',0),(4,5,'The visuals are so unappealing. Dated graphics, choppy framerate. Ugly colors. Environments don\'t feel atmospheric. Even Fallout 3 looks better than this with mods.',34,'wumpa','2022-08-17 14:27:12.661',0);
 /*!40000 ALTER TABLE `news_comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-17 21:19:53
+-- Dump completed on 2022-08-20 18:34:49
