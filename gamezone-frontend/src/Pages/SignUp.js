@@ -8,6 +8,7 @@ import {
 	Button,
 	Form,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	Container,
@@ -69,11 +70,13 @@ const SignUp = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col md="10">
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								Sign Up {loading && <Spinner />}
-							</CardTitle>
+					<Col className="form-card-col" md="10">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									Sign Up {loading && <Spinner />}
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<FormProvider {...methods}>
 									<Form className="form">

@@ -8,6 +8,7 @@ import {
 	Row,
 	Col,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	Button,
@@ -61,11 +62,13 @@ const ContactForm = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col md="10">
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								Contact
-							</CardTitle>
+					<Col className="form-card-col" md="10">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									Contact
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<Form className="form">
 									<Row>

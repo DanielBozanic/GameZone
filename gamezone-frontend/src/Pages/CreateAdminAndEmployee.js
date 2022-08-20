@@ -6,6 +6,7 @@ import {
 	Button,
 	Form,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	Container,
@@ -67,11 +68,13 @@ const CreateAdminAndEmployee = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col md="10">
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								Add employee/admin {loading && <Spinner />}
-							</CardTitle>
+					<Col className="form-card-col" md="10">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									Add employee/admin {loading && <Spinner />}
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<FormProvider {...methods}>
 									<Form className="form">

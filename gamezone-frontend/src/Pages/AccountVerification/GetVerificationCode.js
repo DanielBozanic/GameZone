@@ -6,6 +6,7 @@ import {
 	Label,
 	Input,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	Container,
@@ -56,11 +57,13 @@ const GetVerificationCode = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col md="10">
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								Get verification code {loading && <Spinner />}
-							</CardTitle>
+					<Col className="form-card-col" md="10">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									Get verification code {loading && <Spinner />}
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<Form className="form">
 									<Row>

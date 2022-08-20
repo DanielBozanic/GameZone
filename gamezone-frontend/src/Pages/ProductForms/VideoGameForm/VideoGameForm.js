@@ -11,6 +11,7 @@ import {
 	Label,
 	Input,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	FormFeedback,
@@ -136,11 +137,13 @@ const VideoGameForm = (props) => {
 			)}
 			<Container>
 				<Row>
-					<Col>
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								{props.title}
-							</CardTitle>
+					<Col className="form-card-col">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									{props.title}
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<FormProvider {...methods}>
 									<Form className="form">

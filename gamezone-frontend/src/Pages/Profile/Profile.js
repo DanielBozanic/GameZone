@@ -26,7 +26,6 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import * as userAPI from "../../APIs/UserMicroservice/user_api";
 import * as authService from "../../Auth/AuthService";
-import "../../Assets/css/profile.css";
 
 toast.configure();
 const Profile = () => {
@@ -123,7 +122,7 @@ const Profile = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col className="profile-card-col" md="8">
+					<Col className="form-card-col" md="8">
 						<Card className="card">
 							{bigSpinnerLoading && (
 								<div className="div-spinner">

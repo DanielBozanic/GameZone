@@ -7,6 +7,7 @@ import {
 	Label,
 	Input,
 	Card,
+	CardHeader,
 	CardTitle,
 	CardBody,
 	Container,
@@ -59,11 +60,13 @@ const VerifyAccount = () => {
 			</Helmet>
 			<Container>
 				<Row>
-					<Col md="10">
-						<Card className="form-card">
-							<CardTitle className="title" tag="h2">
-								Verify account {loading && <Spinner />}
-							</CardTitle>
+					<Col className="form-card-col" md="10">
+						<Card>
+							<CardHeader>
+								<CardTitle className="title" tag="h2">
+									Verify account {loading && <Spinner />}
+								</CardTitle>
+							</CardHeader>
 							<CardBody>
 								<Form className="form">
 									<Row>

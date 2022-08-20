@@ -85,7 +85,7 @@ body {
 	margin-bottom: 5px;
 }
 
-.form-card {
+.form-card-col {
 	margin-bottom: 1em;
 	margin-left: auto;
 	margin-right: auto;
@@ -93,8 +93,6 @@ body {
 	padding: 1em;
 	text-align: left;
 	border-collapse: collapse;
-	background-color: #343a40;
-	color: orange;
 }
 
 .title {
