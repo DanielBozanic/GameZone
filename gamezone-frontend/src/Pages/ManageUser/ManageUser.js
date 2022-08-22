@@ -185,8 +185,10 @@ const ManageUser = () => {
 													[{new Date(report.DateTime).toLocaleDateString()}{" "}
 													{new Date(report.DateTime).toLocaleTimeString()}] [
 													{report.Reason}]
-												</span>{" "}
-												- {report.Description}
+												</span>
+												{report.Description !== null &&
+													report.Description !== "" &&
+													" - " + report.Description}
 											</CardText>
 										);
 									})}
