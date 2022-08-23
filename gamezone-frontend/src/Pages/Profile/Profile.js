@@ -375,7 +375,7 @@ const Profile = () => {
 										<CardFooter>
 											<Row>
 												<Col>
-													<a href={purchaseHistory}>
+													<a href={purchaseHistory()}>
 														<Button
 															style={{ marginTop: "5px" }}
 															className="my-button"
